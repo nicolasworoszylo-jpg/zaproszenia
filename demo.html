@@ -1,5 +1,42 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>Anna i Michał — przykład zaproszenia | zaproszeniaonline.com</title>
+<meta name="description" content="Przykładowe cyfrowe zaproszenie ślubne na zaproszeniaonline.com — zobacz jak może wyglądać Twoje zaproszenie premium z RSVP, planem dnia i mapami.">
+<meta name="robots" content="noindex,follow">
+<meta property="og:title" content="Anna i Michał — przykład zaproszenia">
+<meta property="og:description" content="Zobacz przykład cyfrowego zaproszenia premium na zaproszeniaonline.com">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zaproszeniaonline.com/demo">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  html,body{margin:0;padding:0;background:#FAF6EF}
+  #demo-loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#FAF6EF;z-index:9999;font-family:Georgia,serif;color:#2C3E2D;font-style:italic;font-size:18px;letter-spacing:2px;transition:opacity .6s ease}
+  #demo-loading.hidden{opacity:0;pointer-events:none}
+</style>
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
+</head>
+<body>
+<div id="demo-loading">ładowanie zaproszenia…</div>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef, useCallback } = React;
 
+// ── Supabase client (publishable / anon key — bezpieczny do osadzenia w przeglądarce) ──
+const SUPABASE_URL  = "https://kuyniyyieejvambyjnxy.supabase.co";
+const SUPABASE_ANON = "sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// Identyfikator tego konkretnego demo-zaproszenia (per-couple slug w przyszłości)
+const INVITATION_SLUG = "demo-anna-michal";
+
+// React hooks pulled from window.React (injected by demo.html boilerplate)
 const CONFIG = {
   bride: "Anna", groom: "Michał",
   weddingDate: new Date("2026-06-20T15:00:00"),
@@ -205,7 +242,7 @@ function Details(){const[songModal,setSongModal]=useState(false);const[songSent,
   /* ═══ UDOSKONALENIE #15: Modal z animacją wejścia/wyjścia ═══ */
   const[modalClosing,setModalClosing]=useState(false);
   const closeModal=()=>{setModalClosing(true);setTimeout(()=>{setSongModal(false);setModalClosing(false)},250)};
-  const sendSong=()=>{if(!sName.trim()||!sSong.trim())return;setSongSent(true);setTimeout(()=>{closeModal();setSongSent(false);setSName("");setSSong("");setSLink("")},2500)};
+  const sendSong=async()=>{if(!sName.trim()||!sSong.trim())return;try{const{error}=await sb.from('song_requests').insert({invitation_slug:INVITATION_SLUG,guest_name:sName.trim(),song_title:sSong.trim(),song_link:sLink.trim()||null});if(error)throw error;setSongSent(true);setTimeout(()=>{closeModal();setSongSent(false);setSName('');setSSong('');setSLink('')},2500);}catch(e){console.error('song_requests insert failed:',e);alert('Nie udało się wysłać propozycji. Spróbuj ponownie za chwilę.');}};
   const mInp={fontFamily:F.body,fontSize:16,width:"100%",padding:"12px 0",border:"none",borderBottom:`1px solid ${C.gold}35`,background:"transparent",color:C.warm,outline:"none",boxSizing:"border-box",transition:`border-color .4s ${EASE_OUT_EXPO}`};
   const cardBase={background:"white",border:`1px solid ${C.parch}`,padding:"28px 24px",textAlign:"center",flex:1,display:"flex",flexDirection:"column",transition:`transform .4s ${SPRING}, box-shadow .4s`};
   return (<section id="szczegoly" style={{padding:"76px 24px",background:C.warm,scrollMarginTop:60,position:"relative",overflow:"hidden"}}>
@@ -232,7 +269,7 @@ function Details(){const[songModal,setSongModal]=useState(false);const[songSent,
 
 /* ═══ UDOSKONALENIE #9: RSVP z celebracyjną animacją sukcesu ═══ */
 function RSVPSection(){const[st,setSt]=useState("idle");const[n,sN]=useState("");const[att,sA]=useState("yes");const[g,sG]=useState("1");const[diet,sD]=useState("");const[msg,sM]=useState("");const[bus,sB]=useState("no");const[meal,sMeal]=useState("tradycyjne");
-  const submit=()=>{if(!n.trim())return;setSt("send");setTimeout(()=>setSt("done"),1400)};
+  const submit=async()=>{if(!n.trim())return;setSt('send');try{const{error}=await sb.from('rsvps').insert({invitation_slug:INVITATION_SLUG,guest_name:n.trim(),attending:att==='yes',guests_count:att==='yes'?parseInt(g,10):1,needs_transport:att==='yes'&&bus==='yes',meal_preference:att==='yes'?meal:null,dietary_notes:diet.trim()||null,message:msg.trim()||null});if(error)throw error;setSt('done');}catch(e){console.error('rsvps insert failed:',e);alert('Nie udało się wysłać potwierdzenia. Spróbuj ponownie za chwilę.');setSt('idle');}};
   const iSt={fontFamily:F.body,fontSize:16,width:"100%",padding:"14px 14px",border:`1px solid ${C.parch}`,background:"white",color:C.char,outline:"none",borderRadius:0,boxSizing:"border-box",transition:`border-color .4s ${EASE_OUT_EXPO}`};
   const lSt={fontFamily:F.body,fontSize:12,letterSpacing:4,textTransform:"uppercase",color:C.gold,display:"block",marginBottom:6,fontWeight:600};
   if(st==="done")return (<section id="potwierdzenie" style={{padding:"88px 24px",background:`linear-gradient(170deg,${C.deep},${C.forest})`,textAlign:"center",scrollMarginTop:60,position:"relative"}}><Grain o={.03}/>
@@ -344,7 +381,7 @@ function AudioPlayer(){
   </div>);
 }
 
-export default function App(){
+function App(){
   const Filigree=()=>(<div style={{padding:"12px 0",textAlign:"center",position:"relative",overflow:"hidden"}}>
     <svg viewBox="0 0 600 40" fill="none" style={{width:"min(90%,500px)",height:40,display:"block",margin:"0 auto",opacity:.35}}>
       <path d="M0 20H180" stroke={C.gold} strokeWidth=".4"/>
@@ -375,3 +412,17 @@ export default function App(){
   <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@400&display=swap');*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}::selection{background:${C.gold}30;color:${C.forest}}input::placeholder,textarea::placeholder{color:${C.stone};font-style:italic;font-weight:300}@keyframes pageIn{from{opacity:0}to{opacity:1}}@keyframes float{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(8px);opacity:.9}}@keyframes scaleIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}@keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}@keyframes spinDiamond{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}@keyframes modalIn{from{opacity:0;transform:scale(0.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}@keyframes scrollDot{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(6px)}}@keyframes celebFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(0)}}@keyframes heroShimmer{0%{background-position:-200% center}100%{background-position:200% center}}@keyframes tlPulse{0%,100%{box-shadow:0 0 20px ${C.deep}}50%{box-shadow:0 0 20px ${C.deep}, 0 0 8px ${C.gold}20}}.ceremony-card:hover{transform:translateY(-4px)!important;box-shadow:0 12px 40px ${C.gold}10!important}.detail-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px ${C.gold}08}.glow-border:hover::after{opacity:1}.shimmer-text{background:linear-gradient(105deg,${C.warm} 0%,${C.warm} 35%,${C.goldL} 50%,${C.warm} 65%,${C.warm} 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:heroShimmer 6s ease-in-out infinite}.amp-rotate{transition:transform 2s cubic-bezier(.16,1,.3,1)}.amp-rotate:hover{transform:rotate(15deg) scale(1.1)}.tl-icon{animation:tlPulse 3s ease-in-out infinite}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:${C.warm}}::-webkit-scrollbar-thumb{background:${C.gold}50;border-radius:3px}img{max-width:100%;height:auto}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid ${C.gold};outline-offset:2px}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}.shimmer-text{animation:none!important;-webkit-text-fill-color:${C.warm}!important}}@media(max-width:768px){.story-photos{display:none!important}.story-wrap{gap:0!important;max-width:100%!important}.story-text{max-width:100%!important;flex:1 1 100%!important}}@media(max-width:480px){section{padding-left:16px!important;padding-right:16px!important}.detail-grid{grid-template-columns:1fr!important;max-width:400px!important}.ceremony-wrap{gap:16px!important}.nav-inner{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap!important;justify-content:flex-start!important;gap:14px!important;padding:11px 16px!important}.nav-inner::-webkit-scrollbar{display:none}.heart-ph{width:200px!important;height:200px!important}}@media(max-width:360px){section{padding-left:12px!important;padding-right:12px!important}.hero-names{font-size:clamp(38px,12vw,60px)!important}}`}</style>
   <Nav/><AudioPlayer/><Hero/><Countdown/><Filigree/><Ceremony/><Timeline/><OurStory/><Filigree/><Details/><RSVPSection/><Gallery/><Filigree/><Gifts/><Footer/>
 </div>)}
+
+
+// ── Mount ──
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+
+// Schowaj loading curtain po zamontowaniu
+requestAnimationFrame(() => {
+  const l = document.getElementById("demo-loading");
+  if (l) { l.classList.add("hidden"); setTimeout(() => l.remove(), 700); }
+});
+</script>
+</body>
+</html>

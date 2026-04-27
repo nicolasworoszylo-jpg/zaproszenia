@@ -472,6 +472,234 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        /* ── Demo preview section ── */
+        .demo-preview {
+            background: linear-gradient(180deg, #FDF8F0 0%, #F5EDE0 100%);
+            text-align: center;
+        }
+        .demo-card {
+            margin: 3rem auto 0;
+            max-width: 720px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(44, 36, 32, 0.12);
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .demo-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 70px rgba(44, 36, 32, 0.18);
+        }
+        .demo-browserbar {
+            background: #F5EDE0;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(184, 134, 11, 0.12);
+        }
+        .demo-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: rgba(184, 134, 11, 0.25);
+        }
+        .demo-url {
+            margin-left: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+        }
+        .demo-thumb {
+            background: linear-gradient(170deg, #1E2B1F 0%, #2C3E2D 50%, #1E2B1F 100%);
+            color: #FAF6EF;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+        .demo-thumb-eyebrow {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #C9A96E;
+            margin-bottom: 1rem;
+        }
+        .demo-thumb-names {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-weight: 400;
+            font-size: clamp(2.2rem, 6vw, 3.6rem);
+            color: #FAF6EF;
+            line-height: 1.1;
+        }
+        .demo-thumb-amp {
+            color: #C9A96E;
+            font-size: 0.7em;
+            margin: 0 0.4em;
+            font-style: italic;
+        }
+        .demo-thumb-date {
+            margin-top: 1rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            color: rgba(250, 246, 239, 0.7);
+            text-transform: uppercase;
+        }
+        .demo-thumb-cta {
+            margin-top: 2.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            background: #C9A96E;
+            color: #1E2B1F;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .demo-thumb-cta:hover {
+            background: #D4B97F;
+            transform: translateY(-2px);
+        }
+        .demo-thumb-note {
+            margin-top: 1.5rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 0.95rem;
+            color: rgba(250, 246, 239, 0.6);
+        }
+
+        /* ── Lead form ── */
+        .lead-form {
+            max-width: 520px;
+            margin: 2.5rem auto 0;
+            text-align: left;
+        }
+        .lead-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .lead-form-field {
+            margin-bottom: 1.25rem;
+        }
+        .lead-form label {
+            display: block;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            margin-bottom: 0.5rem;
+        }
+        .lead-form input,
+        .lead-form select,
+        .lead-form textarea {
+            width: 100%;
+            padding: 12px 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            color: var(--cream);
+            background: rgba(253, 248, 240, 0.06);
+            border: 1px solid rgba(212, 168, 67, 0.25);
+            border-radius: 0;
+            outline: none;
+            transition: border-color 0.3s ease, background 0.3s ease;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .lead-form select {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D4A843' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 14px;
+            padding-right: 40px;
+        }
+        .lead-form input:focus,
+        .lead-form select:focus,
+        .lead-form textarea:focus {
+            border-color: var(--gold);
+            background: rgba(253, 248, 240, 0.1);
+        }
+        .lead-form input::placeholder,
+        .lead-form textarea::placeholder {
+            color: rgba(253, 248, 240, 0.35);
+        }
+        .lead-form textarea {
+            min-height: 90px;
+            resize: vertical;
+            font-family: 'Outfit', sans-serif;
+        }
+        .lead-form-submit {
+            width: 100%;
+            margin-top: 0.5rem;
+            padding: 16px 24px;
+            background: var(--gold);
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .lead-form-submit:hover:not(:disabled) {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+        }
+        .lead-form-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .form-msg {
+            margin-top: 1rem;
+            padding: 0.9rem 1rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            text-align: center;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.4s ease, max-height 0.4s ease, margin-top 0.4s ease;
+        }
+        .form-msg.show {
+            opacity: 1;
+            max-height: 200px;
+        }
+        .form-msg.success {
+            background: rgba(212, 168, 67, 0.12);
+            color: var(--gold-light);
+            border: 1px solid rgba(212, 168, 67, 0.3);
+        }
+        .form-msg.error {
+            background: rgba(220, 80, 80, 0.12);
+            color: #ff9999;
+            border: 1px solid rgba(220, 80, 80, 0.3);
+        }
+        .form-fallback {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: rgba(253, 248, 240, 0.5);
+            text-align: center;
+        }
+        .form-fallback a {
+            color: var(--gold-light);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(212, 168, 67, 0.3);
+        }
+
+        @media (max-width: 640px) {
+            .lead-form-row { grid-template-columns: 1fr; gap: 0; }
+        }
     </style>
 </head>
 <body>
@@ -562,6 +790,33 @@
         </div>
     </section>
 
+    <section class="demo-preview" id="demo-preview">
+        <div class="container reveal">
+            <div class="section-label">Zobacz na żywo</div>
+            <h2 class="section-title">Tak wygląda przykładowe zaproszenie</h2>
+            <p class="section-text" style="margin: 0 auto;">Otwórz nasz demo-projekt i zobacz wszystkie sekcje, animacje i formularz RSVP w działaniu - tak jak zobaczą to Twoi goście.</p>
+
+            <div class="demo-card">
+                <div class="demo-browserbar">
+                    <span class="demo-dot"></span>
+                    <span class="demo-dot"></span>
+                    <span class="demo-dot"></span>
+                    <span class="demo-url">zaproszeniaonline.com/demo</span>
+                </div>
+                <div class="demo-thumb">
+                    <div class="demo-thumb-eyebrow">Zaproszenie ślubne</div>
+                    <div class="demo-thumb-names">Anna<span class="demo-thumb-amp">&amp;</span>Michał</div>
+                    <div class="demo-thumb-date">Sobota, 20 czerwca 2026</div>
+                    <a href="/demo" class="demo-thumb-cta">
+                        Zobacz pełne demo
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+                    </a>
+                    <div class="demo-thumb-note">11 sekcji, plan dnia, mapy, RSVP, propozycje piosenek</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="cennik">
         <div class="container reveal">
             <div class="section-label">Cennik</div>
@@ -610,11 +865,64 @@
         <div class="container reveal">
             <div class="section-label" style="color: var(--gold-light);">Zaczynamy?</div>
             <h2 class="section-title">Stwórzmy Twoje zaproszenie</h2>
-            <p class="section-text">Napisz do nas - odpowiemy w ciągu kilku godzin z propozycją dopasowaną do Twojego wydarzenia.</p>
-            <a href="mailto:kontakt@zaproszeniaonline.com" class="cta-button">
-                Napisz do nas
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
-            </a>
+            <p class="section-text">Zostaw kilka informacji - odpowiemy w ciągu kilku godzin z propozycją dopasowaną do Twojego wydarzenia.</p>
+
+            <form class="lead-form" id="leadForm" novalidate>
+                <div class="lead-form-row">
+                    <div class="lead-form-field">
+                        <label for="lf-name">Imię i nazwisko *</label>
+                        <input type="text" id="lf-name" name="name" required autocomplete="name" placeholder="Anna Kowalska">
+                    </div>
+                    <div class="lead-form-field">
+                        <label for="lf-email">E-mail *</label>
+                        <input type="email" id="lf-email" name="email" required autocomplete="email" placeholder="anna@example.com">
+                    </div>
+                </div>
+
+                <div class="lead-form-row">
+                    <div class="lead-form-field">
+                        <label for="lf-phone">Telefon</label>
+                        <input type="tel" id="lf-phone" name="phone" autocomplete="tel" placeholder="+48 600 000 000">
+                    </div>
+                    <div class="lead-form-field">
+                        <label for="lf-event-date">Data wydarzenia</label>
+                        <input type="date" id="lf-event-date" name="event_date">
+                    </div>
+                </div>
+
+                <div class="lead-form-row">
+                    <div class="lead-form-field">
+                        <label for="lf-event-type">Rodzaj wydarzenia</label>
+                        <select id="lf-event-type" name="event_type">
+                            <option value="">— wybierz —</option>
+                            <option value="wesele">Wesele</option>
+                            <option value="chrzciny">Chrzciny</option>
+                            <option value="urodziny">Urodziny / jubileusz</option>
+                            <option value="firmowe">Event firmowy</option>
+                            <option value="inne">Inne</option>
+                        </select>
+                    </div>
+                    <div class="lead-form-field">
+                        <label for="lf-package">Pakiet</label>
+                        <select id="lf-package" name="package">
+                            <option value="">— bez preferencji —</option>
+                            <option value="standard">Standard (499 zł)</option>
+                            <option value="premium">Premium (699 zł)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="lead-form-field">
+                    <label for="lf-message">Wiadomość</label>
+                    <textarea id="lf-message" name="message" placeholder="Opowiedz pokrótce o swoim wydarzeniu - data, ile gości, czego oczekujesz..."></textarea>
+                </div>
+
+                <button type="submit" class="lead-form-submit" id="lf-submit">Wyślij zapytanie</button>
+
+                <div class="form-msg" id="lf-msg" role="status" aria-live="polite"></div>
+
+                <p class="form-fallback">Wolisz tradycyjnie? <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a></p>
+            </form>
         </div>
     </section>
 
@@ -622,7 +930,9 @@
         <p>&copy; 2026 Zaproszenia Online. Projekt i realizacja <a href="https://vidokstudio.pl" target="_blank" rel="noopener">Vidok Studio</a></p>
     </footer>
 
+    <script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
     <script>
+        // Reveal-on-scroll
         const reveals = document.querySelectorAll('.reveal');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -632,6 +942,61 @@
             });
         }, { threshold: 0.15 });
         reveals.forEach(el => observer.observe(el));
+
+        // Supabase lead form
+        const SUPABASE_URL  = "https://kuyniyyieejvambyjnxy.supabase.co";
+        const SUPABASE_ANON = "sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL";
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+        const form = document.getElementById('leadForm');
+        const submitBtn = document.getElementById('lf-submit');
+        const msgEl = document.getElementById('lf-msg');
+
+        function showMsg(text, kind) {
+            msgEl.textContent = text;
+            msgEl.className = 'form-msg show ' + kind;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fd = new FormData(form);
+            const name = (fd.get('name') || '').toString().trim();
+            const email = (fd.get('email') || '').toString().trim();
+            if (!name || !email) {
+                showMsg('Imię i e-mail są wymagane.', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Wysyłam...';
+            msgEl.className = 'form-msg';
+
+            const payload = {
+                name,
+                email,
+                phone:       (fd.get('phone') || '').toString().trim() || null,
+                event_type:  (fd.get('event_type') || '').toString() || null,
+                event_date:  (fd.get('event_date') || '').toString() || null,
+                package:     (fd.get('package') || '').toString() || null,
+                message:     (fd.get('message') || '').toString().trim() || null,
+                source:      'landing',
+                user_agent:  navigator.userAgent.slice(0, 500),
+                referrer:    (document.referrer || '').slice(0, 500) || null,
+            };
+
+            try {
+                const { error } = await sb.from('leads').insert(payload);
+                if (error) throw error;
+                form.reset();
+                showMsg('Dziękujemy! Odezwiemy się w ciągu kilku godzin na podany e-mail.', 'success');
+                submitBtn.textContent = 'Wysłano ✓';
+            } catch (err) {
+                console.error('lead insert failed:', err);
+                showMsg('Coś poszło nie tak. Spróbuj ponownie lub napisz na kontakt@zaproszeniaonline.com', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Wyślij zapytanie';
+            }
+        });
     </script>
 
 </body>
