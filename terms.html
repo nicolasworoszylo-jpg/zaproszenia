@@ -66,6 +66,23 @@
       main { padding: 3rem 1.25rem; }
       .legal-header { padding: 3rem 1.25rem 2rem; }
     }
+
+    @media print {
+      body { background: white; color: black; font-size: 11pt; line-height: 1.5; }
+      .legal-header { background: none; color: black; padding: 1rem 0; border-bottom: 2px solid black; }
+      .legal-header * { color: black !important; }
+      .legal-back, .legal-back-bottom-wrap, footer .footer-nav { display: none; }
+      main { max-width: 100%; padding: 1.5rem 0; }
+      main h2 { color: black; border-bottom: 1px solid #999; page-break-after: avoid; margin-top: 2rem; }
+      main h3 { color: black; page-break-after: avoid; }
+      main p, main li { color: black; orphans: 3; widows: 3; }
+      main a { color: black; text-decoration: underline; }
+      main a[href^="http"]:after, main a[href^="mailto"]:after { content: " (" attr(href) ")"; font-size: 0.85em; }
+      .legal-callout { background: #f5f5f5; border-left: 3px solid black; page-break-inside: avoid; }
+      ol li { page-break-inside: avoid; }
+      footer { border-top: 1px solid #ccc; padding: 1rem 0; }
+      footer p { color: black; }
+    }
   </style>
 </head>
 <body>

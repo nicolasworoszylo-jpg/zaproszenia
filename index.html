@@ -236,7 +236,11 @@
        RESET + BASE
        ═══════════════════════════════════════════════════════════════════ */
     *, *::before, *::after { margin:0; padding:0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
     body {
       font-family: var(--sans);
       color: var(--char);
@@ -245,7 +249,14 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
+      /* iPhone notch / Dynamic Island support */
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
     }
+    /* Min touch target 44x44 dla wszystkich interaktywnych elementów (WCAG 2.5.5 Level AAA, Apple HIG) */
+    a, button { min-height: 44px; min-width: 44px; }
+    /* Wyjątek: inline linki w tekście (np. footer-meta, lead-form-checkbox label) */
+    p a, label a, .footer-nav a, .form-fallback a, .price-individual a { min-height: auto; min-width: auto; }
     img, svg { display: block; max-width: 100%; }
     button, input, select, textarea { font: inherit; color: inherit; }
 
@@ -372,11 +383,16 @@
       font-family: var(--display);
       font-style: italic;
       font-weight: 400;
-      font-size: clamp(2.6rem, 7.5vw, 5rem);
+      font-size: clamp(2.2rem, 7.5vw, 5rem);
       line-height: 1.05;
       letter-spacing: -0.01em;
       margin: 0.5rem 0;
       color: var(--forest);
+      /* Edge case: 320px gdzie "Cyfrowe zaproszenia" prawie wystaje */
+      hyphens: auto;
+      -webkit-hyphens: auto;
+      word-break: keep-all; /* zachowaj spójne polskie słowa */
+      max-width: 100%;
       opacity: 0;
       animation: fade-up 1s var(--ease-out) 0.6s both;
     }
@@ -709,6 +725,19 @@
       font-weight: 300;
       color: var(--bark);
       line-height: 1.65;
+    }
+
+    /* Bento intermediate breakpoint (tablet portrait 720-1024) — 4 kolumny zamiast 6 */
+    @media (max-width: 1024px) and (min-width: 721px) {
+      .features-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .feature:nth-child(1) { grid-column: span 4; grid-row: span 2; }    /* hero pełna szerokość */
+      .feature:nth-child(2) { grid-column: span 2; grid-row: span 1; }
+      .feature:nth-child(3) { grid-column: span 2; grid-row: span 1; }
+      .feature:nth-child(4) { grid-column: span 2; grid-row: span 1; }
+      .feature:nth-child(5) { grid-column: span 2; grid-row: span 1; }
+      .feature:nth-child(6) { grid-column: span 4; grid-row: span 1; }    /* ostatni szeroki */
     }
 
     /* Mobile: bento → single column */
@@ -1477,7 +1506,8 @@
     .site-header-inner {
       max-width: 1180px;
       margin: 0 auto;
-      padding: 0.7rem 1.5rem;
+      /* safe-area-inset dla iPhone notch + Dynamic Island */
+      padding: max(0.7rem, env(safe-area-inset-top, 0)) max(1.5rem, env(safe-area-inset-right, 0)) 0.7rem max(1.5rem, env(safe-area-inset-left, 0));
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -2168,40 +2198,46 @@
 
   <script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
   <script>
-    // ═══ MOUSE-TRACKED SPOTLIGHT W HERO (2026 trend, top portfolio designerów) ═══
-    const hero = document.querySelector('.hero');
-    if (hero && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      let raf = null;
-      hero.addEventListener('pointermove', (e) => {
-        if (raf) return;
-        raf = requestAnimationFrame(() => {
-          const rect = hero.getBoundingClientRect();
-          const x = ((e.clientX - rect.left) / rect.width) * 100;
-          const y = ((e.clientY - rect.top) / rect.height) * 100;
-          hero.style.setProperty('--spot-x', x + '%');
-          hero.style.setProperty('--spot-y', y + '%');
-          raf = null;
+    // ═══ POINTER-ONLY EFFECTS (mouse spotlight, bento glow, magnetic) ═══
+    // Aktywne TYLKO na urządzeniach z prawdziwym kursorem (desktop, NIE touch)
+    // żeby nie psuć UX na telefonie/tablecie
+    const isPointerFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (isPointerFine && !isReducedMotion) {
+      // MOUSE-TRACKED SPOTLIGHT W HERO (2026 trend, top portfolio designerów)
+      const hero = document.querySelector('.hero');
+      if (hero) {
+        let raf = null;
+        hero.addEventListener('pointermove', (e) => {
+          if (raf) return;
+          raf = requestAnimationFrame(() => {
+            const rect = hero.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            hero.style.setProperty('--spot-x', x + '%');
+            hero.style.setProperty('--spot-y', y + '%');
+            raf = null;
+          });
+        });
+        hero.addEventListener('pointerleave', () => {
+          hero.style.setProperty('--spot-x', '50%');
+          hero.style.setProperty('--spot-y', '50%');
+        });
+      }
+
+      // BENTO CARD HOVER GLOW (radial follows cursor wewnątrz karty)
+      document.querySelectorAll('.feature').forEach(card => {
+        card.addEventListener('pointermove', (e) => {
+          const rect = card.getBoundingClientRect();
+          card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100) + '%');
+          card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');
         });
       });
-      hero.addEventListener('pointerleave', () => {
-        hero.style.setProperty('--spot-x', '50%');
-        hero.style.setProperty('--spot-y', '50%');
-      });
-    }
 
-    // ═══ BENTO CARD HOVER GLOW (radial follows cursor wewnątrz karty) ═══
-    document.querySelectorAll('.feature').forEach(card => {
-      card.addEventListener('pointermove', (e) => {
-        const rect = card.getBoundingClientRect();
-        card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100) + '%');
-        card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');
-      });
-    });
-
-    // ═══ MAGNETIC CTAs — przyciski w hero subtelnie przyciągają kursor (Awwwards 2025) ═══
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // MAGNETIC CTAs — przyciski w hero subtelnie przyciągają kursor (Awwwards 2025)
       document.querySelectorAll('.hero-ctas .btn, .price-cta-single').forEach(btn => {
-        const strength = 0.25; // 25% deflection — subtelne, nie nachalne
+        const strength = 0.25;
         btn.addEventListener('pointermove', (e) => {
           const rect = btn.getBoundingClientRect();
           const cx = rect.left + rect.width / 2;
