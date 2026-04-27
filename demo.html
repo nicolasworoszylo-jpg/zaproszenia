@@ -29,15 +29,9 @@
 const { useState, useEffect, useRef, useCallback } = React;
 
 // ── Supabase client (publishable / anon key — bezpieczny do osadzenia w przeglądarce) ──
-// Prefer: return=minimal — pomija PostgREST RETURNING, dzięki czemu RLS wymaga TYLKO
-// policy INSERT (anon nie potrzebuje SELECT na rsvps/song_requests = pełna prywatność:
-// gość może dodać własne potwierdzenie, ale nie może czytać cudzych).
 const SUPABASE_URL  = "https://kuyniyyieejvambyjnxy.supabase.co";
 const SUPABASE_ANON = "sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL";
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
-  global: { headers: { "Prefer": "return=minimal" } },
-  auth:   { persistSession: false, autoRefreshToken: false }
-});
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 // Identyfikator tego konkretnego demo-zaproszenia (per-couple slug w przyszłości)
 const INVITATION_SLUG = "demo-anna-michal";
@@ -48,12 +42,12 @@ const CONFIG = {
   weddingDate: new Date("2026-06-20T15:00:00"),
   quote: "Każda wielka miłość zaczyna się od jednego spojrzenia",
   rsvpDeadline: "20 maja 2026",
-  ceremony: { title: "Ceremonia ślubna", time: "15:00", venue: "Kościół św. Anny", address: "ul. Krakowskie Przedmieście 68, Warszawa", mapUrl: "https://maps.google.com/?q=52.2468,21.0141" },
-  reception: { title: "Przyjęcie weselne", time: "17:00", venue: "Dwór Korczew", address: "Korczew 47, 08-108 Siedlce", mapUrl: "https://maps.google.com/?q=52.1234,22.5678" },
+  ceremony: { title: "Ceremonia ślubna", time: "15:00", venue: "Kościół św. Anny", address: "ul. Krakowskie Przedmieście 68, Warszawa", mapUrl: "https://www.google.com/maps/search/?api=1&query=Ko%C5%9Bci%C3%B3%C5%82+akademicki+%C5%9Bw.+Anny+Warszawa+Krakowskie+Przedmie%C5%9Bcie+68" },
+  reception: { title: "Przyjęcie weselne", time: "17:00", venue: "Pałac w Korczewie", address: "Korczew 23, 08-108 Korczew", mapUrl: "https://www.google.com/maps/search/?api=1&query=Pa%C5%82ac+w+Korczewie" },
   timeline: [
     { time: "15:00", event: "Ceremonia ślubna", desc: "Kościół św. Anny w Warszawie", icon: "church" },
     { time: "16:30", event: "Sesja & koktajl", desc: "Czas na zdjęcia i lampkę szampana", icon: "camera" },
-    { time: "17:30", event: "Obiad weselny", desc: "Uroczysta kolacja w Dworze Korczew", icon: "dinner" },
+    { time: "17:30", event: "Obiad weselny", desc: "Uroczysta kolacja w Pałacu w Korczewie", icon: "dinner" },
     { time: "20:00", event: "Tort & pierwszy taniec", desc: "Najsłodszy moment wieczoru", icon: "cake" },
     { time: "21:00", event: "Zabawa!", desc: "Parkiet czeka na Was", icon: "party" },
   ],
@@ -68,12 +62,12 @@ const CONFIG = {
   dressCode: { main: "Elegancko - garnitury i sukienki koktajlowe.", note: "Prosimy o unikanie bieli - ten kolor zarezerwowany dla Panny Młodej.", colors: ["#8B6F47","#C4A77D","#6B7B5E","#2C3E2D","#D4A373"] },
   transport: { departure: "Autokar o 14:00 spod Dworca Centralnego (wejście od ul. Emilii Plater).", ret: "Powrót o 2:00 w nocy na Dworzec Centralny." },
   hotels: [
-    { name: "Hotel Narvil", distance: "5 min od sali", price: "od 350 zł/noc", mapUrl: "https://maps.google.com/?q=Hotel+Narvil" },
-    { name: "Agroturystyka Pod Lipą", distance: "10 min od sali", price: "od 180 zł/noc", mapUrl: "https://maps.google.com/?q=Agroturystyka+Pod+Lip%C4%85" },
+    { name: "Hotel Hetman", distance: "20 min od sali (Siedlce)", price: "od 290 zł/noc", mapUrl: "https://www.google.com/maps/search/?api=1&query=Hotel+Hetman+Siedlce" },
+    { name: "Pensjonat Korczewski", distance: "5 min od sali", price: "od 180 zł/noc", mapUrl: "https://www.google.com/maps/search/?api=1&query=noclegi+Korczew+gmina" },
   ],
   faq: [
     { q: "Czy mogę przyjść z dzieckiem?", a: "Oczywiście! Będzie animatorka dla dzieci i kącik zabaw." },
-    { q: "Czy jest parking przy sali?", a: "Tak, darmowy parking na terenie Dworu Korczew - ponad 100 miejsc." },
+    { q: "Czy jest parking przy sali?", a: "Tak, darmowy parking na terenie Pałacu w Korczewie - ponad 100 miejsc." },
     { q: "Do kiedy potwierdzić obecność?", a: "Prosimy o potwierdzenie do 20 maja 2026." },
     { q: "Czy mogę zabrać osobę towarzyszącą?", a: "Zaproszenie dotyczy osób wskazanych z imienia. W razie wątpliwości - napiszcie do nas." },
   ],
@@ -88,7 +82,7 @@ const CONFIG = {
   bgMusicTitle: "Nasza piosenka",
   venueBrand: "zaproszeniaonline.com", venueUrl: "/",
   calendarTitle: "Ślub Anny i Michała",
-  calendarLocation: "Dwór Korczew, Korczew 47, 08-108 Siedlce",
+  calendarLocation: "Pałac w Korczewie, Korczew 23, 08-108 Korczew",
 };
 
 const C = { forest:"#2C3E2D", deep:"#1E2B1F", gold:"#C9A96E", goldL:"#D4B97F", warm:"#FAF6EF", cream:"#F5EDE0", parch:"#EDE4D3", stone:"#A09888", char:"#2A2622", bark:"#6B5D4F" };
