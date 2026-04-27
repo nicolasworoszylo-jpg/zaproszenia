@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <title>Regulamin | zaproszeniaonline.com</title>
+  <meta name="description" content="Regulamin świadczenia usług projektowania cyfrowych zaproszeń ślubnych przez zaproszeniaonline.com.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://zaproszeniaonline.com/terms">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,400;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --forest: #2C3E2D; --deep: #1E2B1F; --gold: #C9A96E; --gold-l: #D4B97F;
+      --warm: #FAF6EF; --cream: #F5EDE0; --parch: #EDE4D3; --stone: #A09888;
+      --char: #2A2622; --bark: #6B5D4F;
+      --display: 'Playfair Display', Georgia, serif;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Outfit', system-ui, sans-serif;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); color: var(--char); background: var(--warm); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    .legal-header { background: linear-gradient(170deg, var(--deep) 0%, var(--forest) 50%, var(--deep) 100%); color: var(--warm); padding: 4rem 1.5rem 3rem; text-align: center; position: relative; overflow: hidden; }
+    .legal-header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 45%, color-mix(in oklch, var(--gold), transparent 92%) 0%, transparent 70%); pointer-events: none; }
+    .legal-back { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; background: color-mix(in oklch, var(--gold), transparent 88%); border: 1px solid color-mix(in oklch, var(--gold), transparent 60%); color: var(--gold); font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; border-radius: 24px; transition: all 0.3s ease; margin-bottom: 1.5rem; }
+    .legal-back:hover { background: color-mix(in oklch, var(--gold), transparent 80%); color: var(--gold-l); transform: translateX(-2px); }
+    .legal-eyebrow { font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .legal-title { font-family: var(--display); font-style: italic; font-weight: 400; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.2; }
+    .legal-meta { margin-top: 1rem; font-family: var(--serif); font-style: italic; color: color-mix(in oklch, var(--warm), transparent 35%); font-size: 1rem; }
+
+    main { max-width: 760px; margin: 0 auto; padding: 4rem 1.5rem; }
+    main h2 { font-family: var(--display); font-style: italic; font-weight: 400; font-size: clamp(1.5rem, 3vw, 2rem); color: var(--forest); margin: 3rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 75%); }
+    main h2:first-of-type { margin-top: 0; }
+    main h3 { font-family: var(--display); font-style: italic; font-weight: 400; font-size: 1.25rem; color: var(--forest); margin: 1.75rem 0 0.5rem; }
+    main p, main li { font-size: 1.02rem; color: var(--bark); margin-bottom: 0.85rem; }
+    main strong { color: var(--char); font-weight: 500; }
+    main ul, main ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+    main li { margin-bottom: 0.4rem; }
+    main a { color: var(--gold); text-decoration: none; border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 60%); transition: color 0.3s, border-color 0.3s; }
+    main a:hover { color: var(--forest); border-bottom-color: var(--forest); }
+    .legal-callout { background: var(--cream); border-left: 3px solid var(--gold); padding: 1.25rem 1.5rem; margin: 1.5rem 0; font-family: var(--serif); font-style: italic; font-size: 1rem; color: var(--bark); }
+    .legal-callout strong { color: var(--forest); font-style: normal; }
+
+    footer { padding: 2rem 1.5rem; text-align: center; background: var(--warm); border-top: 1px solid color-mix(in oklch, var(--gold), transparent 85%); font-family: var(--serif); font-size: 0.95rem; color: var(--bark); }
+    footer a { color: var(--gold); text-decoration: none; border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 60%); }
+    footer a:hover { color: var(--gold-l); }
+    .footer-nav { margin-top: 0.75rem; font-size: 0.85rem; display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+    *:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+    @media (max-width: 640px) {
+      main { padding: 3rem 1.25rem; }
+      .legal-header { padding: 3rem 1.25rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="legal-header">
+    <a href="/" class="legal-back">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Powrót
+    </a>
+    <div class="legal-eyebrow">Dokumenty prawne</div>
+    <h1 class="legal-title">Regulamin świadczenia usług</h1>
+    <div class="legal-meta">Obowiązuje od 27 kwietnia 2026</div>
+  </header>
+
+  <main>
+
+    <h2>§ 1. Definicje</h2>
+    <p>Użyte w Regulaminie pojęcia oznaczają:</p>
+    <ul>
+      <li><strong>Usługodawca</strong> — Vidok Studio Nicolas Woroszyło, NIP <strong>[DO UZUPEŁNIENIA]</strong>, REGON <strong>[DO UZUPEŁNIENIA]</strong>, prowadzący działalność pod marką zaproszeniaonline.com</li>
+      <li><strong>Klient</strong> — osoba fizyczna posiadająca pełną zdolność do czynności prawnych, osoba prawna lub jednostka organizacyjna nieposiadająca osobowości prawnej, zamawiająca usługę</li>
+      <li><strong>Konsument</strong> — Klient będący osobą fizyczną zawierający umowę w celu niezwiązanym bezpośrednio z jego działalnością gospodarczą lub zawodową</li>
+      <li><strong>Serwis</strong> — strona internetowa pod adresem zaproszeniaonline.com</li>
+      <li><strong>Usługa</strong> — przygotowanie indywidualnie zaprojektowanej strony internetowej będącej cyfrowym zaproszeniem ślubnym lub na inne wydarzenie</li>
+      <li><strong>Zaproszenie</strong> — efekt końcowy Usługi: gotowa strona internetowa pod adresem URL przekazanym Klientowi</li>
+      <li><strong>Pakiet</strong> — Standard (499 zł) lub Premium (699 zł), różniący się zakresem funkcji</li>
+    </ul>
+
+    <h2>§ 2. Postanowienia ogólne</h2>
+    <ol>
+      <li>Niniejszy Regulamin określa zasady świadczenia usług drogą elektroniczną przez Usługodawcę.</li>
+      <li>Korzystanie z Serwisu i zamawianie Usługi oznacza akceptację Regulaminu i Polityki Prywatności.</li>
+      <li>Kontakt z Usługodawcą: e-mail <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a>.</li>
+    </ol>
+
+    <h2>§ 3. Zakres usług</h2>
+    <ol>
+      <li>Usługodawca świadczy Usługę polegającą na zaprojektowaniu i wdrożeniu indywidualnie zaprojektowanej strony internetowej (Zaproszenia) na wskazane wydarzenie.</li>
+      <li>Pakiet <strong>Standard</strong> (499 zł) obejmuje: stronę z własnym adresem URL, sekcje: hero z odliczaniem, formularz RSVP z panelem dla Klienta, mapy z lokalizacjami, plan dnia, galerię zdjęć, responsywność na każdym urządzeniu, wybór z 4 palet kolorów, do 2 rund poprawek.</li>
+      <li>Pakiet <strong>Premium</strong> (699 zł) obejmuje wszystko z pakietu Standard, a dodatkowo: muzykę w tle, custom paletę kolorów, obróbkę zdjęć pary (do 5 ujęć), sekcję „Nasza historia" z chronologią, animowane przejścia, priorytetową realizację 24h, do 3 rund poprawek.</li>
+      <li>Usługa nie obejmuje: pisania tekstów (Klient dostarcza), wykonania zdjęć, hostingu domeny krócej niż przez okres do końca wydarzenia + 30 dni.</li>
+    </ol>
+
+    <h2>§ 4. Złożenie zamówienia i zawarcie umowy</h2>
+    <ol>
+      <li>Złożenie zamówienia następuje przez wypełnienie formularza kontaktowego w Serwisie i przesłanie go Usługodawcy.</li>
+      <li>W ciągu 24 godzin od otrzymania formularza Usługodawca przesyła Klientowi e-mailem indywidualną wycenę i prośbę o potwierdzenie zamówienia oraz przekazanie szczegółowych danych do projektu.</li>
+      <li>Umowa zostaje zawarta w momencie pisemnego (e-mail) potwierdzenia warunków przez Klienta i wpłaty zaliczki w wysokości 50% wartości zamówienia.</li>
+      <li>Pozostałe 50% wartości Klient wpłaca po akceptacji finalnej wersji Zaproszenia, przed otrzymaniem ostatecznego linka.</li>
+    </ol>
+
+    <h2>§ 5. Termin realizacji</h2>
+    <ol>
+      <li>Termin realizacji Usługi w pakiecie Standard wynosi <strong>do 48 godzin</strong> od otrzymania kompletu danych od Klienta.</li>
+      <li>Termin realizacji Usługi w pakiecie Premium wynosi <strong>do 24 godzin</strong> od otrzymania kompletu danych od Klienta.</li>
+      <li>Czas oczekiwania na akceptację poprawek przez Klienta nie jest wliczany do terminu realizacji.</li>
+    </ol>
+
+    <h2>§ 6. Płatności</h2>
+    <ol>
+      <li>Wszystkie ceny podane w Serwisie są cenami brutto, wyrażonymi w złotych polskich.</li>
+      <li>Akceptowane formy płatności: przelew bankowy, BLIK, system płatności online (po wdrożeniu).</li>
+      <li>Faktura VAT lub rachunek zostaje wystawiona w ciągu 7 dni od otrzymania pełnej zapłaty i przesłana e-mailem.</li>
+      <li>Brak wpłaty zaliczki w terminie 14 dni od potwierdzenia zamówienia jest równoznaczny z anulowaniem zamówienia.</li>
+    </ol>
+
+    <h2>§ 7. Prawa autorskie i licencja</h2>
+    <ol>
+      <li>Wszelkie prawa autorskie do projektu, kodu źródłowego, układu i ornamentów Zaproszenia przysługują wyłącznie Usługodawcy.</li>
+      <li>Klient otrzymuje <strong>niewyłączną, niezbywalną licencję</strong> na korzystanie ze swojego Zaproszenia (publikowanie linka, udostępnianie gościom) w okresie do 12 miesięcy od dnia wydarzenia.</li>
+      <li>Klient nie nabywa prawa do kopiowania, modyfikowania, sprzedaży ani udostępniania kodu źródłowego Zaproszenia osobom trzecim.</li>
+      <li>Treści dostarczone przez Klienta (zdjęcia, teksty, dane gości) pozostają jego własnością. Usługodawca uzyskuje licencję na ich wykorzystanie wyłącznie w celu realizacji Usługi.</li>
+      <li>Usługodawca zastrzega sobie prawo do prezentowania Zaproszenia w portfolio (z ukryciem szczegółów osobowych — imion gości, dat) chyba że Klient wniesie pisemny sprzeciw.</li>
+    </ol>
+
+    <h2>§ 8. Reklamacje</h2>
+    <ol>
+      <li>Reklamacje dotyczące jakości lub niezgodności Usługi z opisem należy składać na adres <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a> w ciągu 14 dni od dostarczenia Zaproszenia.</li>
+      <li>Reklamacja powinna zawierać: dane kontaktowe Klienta, opis problemu, link do Zaproszenia, oczekiwany sposób rozpatrzenia.</li>
+      <li>Usługodawca rozpatruje reklamacje w ciągu 14 dni od otrzymania.</li>
+    </ol>
+
+    <h2>§ 9. Odstąpienie od umowy (Konsumenci)</h2>
+    <div class="legal-callout">
+      <strong>Uwaga — wyłączenie prawa do odstąpienia:</strong> zgodnie z art. 38 pkt 3 ustawy o prawach konsumenta, prawo do odstąpienia od umowy zawartej na odległość <strong>NIE PRZYSŁUGUJE</strong> Konsumentowi w przypadku umów o świadczenie usług, jeżeli Usługodawca wykonał w pełni usługę za wyraźną zgodą Konsumenta, który został poinformowany przed rozpoczęciem świadczenia, że po jego wykonaniu utraci prawo do odstąpienia.
+    </div>
+    <ol>
+      <li>Konsument ma prawo odstąpić od umowy w ciągu 14 dni od jej zawarcia BEZ podania przyczyny — pod warunkiem, że Usługodawca jeszcze NIE rozpoczął świadczenia Usługi.</li>
+      <li>Z chwilą rozpoczęcia świadczenia Usługi (rozpoczęcie projektu po otrzymaniu danych od Klienta) prawo do odstąpienia wygasa, o ile Konsument wyraził na to wyraźną zgodę.</li>
+      <li>Oświadczenie o odstąpieniu należy przesłać na adres <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a> przed rozpoczęciem świadczenia.</li>
+      <li>W przypadku skutecznego odstąpienia Usługodawca zwraca pełną kwotę wpłaconej zaliczki w terminie 14 dni.</li>
+    </ol>
+
+    <h2>§ 10. Odpowiedzialność</h2>
+    <ol>
+      <li>Usługodawca nie ponosi odpowiedzialności za niedostępność Zaproszenia spowodowaną awarią dostawcy hostingu (Vercel) — zobowiązuje się jednak do podjęcia wszystkich możliwych działań naprawczych w najkrótszym możliwym terminie.</li>
+      <li>Usługodawca nie ponosi odpowiedzialności za skutki podania przez Klienta nieprawidłowych danych (np. błędna data ślubu w Zaproszeniu).</li>
+      <li>Maksymalna odpowiedzialność Usługodawcy wobec Klienta jest ograniczona do wysokości kwoty zapłaconej za Usługę.</li>
+    </ol>
+
+    <h2>§ 11. Dane osobowe</h2>
+    <p>Zasady przetwarzania danych osobowych są szczegółowo opisane w odrębnej <a href="/privacy">Polityce Prywatności</a>.</p>
+
+    <h2>§ 12. Postanowienia końcowe</h2>
+    <ol>
+      <li>W sprawach nieuregulowanych Regulaminem zastosowanie mają przepisy Kodeksu cywilnego, ustawy o prawach konsumenta oraz inne właściwe przepisy prawa polskiego.</li>
+      <li>Wszelkie spory wynikające z Umowy będą rozstrzygane polubownie. W przypadku braku porozumienia — przez sąd właściwy ze względu na siedzibę Usługodawcy (dla Klientów niebędących Konsumentami) lub sąd właściwy ogólnie (dla Konsumentów).</li>
+      <li>Konsument ma prawo skorzystania z pozasądowych sposobów rozpatrywania sporów: <a href="https://uokik.gov.pl/pozasadowe_rozwiazywanie_sporow_konsumenckich.php" target="_blank" rel="noopener">UOKiK — pozasądowe rozwiązywanie sporów</a> oraz platformy ODR Komisji Europejskiej: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.</li>
+      <li>Usługodawca zastrzega sobie prawo do zmian Regulaminu. Zmiany nie dotyczą umów zawartych przed wejściem zmian w życie.</li>
+      <li>Regulamin wchodzi w życie z dniem 27 kwietnia 2026.</li>
+    </ol>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 <strong>zaproszeniaonline.com</strong> &middot; Projekt i realizacja <a href="https://vidokstudio.pl" target="_blank" rel="noopener">Vidok Studio</a></p>
+    <nav class="footer-nav">
+      <a href="/">Strona główna</a>
+      <a href="/privacy">Polityka prywatności</a>
+      <a href="/cookies">Cookies</a>
+      <a href="/terms">Regulamin</a>
+    </nav>
+  </footer>
+
+</body>
+</html>

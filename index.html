@@ -303,8 +303,9 @@
        HERO — z botanicznymi narożnikami, animowanym gradientem na "premium",
        linear() spring na CTA, scroll indicator
        ═══════════════════════════════════════════════════════════════════ */
+    /* HERO LIGHT — kluczowy wyróżnik vs demo (które ma forest deep gradient) */
     .hero {
-      min-height: 100dvh;
+      min-height: calc(100dvh - 70px); /* minus sticky header */
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -313,8 +314,8 @@
       padding: 2.5rem 1.5rem;
       position: relative;
       overflow: hidden;
-      background: linear-gradient(170deg, var(--deep) 0%, var(--forest) 50%, var(--deep) 100%);
-      color: var(--warm);
+      background: linear-gradient(170deg, var(--warm) 0%, var(--cream) 50%, var(--warm) 100%);
+      color: var(--char);
       isolation: isolate;
     }
     .hero::before {
@@ -322,8 +323,8 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 60% 50% at 50% 45%, color-mix(in oklch, var(--gold), transparent 92%) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 30% at 50% 50%, color-mix(in oklch, var(--gold), transparent 95%) 0%, transparent 100%);
+        radial-gradient(ellipse 60% 50% at 50% 45%, color-mix(in oklch, var(--gold), transparent 86%) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, color-mix(in oklch, var(--gold), transparent 92%) 0%, transparent 100%);
       pointer-events: none;
       z-index: -1;
     }
@@ -331,7 +332,7 @@
       content: '';
       position: absolute;
       inset: 26px;
-      border: 0.5px solid color-mix(in oklch, var(--gold), transparent 80%);
+      border: 0.5px solid color-mix(in oklch, var(--gold), transparent 78%);
       pointer-events: none;
       z-index: -1;
     }
@@ -380,12 +381,13 @@
       line-height: 1.05;
       letter-spacing: -0.01em;
       margin: 0.5rem 0;
+      color: var(--forest);
       opacity: 0;
       animation: fade-up 1s var(--ease-out) 0.6s both;
     }
     .hero h1 em {
       font-style: italic;
-      background: linear-gradient(105deg in oklch, var(--gold) 0%, var(--gold-l) 35%, white 50%, var(--gold-l) 65%, var(--gold) 100%);
+      background: linear-gradient(105deg in oklch, var(--gold-d) 0%, var(--gold) 35%, var(--gold-l) 50%, var(--gold) 65%, var(--gold-d) 100%);
       background-size: 220% auto;
       background-clip: text;
       -webkit-background-clip: text;
@@ -427,7 +429,7 @@
       font-size: clamp(1.05rem, 2.3vw, 1.3rem);
       font-style: italic;
       font-weight: 300;
-      color: color-mix(in oklch, var(--warm), transparent 25%);
+      color: var(--bark);
       max-width: 520px;
       margin: 1.25rem auto 2.5rem;
       line-height: 1.7;
@@ -476,7 +478,7 @@
       font-size: 0.65rem;
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: color-mix(in oklch, var(--gold), transparent 50%);
+      color: color-mix(in oklch, var(--gold-d), transparent 30%);
     }
     @keyframes float {
       0%, 100% { transform: translate(-50%, 0); }
@@ -545,13 +547,13 @@
     }
     .btn-ghost {
       background: transparent;
-      color: var(--warm);
-      border-color: color-mix(in oklch, var(--gold), transparent 50%);
+      color: var(--forest);
+      border-color: color-mix(in oklch, var(--forest), transparent 50%);
     }
     .btn-ghost:hover {
-      background: color-mix(in oklch, var(--gold), transparent 88%);
-      border-color: var(--gold);
-      color: var(--gold-l);
+      background: var(--forest);
+      border-color: var(--forest);
+      color: var(--warm);
       transform: translateY(-2px);
     }
 
@@ -1255,6 +1257,265 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════════
+       SKIP TO MAIN (accessibility — pomija header dla nawigacji klawiaturą)
+       ═══════════════════════════════════════════════════════════════════ */
+    .skip-to-main {
+      position: absolute;
+      top: -100px;
+      left: 1rem;
+      padding: 10px 20px;
+      background: var(--forest);
+      color: var(--warm);
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 4px;
+      z-index: 200;
+      transition: top 0.3s var(--ease-out);
+    }
+    .skip-to-main:focus { top: 1rem; }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       STICKY HEADER — logo + brand + nav (KLUCZOWY wyróżnik vs demo)
+       ═══════════════════════════════════════════════════════════════════ */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: color-mix(in oklch, var(--warm), transparent 8%);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 85%);
+      transition: box-shadow 0.4s var(--ease-out), background 0.4s var(--ease-out);
+    }
+    .site-header.scrolled {
+      box-shadow: 0 4px 20px color-mix(in oklch, var(--char), transparent 92%);
+      background: color-mix(in oklch, var(--warm), transparent 4%);
+    }
+    .site-header-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+    .site-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--forest);
+      transition: opacity 0.3s var(--ease-out);
+    }
+    .site-brand:hover { opacity: 0.75; }
+    .site-brand-logo {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+    .site-brand-name {
+      font-family: var(--display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.15rem;
+      color: var(--forest);
+      letter-spacing: -0.005em;
+      line-height: 1;
+    }
+    .site-brand-tag {
+      display: block;
+      font-family: var(--sans);
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    .site-nav {
+      display: flex;
+      gap: 1.75rem;
+      align-items: center;
+    }
+    .site-nav a {
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--bark);
+      text-decoration: none;
+      transition: color 0.3s var(--ease-out);
+      position: relative;
+    }
+    .site-nav a:hover { color: var(--forest); }
+    .site-nav a.nav-cta {
+      padding: 9px 20px;
+      background: var(--gold);
+      color: white;
+      border-radius: 0;
+      transition: background 0.3s var(--ease-out), transform 0.4s var(--spring);
+    }
+    .site-nav a.nav-cta:hover {
+      background: var(--gold-l);
+      transform: translateY(-1px);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       TRUST STRIP — pod hero, 3 punkty value-prop
+       ═══════════════════════════════════════════════════════════════════ */
+    .trust-strip {
+      background: var(--cream);
+      border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 85%);
+      padding: 1.25rem 1.5rem;
+    }
+    .trust-strip-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--bark);
+    }
+    .trust-item svg {
+      width: 18px;
+      height: 18px;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+    .trust-item strong { color: var(--forest); font-weight: 500; }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       PULSE animation hero CTA (subtle attention pull)
+       ═══════════════════════════════════════════════════════════════════ */
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--gold), transparent 40%); }
+      50%      { box-shadow: 0 0 0 8px color-mix(in oklch, var(--gold), transparent 95%); }
+    }
+    .hero-ctas .btn-filled {
+      animation: pulse-glow 2.6s ease-in-out 1.8s infinite;
+    }
+
+    .hero-microcopy {
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      color: color-mix(in oklch, var(--char), transparent 30%);
+      margin-top: 1rem;
+      letter-spacing: 0.05em;
+      opacity: 0;
+      animation: fade-up 1s var(--ease-out) 1.3s both;
+    }
+    .hero-microcopy strong {
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       PRICING badge — "Bez ukrytych opłat"
+       ═══════════════════════════════════════════════════════════════════ */
+    .pricing-trust {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 2rem auto 0;
+      max-width: 760px;
+      padding-top: 1.5rem;
+      border-top: 1px solid color-mix(in oklch, var(--gold), transparent 85%);
+    }
+    .pricing-trust-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      color: var(--stone);
+    }
+    .pricing-trust-item svg {
+      width: 16px;
+      height: 16px;
+      color: var(--gold);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       LEAD FORM — RODO checkbox + footer nav
+       ═══════════════════════════════════════════════════════════════════ */
+    .lead-form-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+      padding: 0.75rem;
+      background: color-mix(in oklch, var(--warm), transparent 96%);
+      border: 1px solid color-mix(in oklch, var(--gold), transparent 80%);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: border-color 0.3s var(--ease-out), background 0.3s var(--ease-out);
+    }
+    .lead-form-checkbox:hover {
+      border-color: color-mix(in oklch, var(--gold), transparent 65%);
+      background: color-mix(in oklch, var(--warm), transparent 92%);
+    }
+    .lead-form-checkbox input[type="checkbox"] {
+      flex-shrink: 0;
+      margin-top: 2px;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+    .lead-form-checkbox label {
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: color-mix(in oklch, var(--warm), transparent 25%);
+      cursor: pointer;
+    }
+    .lead-form-checkbox a {
+      color: var(--gold-l);
+      text-decoration: none;
+      border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 60%);
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .lead-form-checkbox a:hover {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    .footer-nav {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1.25rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+    }
+    .footer-nav a {
+      color: var(--bark);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+    }
+    .footer-nav a:hover {
+      color: var(--gold);
+      border-bottom-color: color-mix(in oklch, var(--gold), transparent 60%);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
        Accessibility — prefers-reduced-motion
        ═══════════════════════════════════════════════════════════════════ */
     @media (prefers-reduced-motion: reduce) {
@@ -1265,9 +1526,10 @@
         scroll-behavior: auto !important;
       }
       .hero h1 em {
-        -webkit-text-fill-color: var(--gold);
+        -webkit-text-fill-color: var(--gold-d);
         background: none;
       }
+      .hero-ctas .btn-filled { animation: none; }
     }
 
     *:focus-visible {
@@ -1277,6 +1539,33 @@
   </style>
 </head>
 <body>
+
+  <a href="#main" class="skip-to-main">Przejdź do treści</a>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STICKY HEADER — logo + brand + nav (wyróżnik vs demo)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <header class="site-header" id="siteHeader">
+    <div class="site-header-inner">
+      <a href="/" class="site-brand" aria-label="zaproszeniaonline.com — strona główna">
+        <svg class="site-brand-logo" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="28" fill="none" stroke="#2C3E2D" stroke-width="1"/>
+          <text x="32" y="44" fill="#2C3E2D" font-family="'Playfair Display', Georgia, serif" font-style="italic" font-size="36" text-anchor="middle">Z</text>
+        </svg>
+        <span>
+          <span class="site-brand-name">zaproszeniaonline.com</span>
+          <span class="site-brand-tag">Cyfrowe zaproszenia</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Główna nawigacja">
+        <a href="#cennik">Cennik</a>
+        <a href="/demo">Zobacz demo</a>
+        <a href="#kontakt" class="nav-cta">Zamów</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
 
   <!-- ═══════════════════════════════════════════════════════════════════
        HERO
@@ -1314,6 +1603,8 @@
         </a>
         <a href="#cennik" class="btn btn-ghost">Cennik</a>
       </div>
+
+      <p class="hero-microcopy">Wycena <strong>w 4 godziny</strong> · Realizacja <strong>w 48 h</strong> · Bez zobowiązań</p>
     </div>
 
     <div class="scroll-hint">
@@ -1321,6 +1612,24 @@
       <span class="scroll-hint-label">Przewiń</span>
     </div>
   </section>
+
+  <!-- TRUST STRIP — 3 punkty value prop, pod hero -->
+  <div class="trust-strip">
+    <div class="trust-strip-inner">
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span><strong>48 h realizacji</strong> · 24 h Premium</span>
+      </div>
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span><strong>Indywidualny projekt</strong> · nie szablon</span>
+      </div>
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <span><strong>RSVP w cenie</strong> · z panelem</span>
+      </div>
+    </div>
+  </div>
 
   <!-- Filigree separator -->
   <div class="filigree-wrap">
@@ -1516,6 +1825,25 @@
           <a href="#kontakt" class="price-cta">Zamów zaproszenie</a>
         </div>
       </div>
+
+      <div class="pricing-trust">
+        <span class="pricing-trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg>
+          Bez ukrytych opłat
+        </span>
+        <span class="pricing-trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg>
+          Bez abonamentu
+        </span>
+        <span class="pricing-trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg>
+          Faktura VAT
+        </span>
+        <span class="pricing-trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg>
+          Hosting w cenie
+        </span>
+      </div>
     </div>
   </section>
 
@@ -1578,6 +1906,13 @@
           <label for="lf-message">Wiadomość (opcjonalnie)</label>
         </div>
 
+        <div class="lead-form-checkbox">
+          <input type="checkbox" id="lf-rodo" name="rodo" required>
+          <label for="lf-rodo">
+            Wyrażam zgodę na przetwarzanie podanych danych osobowych w celu odpowiedzi na zapytanie zgodnie z <a href="/privacy" target="_blank" rel="noopener">Polityką Prywatności</a> i <a href="/terms" target="_blank" rel="noopener">Regulaminem</a>. *
+          </label>
+        </div>
+
         <button type="submit" class="lead-form-submit" id="lf-submit">Wyślij zapytanie</button>
 
         <div class="form-msg" id="lf-msg" role="status" aria-live="polite"></div>
@@ -1586,6 +1921,8 @@
       </form>
     </div>
   </section>
+
+  </main>
 
   <!-- ═══════════════════════════════════════════════════════════════════
        FOOTER
@@ -1596,10 +1933,29 @@
     </svg>
     <p>&copy; 2026 <strong>zaproszeniaonline.com</strong> &middot; Projekt i realizacja <a href="https://vidokstudio.pl" target="_blank" rel="noopener">Vidok Studio</a></p>
     <p class="footer-meta">Kontakt: <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a></p>
+    <nav class="footer-nav" aria-label="Stopka">
+      <a href="/demo">Zobacz demo</a>
+      <a href="/privacy">Polityka prywatności</a>
+      <a href="/cookies">Cookies</a>
+      <a href="/terms">Regulamin</a>
+    </nav>
   </footer>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
   <script>
+    // ── Sticky header — dodaj klasę .scrolled po przewinięciu ──
+    const header = document.getElementById('siteHeader');
+    if (header) {
+      let lastScrolled = false;
+      window.addEventListener('scroll', () => {
+        const scrolled = window.scrollY > 30;
+        if (scrolled !== lastScrolled) {
+          header.classList.toggle('scrolled', scrolled);
+          lastScrolled = scrolled;
+        }
+      }, { passive: true });
+    }
+
     // ── Reveal-on-scroll fallback (gdy brak animation-timeline:view()) ──
     if (!CSS.supports('animation-timeline: view()')) {
       const reveals = document.querySelectorAll('.reveal, .reveal-stagger');
@@ -1647,8 +2003,13 @@
       const fd = new FormData(form);
       const name = (fd.get('name') || '').toString().trim();
       const email = (fd.get('email') || '').toString().trim();
+      const rodo = document.getElementById('lf-rodo').checked;
       if (!name || !email) {
         showMsg('Imię i e-mail są wymagane.', 'error');
+        return;
+      }
+      if (!rodo) {
+        showMsg('Aby wysłać zapytanie, zaakceptuj Politykę Prywatności i Regulamin.', 'error');
         return;
       }
 

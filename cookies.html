@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <title>Polityka Cookies | zaproszeniaonline.com</title>
+  <meta name="description" content="Polityka cookies — jakie pliki używamy na zaproszeniaonline.com i jak nimi zarządzać.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://zaproszeniaonline.com/cookies">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,400;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --forest: #2C3E2D; --deep: #1E2B1F; --gold: #C9A96E; --gold-l: #D4B97F;
+      --warm: #FAF6EF; --cream: #F5EDE0; --parch: #EDE4D3; --stone: #A09888;
+      --char: #2A2622; --bark: #6B5D4F;
+      --display: 'Playfair Display', Georgia, serif;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Outfit', system-ui, sans-serif;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); color: var(--char); background: var(--warm); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    .legal-header { background: linear-gradient(170deg, var(--deep) 0%, var(--forest) 50%, var(--deep) 100%); color: var(--warm); padding: 4rem 1.5rem 3rem; text-align: center; position: relative; overflow: hidden; }
+    .legal-header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 45%, color-mix(in oklch, var(--gold), transparent 92%) 0%, transparent 70%); pointer-events: none; }
+    .legal-back { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; background: color-mix(in oklch, var(--gold), transparent 88%); border: 1px solid color-mix(in oklch, var(--gold), transparent 60%); color: var(--gold); font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; border-radius: 24px; transition: all 0.3s ease; margin-bottom: 1.5rem; }
+    .legal-back:hover { background: color-mix(in oklch, var(--gold), transparent 80%); color: var(--gold-l); transform: translateX(-2px); }
+    .legal-eyebrow { font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .legal-title { font-family: var(--display); font-style: italic; font-weight: 400; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.2; }
+    .legal-meta { margin-top: 1rem; font-family: var(--serif); font-style: italic; color: color-mix(in oklch, var(--warm), transparent 35%); font-size: 1rem; }
+
+    main { max-width: 760px; margin: 0 auto; padding: 4rem 1.5rem; }
+    main h2 { font-family: var(--display); font-style: italic; font-weight: 400; font-size: clamp(1.5rem, 3vw, 2rem); color: var(--forest); margin: 3rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 75%); }
+    main h2:first-of-type { margin-top: 0; }
+    main h3 { font-family: var(--display); font-style: italic; font-weight: 400; font-size: 1.25rem; color: var(--forest); margin: 1.75rem 0 0.5rem; }
+    main p, main li { font-size: 1.02rem; color: var(--bark); margin-bottom: 0.85rem; }
+    main strong { color: var(--char); font-weight: 500; }
+    main ul, main ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+    main li { margin-bottom: 0.4rem; }
+    main a { color: var(--gold); text-decoration: none; border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 60%); transition: color 0.3s, border-color 0.3s; }
+    main a:hover { color: var(--forest); border-bottom-color: var(--forest); }
+    .legal-callout { background: var(--cream); border-left: 3px solid var(--gold); padding: 1.25rem 1.5rem; margin: 1.5rem 0; font-family: var(--serif); font-style: italic; font-size: 1rem; color: var(--bark); }
+    .legal-callout strong { color: var(--forest); font-style: normal; }
+
+    table.cookies-table {
+      width: 100%; border-collapse: collapse; margin: 1.5rem 0;
+      font-family: var(--sans); font-size: 0.92rem;
+    }
+    table.cookies-table th, table.cookies-table td {
+      padding: 0.75rem 0.85rem; text-align: left;
+      border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 80%);
+    }
+    table.cookies-table th {
+      background: var(--cream); color: var(--forest);
+      font-weight: 500; font-size: 0.75rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    table.cookies-table td { color: var(--bark); }
+
+    footer { padding: 2rem 1.5rem; text-align: center; background: var(--warm); border-top: 1px solid color-mix(in oklch, var(--gold), transparent 85%); font-family: var(--serif); font-size: 0.95rem; color: var(--bark); }
+    footer a { color: var(--gold); text-decoration: none; border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 60%); }
+    footer a:hover { color: var(--gold-l); }
+    .footer-nav { margin-top: 0.75rem; font-size: 0.85rem; display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+    *:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+    @media (max-width: 640px) {
+      main { padding: 3rem 1.25rem; }
+      .legal-header { padding: 3rem 1.25rem 2rem; }
+      table.cookies-table { font-size: 0.82rem; }
+      table.cookies-table th, table.cookies-table td { padding: 0.5rem 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="legal-header">
+    <a href="/" class="legal-back">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Powrót
+    </a>
+    <div class="legal-eyebrow">Dokumenty prawne</div>
+    <h1 class="legal-title">Polityka Cookies</h1>
+    <div class="legal-meta">Obowiązuje od 27 kwietnia 2026</div>
+  </header>
+
+  <main>
+
+    <h2>1. Co to są cookies</h2>
+    <p>Cookies (ciasteczka) to niewielkie pliki tekstowe zapisywane przez stronę internetową na Twoim urządzeniu (komputer, telefon, tablet). Pozwalają stronie zapamiętać informacje o Twojej wizycie — np. preferencje, zalogowanie, koszyk zakupowy.</p>
+
+    <h2>2. Jakie cookies stosujemy</h2>
+    <p>Na stronie <strong>zaproszeniaonline.com</strong> obecnie <strong>nie używamy cookies wymagających zgody</strong> w rozumieniu art. 173 ust. 1 ustawy Prawo telekomunikacyjne. Ze strony korzystasz w trybie pełni anonimowym — nie śledzimy Twojej aktywności, nie używamy reklam personalizowanych, nie wysyłamy danych do brokerów reklamowych.</p>
+
+    <h3>2.1 Cookies techniczne (niezbędne, bez zgody)</h3>
+    <p>Możemy stosować pliki cookies <strong>niezbędne</strong> do działania strony — te nie wymagają Twojej zgody (są zwolnione z obowiązku na mocy art. 173 ust. 3 Prawa telekomunikacyjnego):</p>
+
+    <table class="cookies-table">
+      <thead>
+        <tr>
+          <th>Nazwa</th>
+          <th>Cel</th>
+          <th>Czas</th>
+          <th>Wymaga zgody</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Brak własnych cookies</strong></td>
+          <td>Strona nie zapisuje plików cookies w przeglądarce</td>
+          <td>—</td>
+          <td>nie</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="legal-callout">
+      <strong>Stan na 27 kwietnia 2026:</strong> formularz kontaktowy używa wyłącznie standardowych mechanizmów HTTPS i przesyła dane do bazy Supabase bez zapisywania jakichkolwiek danych w pamięci przeglądarki. Strona nie integruje narzędzi analitycznych, śledzących ani reklamowych.
+    </div>
+
+    <h2>3. Cookies podmiotów trzecich</h2>
+    <p>Strona ładuje zasoby z następujących domen zewnętrznych (skrypty, fonty, biblioteki). Niektóre z nich mogą same w sobie ustawiać własne pliki cookies w przeglądarce użytkownika:</p>
+    <ul>
+      <li><strong>Google Fonts</strong> (fonts.googleapis.com, fonts.gstatic.com) — ładowanie czcionek Playfair Display, Cormorant Garamond, Outfit. Google deklaruje że NIE ustawia cookies dla tych zasobów</li>
+      <li><strong>unpkg.com</strong> — CDN bibliotek JavaScript (React, Supabase). Bez cookies</li>
+      <li><strong>Supabase</strong> (kuyniyyieejvambyjnxy.supabase.co) — backend dla formularzy. Komunikacja API, bez cookies</li>
+    </ul>
+
+    <h2>4. Przyszłe zmiany</h2>
+    <p>Jeśli w przyszłości wdrożymy narzędzia analityczne (np. <a href="https://plausible.io" target="_blank" rel="noopener">Plausible</a> lub Google Analytics) lub inne mechanizmy zapisu danych w przeglądarce — niniejsza polityka zostanie zaktualizowana, a w przypadku narzędzi wymagających zgody zostanie wyświetlony banner cookie consent przed pierwszym uruchomieniem.</p>
+
+    <h2>5. Jak zarządzać cookies w przeglądarce</h2>
+    <p>Większość przeglądarek pozwala kontrolować i blokować pliki cookies. Instrukcje dla najpopularniejszych przeglądarek:</p>
+    <ul>
+      <li><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">Google Chrome</a></li>
+      <li><a href="https://support.mozilla.org/pl/kb/usuwanie-ciasteczek-i-danych-stron-firefox" target="_blank" rel="noopener">Mozilla Firefox</a></li>
+      <li><a href="https://support.apple.com/pl-pl/guide/safari/sfri11471/mac" target="_blank" rel="noopener">Safari (macOS)</a></li>
+      <li><a href="https://support.microsoft.com/pl-pl/microsoft-edge" target="_blank" rel="noopener">Microsoft Edge</a></li>
+    </ul>
+    <p>Pamiętaj że całkowite zablokowanie cookies może uniemożliwić korzystanie z niektórych funkcji strony.</p>
+
+    <h2>6. Logi serwera</h2>
+    <p>Niezależnie od cookies, dostawca naszego hostingu (<strong>Vercel Inc.</strong>) zbiera standardowe logi serwera zawierające:</p>
+    <ul>
+      <li>Adres IP (anonimizowany po 30 dniach)</li>
+      <li>Datę i czas żądania</li>
+      <li>URL żądanego zasobu</li>
+      <li>Kod odpowiedzi HTTP</li>
+      <li>User-Agent przeglądarki</li>
+    </ul>
+    <p>Logi są zbierane na podstawie uzasadnionego interesu administratora (art. 6 ust. 1 lit. f RODO) — w celach bezpieczeństwa i diagnostyki technicznej. Nie są wykorzystywane do śledzenia aktywności użytkowników.</p>
+
+    <h2>7. Kontakt</h2>
+    <p>Wszelkie pytania o cookies i przetwarzanie danych: <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a></p>
+    <p>Zobacz też pełną <a href="/privacy">Politykę Prywatności</a>.</p>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 <strong>zaproszeniaonline.com</strong> &middot; Projekt i realizacja <a href="https://vidokstudio.pl" target="_blank" rel="noopener">Vidok Studio</a></p>
+    <nav class="footer-nav">
+      <a href="/">Strona główna</a>
+      <a href="/privacy">Polityka prywatności</a>
+      <a href="/cookies">Cookies</a>
+      <a href="/terms">Regulamin</a>
+    </nav>
+  </footer>
+
+</body>
+</html>

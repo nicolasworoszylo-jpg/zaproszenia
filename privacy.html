@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <title>Polityka Prywatności | zaproszeniaonline.com</title>
+  <meta name="description" content="Polityka prywatności serwisu zaproszeniaonline.com — administrator danych, cele i podstawy przetwarzania, prawa użytkownika, kontakt.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://zaproszeniaonline.com/privacy">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,400;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --forest: #2C3E2D; --deep: #1E2B1F; --gold: #C9A96E; --gold-l: #D4B97F;
+      --warm: #FAF6EF; --cream: #F5EDE0; --parch: #EDE4D3; --stone: #A09888;
+      --char: #2A2622; --bark: #6B5D4F;
+      --display: 'Playfair Display', Georgia, serif;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Outfit', system-ui, sans-serif;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); color: var(--char); background: var(--warm); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    .legal-header {
+      background: linear-gradient(170deg, var(--deep) 0%, var(--forest) 50%, var(--deep) 100%);
+      color: var(--warm);
+      padding: 4rem 1.5rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .legal-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 45%, color-mix(in oklch, var(--gold), transparent 92%) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .legal-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 18px;
+      background: color-mix(in oklch, var(--gold), transparent 88%);
+      border: 1px solid color-mix(in oklch, var(--gold), transparent 60%);
+      color: var(--gold);
+      font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 24px;
+      transition: all 0.3s ease;
+      margin-bottom: 1.5rem;
+    }
+    .legal-back:hover { background: color-mix(in oklch, var(--gold), transparent 80%); color: var(--gold-l); transform: translateX(-2px); }
+    .legal-eyebrow {
+      font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.4em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem;
+    }
+    .legal-title {
+      font-family: var(--display); font-style: italic; font-weight: 400;
+      font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.2;
+    }
+    .legal-meta {
+      margin-top: 1rem; font-family: var(--serif); font-style: italic;
+      color: color-mix(in oklch, var(--warm), transparent 35%); font-size: 1rem;
+    }
+
+    main {
+      max-width: 760px; margin: 0 auto; padding: 4rem 1.5rem;
+    }
+    main h2 {
+      font-family: var(--display); font-style: italic; font-weight: 400;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      color: var(--forest);
+      margin: 3rem 0 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 75%);
+    }
+    main h2:first-of-type { margin-top: 0; }
+    main h3 {
+      font-family: var(--display); font-style: italic; font-weight: 400;
+      font-size: 1.25rem; color: var(--forest);
+      margin: 1.75rem 0 0.5rem;
+    }
+    main p, main li { font-size: 1.02rem; color: var(--bark); margin-bottom: 0.85rem; }
+    main strong { color: var(--char); font-weight: 500; }
+    main ul, main ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+    main li { margin-bottom: 0.4rem; }
+    main a { color: var(--gold); text-decoration: none; border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 60%); transition: color 0.3s, border-color 0.3s; }
+    main a:hover { color: var(--forest); border-bottom-color: var(--forest); }
+    .legal-callout {
+      background: var(--cream);
+      border-left: 3px solid var(--gold);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--bark);
+    }
+    .legal-callout strong { color: var(--forest); font-style: normal; }
+
+    footer {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      background: var(--warm);
+      border-top: 1px solid color-mix(in oklch, var(--gold), transparent 85%);
+      font-family: var(--serif); font-size: 0.95rem; color: var(--bark);
+    }
+    footer a { color: var(--gold); text-decoration: none; border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 60%); }
+    footer a:hover { color: var(--gold-l); }
+    .footer-nav {
+      margin-top: 0.75rem; font-size: 0.85rem;
+      display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;
+    }
+
+    *:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+    @media (max-width: 640px) {
+      main { padding: 3rem 1.25rem; }
+      .legal-header { padding: 3rem 1.25rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="legal-header">
+    <a href="/" class="legal-back">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Powrót
+    </a>
+    <div class="legal-eyebrow">Dokumenty prawne</div>
+    <h1 class="legal-title">Polityka Prywatności</h1>
+    <div class="legal-meta">Obowiązuje od 27 kwietnia 2026 · ostatnia aktualizacja: 27 kwietnia 2026</div>
+  </header>
+
+  <main>
+
+    <h2>1. Administrator danych osobowych</h2>
+    <p>Administratorem Twoich danych osobowych jest <strong>Vidok Studio Nicolas Woroszyło</strong>, prowadzący działalność pod marką <strong>zaproszeniaonline.com</strong>.</p>
+    <ul>
+      <li>NIP: <strong>[DO UZUPEŁNIENIA — wpisz NIP firmy]</strong></li>
+      <li>REGON: <strong>[DO UZUPEŁNIENIA — wpisz REGON]</strong></li>
+      <li>Adres siedziby: <strong>[DO UZUPEŁNIENIA — wpisz adres]</strong></li>
+      <li>E-mail kontaktowy: <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a></li>
+    </ul>
+    <div class="legal-callout">
+      <strong>Inspektor Ochrony Danych:</strong> nie został powołany — administrator nie jest zobowiązany do jego wyznaczenia w rozumieniu art. 37 RODO. Wszelkie sprawy dotyczące danych osobowych prowadzi bezpośrednio administrator.
+    </div>
+
+    <h2>2. Cele i podstawy prawne przetwarzania</h2>
+    <p>Twoje dane osobowe przetwarzamy w następujących celach:</p>
+
+    <h3>2.1 Obsługa zapytania ofertowego (formularz kontaktowy)</h3>
+    <ul>
+      <li><strong>Zakres danych:</strong> imię i nazwisko, e-mail, telefon (opcjonalnie), data wydarzenia, rodzaj wydarzenia, pakiet, treść wiadomości</li>
+      <li><strong>Podstawa prawna:</strong> art. 6 ust. 1 lit. b RODO — działania zmierzające do zawarcia umowy na Twoje żądanie</li>
+      <li><strong>Cel:</strong> przygotowanie odpowiedzi na zapytanie i ewentualne zawarcie umowy</li>
+    </ul>
+
+    <h3>2.2 Realizacja umowy (po zamówieniu zaproszenia)</h3>
+    <ul>
+      <li><strong>Zakres danych:</strong> dane do faktury, dane potrzebne do projektu (imiona pary, daty, miejsca, dane gości jeśli są przekazywane)</li>
+      <li><strong>Podstawa prawna:</strong> art. 6 ust. 1 lit. b RODO — wykonanie umowy</li>
+      <li><strong>Cel:</strong> wykonanie zamówionej usługi (projekt strony ślubnej)</li>
+    </ul>
+
+    <h3>2.3 Formularz RSVP w zaproszeniach klientów</h3>
+    <ul>
+      <li><strong>Zakres danych:</strong> imię gościa, deklaracja obecności, preferencje menu, alergie, transport (zbierane od gości na żądanie pary młodej)</li>
+      <li><strong>Administrator tych danych:</strong> para młoda (klient zamawiający zaproszenie). Vidok Studio działa jako podmiot przetwarzający na podstawie umowy powierzenia przetwarzania danych zgodnie z art. 28 RODO</li>
+      <li><strong>Cel:</strong> umożliwienie parze młodej zebrania potwierdzeń od gości</li>
+    </ul>
+
+    <h3>2.4 Obowiązki podatkowe i księgowe</h3>
+    <ul>
+      <li><strong>Podstawa prawna:</strong> art. 6 ust. 1 lit. c RODO — wypełnienie obowiązku prawnego (Ordynacja podatkowa, ustawa o rachunkowości)</li>
+      <li><strong>Cel:</strong> przechowywanie faktur i dokumentów księgowych</li>
+    </ul>
+
+    <h3>2.5 Marketing własnych usług (uzasadniony interes)</h3>
+    <ul>
+      <li><strong>Podstawa prawna:</strong> art. 6 ust. 1 lit. f RODO — uzasadniony interes administratora</li>
+      <li><strong>Cel:</strong> prezentacja portfolio (za zgodą klienta), informowanie o podobnych usługach</li>
+      <li>Masz prawo wnieść <strong>sprzeciw</strong> wobec tego przetwarzania (sekcja 6)</li>
+    </ul>
+
+    <h2>3. Odbiorcy danych</h2>
+    <p>Twoje dane mogą być powierzane następującym podmiotom (procesorom):</p>
+    <ul>
+      <li><strong>Supabase Inc.</strong> (USA) — hosting bazy danych. Przetwarzanie na podstawie Standard Contractual Clauses (SCC) zatwierdzonych przez Komisję Europejską oraz DPA Supabase</li>
+      <li><strong>Vercel Inc.</strong> (USA) — hosting strony internetowej. Przetwarzanie na SCC oraz DPA Vercel</li>
+      <li><strong>Resend Inc.</strong> (USA) — wysyłka powiadomień e-mail. Przetwarzanie na SCC oraz DPA Resend</li>
+      <li>Biuro rachunkowe — w zakresie obsługi księgowej (dane z faktur)</li>
+      <li>Organy państwowe — w przypadku obowiązku ustawowego (np. żądanie sądu)</li>
+    </ul>
+    <div class="legal-callout">
+      <strong>Transfer poza EOG:</strong> część wymienionych podmiotów ma siedzibę w USA. Transfer danych odbywa się w oparciu o standardowe klauzule umowne (SCC) zgodnie z art. 46 ust. 2 RODO.
+    </div>
+
+    <h2>4. Czas przechowywania danych</h2>
+    <ul>
+      <li><strong>Zapytania ofertowe (lead):</strong> 12 miesięcy od ostatniego kontaktu — następnie usunięcie</li>
+      <li><strong>Dane klientów (po zawarciu umowy):</strong> 5 lat od końca roku podatkowego (zgodnie z Ordynacją podatkową — art. 86 § 1) lub do upływu terminu przedawnienia roszczeń</li>
+      <li><strong>Faktury i dokumenty księgowe:</strong> 5 lat — zgodnie z ustawą o rachunkowości</li>
+      <li><strong>Dane RSVP gości:</strong> do dnia ślubu + 6 miesięcy, następnie usunięcie</li>
+      <li><strong>Dane przetwarzane na podstawie zgody:</strong> do momentu wycofania zgody</li>
+    </ul>
+
+    <h2>5. Prawa użytkownika</h2>
+    <p>W związku z przetwarzaniem Twoich danych osobowych przysługują Ci następujące prawa:</p>
+    <ul>
+      <li><strong>Prawo dostępu</strong> (art. 15 RODO) — możesz uzyskać informację, jakie Twoje dane przetwarzamy</li>
+      <li><strong>Prawo sprostowania</strong> (art. 16 RODO) — możesz żądać poprawienia nieprawidłowych danych</li>
+      <li><strong>Prawo usunięcia</strong> ("prawo do bycia zapomnianym", art. 17 RODO) — w określonych przypadkach</li>
+      <li><strong>Prawo ograniczenia przetwarzania</strong> (art. 18 RODO)</li>
+      <li><strong>Prawo do przenoszenia danych</strong> (art. 20 RODO) — otrzymanie danych w formacie ustrukturyzowanym</li>
+      <li><strong>Prawo sprzeciwu</strong> (art. 21 RODO) — wobec przetwarzania na podstawie uzasadnionego interesu (np. marketingu)</li>
+      <li><strong>Prawo cofnięcia zgody</strong> w dowolnym momencie — bez wpływu na zgodność z prawem przetwarzania, którego dokonano przed cofnięciem</li>
+      <li><strong>Prawo wniesienia skargi</strong> do Prezesa Urzędu Ochrony Danych Osobowych (PUODO), ul. Stawki 2, 00-193 Warszawa</li>
+    </ul>
+    <p>Aby skorzystać z któregokolwiek z powyższych praw, napisz na <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a>. Odpowiemy w ciągu 30 dni od otrzymania żądania.</p>
+
+    <h2>6. Profilowanie i zautomatyzowane decyzje</h2>
+    <p>Twoje dane <strong>nie są poddawane zautomatyzowanym decyzjom</strong>, w tym profilowaniu, w rozumieniu art. 22 RODO. Każda decyzja dotycząca Ciebie (np. przyjęcie zlecenia, termin realizacji) jest podejmowana przez człowieka.</p>
+
+    <h2>7. Dobrowolność podania danych</h2>
+    <p>Podanie danych jest <strong>dobrowolne</strong>, jednak niezbędne do:</p>
+    <ul>
+      <li>Otrzymania odpowiedzi na zapytanie ofertowe (imię, e-mail)</li>
+      <li>Wykonania umowy (dane do faktury, dane do projektu)</li>
+    </ul>
+    <p>Bez podania wymaganych danych nie będziemy w stanie zrealizować usługi.</p>
+
+    <h2>8. Bezpieczeństwo danych</h2>
+    <p>Stosujemy następujące środki techniczne i organizacyjne:</p>
+    <ul>
+      <li>Szyfrowanie połączeń (HTTPS/TLS) na wszystkich stronach</li>
+      <li>Szyfrowanie bazy danych w spoczynku (Supabase encryption at rest)</li>
+      <li>Kontrolę dostępu — tylko upoważnione osoby mają dostęp do danych</li>
+      <li>Row Level Security (RLS) na bazie danych — dane formularza nie są publicznie odczytywalne</li>
+      <li>Regularne kopie zapasowe (codzienne, retencja 7 dni)</li>
+    </ul>
+
+    <h2>9. Cookies</h2>
+    <p>Szczegółowe informacje o stosowanych plikach cookies znajdziesz w naszej <a href="/cookies">Polityce Cookies</a>.</p>
+
+    <h2>10. Zmiany Polityki Prywatności</h2>
+    <p>Zastrzegamy sobie prawo do zmian Polityki. Każda zmiana zostanie opublikowana na tej stronie z aktualizacją daty obowiązywania. O istotnych zmianach poinformujemy aktywnych klientów drogą e-mailową.</p>
+
+    <div class="legal-callout">
+      <strong>Pytania?</strong> Wszelkie pytania dotyczące przetwarzania Twoich danych osobowych kierujcie na adres: <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 <strong>zaproszeniaonline.com</strong> &middot; Projekt i realizacja <a href="https://vidokstudio.pl" target="_blank" rel="noopener">Vidok Studio</a></p>
+    <nav class="footer-nav">
+      <a href="/">Strona główna</a>
+      <a href="/privacy">Polityka prywatności</a>
+      <a href="/cookies">Cookies</a>
+      <a href="/terms">Regulamin</a>
+    </nav>
+  </footer>
+
+</body>
+</html>
