@@ -29,9 +29,15 @@
 const { useState, useEffect, useRef, useCallback } = React;
 
 // ── Supabase client (publishable / anon key — bezpieczny do osadzenia w przeglądarce) ──
+// Prefer: return=minimal — pomija PostgREST RETURNING, dzięki czemu RLS wymaga TYLKO
+// policy INSERT (anon nie potrzebuje SELECT na rsvps/song_requests = pełna prywatność:
+// gość może dodać własne potwierdzenie, ale nie może czytać cudzych).
 const SUPABASE_URL  = "https://kuyniyyieejvambyjnxy.supabase.co";
 const SUPABASE_ANON = "sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL";
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+  global: { headers: { "Prefer": "return=minimal" } },
+  auth:   { persistSession: false, autoRefreshToken: false }
+});
 
 // Identyfikator tego konkretnego demo-zaproszenia (per-couple slug w przyszłości)
 const INVITATION_SLUG = "demo-anna-michal";

@@ -944,9 +944,14 @@
         reveals.forEach(el => observer.observe(el));
 
         // Supabase lead form
+        // Prefer: return=minimal — pomija PostgREST RETURNING, dzięki czemu RLS
+        // wymaga TYLKO policy INSERT (anon nie potrzebuje SELECT na leads).
         const SUPABASE_URL  = "https://kuyniyyieejvambyjnxy.supabase.co";
         const SUPABASE_ANON = "sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL";
-        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+            global: { headers: { "Prefer": "return=minimal" } },
+            auth:   { persistSession: false, autoRefreshToken: false }
+        });
 
         const form = document.getElementById('leadForm');
         const submitBtn = document.getElementById('lf-submit');
