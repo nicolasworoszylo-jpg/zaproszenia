@@ -55,6 +55,13 @@
     .footer-nav { margin-top: 0.75rem; font-size: 0.85rem; display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
     *:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 
+    .legal-back-bottom-wrap { max-width: 760px; margin: 4rem auto 0; padding: 2rem 0 0; border-top: 1px solid color-mix(in oklch, var(--gold), transparent 80%); text-align: center; }
+    .legal-back-bottom { display: inline-flex; align-items: center; gap: 10px; padding: 14px 32px; background: var(--forest); color: var(--warm); font-family: var(--sans); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--forest); transition: background 0.3s, border-color 0.3s, transform 0.4s cubic-bezier(0.34,1.56,0.64,1), color 0.3s; }
+    .legal-back-bottom:hover { background: var(--gold); border-color: var(--gold); color: var(--char); transform: translateY(-2px); }
+    .legal-back-bottom svg { width: 16px; height: 16px; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+    .legal-back-bottom:hover svg { transform: translateX(-3px); }
+    .legal-back-hint { display: block; margin-top: 0.85rem; font-family: var(--serif); font-style: italic; font-size: 0.9rem; color: var(--stone); }
+
     @media (max-width: 640px) {
       main { padding: 3rem 1.25rem; }
       .legal-header { padding: 3rem 1.25rem 2rem; }
@@ -64,7 +71,7 @@
 <body>
 
   <header class="legal-header">
-    <a href="/" class="legal-back">
+    <a href="/" class="legal-back legal-back-link">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       Powrót
     </a>
@@ -125,7 +132,19 @@
       <li>Brak wpłaty zaliczki w terminie 14 dni od potwierdzenia zamówienia jest równoznaczny z anulowaniem zamówienia.</li>
     </ol>
 
-    <h2>§ 7. Prawa autorskie i licencja</h2>
+    <h2>§ 7. Kody rabatowe i program partnerski</h2>
+    <ol>
+      <li>Usługodawca prowadzi program partnerski oparty o indywidualne kody rabatowe wydawane partnerom (domom weselnym, fotografom ślubnym, wedding plannerom).</li>
+      <li>Klient może podać posiadany kod rabatowy w formularzu kontaktowym. Kod podlega walidacji w czasie rzeczywistym.</li>
+      <li>Aplikacja rabatu odbywa się w fazie przygotowania indywidualnej wyceny — przed zawarciem Umowy. Rabat jest <strong>uznaniowy</strong>: ostateczna decyzja o jego zastosowaniu należy do Usługodawcy. W praktyce każdy ważny kod jest honorowany, jednak Usługodawca zastrzega prawo odmowy w przypadkach uzasadnionych (np. próba nadużycia, kod wycofany przed walidacją).</li>
+      <li>Zniżki z różnych kodów rabatowych <strong>nie sumują się</strong>. W ramach jednego zamówienia można wykorzystać tylko jeden kod.</li>
+      <li>Kod rabatowy nie podlega wymianie na ekwiwalent pieniężny.</li>
+      <li>Usługodawca zastrzega prawo do zmiany lub wycofania kodu w dowolnym momencie, bez konieczności indywidualnego powiadamiania korzystających, z zastrzeżeniem zachowania zniżki dla zamówień, dla których wycena została już sporządzona.</li>
+      <li>Klientowi nie przysługuje roszczenie o wydanie kodu rabatowego — kody są dystrybuowane wyłącznie przez partnerów programu.</li>
+      <li>Szczegółowe zasady programu partnerskiego (sposób wydawania kodów, rozliczeń) reguluje odrębna umowa partnerska zawierana z partnerem dystrybuującym kod. Niniejszy Regulamin nie tworzy stosunku prawnego pomiędzy Klientem a partnerem.</li>
+    </ol>
+
+    <h2>§ 8. Prawa autorskie i licencja</h2>
     <ol>
       <li>Wszelkie prawa autorskie do projektu, kodu źródłowego, układu i ornamentów Zaproszenia przysługują wyłącznie Usługodawcy.</li>
       <li>Klient otrzymuje <strong>niewyłączną, niezbywalną licencję</strong> na korzystanie ze swojego Zaproszenia (publikowanie linka, udostępnianie gościom) w okresie do 12 miesięcy od dnia wydarzenia.</li>
@@ -134,14 +153,14 @@
       <li>Usługodawca zastrzega sobie prawo do prezentowania Zaproszenia w portfolio (z ukryciem szczegółów osobowych — imion gości, dat) chyba że Klient wniesie pisemny sprzeciw.</li>
     </ol>
 
-    <h2>§ 8. Reklamacje</h2>
+    <h2>§ 9. Reklamacje</h2>
     <ol>
       <li>Reklamacje dotyczące jakości lub niezgodności Usługi z opisem należy składać na adres <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a> w ciągu 14 dni od dostarczenia Zaproszenia.</li>
       <li>Reklamacja powinna zawierać: dane kontaktowe Klienta, opis problemu, link do Zaproszenia, oczekiwany sposób rozpatrzenia.</li>
       <li>Usługodawca rozpatruje reklamacje w ciągu 14 dni od otrzymania.</li>
     </ol>
 
-    <h2>§ 9. Odstąpienie od umowy (Konsumenci)</h2>
+    <h2>§ 10. Odstąpienie od umowy (Konsumenci)</h2>
     <div class="legal-callout">
       <strong>Uwaga — wyłączenie prawa do odstąpienia:</strong> zgodnie z art. 38 pkt 3 ustawy o prawach konsumenta, prawo do odstąpienia od umowy zawartej na odległość <strong>NIE PRZYSŁUGUJE</strong> Konsumentowi w przypadku umów o świadczenie usług, jeżeli Usługodawca wykonał w pełni usługę za wyraźną zgodą Konsumenta, który został poinformowany przed rozpoczęciem świadczenia, że po jego wykonaniu utraci prawo do odstąpienia.
     </div>
@@ -152,17 +171,17 @@
       <li>W przypadku skutecznego odstąpienia Usługodawca zwraca pełną kwotę wpłaconej zaliczki w terminie 14 dni.</li>
     </ol>
 
-    <h2>§ 10. Odpowiedzialność</h2>
+    <h2>§ 11. Odpowiedzialność</h2>
     <ol>
       <li>Usługodawca nie ponosi odpowiedzialności za niedostępność Zaproszenia spowodowaną awarią dostawcy hostingu (Vercel) — zobowiązuje się jednak do podjęcia wszystkich możliwych działań naprawczych w najkrótszym możliwym terminie.</li>
       <li>Usługodawca nie ponosi odpowiedzialności za skutki podania przez Klienta nieprawidłowych danych (np. błędna data ślubu w Zaproszeniu).</li>
       <li>Maksymalna odpowiedzialność Usługodawcy wobec Klienta jest ograniczona do wysokości kwoty zapłaconej za Usługę.</li>
     </ol>
 
-    <h2>§ 11. Dane osobowe</h2>
+    <h2>§ 12. Dane osobowe</h2>
     <p>Zasady przetwarzania danych osobowych są szczegółowo opisane w odrębnej <a href="/privacy">Polityce Prywatności</a>.</p>
 
-    <h2>§ 12. Postanowienia końcowe</h2>
+    <h2>§ 13. Postanowienia końcowe</h2>
     <ol>
       <li>W sprawach nieuregulowanych Regulaminem zastosowanie mają przepisy Kodeksu cywilnego, ustawy o prawach konsumenta oraz inne właściwe przepisy prawa polskiego.</li>
       <li>Wszelkie spory wynikające z Umowy będą rozstrzygane polubownie. W przypadku braku porozumienia — przez sąd właściwy ze względu na siedzibę Usługodawcy (dla Klientów niebędących Konsumentami) lub sąd właściwy ogólnie (dla Konsumentów).</li>
@@ -171,7 +190,27 @@
       <li>Regulamin wchodzi w życie z dniem 27 kwietnia 2026.</li>
     </ol>
 
+    <div class="legal-back-bottom-wrap">
+      <a href="/" class="legal-back-bottom legal-back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Powrót do strony
+      </a>
+      <span class="legal-back-hint">Wrócisz do dokładnie tego samego miejsca, z którego tu trafiłeś</span>
+    </div>
+
   </main>
+
+  <script>
+    document.querySelectorAll('.legal-back-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const ref = document.referrer;
+        if (ref && new URL(ref, window.location.href).origin === window.location.origin && window.history.length > 1) {
+          e.preventDefault();
+          window.history.back();
+        }
+      });
+    });
+  </script>
 
   <footer>
     <p>&copy; 2026 <strong>zaproszeniaonline.com</strong> &middot; Projekt i realizacja <a href="https://vidokstudio.pl" target="_blank" rel="noopener">Vidok Studio</a></p>

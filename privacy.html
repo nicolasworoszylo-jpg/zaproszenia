@@ -119,6 +119,47 @@
 
     *:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 
+    /* Powrót na dole — duży, eksponowany; klik wraca do tego samego miejsca z którego user kliknął */
+    .legal-back-bottom-wrap {
+      max-width: 760px;
+      margin: 4rem auto 0;
+      padding: 2rem 0 0;
+      border-top: 1px solid color-mix(in oklch, var(--gold), transparent 80%);
+      text-align: center;
+    }
+    .legal-back-bottom {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      background: var(--forest);
+      color: var(--warm);
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid var(--forest);
+      transition: background 0.3s, border-color 0.3s, transform 0.4s cubic-bezier(0.34,1.56,0.64,1), color 0.3s;
+    }
+    .legal-back-bottom:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--char);
+      transform: translateY(-2px);
+    }
+    .legal-back-bottom svg { width: 16px; height: 16px; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+    .legal-back-bottom:hover svg { transform: translateX(-3px); }
+    .legal-back-hint {
+      display: block;
+      margin-top: 0.85rem;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--stone);
+    }
+
     @media (max-width: 640px) {
       main { padding: 3rem 1.25rem; }
       .legal-header { padding: 3rem 1.25rem 2rem; }
@@ -128,7 +169,7 @@
 <body>
 
   <header class="legal-header">
-    <a href="/" class="legal-back">
+    <a href="/" class="legal-back legal-back-link">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       Powrót
     </a>
@@ -188,17 +229,39 @@
       <li>Masz prawo wnieść <strong>sprzeciw</strong> wobec tego przetwarzania (sekcja 6)</li>
     </ul>
 
+    <h3>2.6 Program kodów rabatowych (afiliacja partnerska)</h3>
+    <p>Współpracujemy z partnerami (domami weselnymi, fotografami ślubnymi, wedding plannerami), którzy otrzymują unikalny kod rabatowy do przekazania polecanym przez nich parom.</p>
+    <ul>
+      <li><strong>Zakres danych partnera:</strong> nazwa firmy lub imię i nazwisko (jeśli osoba fizyczna prowadząca działalność), adres e-mail kontaktowy, kod, procent rabatu, statystyki użycia kodu</li>
+      <li><strong>Zakres danych pary korzystającej z kodu:</strong> użyty kod rabatowy zapisywany jest w polu <em>affiliate_code</em> w zgłoszeniu (lead), wraz z procentem rabatu w momencie walidacji</li>
+      <li><strong>Podstawa prawna (partner):</strong> art. 6 ust. 1 lit. b RODO — wykonanie umowy partnerskiej, oraz art. 6 ust. 1 lit. f RODO — uzasadniony interes administratora w prowadzeniu programu poleceń</li>
+      <li><strong>Cel:</strong> rozliczenie współpracy partnerskiej, prezentacja partnerowi statystyk skuteczności jego kodu (liczba użyć i konwersji), zastosowanie rabatu w wycenie</li>
+      <li><strong>Współadministracja:</strong> administratorem danych pary korzystającej z kodu pozostaje wyłącznie Vidok Studio. Partner otrzymuje wyłącznie zagregowane statystyki użycia swojego kodu, bez dostępu do danych osobowych pary</li>
+    </ul>
+
+    <h3>2.7 Demo zaproszenia (/demo)</h3>
+    <div class="legal-callout">
+      <strong>Ważne:</strong> strona <a href="/demo">/demo</a> to przykładowe zaproszenie ślubne (Anna i Michał — dane fikcyjne). <strong>Formularze RSVP i propozycji piosenek na stronie demo są w pełni funkcjonalne i zapisują dane do prawdziwej bazy.</strong>
+    </div>
+    <ul>
+      <li><strong>Zakres danych zbieranych w demo (jeśli zdecydujesz się wypełnić formularze testowo):</strong> imię i nazwisko gościa, deklaracja obecności, liczba osób, preferencje menu, alergie pokarmowe (kategoria danych dotyczących zdrowia — art. 9 RODO), uwagi, propozycje piosenek</li>
+      <li><strong>Podstawa prawna:</strong> art. 6 ust. 1 lit. f RODO — uzasadniony interes administratora w testowaniu i rozwoju produktu, weryfikacji jego funkcjonalności</li>
+      <li><strong>Dane szczególnej kategorii (alergie):</strong> jeśli wpiszesz informacje o alergiach pokarmowych w formularzu testowym, zostaną one przetworzone na podstawie art. 9 ust. 2 lit. a RODO — Twoja wyraźna zgoda wyrażona poprzez dobrowolne wpisanie tej informacji (możesz zrezygnować w każdej chwili wpisując dane fikcyjne lub zostawiając pole puste)</li>
+      <li><strong>Retention:</strong> dane z formularzy demo są usuwane lub anonimizowane co 6 miesięcy</li>
+      <li><strong>Sugestia:</strong> jeśli chcesz uniknąć przetwarzania prawdziwych danych, w demo używaj wartości testowych (np. „Jan Testowy", brak prawdziwego adresu e-mail)</li>
+    </ul>
+
     <h2>3. Odbiorcy danych</h2>
     <p>Twoje dane mogą być powierzane następującym podmiotom (procesorom):</p>
     <ul>
-      <li><strong>Supabase Inc.</strong> (USA) — hosting bazy danych. Przetwarzanie na podstawie Standard Contractual Clauses (SCC) zatwierdzonych przez Komisję Europejską oraz DPA Supabase</li>
-      <li><strong>Vercel Inc.</strong> (USA) — hosting strony internetowej. Przetwarzanie na SCC oraz DPA Vercel</li>
-      <li><strong>Resend Inc.</strong> (USA) — wysyłka powiadomień e-mail. Przetwarzanie na SCC oraz DPA Resend</li>
-      <li>Biuro rachunkowe — w zakresie obsługi księgowej (dane z faktur)</li>
-      <li>Organy państwowe — w przypadku obowiązku ustawowego (np. żądanie sądu)</li>
+      <li><strong>Supabase Inc.</strong> (USA) — hosting bazy danych zgłoszeń, RSVP, kodów rabatowych. Przetwarzanie na podstawie Standard Contractual Clauses (SCC) zatwierdzonych przez Komisję Europejską oraz DPA Supabase (do podpisania w panelu administracyjnym Supabase)</li>
+      <li><strong>Vercel Inc.</strong> (USA) — hosting strony internetowej, dostarczanie zasobów, logi serwera. Przetwarzanie na SCC oraz DPA Vercel (do akceptacji w ustawieniach projektu Vercel)</li>
+      <li><strong>Resend Inc.</strong> (USA) — wysyłka powiadomień e-mail. <em>Funkcjonalność jeszcze nieuruchomiona</em> — gdy zostanie wdrożona, niniejsza polityka zostanie zaktualizowana, a transfer odbywać się będzie na podstawie SCC oraz DPA Resend</li>
+      <li><strong>Biuro rachunkowe</strong> — w zakresie obsługi księgowej (dane z faktur)</li>
+      <li><strong>Organy państwowe</strong> — w przypadku obowiązku ustawowego (np. żądanie sądu, kontrola PUODO)</li>
     </ul>
     <div class="legal-callout">
-      <strong>Transfer poza EOG:</strong> część wymienionych podmiotów ma siedzibę w USA. Transfer danych odbywa się w oparciu o standardowe klauzule umowne (SCC) zgodnie z art. 46 ust. 2 RODO.
+      <strong>Transfer poza EOG:</strong> wymienione podmioty ze Stanów Zjednoczonych przetwarzają dane na podstawie standardowych klauzul umownych (SCC) zgodnie z art. 46 ust. 2 lit. c RODO oraz indywidualnych DPA podpisanych z każdym dostawcą. Supabase i Vercel oferują również opcję regionu europejskiego — projekt zaproszeniaonline.com korzysta z regionu <strong>eu-west-1 (Irlandia)</strong> dla bazy Supabase, co minimalizuje transfer danych poza EOG.
     </div>
 
     <h2>4. Czas przechowywania danych</h2>
@@ -206,8 +269,12 @@
       <li><strong>Zapytania ofertowe (lead):</strong> 12 miesięcy od ostatniego kontaktu — następnie usunięcie</li>
       <li><strong>Dane klientów (po zawarciu umowy):</strong> 5 lat od końca roku podatkowego (zgodnie z Ordynacją podatkową — art. 86 § 1) lub do upływu terminu przedawnienia roszczeń</li>
       <li><strong>Faktury i dokumenty księgowe:</strong> 5 lat — zgodnie z ustawą o rachunkowości</li>
-      <li><strong>Dane RSVP gości:</strong> do dnia ślubu + 6 miesięcy, następnie usunięcie</li>
+      <li><strong>Dane RSVP gości w zaproszeniach klientów:</strong> do dnia ślubu + 6 miesięcy, następnie usunięcie</li>
+      <li><strong>Dane RSVP / propozycji piosenek z demo (/demo):</strong> maksymalnie 6 miesięcy — następnie anonimizacja lub usunięcie</li>
+      <li><strong>Dane partnerów programu kodów rabatowych:</strong> do końca trwania współpracy + 5 lat (rozliczenia podatkowe)</li>
+      <li><strong>Statystyki użycia kodów (uses_count, daty):</strong> bezterminowo w formie zagregowanej (bez powiązania z konkretnymi parami)</li>
       <li><strong>Dane przetwarzane na podstawie zgody:</strong> do momentu wycofania zgody</li>
+      <li><strong>Logi serwera (Vercel):</strong> zgodnie z polityką prywatności dostawcy hostingu — Vercel deklaruje retention podstawowych logów dostępowych zazwyczaj do 30 dni dla planu darmowego, do 90 dni dla planów płatnych</li>
     </ul>
 
     <h2>5. Prawa użytkownika</h2>
@@ -255,7 +322,29 @@
       <strong>Pytania?</strong> Wszelkie pytania dotyczące przetwarzania Twoich danych osobowych kierujcie na adres: <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a>
     </div>
 
+    <div class="legal-back-bottom-wrap">
+      <a href="/" class="legal-back-bottom legal-back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Powrót do strony
+      </a>
+      <span class="legal-back-hint">Wrócisz do dokładnie tego samego miejsca, z którego tu trafiłeś</span>
+    </div>
+
   </main>
+
+  <script>
+    // Powrót do tego samego miejsca scroll-a (history.back zachowuje pozycję)
+    // Fallback: jeśli user trafił bezpośrednio (np. z Google) - href="/" zadziała
+    document.querySelectorAll('.legal-back-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const ref = document.referrer;
+        if (ref && new URL(ref, window.location.href).origin === window.location.origin && window.history.length > 1) {
+          e.preventDefault();
+          window.history.back();
+        }
+      });
+    });
+  </script>
 
   <footer>
     <p>&copy; 2026 <strong>zaproszeniaonline.com</strong> &middot; Projekt i realizacja <a href="https://vidokstudio.pl" target="_blank" rel="noopener">Vidok Studio</a></p>

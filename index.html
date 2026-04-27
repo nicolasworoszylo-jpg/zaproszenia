@@ -292,15 +292,17 @@
        HERO — z botanicznymi narożnikami, animowanym gradientem na "premium",
        linear() spring na CTA, scroll indicator
        ═══════════════════════════════════════════════════════════════════ */
-    /* HERO LIGHT — kluczowy wyróżnik vs demo (które ma forest deep gradient) */
+    /* HERO LIGHT — kluczowy wyróżnik vs demo + mouse-tracked spotlight (2026 trend) */
     .hero {
-      min-height: calc(100dvh - 70px); /* minus sticky header */
+      --spot-x: 50%;
+      --spot-y: 50%;
+      min-height: calc(100dvh - 70px);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 2.5rem 1.5rem;
+      padding: 4rem 1.5rem 5rem;
       position: relative;
       overflow: hidden;
       background: linear-gradient(170deg, var(--warm) 0%, var(--cream) 50%, var(--warm) 100%);
@@ -312,10 +314,14 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 60% 50% at 50% 45%, color-mix(in oklch, var(--gold), transparent 86%) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 30% at 50% 50%, color-mix(in oklch, var(--gold), transparent 92%) 0%, transparent 100%);
+        radial-gradient(ellipse 50% 40% at var(--spot-x) var(--spot-y),
+          color-mix(in oklch, var(--gold), transparent 78%) 0%,
+          color-mix(in oklch, var(--gold), transparent 92%) 35%,
+          transparent 70%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, color-mix(in oklch, var(--gold), transparent 95%) 0%, transparent 100%);
       pointer-events: none;
       z-index: -1;
+      transition: background 0.6s var(--ease-out);
     }
     .hero::after {
       content: '';
@@ -598,30 +604,86 @@
     .section-text.center { margin-left: auto; margin-right: auto; }
 
     /* ═══════════════════════════════════════════════════════════════════
-       FEATURES — 6 ikon z color-mix() + hover micro-tilt
+       FEATURES — BENTO GRID (Apple Vision Pro / Linear style 2026)
+       Asymmetric: 1 hero card large + 2 medium + 3 small
        ═══════════════════════════════════════════════════════════════════ */
     .features { background: var(--warm); }
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 2.5rem;
+      grid-template-columns: repeat(6, 1fr);
+      grid-auto-rows: minmax(180px, auto);
+      gap: 1rem;
       margin-top: 3.5rem;
     }
+    /* Bento layout: hero + 2 medium + 3 small */
+    .feature:nth-child(1) { grid-column: span 4; grid-row: span 2; }    /* HERO LARGE - własna strona */
+    .feature:nth-child(2) { grid-column: span 2; grid-row: span 1; }    /* M - odliczanie */
+    .feature:nth-child(3) { grid-column: span 2; grid-row: span 1; }    /* M - RSVP */
+    .feature:nth-child(4) { grid-column: span 2; grid-row: span 1; }    /* S - mapy */
+    .feature:nth-child(5) { grid-column: span 2; grid-row: span 1; }    /* S - muzyka */
+    .feature:nth-child(6) { grid-column: span 2; grid-row: span 1; }    /* S - design */
+
     .feature {
       text-align: left;
-      transition: transform 0.5s var(--spring);
+      padding: 1.75rem;
+      background: white;
+      border: 1px solid color-mix(in oklch, var(--gold), transparent 88%);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.5s var(--spring),
+                  box-shadow 0.5s var(--ease-out),
+                  border-color 0.4s var(--ease-out);
+      isolation: isolate;
     }
-    .feature:hover { transform: translateY(-4px); }
+    .feature::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle 200px at var(--mx, 50%) var(--my, 50%),
+        color-mix(in oklch, var(--gold), transparent 90%) 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.4s var(--ease-out);
+      pointer-events: none;
+      z-index: -1;
+    }
+    .feature:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in oklch, var(--gold), transparent 50%);
+      box-shadow: 0 18px 40px color-mix(in oklch, var(--char), transparent 92%);
+    }
+    .feature:hover::after { opacity: 1; }
+
+    /* Hero feature (1) — większa typografia + ozdobne tło */
+    .feature:nth-child(1) {
+      padding: 2.5rem;
+      background: linear-gradient(135deg, white 0%, var(--cream) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .feature:nth-child(1) h3 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+    }
+    .feature:nth-child(1) p {
+      font-size: 1.1rem;
+    }
+    .feature:nth-child(1) .feature-icon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 1.75rem;
+    }
+
     .feature-icon {
-      width: 56px;
-      height: 56px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: color-mix(in oklch, var(--gold), var(--warm) 82%);
       border: 1px solid color-mix(in oklch, var(--gold), transparent 65%);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
       color: var(--gold);
       transition: background 0.4s var(--ease-out),
                   transform 0.5s var(--spring),
@@ -630,22 +692,36 @@
     .feature:hover .feature-icon {
       background: color-mix(in oklch, var(--gold), var(--warm) 65%);
       border-color: color-mix(in oklch, var(--gold), transparent 30%);
-      transform: rotate(-6deg);
+      transform: rotate(-6deg) scale(1.05);
     }
     .feature h3 {
       font-family: var(--display);
       font-style: italic;
       font-weight: 400;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       color: var(--forest);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
+      line-height: 1.2;
     }
     .feature p {
       font-family: var(--serif);
       font-size: 1rem;
       font-weight: 300;
       color: var(--bark);
-      line-height: 1.7;
+      line-height: 1.65;
+    }
+
+    /* Mobile: bento → single column */
+    @media (max-width: 720px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+      .feature:nth-child(n) {
+        grid-column: span 1;
+        grid-row: span 1;
+      }
+      .feature:nth-child(1) { padding: 2rem; }
     }
 
     /* ═══════════════════════════════════════════════════════════════════
@@ -1767,10 +1843,6 @@
       <p class="hero-microcopy">Wycena <strong>w 4 godziny</strong> · Realizacja <strong>w 48 h</strong> · Bez zobowiązań</p>
     </div>
 
-    <div class="scroll-hint">
-      <div class="scroll-hint-track"><div class="scroll-hint-dot"></div></div>
-      <span class="scroll-hint-label">Przewiń</span>
-    </div>
   </section>
 
   <!-- TRUST STRIP — 3 punkty value prop, pod hero -->
@@ -2096,6 +2168,54 @@
 
   <script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
   <script>
+    // ═══ MOUSE-TRACKED SPOTLIGHT W HERO (2026 trend, top portfolio designerów) ═══
+    const hero = document.querySelector('.hero');
+    if (hero && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let raf = null;
+      hero.addEventListener('pointermove', (e) => {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          const rect = hero.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          hero.style.setProperty('--spot-x', x + '%');
+          hero.style.setProperty('--spot-y', y + '%');
+          raf = null;
+        });
+      });
+      hero.addEventListener('pointerleave', () => {
+        hero.style.setProperty('--spot-x', '50%');
+        hero.style.setProperty('--spot-y', '50%');
+      });
+    }
+
+    // ═══ BENTO CARD HOVER GLOW (radial follows cursor wewnątrz karty) ═══
+    document.querySelectorAll('.feature').forEach(card => {
+      card.addEventListener('pointermove', (e) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100) + '%');
+        card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');
+      });
+    });
+
+    // ═══ MAGNETIC CTAs — przyciski w hero subtelnie przyciągają kursor (Awwwards 2025) ═══
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.hero-ctas .btn, .price-cta-single').forEach(btn => {
+        const strength = 0.25; // 25% deflection — subtelne, nie nachalne
+        btn.addEventListener('pointermove', (e) => {
+          const rect = btn.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const dx = (e.clientX - cx) * strength;
+          const dy = (e.clientY - cy) * strength;
+          btn.style.transform = `translate(${dx}px, ${dy}px)`;
+        });
+        btn.addEventListener('pointerleave', () => {
+          btn.style.transform = '';
+        });
+      });
+    }
+
     // ── Sticky header — dodaj klasę .scrolled po przewinięciu ──
     const header = document.getElementById('siteHeader');
     if (header) {
