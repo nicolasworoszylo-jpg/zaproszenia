@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Zaproszenia">
+  <title>Zaproszenia</title>
+  <style>
+    .glyph { fill: #1F3B2D; }
+    .ring { fill: none; stroke: #1F3B2D; }
+    @media (prefers-color-scheme: dark) {
+      .glyph { fill: #C9A961; }
+      .ring { stroke: #C9A961; }
+    }
+  </style>
+  <circle cx="32" cy="32" r="28" class="ring" stroke-width="1"/>
+  <text x="32" y="44" class="glyph"
+        font-family="'Playfair Display', Georgia, 'Times New Roman', serif"
+        font-style="italic" font-size="36" text-anchor="middle">Z</text>
+</svg>
