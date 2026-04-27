@@ -114,26 +114,15 @@
     "areaServed": { "@type": "Country", "name": "Polska" },
     "audience": { "@type": "Audience", "audienceType": "Narzeczeni, organizatorzy wydarzeń" },
     "url": "https://zaproszeniaonline.com/",
-    "offers": [
-      {
-        "@type": "Offer",
-        "name": "Pakiet Standard",
-        "price": "499",
-        "priceCurrency": "PLN",
-        "availability": "https://schema.org/InStock",
-        "url": "https://zaproszeniaonline.com/#cennik",
-        "description": "Strona ślubna z odliczaniem, RSVP, mapami, planem dnia, galerią. Wybór z 4 palet kolorów. Realizacja 48 h."
-      },
-      {
-        "@type": "Offer",
-        "name": "Pakiet Premium",
-        "price": "699",
-        "priceCurrency": "PLN",
-        "availability": "https://schema.org/InStock",
-        "url": "https://zaproszeniaonline.com/#cennik",
-        "description": "Wszystko z pakietu Standard + muzyka w tle, custom paleta, obróbka zdjęć, sekcja Nasza historia, animowane przejścia, realizacja 24 h, 3 rundy poprawek."
-      }
-    ]
+    "offers": {
+      "@type": "Offer",
+      "name": "Cyfrowe zaproszenie ślubne — pakiet kompletny",
+      "price": "699",
+      "priceCurrency": "PLN",
+      "availability": "https://schema.org/InStock",
+      "url": "https://zaproszeniaonline.com/#cennik",
+      "description": "Kompletna strona ślubna z odliczaniem, formularzem RSVP, planem dnia, mapami, galerią, sekcją Nasza historia, custom paletą kolorów, opcjonalną muzyką w tle, obróbką zdjęć pary i animowanymi przejściami. Hosting w cenie. Realizacja 48h (24h ekspres). Do 3 rund poprawek."
+    }
   }
   </script>
 
@@ -167,7 +156,7 @@
         "name": "Ile kosztuje cyfrowe zaproszenie ślubne online?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Na zaproszeniaonline.com pakiet Standard kosztuje 499 zł jednorazowo, pakiet Premium 699 zł. Cena obejmuje całą stronę z własnym adresem URL, formularzem RSVP, mapami, planem dnia i galerią. Bez abonamentu — strona działa przez cały okres wydarzenia."
+          "text": "Na zaproszeniaonline.com obowiązuje jedna cena: 699 zł jednorazowo za kompletny pakiet. Obejmuje on całą stronę z własnym adresem URL, formularzem RSVP, planem dnia, mapami, galerią, sekcją Nasza historia, custom paletą kolorów, opcjonalną muzyką w tle, obróbką zdjęć pary i animowanymi przejściami. Bez abonamentu — strona działa przez cały okres wydarzenia. Współpracujesz z domem weselnym lub fotografem partnerskim? Zapytaj o kod rabatowy."
         }
       },
       {
@@ -175,7 +164,7 @@
         "name": "Jak długo trwa przygotowanie strony ślubnej?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Standardowo 48 godzin od dostarczenia danych. W pakiecie Premium realizacja priorytetowa 24 h. Po otrzymaniu projektu można zgłosić poprawki — do 2 rund w pakiecie Standard, 3 rundy w Premium."
+          "text": "Standardowo do 48 godzin od dostarczenia danych. Dostępna jest również realizacja ekspresowa w 24 godziny. Po otrzymaniu projektu możesz zgłosić poprawki — w cenie do 3 rund zmian."
         }
       },
       {
@@ -848,8 +837,113 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════════
-       PRICING — featured z animowanym gradient borderem (oklch),
-       shimmer na CTA, color-mix() w hover
+       PRICING — single-card variant (MVP, jedna cena)
+       ═══════════════════════════════════════════════════════════════════ */
+    .pricing-cards-single {
+      max-width: 620px;
+      margin: 3.5rem auto 0;
+    }
+    .price-card-single {
+      background: white;
+      padding: 3rem 2.5rem;
+      border: none;
+      position: relative;
+      isolation: isolate;
+      box-shadow: 0 30px 80px color-mix(in oklch, var(--char), transparent 90%);
+      transition: transform 0.5s var(--spring), box-shadow 0.5s var(--ease-out);
+    }
+    .price-card-single:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 40px 100px color-mix(in oklch, var(--char), transparent 85%);
+    }
+    /* Animowany gradient border (oklch) — stała cecha główna ceny */
+    .price-card-single::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      padding: 2px;
+      background: linear-gradient(135deg in oklch,
+        var(--gold) 0%,
+        var(--gold-l) 25%,
+        white 50%,
+        var(--gold-l) 75%,
+        var(--gold) 100%);
+      background-size: 250% 250%;
+      animation: glow-border 5s linear infinite;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .price-card-eyebrow {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .price-card-single h3 {
+      font-family: var(--display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.6rem, 3.5vw, 2rem);
+      color: var(--forest);
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .price-amount-row {
+      text-align: center;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 80%);
+      margin-bottom: 1.75rem;
+    }
+    .price-amount-row .price-amount {
+      margin: 0;
+      font-size: clamp(3rem, 7vw, 4rem);
+    }
+    .price-amount-row .price-period {
+      margin: 0.5rem 0 0;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+    }
+    .price-features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.25rem 1.5rem;
+      list-style: none;
+      margin: 0 0 2rem;
+    }
+    @media (max-width: 540px) {
+      .price-features-grid { grid-template-columns: 1fr; }
+    }
+    .price-cta-single {
+      width: 100%;
+      justify-content: center;
+      font-size: 0.9rem;
+      padding: 18px 32px;
+    }
+    .price-individual {
+      text-align: center;
+      margin-top: 1rem;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--stone);
+    }
+    .price-individual a {
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 60%);
+    }
+    .price-individual a:hover { color: var(--forest); border-bottom-color: var(--forest); }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       PRICING (LEGACY — featured z animowanym gradient borderem)
+       Pozostawione na wypadek powrotu do 2 pakietów. Aktualnie nieużywane.
        ═══════════════════════════════════════════════════════════════════ */
     .pricing { background: var(--cream); }
     .pricing-cards {
@@ -1453,6 +1547,22 @@
     /* ═══════════════════════════════════════════════════════════════════
        LEAD FORM — RODO checkbox + footer nav
        ═══════════════════════════════════════════════════════════════════ */
+    /* AFFILIATE / DISCOUNT CODE — status pod inputem */
+    .affiliate-status {
+      margin-top: 0.5rem;
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+      min-height: 1.2em;
+      transition: color 0.3s var(--ease-out);
+    }
+    .affiliate-status.checking { color: color-mix(in oklch, var(--gold), transparent 30%); font-style: italic; }
+    .affiliate-status.valid    { color: var(--gold-l); }
+    .affiliate-status.invalid  { color: #ff9999; }
+    .affiliate-status::before { content: ''; }
+    .affiliate-status.valid::before    { content: '✓ '; }
+    .affiliate-status.invalid::before  { content: '✗ '; }
+
     .lead-form-checkbox {
       display: flex;
       align-items: flex-start;
@@ -1780,49 +1890,45 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════════════
-       PRICING
+       PRICING — jeden pakiet all-in-one (MVP, minimalistycznie)
        ═══════════════════════════════════════════════════════════════════ -->
   <section class="pricing" id="cennik">
     <div class="container reveal text-center">
       <p class="section-eyebrow">Cennik</p>
-      <h2 class="section-title">Wybierz swój pakiet</h2>
-      <p class="section-text center">Jednorazowa opłata, bez abonamentu. Zaproszenie działa przez cały okres Twojego wydarzenia.</p>
+      <h2 class="section-title">Jedna cena. Wszystko w środku.</h2>
+      <p class="section-text center">Jednorazowa opłata, bez abonamentu. Zaproszenie działa przez cały okres Twojego wydarzenia. Bez ukrytych kosztów, bez kombinowania pakietami.</p>
 
-      <div class="pricing-cards reveal-stagger">
-        <div class="price-card">
-          <h3>Standard</h3>
-          <p class="price-tagline">Wszystko czego potrzebujesz</p>
-          <div class="price-amount">499<span class="currency">zł</span></div>
-          <div class="price-period">jednorazowo</div>
-          <ul class="price-features">
+      <div class="pricing-cards-single reveal">
+        <div class="price-card-single">
+          <p class="price-card-eyebrow">Pakiet kompletny</p>
+          <h3>Twoje cyfrowe zaproszenie</h3>
+          <div class="price-amount-row">
+            <div class="price-amount">699<span class="currency">zł</span></div>
+            <div class="price-period">jednorazowo · all-in-one</div>
+          </div>
+
+          <ul class="price-features price-features-grid">
             <li>Strona z własnym adresem URL</li>
             <li>Odliczanie do dnia</li>
             <li>Formularz RSVP z panelem</li>
             <li>Mapy z lokalizacjami</li>
             <li>Plan dnia</li>
             <li>Galeria zdjęć</li>
-            <li>Responsywna na telefonie</li>
-            <li>Wybór z 4 palet kolorów</li>
-          </ul>
-          <a href="#kontakt" class="price-cta">Zamów zaproszenie</a>
-        </div>
-
-        <div class="price-card featured">
-          <h3>Premium</h3>
-          <p class="price-tagline">Pełen pakiet premium</p>
-          <div class="price-amount">699<span class="currency">zł</span></div>
-          <div class="price-period">jednorazowo</div>
-          <ul class="price-features">
-            <li>Wszystko z pakietu Standard</li>
-            <li>Muzyka w tle</li>
-            <li>Custom paleta kolorów</li>
-            <li>Obróbka zdjęć pary</li>
             <li>Sekcja „Nasza historia"</li>
+            <li>Custom paleta kolorów</li>
+            <li>Muzyka w tle (opcjonalnie)</li>
+            <li>Obróbka zdjęć pary</li>
             <li>Animowane przejścia</li>
-            <li>Priorytetowa realizacja 24h</li>
-            <li>3 rundy poprawek</li>
+            <li>Realizacja 48 h · 24 h ekspres</li>
+            <li>Do 3 rund poprawek</li>
+            <li>Hosting i domena w cenie</li>
           </ul>
-          <a href="#kontakt" class="price-cta">Zamów zaproszenie</a>
+
+          <a href="#kontakt" class="btn btn-filled price-cta-single">
+            Zamów swoje zaproszenie
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <p class="price-individual">Niestandardowe wymagania? <a href="#kontakt">Indywidualna wycena</a></p>
         </div>
       </div>
 
@@ -1892,12 +1998,9 @@
             <label for="lf-event-type">Rodzaj wydarzenia</label>
           </div>
           <div class="lead-form-field">
-            <select id="lf-package" name="package" required>
-              <option value=""></option>
-              <option value="standard">Standard (499 zł)</option>
-              <option value="premium">Premium (699 zł)</option>
-            </select>
-            <label for="lf-package">Pakiet</label>
+            <input type="text" id="lf-affiliate" name="affiliate" placeholder=" " autocomplete="off" maxlength="32">
+            <label for="lf-affiliate">Kod współpracy (opcjonalnie)</label>
+            <div class="affiliate-status" id="lf-affiliate-status" aria-live="polite"></div>
           </div>
         </div>
 
@@ -1979,6 +2082,58 @@
       sync();
     });
 
+    // ── AFFILIATE CODE — walidacja na żywo z debounce (300ms) ──
+    const affInput  = document.getElementById('lf-affiliate');
+    const affStatus = document.getElementById('lf-affiliate-status');
+    let affTimer = null;
+    let affValidated = null; // {valid, discount_pct, owner_name} albo null
+
+    async function validateAffiliateCode(code) {
+      const trimmed = (code || '').trim();
+      if (!trimmed) {
+        affStatus.className = 'affiliate-status';
+        affStatus.textContent = '';
+        affValidated = null;
+        return;
+      }
+      affStatus.className = 'affiliate-status checking';
+      affStatus.textContent = 'Sprawdzam kod…';
+      try {
+        const { data, error } = await sb.rpc('validate_discount_code', { p_code: trimmed });
+        if (error) throw error;
+        const result = Array.isArray(data) ? data[0] : data;
+        if (result && result.valid) {
+          affValidated = result;
+          affStatus.className = 'affiliate-status valid';
+          affStatus.textContent = `Kod aktywny: -${result.discount_pct}% (${result.owner_name})`;
+        } else {
+          affValidated = null;
+          affStatus.className = 'affiliate-status invalid';
+          const reason = result && result.reason;
+          const msg = {
+            'not_found':       'Kod nieznany',
+            'inactive':        'Kod nieaktywny',
+            'expired':         'Kod wygasł',
+            'max_uses_reached':'Limit użyć kodu wyczerpany',
+          }[reason] || 'Kod nieprawidłowy';
+          affStatus.textContent = msg;
+        }
+      } catch (e) {
+        console.error('validate_discount_code error:', e);
+        affValidated = null;
+        affStatus.className = 'affiliate-status invalid';
+        affStatus.textContent = 'Błąd weryfikacji — spróbuj ponownie';
+      }
+    }
+
+    if (affInput) {
+      affInput.addEventListener('input', (e) => {
+        clearTimeout(affTimer);
+        const val = e.target.value;
+        affTimer = setTimeout(() => validateAffiliateCode(val), 300);
+      });
+    }
+
     // ── Supabase lead form ──
     // Prefer: return=minimal — pomija PostgREST RETURNING, dzięki czemu RLS
     // wymaga TYLKO policy INSERT (anon nie potrzebuje SELECT na leads).
@@ -2017,24 +2172,36 @@
       submitBtn.textContent = 'Wysyłam...';
       msgEl.className = 'form-msg';
 
+      const affRaw = (fd.get('affiliate') || '').toString().trim();
       const payload = {
         name,
         email,
         phone:       (fd.get('phone') || '').toString().trim() || null,
         event_type:  (fd.get('event_type') || '').toString() || null,
         event_date:  (fd.get('event_date') || '').toString() || null,
-        package:     (fd.get('package') || '').toString() || null,
         message:     (fd.get('message') || '').toString().trim() || null,
         source:      'landing',
         user_agent:  navigator.userAgent.slice(0, 500),
         referrer:    (document.referrer || '').slice(0, 500) || null,
+        affiliate_code:         affRaw ? affRaw.toUpperCase() : null,
+        affiliate_discount_pct: (affValidated && affValidated.valid) ? affValidated.discount_pct : null,
       };
 
       try {
         const { error } = await sb.from('leads').insert(payload);
         if (error) throw error;
+
+        // Jeśli był ważny kod afiliacji - zarejestruj użycie (best-effort, błąd nie blokuje)
+        if (affValidated && affValidated.valid && affRaw) {
+          sb.rpc('register_discount_code_use', { p_code: affRaw })
+            .catch((e) => console.warn('register_discount_code_use failed:', e));
+        }
+
         form.reset();
         document.querySelectorAll('.lead-form-field.has-value').forEach(el => el.classList.remove('has-value'));
+        affStatus.className = 'affiliate-status';
+        affStatus.textContent = '';
+        affValidated = null;
         showMsg('Dziękujemy! Odezwiemy się w ciągu kilku godzin na podany e-mail.', 'success');
         submitBtn.textContent = 'Wysłano ✓';
       } catch (err) {
