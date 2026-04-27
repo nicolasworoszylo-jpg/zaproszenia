@@ -1,15 +1,30 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl-PL">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<title>Anna i Michał — przykład zaproszenia | zaproszeniaonline.com</title>
-<meta name="description" content="Przykładowe cyfrowe zaproszenie ślubne na zaproszeniaonline.com — zobacz jak może wyglądać Twoje zaproszenie premium z RSVP, planem dnia i mapami.">
-<meta name="robots" content="noindex,follow">
-<meta property="og:title" content="Anna i Michał — przykład zaproszenia">
-<meta property="og:description" content="Zobacz przykład cyfrowego zaproszenia premium na zaproszeniaonline.com">
+
+<!-- ── SEO: demo jest noindex (private demo product) ── -->
+<title>Anna i Michał — przykład cyfrowego zaproszenia ślubnego | zaproszeniaonline.com</title>
+<meta name="description" content="Przykładowe cyfrowe zaproszenie ślubne online — zobacz pełen produkt z RSVP, planem dnia, mapami i galerią. 4 palety kolorów do podglądu na żywo.">
+<meta name="robots" content="noindex, follow">
+<meta name="googlebot" content="noindex, follow">
+<meta name="theme-color" content="#1E2B1F">
+<link rel="canonical" href="https://zaproszeniaonline.com/demo">
+
+<!-- ── Open Graph (link unfurl w mediach) ── -->
 <meta property="og:type" content="website">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:site_name" content="zaproszeniaonline.com">
 <meta property="og:url" content="https://zaproszeniaonline.com/demo">
+<meta property="og:title" content="Anna i Michał — przykład cyfrowego zaproszenia ślubnego">
+<meta property="og:description" content="Przykładowe zaproszenie z RSVP, planem dnia, mapami. Zobacz jak może wyglądać Twoje zaproszenie.">
+<meta property="og:image" content="https://zaproszeniaonline.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Anna i Michał — przykład zaproszenia">
+<meta name="twitter:description" content="Pełne demo cyfrowego zaproszenia ślubnego — RSVP, plan dnia, mapy, galeria.">
+<meta name="twitter:image" content="https://zaproszeniaonline.com/og-image.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
@@ -29,9 +44,15 @@
 const { useState, useEffect, useRef, useCallback } = React;
 
 // ── Supabase client (publishable / anon key — bezpieczny do osadzenia w przeglądarce) ──
+// Prefer: return=minimal — pomija PostgREST RETURNING, dzięki czemu RLS wymaga TYLKO
+// policy INSERT (anon nie potrzebuje SELECT na rsvps/song_requests = pełna prywatność:
+// gość może dodać własne potwierdzenie, ale nie może czytać cudzych).
 const SUPABASE_URL  = "https://kuyniyyieejvambyjnxy.supabase.co";
 const SUPABASE_ANON = "sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL";
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+  global: { headers: { "Prefer": "return=minimal" } },
+  auth:   { persistSession: false, autoRefreshToken: false }
+});
 
 // Identyfikator tego konkretnego demo-zaproszenia (per-couple slug w przyszłości)
 const INVITATION_SLUG = "demo-anna-michal";
@@ -85,7 +106,13 @@ const CONFIG = {
   calendarLocation: "Pałac w Korczewie, Korczew 23, 08-108 Korczew",
 };
 
-const C = { forest:"#2C3E2D", deep:"#1E2B1F", gold:"#C9A96E", goldL:"#D4B97F", warm:"#FAF6EF", cream:"#F5EDE0", parch:"#EDE4D3", stone:"#A09888", char:"#2A2622", bark:"#6B5D4F" };
+const PALETTES = [
+  { name: "Leśna zieleń", forest:"#2C3E2D", deep:"#1E2B1F", gold:"#C9A96E", goldL:"#D4B97F", warm:"#FAF6EF", cream:"#F5EDE0", parch:"#EDE4D3", stone:"#A09888", char:"#2A2622", bark:"#6B5D4F" },
+  { name: "Granat + róż", forest:"#1B2838", deep:"#111D2B", gold:"#D4A0A0", goldL:"#E0B5B5", warm:"#FDF8F6", cream:"#F9F0ED", parch:"#F0E4DF", stone:"#9A9098", char:"#2A2228", bark:"#6B5D65" },
+  { name: "Bordo + kość", forest:"#4A1C2B", deep:"#35101D", gold:"#C8A87C", goldL:"#D4B88E", warm:"#FBF7F0", cream:"#F5EDE2", parch:"#EBE0D2", stone:"#A09590", char:"#2A2424", bark:"#6B5B55" },
+  { name: "Szałwia", forest:"#5A6B5A", deep:"#434F43", gold:"#B8A080", goldL:"#C8B090", warm:"#F8F5F0", cream:"#F0EBE4", parch:"#E5DDD3", stone:"#9A9590", char:"#2A2826", bark:"#6B6058" },
+];
+const C = { ...PALETTES[0] };  // mutable - PaletteSwitcher mutuje przez Object.assign + remount via key={paletteIdx}
 const F = { display: "'Playfair Display',Georgia,serif", body: "'Cormorant Garamond',Georgia,serif", mono: "'DM Mono','Courier New',monospace" };
 
 /* ═══ UDOSKONALENIE #7: Spring easing cubic-bezier (z sekcji 7 raportu - linear() approx) ═══ */
@@ -381,7 +408,27 @@ function AudioPlayer(){
   </div>);
 }
 
+
+/* ═══ DEMO-ONLY: powrót do oferty (floating top-left) ═══ */
+function ReturnToHome(){
+  const [hover, setHover] = useState(false);
+  return (<a href="/" aria-label="Powrót do strony z ofertą" onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} style={{position:"fixed",top:14,left:14,zIndex:160,display:"inline-flex",alignItems:"center",gap:8,padding:"9px 16px",background:`${C.deep}EE`,backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",border:`1px solid ${hover?C.gold:`${C.gold}40`}`,borderRadius:24,color:hover?C.warm:C.gold,fontFamily:F.body,fontSize:11,letterSpacing:2.5,textTransform:"uppercase",fontWeight:500,textDecoration:"none",transition:`all .35s ${SPRING}`,boxShadow:hover?`0 6px 20px rgba(0,0,0,.25)`:`0 4px 14px rgba(0,0,0,.18)`,transform:hover?"translateX(-2px)":"translateX(0)"}}>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Powrót do oferty
+  </a>);
+}
+
+/* ═══ DEMO-ONLY: zmiana palety na żywo (floating bottom-left) ═══ */
+function PaletteSwitcher({active, onChange}){
+  return (<div role="group" aria-label="Zmiana palety kolorów" style={{position:"fixed",bottom:20,left:20,zIndex:160,display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:`${C.deep}EE`,backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",border:`1px solid ${C.gold}40`,borderRadius:32,boxShadow:`0 4px 18px rgba(0,0,0,.22)`}}>
+    <span aria-hidden="true" style={{fontFamily:F.body,fontSize:10,letterSpacing:2.5,textTransform:"uppercase",color:`${C.gold}B0`,fontWeight:500,paddingLeft:4}}>Paleta</span>
+    {PALETTES.map((p,i)=>(<button key={i} onClick={()=>onChange(i)} title={p.name} aria-label={`Zmień paletę: ${p.name}`} aria-pressed={active===i} style={{width:24,height:24,borderRadius:"50%",background:`linear-gradient(135deg, ${p.forest} 0%, ${p.gold} 100%)`,border:active===i?`2px solid ${C.warm}`:`1px solid ${p.gold}80`,cursor:"pointer",padding:0,transition:`all .35s ${SPRING}`,transform:active===i?"scale(1.2)":"scale(1)",boxShadow:active===i?`0 0 0 2px ${C.gold}40`:"none"}}/>))}
+  </div>);
+}
+
 function App(){
+  const [paletteIdx, setPaletteIdx] = useState(0);
+  const setPalette = (i) => { Object.assign(C, PALETTES[i]); setPaletteIdx(i); };
   const Filigree=()=>(<div style={{padding:"12px 0",textAlign:"center",position:"relative",overflow:"hidden"}}>
     <svg viewBox="0 0 600 40" fill="none" style={{width:"min(90%,500px)",height:40,display:"block",margin:"0 auto",opacity:.35}}>
       <path d="M0 20H180" stroke={C.gold} strokeWidth=".4"/>
@@ -407,10 +454,10 @@ function App(){
     </svg>
     <div style={{position:"absolute",top:"50%",left:0,right:0,height:1,background:`linear-gradient(90deg,transparent,${C.gold}10,transparent)`,transform:"translateY(-50%)",zIndex:0}}/>
   </div>);
-  return (<div style={{margin:0,padding:0,background:C.warm,minHeight:"100dvh",overflowX:"hidden",animation:"pageIn 1.2s ease-out"}}>
+  return (<div key={paletteIdx} style={{margin:0,padding:0,background:C.warm,minHeight:"100dvh",overflowX:"hidden",animation:"pageIn 1.2s ease-out"}}>
   {/* ═══ UDOSKONALENIE #6: prefers-reduced-motion + #7: focus-visible + #12: shimmer aktywny + nowe animacje ═══ */}
   <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@400&display=swap');*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}::selection{background:${C.gold}30;color:${C.forest}}input::placeholder,textarea::placeholder{color:${C.stone};font-style:italic;font-weight:300}@keyframes pageIn{from{opacity:0}to{opacity:1}}@keyframes float{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(8px);opacity:.9}}@keyframes scaleIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}@keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}@keyframes spinDiamond{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}@keyframes modalIn{from{opacity:0;transform:scale(0.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}@keyframes scrollDot{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(6px)}}@keyframes celebFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(0)}}@keyframes heroShimmer{0%{background-position:-200% center}100%{background-position:200% center}}@keyframes tlPulse{0%,100%{box-shadow:0 0 20px ${C.deep}}50%{box-shadow:0 0 20px ${C.deep}, 0 0 8px ${C.gold}20}}.ceremony-card:hover{transform:translateY(-4px)!important;box-shadow:0 12px 40px ${C.gold}10!important}.detail-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px ${C.gold}08}.glow-border:hover::after{opacity:1}.shimmer-text{background:linear-gradient(105deg,${C.warm} 0%,${C.warm} 35%,${C.goldL} 50%,${C.warm} 65%,${C.warm} 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:heroShimmer 6s ease-in-out infinite}.amp-rotate{transition:transform 2s cubic-bezier(.16,1,.3,1)}.amp-rotate:hover{transform:rotate(15deg) scale(1.1)}.tl-icon{animation:tlPulse 3s ease-in-out infinite}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:${C.warm}}::-webkit-scrollbar-thumb{background:${C.gold}50;border-radius:3px}img{max-width:100%;height:auto}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid ${C.gold};outline-offset:2px}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}.shimmer-text{animation:none!important;-webkit-text-fill-color:${C.warm}!important}}@media(max-width:768px){.story-photos{display:none!important}.story-wrap{gap:0!important;max-width:100%!important}.story-text{max-width:100%!important;flex:1 1 100%!important}}@media(max-width:480px){section{padding-left:16px!important;padding-right:16px!important}.detail-grid{grid-template-columns:1fr!important;max-width:400px!important}.ceremony-wrap{gap:16px!important}.nav-inner{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap!important;justify-content:flex-start!important;gap:14px!important;padding:11px 16px!important}.nav-inner::-webkit-scrollbar{display:none}.heart-ph{width:200px!important;height:200px!important}}@media(max-width:360px){section{padding-left:12px!important;padding-right:12px!important}.hero-names{font-size:clamp(38px,12vw,60px)!important}}`}</style>
-  <Nav/><AudioPlayer/><Hero/><Countdown/><Filigree/><Ceremony/><Timeline/><OurStory/><Filigree/><Details/><RSVPSection/><Gallery/><Filigree/><Gifts/><Footer/>
+  <ReturnToHome/><PaletteSwitcher active={paletteIdx} onChange={setPalette}/><Nav/><AudioPlayer/><Hero/><Countdown/><Filigree/><Ceremony/><Timeline/><OurStory/><Filigree/><Details/><RSVPSection/><Gallery/><Filigree/><Gifts/><Footer/>
 </div>)}
 
 

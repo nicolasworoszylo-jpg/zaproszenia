@@ -1,0 +1,44 @@
+# robots.txt — zaproszeniaonline.com
+# Strategia: indeksować landing (/), nie indeksować demo (/demo) ani podzasobów.
+# AI crawlers explicit allow — żeby ChatGPT, Claude, Perplexity, Gemini mogły cytować markę.
+
+User-agent: *
+Allow: /
+Disallow: /demo
+Disallow: /demo/
+
+# ── AI crawlers (GEO: maksymalizacja szans na cytowania) ──
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+Sitemap: https://zaproszeniaonline.com/sitemap.xml
