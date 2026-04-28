@@ -1,0 +1,17 @@
+# Pliki które Vercel ignoruje (nie próbuje budować ani serwować)
+
+# Edge Function template - wymaga @vercel/og w package.json przed aktywacją
+# (aktualnie nieaktywne, planowane na multi-tenant)
+api/
+
+# Supabase Edge Functions - deployowane przez supabase CLI, nie przez Vercel
+supabase/
+
+# Dokumentacja techniczna - nie publikujemy publicznie
+LEGAL_TODO.md
+SEO_SUBMIT_INSTRUCTIONS.md
+AFFILIATE_INSTRUCTIONS.md
+RCP_README.md
+
+# Build script (wewnętrzny)
+build_demo.py
