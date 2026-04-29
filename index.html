@@ -72,6 +72,7 @@
        Pure white + near-black + jeden akcent. Generous whitespace.
        ═══════════════════════════════════════════════════════════════════ */
     :root {
+      color-scheme: light;          /* 2026: native UI hint — prevents iOS auto-flip */
       --bg:        #FFFFFF;
       --ink:       #0A0A0A;
       --ink-soft:  #4A4A4A;
@@ -88,8 +89,34 @@
       --spring:    linear(0, 0.009, 0.035 2.1%, 0.141, 0.281 6.7%, 0.723 12.9%, 0.938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.129 32.8%, 1.051 39.6%, 1.017 43.1%, 0.991, 0.977 51%, 0.974 53.8%, 0.975 57.1%, 0.997 69.8%, 1.003 76.9%, 1.004 83.8%, 1);
     }
 
+    /* ── 2026: View Transitions API — smooth cross-page nav (Chrome 111+, Safari 18+) ── */
+    @view-transition { navigation: auto; }
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 0.45s;
+      animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ── 2026 WCAG 2.2: visible focus rings (forest, never invisible) ── */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    .btn:focus-visible,
+    .nav-cta:focus-visible {
+      outline-offset: 4px;
+    }
+    /* nie pokazuj outline na zwykłym kliku myszką — tylko klawiatura */
+    :focus:not(:focus-visible) { outline: none; }
+
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: smooth; }
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      scroll-behavior: smooth;
+      scroll-padding-top: 80px;     /* 2026: anchor nav offset for sticky header */
+    }
     body {
       font-family: var(--sans);
       font-size: 17px;
