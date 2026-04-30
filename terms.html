@@ -1,3 +1,4 @@
+<!-- TEMPLATE — minimal legal page brand zgodny z landing (Fraunces+Inter+forest nav) -->
 <!DOCTYPE html>
 <html lang="pl-PL">
 <head>
@@ -13,102 +14,141 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,400;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --forest: #2C3E2D; --deep: #1E2B1F; --gold: #C9A96E; --gold-l: #D4B97F;
-      --warm: #FAF6EF; --cream: #F5EDE0; --parch: #EDE4D3; --stone: #A09888;
-      --char: #2A2622; --bark: #6B5D4F;
-      --display: 'Playfair Display', Georgia, serif;
-      --serif: 'Cormorant Garamond', Georgia, serif;
-      --sans: 'Outfit', system-ui, sans-serif;
+      color-scheme: light;
+      --bg:        #FFFFFF;
+      --ink:       #0A0A0A;
+      --ink-soft:  #4A4A4A;
+      --ink-mute:  #999999;
+      --line:      #EBEBEB;
+      --accent:    #2C3E2D;
+      --accent-h:  #1E2B1F;
+      --gold:      #C9A96E;
+      --serif:     'Fraunces', Georgia, 'Times New Roman', serif;
+      --sans:      'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
     }
     *, *::before, *::after { margin:0; padding:0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { font-family: var(--sans); color: var(--char); background: var(--warm); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--ink);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
 
-    .legal-header { background: linear-gradient(170deg, var(--deep) 0%, var(--forest) 50%, var(--deep) 100%); color: var(--warm); padding: 4rem 1.5rem 3rem; text-align: center; position: relative; overflow: hidden; }
-    .legal-header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 45%, color-mix(in oklch, var(--gold), transparent 92%) 0%, transparent 70%); pointer-events: none; }
-    .legal-back { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; background: color-mix(in oklch, var(--gold), transparent 88%); border: 1px solid color-mix(in oklch, var(--gold), transparent 60%); color: var(--gold); font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; border-radius: 24px; transition: all 0.3s ease; margin-bottom: 1.5rem; }
-    .legal-back:hover { background: color-mix(in oklch, var(--gold), transparent 80%); color: var(--gold-l); transform: translateX(-2px); }
-    .legal-eyebrow { font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
-    .legal-title { font-family: var(--display); font-style: italic; font-weight: 400; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.2; }
-    .legal-meta { margin-top: 1rem; font-family: var(--serif); font-style: italic; color: color-mix(in oklch, var(--warm), transparent 35%); font-size: 1rem; }
+    /* Nav — IDENTYCZNY jak landing (forest gradient sticky + cream brand + gold CTA) */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: linear-gradient(180deg, #2C3E2D 0%, #243325 100%);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(201,169,110,0.18);
+      color: #FAF6EF;
+    }
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto;
+      padding: max(1rem, env(safe-area-inset-top, 0)) max(1.5rem, env(safe-area-inset-right, 0)) 1rem max(1.5rem, env(safe-area-inset-left, 0));
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: #FAF6EF; }
+    .brand-mark { width: 28px; height: 28px; }
+    .brand-mark circle { stroke: #FAF6EF; }
+    .brand-mark text { fill: #FAF6EF; }
+    .brand-name { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.05rem; letter-spacing: -0.015em; color: #FAF6EF; }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: rgba(250,246,239,0.78); text-decoration: none; transition: color 0.2s var(--ease); }
+    .nav-links a:hover { color: #C9A96E; }
+    .nav-cta { padding: 9px 18px !important; background: #C9A96E; color: #2C3E2D !important; border-radius: 100px; font-weight: 600 !important; transition: all 0.3s var(--ease); }
+    .nav-cta:hover { background: #D4B97F; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(201,169,110,0.35); }
+    @media (max-width: 720px) {
+      .nav-links a:not(.nav-cta) { display: none; }
+      .nav-cta { padding: 8px 14px !important; font-size: 0.78rem !important; }
+      .brand-name { font-size: 0.95rem; }
+    }
 
-    main { max-width: 760px; margin: 0 auto; padding: 4rem 1.5rem; }
-    main h2 { font-family: var(--display); font-style: italic; font-weight: 400; font-size: clamp(1.5rem, 3vw, 2rem); color: var(--forest); margin: 3rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 75%); }
-    main h2:first-of-type { margin-top: 0; }
-    main h3 { font-family: var(--display); font-style: italic; font-weight: 400; font-size: 1.25rem; color: var(--forest); margin: 1.75rem 0 0.5rem; }
-    main p, main li { font-size: 1.02rem; color: var(--bark); margin-bottom: 0.85rem; }
-    main strong { color: var(--char); font-weight: 500; }
+    /* Legal header — minimalistic editorial */
+    .legal-header { padding: 5rem 1.5rem 3rem; text-align: center; max-width: 760px; margin: 0 auto; }
+    .legal-eyebrow { font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; font-weight: 500; }
+    .legal-title { font-family: var(--serif); font-weight: 400; font-style: italic; font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--ink); }
+    .legal-meta { margin-top: 1rem; font-size: 0.95rem; color: var(--ink-mute); }
+    .legal-back { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 2rem; padding: 8px 16px; border: 1px solid var(--line); border-radius: 100px; color: var(--ink-soft); font-size: 0.85rem; text-decoration: none; transition: all 0.3s var(--ease); }
+    .legal-back:hover { border-color: var(--accent); color: var(--accent); transform: translateX(-2px); }
+
+    /* Main content — minimal editorial style */
+    main { max-width: 760px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+    main h2 { font-family: var(--serif); font-weight: 400; font-style: italic; font-size: clamp(1.5rem, 3vw, 2rem); color: var(--ink); margin: 3rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); letter-spacing: -0.02em; }
+    main h2:first-of-type { margin-top: 1rem; }
+    main h3 { font-family: var(--serif); font-weight: 500; font-size: 1.2rem; color: var(--ink); margin: 1.75rem 0 0.5rem; }
+    main p, main li { font-size: 1rem; color: var(--ink-soft); margin-bottom: 0.85rem; }
+    main strong { color: var(--ink); font-weight: 500; }
     main ul, main ol { margin-left: 1.5rem; margin-bottom: 1rem; }
     main li { margin-bottom: 0.4rem; }
-    main a { color: var(--gold); text-decoration: none; border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 60%); transition: color 0.3s, border-color 0.3s; }
-    main a:hover { color: var(--forest); border-bottom-color: var(--forest); }
-    .legal-callout { background: var(--cream); border-left: 3px solid var(--gold); padding: 1.25rem 1.5rem; margin: 1.5rem 0; font-family: var(--serif); font-style: italic; font-size: 1rem; color: var(--bark); }
-    .legal-callout strong { color: var(--forest); font-style: normal; }
+    main a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; transition: color 0.3s; }
+    main a:hover { color: var(--accent-h); }
 
-    footer { padding: 2rem 1.5rem; text-align: center; background: var(--warm); border-top: 1px solid color-mix(in oklch, var(--gold), transparent 85%); font-family: var(--serif); font-size: 0.95rem; color: var(--bark); }
-    footer a { color: var(--gold); text-decoration: none; border-bottom: 1px solid color-mix(in oklch, var(--gold), transparent 60%); }
-    footer a:hover { color: var(--gold-l); }
-    .footer-nav { margin-top: 0.75rem; font-size: 0.85rem; display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
-    *:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .legal-callout { background: #F8F8F6; border-left: 3px solid var(--accent); padding: 1.25rem 1.5rem; margin: 1.5rem 0; font-style: italic; color: var(--ink-soft); }
+    .legal-callout strong { color: var(--accent); font-style: normal; }
 
-    .legal-back-bottom-wrap { max-width: 760px; margin: 4rem auto 0; padding: 2rem 0 0; border-top: 1px solid color-mix(in oklch, var(--gold), transparent 80%); text-align: center; }
-    .legal-back-bottom { display: inline-flex; align-items: center; gap: 10px; padding: 14px 32px; background: var(--forest); color: var(--warm); font-family: var(--sans); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--forest); transition: background 0.3s, border-color 0.3s, transform 0.4s cubic-bezier(0.34,1.56,0.64,1), color 0.3s; }
-    .legal-back-bottom:hover { background: var(--gold); border-color: var(--gold); color: var(--char); transform: translateY(-2px); }
-    .legal-back-bottom svg { width: 16px; height: 16px; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
-    .legal-back-bottom:hover svg { transform: translateX(-3px); }
-    .legal-back-hint { display: block; margin-top: 0.85rem; font-family: var(--serif); font-style: italic; font-size: 0.9rem; color: var(--stone); }
+    .legal-back-bottom-wrap { max-width: 760px; margin: 3rem auto 0; padding: 2rem 1.5rem 0; border-top: 1px solid var(--line); text-align: center; }
+    .legal-back-bottom { display: inline-flex; align-items: center; gap: 10px; padding: 12px 24px; background: var(--ink); color: var(--bg); font-size: 0.9rem; text-decoration: none; border-radius: 100px; transition: all 0.3s var(--ease); }
+    .legal-back-bottom:hover { background: var(--accent); transform: translateY(-1px); }
 
-    @media (max-width: 640px) {
-      main { padding: 3rem 1.25rem; }
-      .legal-header { padding: 3rem 1.25rem 2rem; }
-    }
+    footer { padding: 2rem 1.5rem; text-align: center; background: var(--bg); border-top: 1px solid var(--line); color: var(--ink-mute); font-size: 0.85rem; }
+    footer strong { color: var(--ink-soft); font-weight: 500; }
+    .footer-nav { margin-top: 0.75rem; display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+    footer a { color: var(--ink-mute); text-decoration: none; transition: color 0.3s; }
+    footer a:hover { color: var(--accent); }
 
-    @media print {
-      body { background: white; color: black; font-size: 11pt; line-height: 1.5; }
-      .legal-header { background: none; color: black; padding: 1rem 0; border-bottom: 2px solid black; }
-      .legal-header * { color: black !important; }
-      .legal-back, .legal-back-bottom-wrap, footer .footer-nav { display: none; }
-      main { max-width: 100%; padding: 1.5rem 0; }
-      main h2 { color: black; border-bottom: 1px solid #999; page-break-after: avoid; margin-top: 2rem; }
-      main h3 { color: black; page-break-after: avoid; }
-      main p, main li { color: black; orphans: 3; widows: 3; }
-      main a { color: black; text-decoration: underline; }
-      main a[href^="http"]:after, main a[href^="mailto"]:after { content: " (" attr(href) ")"; font-size: 0.85em; }
-      .legal-callout { background: #f5f5f5; border-left: 3px solid black; page-break-inside: avoid; }
-      ol li { page-break-inside: avoid; }
-      footer { border-top: 1px solid #ccc; padding: 1rem 0; }
-      footer p { color: black; }
-    }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
   </style>
 </head>
 <body>
 
-  <header class="legal-header">
-    <a href="/" class="legal-back legal-back-link">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      Powrót
-    </a>
-    <div class="legal-eyebrow">Dokumenty prawne</div>
-    <h1 class="legal-title">Regulamin świadczenia usług</h1>
-    <div class="legal-meta">Obowiązuje od 27 kwietnia 2026</div>
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="/" class="brand" aria-label="zaproszeniaonline.com">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="28" fill="none" stroke="#FAF6EF" stroke-width="1.4"/>
+          <text x="32" y="44" fill="#FAF6EF" font-family="Fraunces, Georgia, serif" font-style="italic" font-size="34" text-anchor="middle">Z</text>
+        </svg>
+        <span class="brand-name">zaproszeniaonline.com</span>
+      </a>
+      <nav class="nav-links" aria-label="Nawigacja">
+        <a href="/#cennik">Cennik</a>
+        <a href="/demo">Zobacz demo</a>
+        <a href="/#kontakt" class="nav-cta">Zamów</a>
+      </nav>
+    </div>
   </header>
+
+  <div class="legal-header">
+    <a href="/" class="legal-back">← Wróć na stronę główną</a>
+    <p class="legal-eyebrow">Regulamin</p>
+    <h1 class="legal-title">Zasady <em>współpracy</em></h1>
+    <p class="legal-meta">Ostatnia aktualizacja: 28 kwietnia 2026</p>
+  </div>
 
   <main>
 
     <h2>§ 1. Definicje</h2>
     <p>Użyte w Regulaminie pojęcia oznaczają:</p>
     <ul>
-      <li><strong>Usługodawca</strong> — Vidok Studio Nicolas Woroszyło, NIP <strong>[DO UZUPEŁNIENIA]</strong>, REGON <strong>[DO UZUPEŁNIENIA]</strong>, prowadzący działalność pod marką zaproszeniaonline.com</li>
+      <li><strong>Usługodawca</strong> — Nicolas Woroszyło, NIP <strong>[DO UZUPEŁNIENIA]</strong>, REGON <strong>[DO UZUPEŁNIENIA]</strong>, prowadzący działalność pod marką zaproszeniaonline.com</li>
       <li><strong>Klient</strong> — osoba fizyczna posiadająca pełną zdolność do czynności prawnych, osoba prawna lub jednostka organizacyjna nieposiadająca osobowości prawnej, zamawiająca usługę</li>
       <li><strong>Konsument</strong> — Klient będący osobą fizyczną zawierający umowę w celu niezwiązanym bezpośrednio z jego działalnością gospodarczą lub zawodową</li>
       <li><strong>Serwis</strong> — strona internetowa pod adresem zaproszeniaonline.com</li>
       <li><strong>Usługa</strong> — przygotowanie indywidualnie zaprojektowanej strony internetowej będącej cyfrowym zaproszeniem ślubnym lub na inne wydarzenie</li>
       <li><strong>Zaproszenie</strong> — efekt końcowy Usługi: gotowa strona internetowa pod adresem URL przekazanym Klientowi</li>
-      <li><strong>Pakiet</strong> — Standard (499 zł) lub Premium (699 zł), różniący się zakresem funkcji</li>
+      <li><strong>Pakiet</strong> — kompletny zestaw funkcji za 699 zł (jednorazowo, bez abonamentu)</li>
     </ul>
 
     <h2>§ 2. Postanowienia ogólne</h2>
@@ -121,8 +161,7 @@
     <h2>§ 3. Zakres usług</h2>
     <ol>
       <li>Usługodawca świadczy Usługę polegającą na zaprojektowaniu i wdrożeniu indywidualnie zaprojektowanej strony internetowej (Zaproszenia) na wskazane wydarzenie.</li>
-      <li>Pakiet <strong>Standard</strong> (499 zł) obejmuje: stronę z własnym adresem URL, sekcje: hero z odliczaniem, formularz RSVP z panelem dla Klienta, mapy z lokalizacjami, plan dnia, galerię zdjęć, responsywność na każdym urządzeniu, wybór z 4 palet kolorów, do 2 rund poprawek.</li>
-      <li>Pakiet <strong>Premium</strong> (699 zł) obejmuje wszystko z pakietu Standard, a dodatkowo: muzykę w tle, custom paletę kolorów, obróbkę zdjęć pary (do 5 ujęć), sekcję „Nasza historia" z chronologią, animowane przejścia, priorytetową realizację 24h, do 3 rund poprawek.</li>
+      <li>Pakiet <strong>kompletny</strong> (699 zł) obejmuje: stronę z własnym adresem URL, sekcję hero z odliczaniem, formularz potwierdzania obecności (RSVP) z panelem dla Klienta, mapy z lokalizacjami, plan dnia, galerię zdjęć, sekcję „Nasza historia" z chronologią, custom paletę kolorów, opcjonalną muzykę w tle, obróbkę zdjęć pary (do 5 ujęć), animowane przejścia, responsywność na każdym urządzeniu, do 3 rund poprawek.</li>
       <li>Usługa nie obejmuje: pisania tekstów (Klient dostarcza), wykonania zdjęć, hostingu domeny krócej niż przez okres do końca wydarzenia + 30 dni.</li>
     </ol>
 
@@ -136,8 +175,8 @@
 
     <h2>§ 5. Termin realizacji</h2>
     <ol>
-      <li>Termin realizacji Usługi w pakiecie Standard wynosi <strong>do 48 godzin</strong> od otrzymania kompletu danych od Klienta.</li>
-      <li>Termin realizacji Usługi w pakiecie Premium wynosi <strong>do 24 godzin</strong> od otrzymania kompletu danych od Klienta.</li>
+      <li>Standardowy termin realizacji Usługi wynosi <strong>do 24 godzin</strong> od otrzymania kompletu danych od Klienta.</li>
+      <li>W przypadku wyjątkowo pilnych terminów (mniej niż 24 h przed wydarzeniem) możliwa jest realizacja ekspresowa za dodatkową dopłatą uzgodnioną indywidualnie.</li>
       <li>Czas oczekiwania na akceptację poprawek przez Klienta nie jest wliczany do terminu realizacji.</li>
     </ol>
 
@@ -217,20 +256,15 @@
 
   </main>
 
-  <script>
-    document.querySelectorAll('.legal-back-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        const ref = document.referrer;
-        if (ref && new URL(ref, window.location.href).origin === window.location.origin && window.history.length > 1) {
-          e.preventDefault();
-          window.history.back();
-        }
-      });
-    });
-  </script>
+  <div class="legal-back-bottom-wrap">
+    <a href="/" class="legal-back-bottom">
+      Wróć na stronę główną
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
 
   <footer>
-    <p>&copy; 2026 <strong>zaproszeniaonline.com</strong> &middot; Projekt i realizacja <a href="https://vidokstudio.pl" target="_blank" rel="noopener">Vidok Studio</a></p>
+    <p>&copy; 2026 <strong>zaproszeniaonline.com</strong> &middot; Wszystkie prawa zastrzeżone</p>
     <nav class="footer-nav">
       <a href="/">Strona główna</a>
       <a href="/privacy">Polityka prywatności</a>
@@ -238,6 +272,8 @@
       <a href="/terms">Regulamin</a>
     </nav>
   </footer>
+
+  
 
 </body>
 </html>
