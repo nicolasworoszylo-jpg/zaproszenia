@@ -141,21 +141,22 @@
     .skip { position: absolute; top: -100px; left: 1rem; padding: 12px 22px; background: var(--ink); color: var(--bg); font-size: 0.85rem; text-decoration: none; border-radius: 4px; z-index: 200; transition: top 0.3s var(--ease); }
     .skip:focus { top: 1rem; }
 
-    /* ─── HEADER — original forest green (brand strong, charakterny) ─── */
+    /* ─── HEADER — minimal jasny, spójny z resztą landing (białe + forest accent) ─── */
     .nav {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: linear-gradient(180deg, #2C3E2D 0%, #243325 100%);
+      background: rgba(255,255,255,0.82);
       backdrop-filter: saturate(180%) blur(20px);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid rgba(201,169,110,0.18);
-      transition: border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
-      color: #FAF6EF;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.4s var(--ease), box-shadow 0.4s var(--ease), background 0.4s var(--ease);
+      color: var(--ink);
     }
     .nav.scrolled {
-      border-bottom-color: rgba(201,169,110,0.32);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+      border-bottom-color: var(--line);
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 4px 18px rgba(10,15,12,0.04);
     }
     .nav-inner {
       max-width: 1280px;
@@ -171,21 +172,21 @@
       align-items: center;
       gap: 10px;
       text-decoration: none;
-      color: #FAF6EF;
+      color: var(--ink);
     }
     .brand-mark {
       width: 28px;
       height: 28px;
     }
-    .brand-mark circle { stroke: #FAF6EF !important; }
-    .brand-mark text { fill: #FAF6EF !important; }
+    .brand-mark circle { stroke: var(--accent) !important; }
+    .brand-mark text { fill: var(--accent) !important; }
     .brand-name {
       font-family: var(--serif);
       font-style: italic;
       font-weight: 400;
       font-size: 1.05rem;
       letter-spacing: -0.015em;
-      color: #FAF6EF;
+      color: var(--ink);
     }
     .nav-links {
       display: flex;
@@ -195,26 +196,25 @@
     .nav-links a {
       font-size: 0.875rem;
       font-weight: 500;
-      color: rgba(250,246,239,0.78);
+      color: var(--ink-soft);
       text-decoration: none;
       transition: color 0.2s var(--ease);
       display: inline-flex;
       align-items: center;
     }
-    .nav-links a:hover { color: #C9A96E; }
+    .nav-links a:hover { color: var(--accent); }
     .nav-cta {
       padding: 9px 18px !important;
-      background: #C9A96E;
-      color: #2C3E2D !important;
+      background: var(--accent);
+      color: var(--bg) !important;
       border-radius: 100px;
-      font-weight: 600 !important;
+      font-weight: 500 !important;
       transition: background 0.3s var(--ease), transform 0.3s var(--spring), box-shadow 0.3s var(--ease);
     }
     .nav-cta:hover {
-      background: #D4B97F;
-      color: #1E2B1F !important;
+      background: var(--accent-h);
       transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(201,169,110,0.35);
+      box-shadow: 0 6px 18px rgba(44,62,45,0.25);
     }
     @media (max-width: 720px) {
       .nav-links a:not(.nav-cta) { display: none; }
@@ -522,13 +522,30 @@
       font-size: 0.85rem;
       color: var(--ink-mute);
     }
-    .price-features {
-      list-style: none;
-      margin: 2rem 0;
-      text-align: left;
+    .price-features-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.5rem 1.25rem;
+      gap: 1.5rem 2.5rem;
+      margin: 2rem 0;
+      text-align: left;
+    }
+    .price-features-label {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .price-features-col { min-width: 0; }
+    .price-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
     .price-features li {
       font-size: 0.9rem;
@@ -574,10 +591,11 @@
     }
     .price-trust span::before { content: '· '; color: var(--ink-mute); }
     .price-trust span:first-child::before { content: ''; }
-    @media (max-width: 540px) {
-      .price-features { grid-template-columns: 1fr; }
+    @media (max-width: 640px) {
+      .price-features-grid { grid-template-columns: 1fr; gap: 1.5rem; }
       .price-card { padding: 2rem 1.5rem; }
     }
+    .price-features li strong { color: var(--accent); font-weight: 500; }
 
     /* ─── CTA / LEAD FORM ─── */
     .cta { background: var(--bg); }
@@ -647,6 +665,59 @@
     .affiliate-status.invalid { color: #B91C1C; }
     .affiliate-status.valid::before { content: '✓ '; }
     .affiliate-status.invalid::before { content: '✗ '; }
+    .lead-form-attach {
+      margin-top: 0.5rem;
+    }
+    .lead-form-attach-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 0.35rem;
+      display: block;
+    }
+    .lead-form-attach-help {
+      font-size: 0.78rem;
+      color: var(--ink-mute);
+      margin-bottom: 0.65rem;
+      line-height: 1.5;
+    }
+    .lead-form-file {
+      width: 100%;
+      padding: 0.7rem;
+      background: #FAFAFA;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: border-color 0.3s var(--ease), background 0.3s;
+    }
+    .lead-form-file:hover { border-color: var(--accent); background: #F5F5F2; }
+    .lead-form-file::file-selector-button {
+      padding: 8px 14px;
+      margin-right: 12px;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 100px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .lead-form-file::file-selector-button:hover { background: var(--accent-h); }
+    .lead-form-file-list {
+      margin-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+    }
+    .lead-form-file-list-item { display: flex; align-items: center; gap: 6px; }
+    .lead-form-file-list-item::before { content: "📎"; font-size: 0.9rem; }
     .lead-form-checkbox {
       display: flex;
       align-items: flex-start;
@@ -827,8 +898,107 @@
     }
     .btn-primary:hover::after { opacity: 1; }
 
-    /* 7. Section dividers — subtle horizontal line z gold akcentem (rzadko, dla rytmu) */
+    /* 7. Section dividers — subtle ornament centered (eleganckie, nie krzyczy) */
     section + section { position: relative; }
+    section + section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: clamp(120px, 22vw, 220px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--line) 20%, var(--accent) 50%, var(--line) 80%, transparent);
+      opacity: 0.55;
+    }
+    section + section::after {
+      content: "";
+      position: absolute;
+      top: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      opacity: 0.5;
+    }
+
+    /* ─── FAQ visible widget (8 details + summary) ─── */
+    .faq-section {
+      padding: clamp(4rem, 10vw, 7rem) 1.5rem;
+      background: linear-gradient(180deg, var(--bg) 0%, #FAFAF8 100%);
+    }
+    .faq-list {
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--line);
+      transition: background 0.3s var(--ease);
+    }
+    .faq-item:first-of-type { border-top: 1px solid var(--line); }
+    .faq-item summary {
+      cursor: pointer;
+      padding: 1.4rem 2.5rem 1.4rem 0.25rem;
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+      color: var(--ink);
+      list-style: none;
+      position: relative;
+      transition: color 0.3s var(--ease);
+      letter-spacing: -0.01em;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after {
+      content: "+";
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--sans);
+      font-size: 1.8rem;
+      font-weight: 200;
+      color: var(--accent);
+      transition: transform 0.4s var(--spring);
+      line-height: 1;
+    }
+    .faq-item[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+    .faq-item summary:hover { color: var(--accent); }
+    .faq-item p {
+      padding: 0 0.25rem 1.5rem;
+      font-size: clamp(0.95rem, 2vw, 1.02rem);
+      color: var(--ink-soft);
+      line-height: 1.7;
+      max-width: 640px;
+    }
+    .faq-item p strong { color: var(--ink); font-weight: 500; }
+    .faq-item p a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ─── HERO REACTIVE MESH GRADIENT (subtle mouse-aware glow, nie crzyczy) ─── */
+    .hero {
+      position: relative;
+      isolation: isolate;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      background:
+        radial-gradient(circle 380px at var(--mx, 50%) var(--my, 30%), rgba(44,62,45,0.055) 0%, transparent 70%),
+        radial-gradient(circle 600px at calc(100% - var(--mx, 50%)) calc(100% - var(--my, 30%)), rgba(201,169,110,0.045) 0%, transparent 75%);
+      transition: background 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero::before { transition: none; }
+    }
 
     /* WSZYSTKIE wow-effects respect reduced motion */
     @media (prefers-reduced-motion: reduce) {
@@ -880,7 +1050,7 @@
         </a>
         <a href="#cennik" class="btn btn-ghost">Cennik</a>
       </div>
-      <p class="hero-meta">Odpowiadamy <strong>tego samego dnia</strong> &nbsp;·&nbsp; Strona gotowa <strong>w 24 h</strong> &nbsp;·&nbsp; Bez zobowiązań</p>
+      <p class="hero-meta">Odpowiadamy <strong>tego samego dnia</strong> &nbsp;·&nbsp; Strona gotowa <strong>w 24 h</strong> &nbsp;·&nbsp; Cena 699 zł, wszystko w środku</p>
     </section>
 
     <!-- ─── DEMO PREVIEW ─── -->
@@ -922,7 +1092,7 @@
           <div class="feature-min">
             <span class="feature-num">02</span>
             <h3>Potwierdzenie obecności online</h3>
-            <p>Goście klikają w link, wybierają menu, wpisują alergie, deklarują transport. Wy widzicie wszystko w jednym miejscu — bez papierów, bez telefonów, bez stresu.</p>
+            <p>Goście klikają w link, wybierają menu, wpisują alergie, deklarują transport. <strong>Każde potwierdzenie ląduje od razu na Waszą skrzynkę e-mail</strong> — bez logowania, bez panelów, bez papierów.</p>
           </div>
           <div class="feature-min">
             <span class="feature-num">03</span>
@@ -931,7 +1101,7 @@
           </div>
           <div class="feature-min">
             <span class="feature-num">04</span>
-            <h3>Jak wygląda plan dnia w aplikacji?</h3>
+            <h3>Jak wygląda plan dnia w zaproszeniu?</h3>
             <p>Pełen harmonogram z ikonami, opisami i godzinami. Gość zawsze wie, co dalej.</p>
           </div>
           <div class="feature-min">
@@ -959,25 +1129,40 @@
           <span class="price-tag">Pakiet kompletny</span>
           <div class="price-amount">699<span class="currency">zł</span></div>
           <div class="price-period">jednorazowo</div>
-          <ul class="price-features">
-            <li>Strona z własnym URL</li>
-            <li>Potwierdzenie obecności online</li>
-            <li>Plan dnia</li>
-            <li>Mapy z lokalizacjami</li>
-            <li>Galeria zdjęć</li>
-            <li>Sekcja Nasza historia</li>
-            <li>Custom paleta kolorów</li>
-            <li>Muzyka w tle</li>
-            <li>Realizacja w 24h</li>
-            <li>Do 3 rund poprawek</li>
-            <li>Hosting i domena w cenie</li>
-            <li>Wsparcie do dnia ślubu</li>
-          </ul>
+          <div class="price-features-grid">
+            <div class="price-features-col">
+              <p class="price-features-label">W zaproszeniu</p>
+              <ul class="price-features">
+                <li>Strona z własnym URL</li>
+                <li>Potwierdzenie obecności online</li>
+                <li>Plan dnia</li>
+                <li>Mapy z lokalizacjami</li>
+                <li>Galeria zdjęć</li>
+                <li>Sekcja „Nasza historia"</li>
+                <li>Custom paleta kolorów</li>
+                <li>Muzyka w tle</li>
+                <li>Kod QR do druku</li>
+              </ul>
+            </div>
+            <div class="price-features-col">
+              <p class="price-features-label">Współpraca</p>
+              <ul class="price-features">
+                <li>Realizacja w 24 godziny</li>
+                <li>Do 3 rund poprawek</li>
+                <li>Hosting i domena w cenie</li>
+                <li>Wsparcie do dnia ślubu</li>
+                <li>Strona aktywna 12 miesięcy</li>
+                <li>Kopia HTML do archiwizacji</li>
+                <li>Faktura VAT</li>
+                <li>Wszystkie potwierdzenia od&nbsp;gości <strong>na Twój e-mail</strong></li>
+              </ul>
+            </div>
+          </div>
           <a href="#kontakt" class="btn btn-primary price-cta">
             Chcę takie zaproszenie
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
-          <p class="price-pay-note">Płatność online (Stripe / BLIK / przelew) <strong>po wycenie</strong> — najpierw poznajmy się i ustalmy szczegóły.</p>
+          <p class="price-pay-note">Płatność online: <strong>Stripe, BLIK, karta lub przelew</strong>. Cena finalna — bez doliczeń, bez ukrytych kosztów.</p>
           <div class="price-trust">
             <span>Bez ukrytych opłat</span>
             <span>Bez abonamentu</span>
@@ -1037,6 +1222,12 @@
             <label for="lf-message">Wiadomość (opcjonalnie)</label>
             <textarea id="lf-message" name="message" placeholder="Opowiedz krótko o swoim wydarzeniu — data, ile gości, czego oczekujesz..."></textarea>
           </div>
+          <div class="lead-form-field lead-form-attach">
+            <label class="lead-form-attach-label">Zdjęcia inspiracyjne (opcjonalnie, max 5 plików / 10 MB)</label>
+            <p class="lead-form-attach-help">Możecie wysłać zdjęcia od razu — mood board, swoje, inspiracje z Pinteresta. Lub przesłać później mailem / WeTransferem po naszej odpowiedzi.</p>
+            <input type="file" id="lf-files" name="files" accept="image/jpeg,image/png,image/heic,image/webp" multiple class="lead-form-file">
+            <div class="lead-form-file-list" id="lf-files-list" aria-live="polite"></div>
+          </div>
           <div class="lead-form-checkbox">
             <input type="checkbox" id="lf-rodo" name="rodo" required>
             <label for="lf-rodo">Wyrażam zgodę na przetwarzanie moich danych zgodnie z <a href="/privacy" target="_blank" rel="noopener">Polityką Prywatności</a> i <a href="/terms" target="_blank" rel="noopener">Regulaminem</a>. *</label>
@@ -1045,6 +1236,48 @@
           <div class="form-msg" id="lf-msg" role="status" aria-live="polite"></div>
           <p class="form-fallback">Wolisz tradycyjnie? <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a></p>
         </form>
+      </div>
+    </section>
+
+    <!-- ─── FAQ visible widget — SEO + UX ─── -->
+    <section class="faq-section" id="faq">
+      <div class="container-narrow">
+        <p class="section-eyebrow text-center">Najczęstsze pytania</p>
+        <h2 class="section-title text-center">Wszystko, co warto <em>wiedzieć</em></h2>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>Co to jest cyfrowe zaproszenie ślubne?</summary>
+            <p>Pełnowartościowa strona internetowa zamiast papierowej karty. Goście dostają link, pod którym znajdą wszystko: potwierdzanie obecności, plan dnia, mapy z dojazdem do ceremonii i sali, Waszą historię, galerię zdjęć i praktyczne informacje (transport, noclegi, dress code). Każda strona jest indywidualnie projektowana pod motyw Waszego wesela.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Ile kosztuje zaproszenie i co dokładnie dostaję?</summary>
+            <p>Jedna cena: <strong>699 zł jednorazowo</strong>. Bez abonamentu, bez doliczeń. W cenie: kompletna strona z własnym URL, formularz potwierdzeń, plan dnia, mapy, galeria, sekcja „Nasza historia", custom paleta kolorów, opcjonalna muzyka w tle, obróbka zdjęć pary (do 5 ujęć), animowane przejścia, hosting przez 12 miesięcy, do 3 rund poprawek. Faktura VAT.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Jak długo trwa przygotowanie strony?</summary>
+            <p>Standardowo <strong>do 24 godzin</strong> od dostarczenia kompletu danych (imiona, data, miejsce, zdjęcia, treści). Po pierwszej wersji macie czas na zgłoszenie poprawek — w cenie są 3 rundy zmian. Dla wyjątkowo pilnych terminów możliwa jest realizacja ekspresowa za dodatkową dopłatą.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Jak goście potwierdzają obecność (RSVP)?</summary>
+            <p>Każda strona zawiera prosty formularz: gość klika w link, wpisuje imię, wybiera menu, deklaruje alergie, transport, nocleg. <strong>Każde potwierdzenie ląduje od razu na Waszą skrzynkę e-mail</strong> — bez logowania, bez panelu, bez instalowania aplikacji. Macie wszystko w jednym miejscu, w kolejności w jakiej spływa.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Czy strona sprawdzi się dla starszych gości i tych bez Facebooka?</summary>
+            <p>Tak. Strona działa po kliknięciu w link — w przeglądarce telefonu, tabletu, laptopa. Bez instalacji aplikacji, bez konta, bez rejestracji. Dla gości którzy wolą tradycyjną kopertę, dajemy <strong>kod QR do druku</strong> — wystarczy wydrukować i włożyć do papierowego zaproszenia.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Jak długo strona jest dostępna po weselu?</summary>
+            <p>Strona zaproszenia działa pod oryginalnym URL przez <strong>12 miesięcy od dnia realizacji</strong>. Macie czas zebrać zdjęcia od gości, dodać własne wspomnienia, podzielić się galerią. Po 12 miesiącach otrzymacie statyczną kopię HTML do własnej archiwizacji — bez dodatkowych opłat.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Mogę dodać własne zdjęcia i muzykę w tle?</summary>
+            <p>Tak. Po zgłoszeniu prosimy o przesłanie zdjęć (e-mail, WeTransfer, Drive — co Wam wygodnie). Zdjęcia pary obrabiamy (do 5 ujęć w cenie). Muzykę w tle dodajemy z linka YouTube/Spotify lub własnego pliku MP3 — odtwarza się subtelnie, gość może wyłączyć jednym kliknięciem.</p>
+          </details>
+          <details class="faq-item">
+            <summary>A co jeśli muszę odwołać wesele lub się rozmyślę?</summary>
+            <p>Jeśli zmienicie zdanie <strong>przed rozpoczęciem prac</strong> (po wpłacie zaliczki ale przed pierwszą wersją strony), zwracamy 100% wpłaty. Po rozpoczęciu prac (po pierwszej wersji projektu) zaliczka pokrywa wykonaną pracę. Szczegóły w <a href="/terms" target="_blank" rel="noopener">Regulaminie</a>.</p>
+          </details>
+        </div>
       </div>
     </section>
 
@@ -1059,6 +1292,7 @@
       <a href="/privacy">Polityka prywatności</a>
       <a href="/cookies">Cookies</a>
       <a href="/terms">Regulamin</a>
+      <a href="/returns">Zwroty i reklamacje</a>
     </nav>
   </footer>
 
@@ -1084,6 +1318,28 @@
           btn.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');
         });
       });
+
+      // Hero reactive mesh — subtelny gradient podążający za myszką (rAF throttled)
+      const hero = document.querySelector('.hero');
+      if (hero) {
+        let rafId = null, lastX = 50, lastY = 30;
+        const onMove = (e) => {
+          const rect = hero.getBoundingClientRect();
+          lastX = ((e.clientX - rect.left) / rect.width * 100);
+          lastY = ((e.clientY - rect.top) / rect.height * 100);
+          if (rafId) return;
+          rafId = requestAnimationFrame(() => {
+            hero.style.setProperty('--mx', lastX + '%');
+            hero.style.setProperty('--my', lastY + '%');
+            rafId = null;
+          });
+        };
+        hero.addEventListener('pointermove', onMove, { passive: true });
+        hero.addEventListener('pointerleave', () => {
+          hero.style.setProperty('--mx', '50%');
+          hero.style.setProperty('--my', '30%');
+        });
+      }
     }
 
     // Fallback reveal-on-scroll dla przeglądarek bez animation-timeline:view() (Safari < 18)
@@ -1174,6 +1430,29 @@
       msgEl.className = 'form-msg show ' + kind;
     }
 
+    // File picker — display selected files (max 5, max 10 MB total)
+    const filesInput = document.getElementById('lf-files');
+    const filesListEl = document.getElementById('lf-files-list');
+    const MAX_FILES = 5;
+    const MAX_TOTAL_BYTES = 10 * 1024 * 1024;
+    let selectedFiles = [];
+    if (filesInput) {
+      filesInput.addEventListener('change', () => {
+        const all = Array.from(filesInput.files || []);
+        let total = 0;
+        selectedFiles = all.slice(0, MAX_FILES).filter(f => {
+          total += f.size;
+          return total <= MAX_TOTAL_BYTES;
+        });
+        filesListEl.innerHTML = selectedFiles
+          .map(f => `<div class="lead-form-file-list-item">${f.name} <span style="color:var(--ink-mute)">(${(f.size/1024).toFixed(0)} KB)</span></div>`)
+          .join('');
+        if (all.length > MAX_FILES) {
+          filesListEl.innerHTML += `<div class="lead-form-file-list-item" style="color:#B85F2E">⚠ Wybrano więcej niż ${MAX_FILES} plików — wzięliśmy pierwsze ${selectedFiles.length}.</div>`;
+        }
+      });
+    }
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const fd = new FormData(form);
@@ -1208,12 +1487,28 @@
       };
 
       try {
-        const { error } = await sb.from('leads').insert(payload);
+        // Insert lead first to get ID for storage path
+        const { data: leadRow, error } = await sb.from('leads').insert(payload).select('id').single();
         if (error) throw error;
+
+        // Upload attached files (jeśli wybrane) — best-effort, nie blokuje sukcesu leada
+        if (leadRow && selectedFiles.length > 0) {
+          submitBtn.textContent = 'Wysyłamy zdjęcia…';
+          const uploads = selectedFiles.map(async (file) => {
+            const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_').slice(0, 60);
+            const path = `${leadRow.id}/${Date.now()}-${safeName}`;
+            const { error: upErr } = await sb.storage.from('lead-attachments').upload(path, file, { upsert: false, contentType: file.type });
+            if (upErr) console.warn('upload fail:', file.name, upErr);
+          });
+          await Promise.allSettled(uploads);
+        }
+
         if (affValidated && affValidated.valid && affRaw) {
           sb.rpc('register_discount_code_use', { p_code: affRaw }).catch((e) => console.warn(e));
         }
         form.reset();
+        selectedFiles = [];
+        if (filesListEl) filesListEl.innerHTML = '';
         affStatus.className = 'affiliate-status';
         affStatus.textContent = '';
         affValidated = null;
