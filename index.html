@@ -62,9 +62,10 @@
   {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Co to jest cyfrowe zaproszenie ślubne?","acceptedAnswer":{"@type":"Answer","text":"Cyfrowe zaproszenie ślubne to pełnowartościowa strona internetowa zamiast papierowej karty. Goście otrzymują link, pod którym znajdują formularz RSVP, plan dnia, mapy z lokalizacjami, historię pary, galerię zdjęć i wszystkie praktyczne informacje. Strona jest projektowana indywidualnie pod motyw wesela."}},{"@type":"Question","name":"Ile kosztuje cyfrowe zaproszenie ślubne online?","acceptedAnswer":{"@type":"Answer","text":"Na zaproszeniaonline.com obowiązuje jedna cena: 699 zł jednorazowo za kompletny pakiet. Obejmuje on całą stronę z własnym adresem URL, formularzem RSVP, planem dnia, mapami, galerią, sekcją Nasza historia, custom paletą kolorów, opcjonalną muzyką w tle, obróbką zdjęć pary i animowanymi przejściami. Bez abonamentu — strona działa przez cały okres wydarzenia."}},{"@type":"Question","name":"Jak długo trwa przygotowanie strony ślubnej?","acceptedAnswer":{"@type":"Answer","text":"Standardowo w 24 godziny od dostarczenia danych. Po otrzymaniu projektu możesz zgłosić poprawki — w cenie do 3 rund zmian. Dla wyjątkowo pilnych terminów możliwa realizacja ekspresowa."}},{"@type":"Question","name":"Jak goście potwierdzają obecność (RSVP) w cyfrowym zaproszeniu?","acceptedAnswer":{"@type":"Answer","text":"Każda strona ślubna zawiera prosty formularz potwierdzania obecności. Gość klika w link, wpisuje imię, wybiera menu, mówi o alergiach, zaznacza czy potrzebuje transportu lub noclegu. Wy widzicie wszystko w jednym miejscu — bez papierów, bez liczenia w głowie, bez stresu."}},{"@type":"Question","name":"Czy strona ślubna sprawdzi się dla starszych gości?","acceptedAnswer":{"@type":"Answer","text":"Tak. Strona jest responsywna na każdym urządzeniu. Działa z poziomu kliknięcia w link, bez instalacji aplikacji ani rejestracji. Dla gości którzy wolą papier, można wydrukować QR kod prowadzący do strony."}}]}
   </script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Self-hosted fonts (RODO clean + 1-rok cache + brak transferu do Google) -->
+  <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/fonts/fonts.css">
 
   <style>
     /* ═══════════════════════════════════════════════════════════════════
@@ -1091,7 +1092,7 @@
           </div>
           <div class="feature-min">
             <span class="feature-num">02</span>
-            <h3>Potwierdzenie obecności online</h3>
+            <h3>Jak goście potwierdzają obecność?</h3>
             <p>Goście klikają w link, wybierają menu, wpisują alergie, deklarują transport. <strong>Każde potwierdzenie ląduje od razu na Waszą skrzynkę e-mail</strong> — bez logowania, bez panelów, bez papierów.</p>
           </div>
           <div class="feature-min">
@@ -1296,7 +1297,7 @@
     </nav>
   </footer>
 
-  <script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="/vendor/supabase.min.js"></script>
   <script>
     // Sticky header — border on scroll
     const nav = document.getElementById('nav');
