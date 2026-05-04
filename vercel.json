@@ -22,11 +22,20 @@
             ]
         },
         {
-            "source": "/(privacy|cookies|terms|demo)",
+            "source": "/(privacy|cookies|terms)",
             "headers": [
                 {
                     "key": "Cache-Control",
                     "value": "public, max-age=0, s-maxage=300, must-revalidate"
+                }
+            ]
+        },
+        {
+            "source": "/(demo|magda-tomek)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=600, s-maxage=86400, stale-while-revalidate=604800"
                 }
             ]
         },
