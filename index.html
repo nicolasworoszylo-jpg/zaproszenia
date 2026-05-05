@@ -226,12 +226,23 @@
       .brand-name { font-size: 0.95rem; }
     }
 
-    /* ─── HERO — minimalistic ─── */
+    /* ─── HERO — full viewport width (canvas + gradient pokrywa cały ekran), content centered ─── */
     .hero {
-      max-width: 920px;
+      width: 100%;
+      max-width: none;
       margin: 0 auto;
       padding: clamp(5rem, 14vw, 10rem) 1.5rem clamp(4rem, 10vw, 7rem);
       text-align: center;
+    }
+    /* Content wewnątrz hero ograniczony do 920px (czytelne) */
+    .hero > .hero-eyebrow,
+    .hero > h1,
+    .hero > .hero-sub,
+    .hero > .hero-ctas,
+    .hero > .hero-meta {
+      max-width: 920px;
+      margin-left: auto;
+      margin-right: auto;
     }
     .hero-eyebrow {
       display: inline-flex;
@@ -483,6 +494,18 @@
     }
     @media (max-width: 720px) {
       .features-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      /* Hero mobile polish — większe touch targets, lepszy spacing */
+      .hero { padding: clamp(4rem, 12vw, 7rem) 1.25rem clamp(3rem, 8vw, 5rem); }
+      .hero-ctas { flex-direction: column; gap: 0.6rem; width: 100%; max-width: 320px; }
+      .hero-ctas .btn { width: 100%; justify-content: center; padding: 15px 24px; font-size: 0.95rem; }
+      .hero-meta {
+        font-size: 0.78rem !important;
+        line-height: 1.6 !important;
+        max-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .hero-meta strong { display: inline-block; }
     }
 
     /* ─── PRICING — jedna karta minimalist ─── */
