@@ -22,7 +22,7 @@
             ]
         },
         {
-            "source": "/(privacy|cookies|terms|returns)",
+            "source": "/(privacy|cookies|terms|returns|dziekujemy|platnosc-anulowana)",
             "headers": [
                 {
                     "key": "Cache-Control",

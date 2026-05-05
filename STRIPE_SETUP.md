@@ -1,17 +1,21 @@
 # Stripe Setup — zaproszeniaonline.com
 
-> Od zera do działającej płatności online w **~15 minut**. Bez API keys w kodzie, bez webhook'ów (na start). Po prostu Payment Link.
+> Od zera do działającej płatności online w **~15 minut** (bez webhook'a) lub **~45 min** (z webhookiem auto-update Supabase).
 
 ---
 
-## Co już jest gotowe
+## Co już jest gotowe (od 2026-05-05)
 
-W `index.html` przy cenniku jest text:
-> Płatność online (Stripe / BLIK / przelew) **po wycenie**
+Cała infrastruktura przygotowana — wystarczy wkleić jedno URL po stworzeniu Payment Link:
 
-W `landing` masz lead form z polem `affiliate_code` (rabat) i submit do Supabase. Po stronie Supabase tabela `leads` ma już 4 nowe kolumny przygotowane pod płatność (patrz §3 niżej).
+- ✅ Tabela `leads` ma 4 kolumny: `payment_status`, `payment_provider`, `payment_id`, `payment_amount_pln` (migration: `supabase/migrations/2026-04-30-add-payment-cols.sql`)
+- ✅ **Strona sukcesu**: `/dziekujemy` (HTML z animowanym checkiem + next steps)
+- ✅ **Strona anulowania**: `/platnosc-anulowana` (HTML z opcją "spróbuj ponownie")
+- ✅ **Stripe button placeholder** w cenniku — ukryty (`hidden` attribute) dopóki nie wkleisz `data-stripe-link`
+- ✅ **Edge Function** `supabase/functions/stripe-webhook/index.ts` — gotowa do deploy, obsługuje `checkout.session.completed`, `charge.refunded`, `payment_intent.payment_failed`
+- ✅ **vercel.json** routing: `/dziekujemy` i `/platnosc-anulowana` dostępne (cleanUrls)
 
-Twoje zadanie: wpiąć **Stripe Payment Link** który Klient klika po dostaniu od Ciebie e-mailowej wyceny.
+Twoje zadanie: 3 kroki.
 
 ---
 
@@ -65,31 +69,30 @@ Skopiuj URL — wygląda tak: `https://buy.stripe.com/abc123XYZ`.
 
 ## Krok 3: Wklej URL w landing (1 min)
 
+W Stripe Payment Link Settings ustaw:
+- **Success URL:** `https://zaproszeniaonline.com/dziekujemy`
+- **Cancel URL:** `https://zaproszeniaonline.com/platnosc-anulowana`
+
 Otwórz `index.html`, znajdź:
 
 ```html
-<p class="price-pay-note">Płatność online (Stripe / BLIK / przelew) <strong>po wycenie</strong> — najpierw poznajmy się i ustalmy szczegóły.</p>
+<a href="#" data-stripe-link="" class="btn btn-stripe price-pay-cta" hidden>
 ```
 
-Zamień ten paragraf na:
+Zamień na (wklej swój URL i USUŃ `hidden`):
 
 ```html
-<p class="price-pay-note">
-  Płatność online (Stripe / BLIK / karta) <strong>po wycenie</strong>.<br>
-  <a href="WKLEJ_TUTAJ_TWÓJ_STRIPE_PAYMENT_LINK" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: underline;">Zapłać teraz 699 zł →</a>
-</p>
+<a href="https://buy.stripe.com/abc123XYZ" data-stripe-link="https://buy.stripe.com/abc123XYZ" class="btn btn-stripe price-pay-cta">
 ```
 
-> **Czemu po wycenie a nie od razu?** Bo niektóre wesela mają specyficzne wymagania (multi-language, custom domena, więcej rund poprawek). Najpierw chcesz dogadać szczegóły e-mailem, dopiero potem wysyłasz Klientowi link do zapłaty (ten sam Payment Link działa bez limitu) — albo dasz w landingu „od razu" jak chcesz.
+(Albo nawet prościej: wystarczy wkleić URL w `data-stripe-link` — JS sam usunie `hidden` i ustawi `href + target=_blank` przy load.)
 
 Po zmianie:
 ```bash
-git add index.html
-git commit -m "feat: live Stripe Payment Link"
-git push
+git add index.html && git commit -m "feat: live Stripe Payment Link" && git push
 ```
 
-Vercel auto-deployuje w ~30s.
+Vercel auto-deployuje w ~30s. Stripe button "Zapłać teraz 699 zł" pojawi się pod CTA "Chcę takie zaproszenie" w cenniku.
 
 ---
 
@@ -115,15 +118,39 @@ ORDER BY created_at DESC LIMIT 1;
 
 Albo w UI Supabase Studio → tabela `leads` → kliknij wiersz → edit.
 
-### C. (Advanced — później) Webhook
-Jeśli chcesz auto-update Supabase:
-1. W Stripe: Developers → Webhooks → +Add endpoint
-2. URL: `https://kuyniyyieejvambyjnxy.supabase.co/functions/v1/stripe-webhook`
-3. Events: `checkout.session.completed`, `payment_intent.succeeded`
-4. Stripe da Ci `STRIPE_WEBHOOK_SECRET` — wstawisz do Supabase Edge Function env vars
-5. Edge Function (deploy z `supabase/functions/stripe-webhook/index.ts`) verify signature + update `leads`
+### C. Auto-update przez webhook (zalecane, ~30 min)
 
-Czas implementacji webhooka: ~1h. Pokaż mi gdy będziesz gotowy.
+Edge Function jest już napisana w `supabase/functions/stripe-webhook/index.ts` — gotowa do deploy. Obsługuje:
+- `checkout.session.completed` → automatycznie aktualizuje lead jako `paid` po e-mailu klienta
+- `charge.refunded` → oznacza jako `refunded`
+- `payment_intent.payment_failed` → oznacza jako `cancelled`
+- Orphan handling: jeśli klient zapłaci bez wcześniejszego leada (np. forwarded link) → tworzy nowy wpis z `source='stripe-direct'`
+
+**Deploy w 5 krokach:**
+
+```bash
+# 1. Zaloguj się do Supabase CLI (jeśli pierwszy raz)
+npx supabase login
+
+# 2. Link do projektu
+cd /tmp/zaproszenia
+npx supabase link --project-ref kuyniyyieejvambyjnxy
+
+# 3. Set secrets (Stripe keys + Supabase service role)
+npx supabase secrets set STRIPE_SECRET_KEY=sk_live_xxx
+npx supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_xxx
+# SUPABASE_URL i SUPABASE_SERVICE_ROLE_KEY są ustawione automatycznie
+
+# 4. Deploy function
+npx supabase functions deploy stripe-webhook --no-verify-jwt
+
+# 5. W Stripe Dashboard → Developers → Webhooks → Add endpoint:
+#    URL: https://kuyniyyieejvambyjnxy.supabase.co/functions/v1/stripe-webhook
+#    Events: checkout.session.completed, charge.refunded, payment_intent.payment_failed
+#    → Stripe wygeneruje signing secret (whsec_...) → wklej do STRIPE_WEBHOOK_SECRET (powtórz krok 3)
+```
+
+Po tym webhook działa 24/7. Każda płatność automatycznie aktualizuje status w Supabase, zero manual work.
 
 ---
 

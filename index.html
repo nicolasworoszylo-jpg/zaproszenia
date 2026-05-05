@@ -56,6 +56,9 @@
   {"@context":"https://schema.org","@type":"WebSite","@id":"https://zaproszeniaonline.com/#website","url":"https://zaproszeniaonline.com/","name":"zaproszeniaonline.com","inLanguage":"pl-PL","publisher":{"@id":"https://zaproszeniaonline.com/#organization"}}
   </script>
   <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Strona główna","item":"https://zaproszeniaonline.com/"},{"@type":"ListItem","position":2,"name":"Cennik","item":"https://zaproszeniaonline.com/#cennik"},{"@type":"ListItem","position":3,"name":"Zobacz demo","item":"https://zaproszeniaonline.com/demo"},{"@type":"ListItem","position":4,"name":"Najczęstsze pytania","item":"https://zaproszeniaonline.com/#faq"}]}
+  </script>
+  <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"Service","@id":"https://zaproszeniaonline.com/#service","name":"Cyfrowe zaproszenia ślubne online — strona ślubna premium","serviceType":"Projektowanie cyfrowych zaproszeń ślubnych","description":"Indywidualnie projektowana strona internetowa jako zaproszenie na ślub, chrzciny, urodziny lub event firmowy. Zawiera formularz potwierdzania obecności (RSVP), plan dnia, mapy z lokalizacjami, sekcję Wasza historia, galerię zdjęć i opcjonalną muzykę w tle.","provider":{"@id":"https://zaproszeniaonline.com/#organization"},"areaServed":{"@type":"Country","name":"Polska"},"audience":{"@type":"Audience","audienceType":"Narzeczeni, organizatorzy wydarzeń"},"speakable":{"@type":"SpeakableSpecification","cssSelector":[".speakable-headline",".speakable-summary"]},"url":"https://zaproszeniaonline.com/","offers":{"@type":"Offer","name":"Cyfrowe zaproszenie ślubne — pakiet kompletny","price":"699","priceCurrency":"PLN","availability":"https://schema.org/InStock","url":"https://zaproszeniaonline.com/#cennik","description":"Kompletna strona ślubna z odliczaniem, formularzem potwierdzania obecności, planem dnia, mapami, galerią, sekcją Wasza historia, custom paletą kolorów, opcjonalną muzyką w tle, obróbką zdjęć pary i animowanymi przejściami. Hosting w cenie. Gotowe w 24 godziny. Do 3 rund poprawek."}}
   </script>
   <script type="application/ld+json">
@@ -142,22 +145,21 @@
     .skip { position: absolute; top: -100px; left: 1rem; padding: 12px 22px; background: var(--ink); color: var(--bg); font-size: 0.85rem; text-decoration: none; border-radius: 4px; z-index: 200; transition: top 0.3s var(--ease); }
     .skip:focus { top: 1rem; }
 
-    /* ─── HEADER — minimal jasny, spójny z resztą landing (białe + forest accent) ─── */
+    /* ─── HEADER — forest green sticky (charakterny brand, oryginalny) ─── */
     .nav {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(255,255,255,0.82);
+      background: linear-gradient(180deg, #2C3E2D 0%, #243325 100%);
       backdrop-filter: saturate(180%) blur(20px);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.4s var(--ease), box-shadow 0.4s var(--ease), background 0.4s var(--ease);
-      color: var(--ink);
+      border-bottom: 1px solid rgba(201,169,110,0.18);
+      transition: border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+      color: #FAF6EF;
     }
     .nav.scrolled {
-      border-bottom-color: var(--line);
-      background: rgba(255,255,255,0.92);
-      box-shadow: 0 4px 18px rgba(10,15,12,0.04);
+      border-bottom-color: rgba(201,169,110,0.32);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.12);
     }
     .nav-inner {
       max-width: 1280px;
@@ -173,21 +175,21 @@
       align-items: center;
       gap: 10px;
       text-decoration: none;
-      color: var(--ink);
+      color: #FAF6EF;
     }
     .brand-mark {
       width: 28px;
       height: 28px;
     }
-    .brand-mark circle { stroke: var(--accent) !important; }
-    .brand-mark text { fill: var(--accent) !important; }
+    .brand-mark circle { stroke: #FAF6EF !important; }
+    .brand-mark text { fill: #FAF6EF !important; }
     .brand-name {
       font-family: var(--serif);
       font-style: italic;
       font-weight: 400;
       font-size: 1.05rem;
       letter-spacing: -0.015em;
-      color: var(--ink);
+      color: #FAF6EF;
     }
     .nav-links {
       display: flex;
@@ -197,25 +199,26 @@
     .nav-links a {
       font-size: 0.875rem;
       font-weight: 500;
-      color: var(--ink-soft);
+      color: rgba(250,246,239,0.78);
       text-decoration: none;
       transition: color 0.2s var(--ease);
       display: inline-flex;
       align-items: center;
     }
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover { color: #C9A96E; }
     .nav-cta {
       padding: 9px 18px !important;
-      background: var(--accent);
-      color: var(--bg) !important;
+      background: #C9A96E;
+      color: #2C3E2D !important;
       border-radius: 100px;
-      font-weight: 500 !important;
+      font-weight: 600 !important;
       transition: background 0.3s var(--ease), transform 0.3s var(--spring), box-shadow 0.3s var(--ease);
     }
     .nav-cta:hover {
-      background: var(--accent-h);
+      background: #D4B97F;
+      color: #1E2B1F !important;
       transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(44,62,45,0.25);
+      box-shadow: 0 6px 18px rgba(201,169,110,0.35);
     }
     @media (max-width: 720px) {
       .nav-links a:not(.nav-cta) { display: none; }
@@ -570,6 +573,21 @@
       justify-content: center;
       padding: 16px 28px;
       font-size: 1rem;
+    }
+    .btn-stripe {
+      width: 100%;
+      justify-content: center;
+      margin-top: 0.75rem;
+      padding: 14px 28px;
+      background: #635BFF; /* Stripe purple */
+      color: #FFFFFF;
+      font-size: 0.95rem;
+      transition: background 0.3s var(--ease), transform 0.3s var(--spring), box-shadow 0.3s var(--ease);
+    }
+    .btn-stripe:hover {
+      background: #5147E5;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99, 91, 255, 0.28);
     }
     .price-pay-note {
       margin-top: 0.85rem;
@@ -985,23 +1003,45 @@
     .hero {
       position: relative;
       isolation: isolate;
+      overflow: hidden;
     }
+    /* WARSTWA 1: Animowany mesh gradient (3 plamy w slow flow, 18s pętla) */
     .hero::before {
+      content: "";
+      position: absolute;
+      inset: -10%;
+      pointer-events: none;
+      z-index: -2;
+      background:
+        radial-gradient(ellipse 50% 40% at 25% 30%, rgba(44,62,45,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 45% 35% at 75% 65%, rgba(201,169,110,0.09) 0%, transparent 60%),
+        radial-gradient(ellipse 35% 30% at 50% 90%, rgba(44,62,45,0.06) 0%, transparent 65%);
+      animation: meshFlow 18s ease-in-out infinite alternate;
+    }
+    /* WARSTWA 2: Mouse-aware spotlight (subtelny, podąża) */
+    .hero::after {
       content: "";
       position: absolute;
       inset: 0;
       pointer-events: none;
       z-index: -1;
       background:
-        radial-gradient(circle 380px at var(--mx, 50%) var(--my, 30%), rgba(44,62,45,0.055) 0%, transparent 70%),
-        radial-gradient(circle 600px at calc(100% - var(--mx, 50%)) calc(100% - var(--my, 30%)), rgba(201,169,110,0.045) 0%, transparent 75%);
-      transition: background 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        radial-gradient(circle 420px at var(--mx, 50%) var(--my, 30%), rgba(201,169,110,0.10) 0%, transparent 65%),
+        radial-gradient(circle 700px at calc(100% - var(--mx, 50%)) calc(100% - var(--my, 30%)), rgba(44,62,45,0.07) 0%, transparent 75%);
+      transition: background 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes meshFlow {
+      0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
+      33%  { transform: translate(2%, -1.5%) rotate(1deg) scale(1.05); }
+      66%  { transform: translate(-1.5%, 2%) rotate(-1deg) scale(1.02); }
+      100% { transform: translate(1%, 1%) rotate(0.5deg) scale(1); }
     }
     @media (prefers-reduced-motion: reduce) {
-      .hero::before { transition: none; }
+      .hero::before { animation: none; transform: none; }
+      .hero::after { transition: none; }
       #hero-canvas { display: none; }
     }
-    /* Hero canvas — subtle gold particles spiral Fibonacciego, mouse-aware */
+    /* WARSTWA 3: Canvas particles — Fibonacci spiral + constellation lines + mouse repulsion */
     #hero-canvas {
       position: absolute;
       inset: 0;
@@ -1009,7 +1049,95 @@
       height: 100%;
       pointer-events: none;
       z-index: -1;
-      opacity: 0.55;
+      opacity: 0.85;
+    }
+
+    /* ─── TRUST COUNTERS BAR — pod hero, eleganckie 4-kolumnowe ─── */
+    .trust-bar {
+      padding: clamp(2rem, 4vw, 3rem) 1.5rem;
+      background: #FAFAF8;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .trust-bar-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      text-align: center;
+    }
+    .trust-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      align-items: center;
+      position: relative;
+      padding: 0.5rem 0.75rem;
+    }
+    .trust-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: -0.75rem;
+      top: 25%;
+      bottom: 25%;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, var(--line) 30%, var(--line) 70%, transparent);
+    }
+    .trust-num {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.8rem, 4.2vw, 2.6rem);
+      letter-spacing: -0.02em;
+      color: var(--accent);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .trust-num-unit { font-size: 0.65em; opacity: 0.7; margin-left: 2px; }
+    .trust-label {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      letter-spacing: 0.01em;
+      max-width: 200px;
+      line-height: 1.4;
+    }
+    @media (max-width: 720px) {
+      .trust-bar-inner { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 1rem; }
+      .trust-item:nth-child(2)::after { display: none; }
+      .trust-item:nth-child(odd)::after { right: -0.5rem; }
+      .trust-item { padding: 0.5rem; }
+    }
+    @media (max-width: 380px) {
+      .trust-bar-inner { grid-template-columns: 1fr; }
+      .trust-item::after { display: none !important; }
+    }
+
+    /* ─── STICKY MOBILE CTA — pasek na dole na mobile (tylko gdy poza hero) ─── */
+    .mobile-cta-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 90;
+      padding: 0.7rem 1rem max(0.7rem, env(safe-area-inset-bottom));
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-top: 1px solid var(--line);
+      box-shadow: 0 -4px 18px rgba(10,15,12,0.06);
+      display: none;
+      transform: translateY(100%);
+      transition: transform 0.4s var(--spring);
+    }
+    .mobile-cta-bar.show { transform: translateY(0); }
+    .mobile-cta-bar .btn {
+      width: 100%;
+      justify-content: center;
+      padding: 13px 20px;
+      font-size: 0.95rem;
+    }
+    @media (max-width: 720px) and (hover: none) {
+      .mobile-cta-bar { display: block; }
+      body { padding-bottom: 80px; }
     }
 
     /* WSZYSTKIE wow-effects respect reduced motion */
@@ -1065,6 +1193,28 @@
         <a href="#cennik" class="btn btn-ghost">Cennik</a>
       </div>
       <p class="hero-meta">Odpowiadamy <strong>tego samego dnia</strong> &nbsp;·&nbsp; Strona gotowa <strong>w 24 h</strong> &nbsp;·&nbsp; Cena 699 zł, wszystko w środku</p>
+    </section>
+
+    <!-- ─── TRUST COUNTERS BAR — animowane count-up po wejściu w viewport ─── -->
+    <section class="trust-bar" aria-label="Najważniejsze fakty">
+      <div class="trust-bar-inner">
+        <div class="trust-item">
+          <span class="trust-num" data-count-to="24" data-suffix=" h">0</span>
+          <span class="trust-label">Średni czas realizacji</span>
+        </div>
+        <div class="trust-item">
+          <span class="trust-num" data-count-to="699" data-suffix=" zł">0</span>
+          <span class="trust-label">Jedna cena, wszystko w środku</span>
+        </div>
+        <div class="trust-item">
+          <span class="trust-num" data-count-to="12" data-suffix=" mies">0</span>
+          <span class="trust-label">Hosting i URL po ślubie</span>
+        </div>
+        <div class="trust-item">
+          <span class="trust-num">100<span class="trust-num-unit">%</span></span>
+          <span class="trust-label">Zgodność RODO + faktura VAT</span>
+        </div>
+      </div>
     </section>
 
     <!-- ─── DEMO PREVIEW ─── -->
@@ -1175,6 +1325,12 @@
           <a href="#kontakt" class="btn btn-primary price-cta">
             Chcę takie zaproszenie
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <!-- ⚠ STRIPE: po założeniu Payment Link wklej URL w atrybut data-stripe-link
+               i USUŃ atrybut hidden poniżej. Instrukcja w STRIPE_SETUP.md -->
+          <a href="#" data-stripe-link="" class="btn btn-stripe price-pay-cta" hidden>
+            Zapłać teraz 699 zł
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
           </a>
           <p class="price-pay-note">Płatność online: <strong>Stripe, BLIK, karta lub przelew</strong>. Cena finalna — bez doliczeń, bez ukrytych kosztów.</p>
           <div class="price-trust">
@@ -1302,6 +1458,14 @@
 
   </main>
 
+  <!-- ─── Sticky mobile CTA — pojawia się gdy user przewinął poniżej hero ─── -->
+  <div class="mobile-cta-bar" id="mobile-cta-bar" aria-hidden="true">
+    <a href="#kontakt" class="btn btn-primary">
+      Zamów zaproszenie — 699 zł
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+
   <footer>
     <p>&copy; 2026 <strong>zaproszeniaonline.com</strong> · Wszystkie prawa zastrzeżone</p>
     <nav class="footer-nav" aria-label="Stopka">
@@ -1315,6 +1479,62 @@
 
   <script src="/vendor/supabase.min.js"></script>
   <script>
+    // Trust counters — animowany count-up gdy widoczne (IntersectionObserver, raz)
+    (function() {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const items = document.querySelectorAll('.trust-num[data-count-to]');
+      if (!items.length) return;
+      const animateNum = (el) => {
+        const target = parseInt(el.getAttribute('data-count-to'), 10);
+        const suffix = el.getAttribute('data-suffix') || '';
+        if (reduced) { el.textContent = target + suffix; return; }
+        const duration = 1400;
+        const start = performance.now();
+        function tick(now) {
+          const t = Math.min(1, (now - start) / duration);
+          // ease-out cubic
+          const eased = 1 - Math.pow(1 - t, 3);
+          el.textContent = Math.round(target * eased) + suffix;
+          if (t < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      };
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            animateNum(e.target);
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.4 });
+      items.forEach(el => io.observe(el));
+    })();
+
+    // Sticky mobile CTA — show gdy poza hero (poniżej trust-bar)
+    (function() {
+      const bar = document.getElementById('mobile-cta-bar');
+      const trigger = document.querySelector('.trust-bar') || document.querySelector('.hero');
+      if (!bar || !trigger) return;
+      const io = new IntersectionObserver(([e]) => {
+        // gdy hero/trust-bar wychodzi z widoku w górę → pokazuj
+        const show = e.boundingClientRect.bottom < 0;
+        bar.classList.toggle('show', show);
+        bar.setAttribute('aria-hidden', show ? 'false' : 'true');
+      }, { threshold: 0 });
+      io.observe(trigger);
+    })();
+
+    // Stripe button — auto-show jeśli data-stripe-link uzupełnione
+    document.querySelectorAll('a.btn-stripe[data-stripe-link]').forEach(btn => {
+      const link = (btn.getAttribute('data-stripe-link') || '').trim();
+      if (link && link !== '#' && /^https?:\/\//.test(link)) {
+        btn.href = link;
+        btn.removeAttribute('hidden');
+        btn.target = '_blank';
+        btn.rel = 'noopener';
+      }
+    });
+
     // Sticky header — border on scroll
     const nav = document.getElementById('nav');
     if (nav) {
@@ -1358,11 +1578,10 @@
         });
       }
 
-      // Hero canvas — subtle Fibonacci spiral particles (gold, hover-aware, 60fps cap)
+      // Hero canvas — Fibonacci spiral + constellation lines + mouse repulsion (turbo)
       const canvas = document.getElementById('hero-canvas');
       if (canvas && hero) {
         const ctx = canvas.getContext('2d', { alpha: true });
-        const PHI = 1.6180339887;
         const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
         let W = 0, H = 0, cx = 0, cy = 0, mx = -1000, my = -1000, t = 0, rafActive = true;
         const particles = [];
@@ -1373,22 +1592,26 @@
           W = rect.width; H = rect.height;
           canvas.width = W * dpr; canvas.height = H * dpr;
           canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
           ctx.scale(dpr, dpr);
           cx = W / 2; cy = H / 2;
-          // Build Fibonacci spiral
           particles.length = 0;
-          const N = Math.min(140, Math.floor(W * H / 6500));
-          const R = Math.min(W, H) * 0.42;
+          // Skala N do viewport: ~280 na desktop, ~120 na mobile
+          const N = Math.min(280, Math.max(80, Math.floor(W * H / 3200)));
+          const R = Math.min(W, H) * 0.46;
           for (let i = 0; i < N; i++) {
             const r = R * Math.sqrt(i / N);
             const th = i * GOLDEN_ANGLE;
             particles.push({
               ox: cx + r * Math.cos(th),
               oy: cy + r * Math.sin(th),
-              x: 0, y: 0,
-              size: 0.4 + (i / N) * 1.4,
-              alpha: 0.08 + (1 - i / N) * 0.32,
+              x: cx + r * Math.cos(th),
+              y: cy + r * Math.sin(th),
+              size: 0.5 + (i / N) * 1.8,
+              alpha: 0.12 + (1 - i / N) * 0.45,
               ph: i * 0.137,
+              // ~25% particles są forest accent (mix kolorów dla głębi)
+              color: i % 4 === 0 ? 'forest' : 'gold',
             });
           }
         }
@@ -1396,26 +1619,63 @@
         function render() {
           if (!rafActive) return;
           ctx.clearRect(0, 0, W, H);
-          t += 0.006;
+          t += 0.005;
+
+          // Update positions
           for (const p of particles) {
-            // Subtle breathing + slow rotation
             const dx = p.ox - cx, dy = p.oy - cy;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            const baseAng = Math.atan2(dy, dx) + t * 0.25 + Math.sin(t + p.ph) * 0.05;
-            const breathe = 1 + Math.sin(t * 1.5 + dist * 0.01) * 0.03;
+            const baseAng = Math.atan2(dy, dx) + t * 0.22 + Math.sin(t * 0.7 + p.ph) * 0.06;
+            const breathe = 1 + Math.sin(t * 1.4 + dist * 0.012) * 0.04;
             p.x = cx + dist * breathe * Math.cos(baseAng);
             p.y = cy + dist * breathe * Math.sin(baseAng);
-            // Mouse repulsion (subtle)
+            // Mouse repulsion — silniejsza niż wcześniej
             const mdx = p.x - mx, mdy = p.y - my, md = Math.sqrt(mdx * mdx + mdy * mdy);
-            if (md < 120) {
-              const f = (120 - md) * 0.18 / Math.max(1, md);
+            if (md < 180) {
+              const f = (180 - md) * 0.28 / Math.max(1, md);
               p.x += mdx * f; p.y += mdy * f;
+              p.lit = (180 - md) / 180;
+            } else {
+              p.lit = 0;
             }
-            const a = md < 120 ? Math.min(1, p.alpha + (120 - md) / 200) : p.alpha;
+          }
+
+          // WARSTWA constellation: linie między bliskimi particles (efekt sieci)
+          ctx.lineWidth = 0.6;
+          for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            for (let j = i + 1; j < Math.min(i + 6, particles.length); j++) {
+              const q = particles[j];
+              const lx = q.x - p.x, ly = q.y - p.y;
+              const ld = Math.sqrt(lx * lx + ly * ly);
+              if (ld < 95) {
+                const a = (1 - ld / 95) * 0.18 + Math.max(p.lit || 0, q.lit || 0) * 0.25;
+                ctx.strokeStyle = `rgba(201, 169, 110, ${a})`;
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(q.x, q.y);
+                ctx.stroke();
+              }
+            }
+          }
+
+          // WARSTWA particles: koła + glow przy hover
+          for (const p of particles) {
+            const litBoost = (p.lit || 0) * 0.5;
+            const a = Math.min(1, p.alpha + litBoost);
+            const r = p.size * (1 + (p.lit || 0) * 0.8);
+            const col = p.color === 'forest' ? `rgba(44, 62, 45, ${a * 0.85})` : `rgba(201, 169, 110, ${a})`;
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(201, 169, 110, ${a})`;
+            ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+            ctx.fillStyle = col;
             ctx.fill();
+            // Glow halo dla cząsteczek blisko myszy
+            if (p.lit > 0.3) {
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, r * 4, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(201, 169, 110, ${p.lit * 0.08})`;
+              ctx.fill();
+            }
           }
           requestAnimationFrame(render);
         }
@@ -1428,12 +1688,12 @@
         hero.addEventListener('pointerleave', () => { mx = -1000; my = -1000; });
 
         resize();
-        window.addEventListener('resize', () => { ctx.setTransform(1, 0, 0, 1, 0, 0); resize(); }, { passive: true });
+        window.addEventListener('resize', resize, { passive: true });
 
-        // Pause when not visible (perf)
         const io = new IntersectionObserver(([e]) => {
+          const wasActive = rafActive;
           rafActive = e.isIntersecting;
-          if (rafActive) render();
+          if (rafActive && !wasActive) render();
         }, { threshold: 0.01 });
         io.observe(hero);
         render();
