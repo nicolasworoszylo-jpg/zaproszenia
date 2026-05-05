@@ -6,6 +6,8 @@ User-agent: *
 Allow: /
 Disallow: /demo
 Disallow: /demo/
+Disallow: /magda-tomek
+Disallow: /magda-tomek/
 
 # ── AI crawlers (GEO: maksymalizacja szans na cytowania) ──
 User-agent: GPTBot

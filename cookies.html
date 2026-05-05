@@ -12,9 +12,10 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Self-hosted fonts (RODO clean — zero transferu danych do Google) -->
+  <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/fonts/fonts.css">
 
   <style>
     :root {
@@ -171,13 +172,15 @@
       <strong>Stan na 27 kwietnia 2026:</strong> formularz kontaktowy używa wyłącznie standardowych mechanizmów HTTPS i przesyła dane do bazy Supabase bez zapisywania jakichkolwiek danych w pamięci przeglądarki. Strona nie integruje narzędzi analitycznych, śledzących ani reklamowych.
     </div>
 
-    <h2>3. Cookies podmiotów trzecich</h2>
-    <p>Strona ładuje zasoby z następujących domen zewnętrznych (skrypty, fonty, biblioteki). Niektóre z nich mogą same w sobie ustawiać własne pliki cookies w przeglądarce użytkownika:</p>
+    <h2>3. Zasoby zewnętrzne i cookies podmiotów trzecich</h2>
+    <p>Strona została zaprojektowana z myślą o pełnej zgodności z RODO i minimalnym transferze danych do podmiotów trzecich. Aktualny stan (od maja 2026):</p>
     <ul>
-      <li><strong>Google Fonts</strong> (fonts.googleapis.com, fonts.gstatic.com) — ładowanie czcionek Playfair Display, Cormorant Garamond, Outfit. Google deklaruje że NIE ustawia cookies dla tych zasobów</li>
-      <li><strong>unpkg.com</strong> — CDN bibliotek JavaScript (React, Supabase). Bez cookies</li>
-      <li><strong>Supabase</strong> (kuyniyyieejvambyjnxy.supabase.co) — backend dla formularzy. Komunikacja API, bez cookies</li>
+      <li><strong>Czcionki — self-hosted</strong>: wszystkie rodziny czcionek (Fraunces i Inter na stronie głównej oraz dokumentach prawnych; Playfair Display, Cormorant Garamond i DM Mono w przykładowych zaproszeniach) są serwowane z naszego własnego hostingu (<code>/fonts/</code>) w formacie WOFF2. <strong>Brak transferu adresu IP użytkownika do Google LLC</strong>. Cache 12 miesięcy w przeglądarce.</li>
+      <li><strong>Biblioteki JavaScript — self-hosted</strong>: React, ReactDOM oraz klient Supabase są serwowane z naszego hostingu (<code>/vendor/</code>). Brak komunikacji z CDN-ami zewnętrznymi (np. unpkg.com, jsdelivr.net) podczas ładowania stron.</li>
+      <li><strong>Supabase</strong> (kuyniyyieejvambyjnxy.supabase.co, region eu-west-1) — backend dla formularzy kontaktowych i potwierdzeń obecności. Komunikacja wyłącznie przez API REST, bez cookies. Dane przetwarzane na podstawie umowy powierzenia (DPA) zgodnie z art. 28 RODO.</li>
+      <li><strong>Vercel</strong> (zaproszeniaonline.com) — dostawca hostingu i sieci CDN. Standardowe logi serwera (adres IP, user-agent, czas żądania) zgodnie z polityką prywatności Vercel Inc., bez ustawiania cookies tracking.</li>
     </ul>
+    <p style="margin-top: 1rem; font-style: italic; color: var(--ink-mute); font-size: 0.92rem;">Zmiana w stosunku do wcześniejszych wersji: do kwietnia 2026 strona ładowała czcionki bezpośrednio z Google Fonts. Od maja 2026 są one self-hostowane w celu eliminacji transferu danych użytkownika do Google LLC.</p>
 
     <h2>4. Przyszłe zmiany</h2>
     <p>Jeśli w przyszłości wdrożymy narzędzia analityczne (np. <a href="https://plausible.io" target="_blank" rel="noopener">Plausible</a> lub Google Analytics) lub inne mechanizmy zapisu danych w przeglądarce — niniejsza polityka zostanie zaktualizowana, a w przypadku narzędzi wymagających zgody zostanie wyświetlony banner cookie consent przed pierwszym uruchomieniem.</p>
