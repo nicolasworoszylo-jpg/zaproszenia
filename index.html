@@ -852,6 +852,145 @@
     }
     .form-msg.show { opacity: 1; max-height: 200px; }
 
+    /* ─── Extended lead form: sekcje grupujące pola ─── */
+    .lead-form-extended { max-width: 720px; margin: 0 auto; text-align: left; }
+    .lf-section {
+      padding: 1.75rem 1.5rem 1.5rem;
+      margin-bottom: 1.25rem;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    }
+    .lf-section:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 4px 24px rgba(44,62,45,0.06);
+    }
+    .lf-section-consents {
+      background: #FAFAF8;
+      border: 1px solid var(--line);
+    }
+    .lf-section-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+    }
+    .lf-section-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.3rem, 3vw, 1.55rem);
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .lf-section-help {
+      font-size: 0.85rem;
+      color: var(--ink-mute);
+      margin-bottom: 1rem;
+      line-height: 1.55;
+    }
+    /* Palette grid — wizualny wybór koloru */
+    .lf-palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+    }
+    .lf-palette-option {
+      cursor: pointer;
+      padding: 0.85rem 0.5rem 0.65rem;
+      border: 2px solid var(--line);
+      border-radius: 10px;
+      text-align: center;
+      transition: all 0.25s var(--ease);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    }
+    .lf-palette-option:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .lf-palette-option input { position: absolute; opacity: 0; pointer-events: none; }
+    .lf-palette-option:has(input:checked) {
+      border-color: var(--accent);
+      background: rgba(44,62,45,0.04);
+      box-shadow: 0 4px 14px rgba(44,62,45,0.08);
+    }
+    .lf-palette-swatches {
+      display: inline-flex;
+      gap: 4px;
+    }
+    .lf-palette-swatches > span {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+      display: inline-block;
+    }
+    .lf-palette-name { font-size: 0.78rem; color: var(--ink-soft); line-height: 1.3; }
+    /* Radio group — yes/no/later */
+    .lf-radio-group { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.4rem; }
+    .lf-radio {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      border-radius: 100px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      transition: all 0.2s var(--ease);
+    }
+    .lf-radio:has(input:checked) { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+    .lf-radio input { accent-color: var(--accent); }
+    /* Features grid — multi-checkbox */
+    .lf-features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .lf-feature {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      line-height: 1.4;
+      transition: all 0.2s var(--ease);
+      color: var(--ink);
+    }
+    .lf-feature:hover { border-color: var(--accent); background: rgba(44,62,45,0.02); }
+    .lf-feature:has(input:checked) { border-color: var(--accent); background: rgba(44,62,45,0.04); }
+    .lf-feature input { accent-color: var(--accent); width: 16px; height: 16px; flex-shrink: 0; }
+    /* Submit + note */
+    .lead-form-submit {
+      width: 100%;
+      padding: 16px 28px;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 100px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background 0.3s var(--ease), transform 0.3s var(--spring), box-shadow 0.3s var(--ease);
+    }
+    .lead-form-submit:hover { background: var(--accent-h); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(44,62,45,0.18); }
+    .lead-form-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .lf-submit-note {
+      margin-top: 0.85rem;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      text-align: center;
+      line-height: 1.55;
+    }
+    .lf-submit-note strong { color: var(--accent); font-weight: 500; }
+    @media (max-width: 540px) {
+      .lf-section { padding: 1.5rem 1rem 1.25rem; }
+      .lf-features-grid { grid-template-columns: 1fr; }
+      .lf-palette-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
     /* Question section — subtelne tło, mniej presji niż lead form */
     .question-section {
       background: #FAFAF8;
@@ -1483,7 +1622,7 @@
             </div>
           </div>
           <a href="#kontakt" class="btn btn-primary price-cta">
-            Chcę takie zaproszenie
+            Zamawiam zaproszenie
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
           <p class="price-pay-note">Najpierw <strong>krótki formularz</strong> (kto, kiedy, gdzie) → po wysłaniu otrzymujesz <strong>link do płatności online</strong> (Stripe / BLIK / karta). Bez ukrytych opłat, faktura VAT.</p>
@@ -1496,94 +1635,244 @@
       </div>
     </section>
 
-    <!-- ─── CTA / LEAD FORM ─── -->
+    <!-- ─── CTA / LEAD FORM = CHECKOUT (po wysłaniu od razu Stripe) ─── -->
     <section class="cta" id="kontakt">
       <div class="container-narrow text-center">
-        <p class="section-eyebrow">Kontakt</p>
+        <p class="section-eyebrow">Zamówienie</p>
         <h2 class="section-title">Zróbmy <em>Wasze</em> zaproszenie razem</h2>
-        <p class="section-text" style="margin: 0 auto;">Powiedzcie nam o sobie kilka słów. Odpiszemy jeszcze tego samego dnia z gotową propozycją — dopasowaną do Was, do daty, do stylu Waszego wesela.</p>
+        <p class="section-text" style="margin: 0 auto 2.5rem;">Krótki brief — wszystko czego potrzebujemy do projektu. Po wysłaniu przechodzicie do bezpiecznej płatności Stripe (699 zł). Strona gotowa w 24 godziny.</p>
 
-        <form class="lead-form" id="leadForm" novalidate>
-          <div class="lead-form-row">
+        <form class="lead-form lead-form-extended" id="leadForm" novalidate>
+
+          <!-- ━━━ SEKCJA 1: Para i wydarzenie ━━━ -->
+          <div class="lf-section">
+            <p class="lf-section-eyebrow">01 — Para i wydarzenie</p>
+            <h3 class="lf-section-title">Kto i kiedy</h3>
+
+            <div class="lead-form-row">
+              <div class="lead-form-field">
+                <label for="lf-couple">Imiona pary *</label>
+                <input type="text" id="lf-couple" name="couple_names" required placeholder="np. Anna i Michał">
+              </div>
+              <div class="lead-form-field">
+                <label for="lf-event-date">Data ślubu / wydarzenia *</label>
+                <input type="date" id="lf-event-date" name="event_date" required>
+              </div>
+            </div>
+
+            <div class="lead-form-row">
+              <div class="lead-form-field">
+                <label for="lf-event-time">Godzina ceremonii</label>
+                <input type="time" id="lf-event-time" name="event_time" placeholder="15:00">
+              </div>
+              <div class="lead-form-field">
+                <label for="lf-event-type">Rodzaj wydarzenia</label>
+                <select id="lf-event-type" name="event_type">
+                  <option value="wesele">Wesele</option>
+                  <option value="chrzciny">Chrzciny</option>
+                  <option value="urodziny">Urodziny / jubileusz</option>
+                  <option value="firmowe">Event firmowy</option>
+                  <option value="inne">Inne</option>
+                </select>
+              </div>
+            </div>
+
             <div class="lead-form-field">
-              <label for="lf-name">Imię i nazwisko *</label>
-              <input type="text" id="lf-name" name="name" required autocomplete="name" placeholder="Anna Kowalska">
+              <label for="lf-venue-ceremony">Miejsce ceremonii</label>
+              <input type="text" id="lf-venue-ceremony" name="venue_ceremony" placeholder="np. Kościół św. Anny, ul. Krakowskie Przedmieście 68, Warszawa">
             </div>
             <div class="lead-form-field">
-              <label for="lf-email">E-mail *</label>
-              <input type="email" id="lf-email" name="email" required autocomplete="email" placeholder="anna@example.com">
+              <label for="lf-venue-reception">Miejsce przyjęcia</label>
+              <input type="text" id="lf-venue-reception" name="venue_reception" placeholder="np. Pałac w Korczewie, Korczew 23">
+            </div>
+
+            <div class="lead-form-row">
+              <div class="lead-form-field">
+                <label for="lf-guests">Przewidywana liczba gości</label>
+                <input type="number" id="lf-guests" name="guests_count" min="1" max="500" placeholder="np. 80">
+              </div>
+              <div class="lead-form-field">
+                <label for="lf-rsvp-deadline">Deadline RSVP</label>
+                <input type="date" id="lf-rsvp-deadline" name="rsvp_deadline">
+              </div>
             </div>
           </div>
-          <div class="lead-form-row">
+
+          <!-- ━━━ SEKCJA 2: Styl wizualny ━━━ -->
+          <div class="lf-section">
+            <p class="lf-section-eyebrow">02 — Wygląd zaproszenia</p>
+            <h3 class="lf-section-title">Jak ma wyglądać</h3>
+
             <div class="lead-form-field">
-              <label for="lf-phone">Telefon</label>
-              <input type="tel" id="lf-phone" name="phone" autocomplete="tel" placeholder="+48 600 000 000">
+              <label>Paleta kolorów</label>
+              <div class="lf-palette-grid">
+                <label class="lf-palette-option">
+                  <input type="radio" name="palette" value="forest" checked>
+                  <span class="lf-palette-swatches"><span style="background:#2C3E2D"></span><span style="background:#C9A96E"></span><span style="background:#FAF6EF"></span></span>
+                  <span class="lf-palette-name">Leśna zieleń</span>
+                </label>
+                <label class="lf-palette-option">
+                  <input type="radio" name="palette" value="navy-rose">
+                  <span class="lf-palette-swatches"><span style="background:#1B2838"></span><span style="background:#D4A0A0"></span><span style="background:#FDF8F6"></span></span>
+                  <span class="lf-palette-name">Granat + róż</span>
+                </label>
+                <label class="lf-palette-option">
+                  <input type="radio" name="palette" value="bordo">
+                  <span class="lf-palette-swatches"><span style="background:#4A1C2B"></span><span style="background:#C8A87C"></span><span style="background:#FBF7F0"></span></span>
+                  <span class="lf-palette-name">Bordo + kość</span>
+                </label>
+                <label class="lf-palette-option">
+                  <input type="radio" name="palette" value="terracotta">
+                  <span class="lf-palette-swatches"><span style="background:#6B2F22"></span><span style="background:#B85F2E"></span><span style="background:#FAF1E0"></span></span>
+                  <span class="lf-palette-name">Rdzawa terracotta</span>
+                </label>
+                <label class="lf-palette-option">
+                  <input type="radio" name="palette" value="custom">
+                  <span class="lf-palette-swatches"><span style="background:linear-gradient(135deg,#F0E1C7,#D4A0A0,#2C3E2D);"></span></span>
+                  <span class="lf-palette-name">Własna (opisz w wiadomości)</span>
+                </label>
+              </div>
             </div>
+
             <div class="lead-form-field">
-              <label for="lf-event-date">Data wydarzenia</label>
-              <input type="date" id="lf-event-date" name="event_date">
-            </div>
-          </div>
-          <div class="lead-form-row">
-            <div class="lead-form-field">
-              <label for="lf-event-type">Rodzaj wydarzenia</label>
-              <select id="lf-event-type" name="event_type">
+              <label for="lf-style">Styl zaproszenia</label>
+              <select id="lf-style" name="style">
                 <option value="">— wybierz —</option>
-                <option value="wesele">Wesele</option>
-                <option value="chrzciny">Chrzciny</option>
-                <option value="urodziny">Urodziny / jubileusz</option>
-                <option value="firmowe">Event firmowy</option>
-                <option value="inne">Inne</option>
+                <option value="classic">Classic / klasyczny</option>
+                <option value="boho">Boho / sielski</option>
+                <option value="glamour">Glamour / elegancki</option>
+                <option value="minimalist">Minimalist / nowoczesny</option>
+                <option value="rustic">Rustic / drewno+łąka</option>
+                <option value="botanical">Botaniczny / zielony</option>
+                <option value="other">Inny — opiszę w wiadomości</option>
               </select>
             </div>
+
             <div class="lead-form-field">
-              <label for="lf-affiliate">Kod współpracy (opcjonalnie)</label>
-              <input type="text" id="lf-affiliate" name="affiliate" autocomplete="off" maxlength="32" placeholder="np. KORCZEW10">
-              <div class="affiliate-status" id="lf-affiliate-status" aria-live="polite"></div>
+              <label for="lf-quote">Cytat / motto pary (opcjonalnie)</label>
+              <input type="text" id="lf-quote" name="quote" maxlength="180" placeholder="np. „Każda wielka miłość zaczyna się od jednego spojrzenia"">
+            </div>
+
+            <div class="lead-form-field">
+              <label for="lf-dress-code">Dress code dla gości (opcjonalnie)</label>
+              <input type="text" id="lf-dress-code" name="dress_code" placeholder="np. Elegant Casual, kolor nie biały">
             </div>
           </div>
-          <div class="lead-form-field">
-            <label for="lf-message">Wiadomość (opcjonalnie)</label>
-            <textarea id="lf-message" name="message" placeholder="Opowiedz krótko o swoim wydarzeniu — data, ile gości, czego oczekujesz, a jeśli macie inspiracje (mood board, zdjęcia) — wyślijcie je w odpowiedzi na nasz e-mail."></textarea>
+
+          <!-- ━━━ SEKCJA 3: Zdjęcia i historia ━━━ -->
+          <div class="lf-section">
+            <p class="lf-section-eyebrow">03 — Zdjęcia i historia</p>
+            <h3 class="lf-section-title">Wasze zdjęcia i nasza historia</h3>
+
+            <div class="lead-form-field">
+              <label>Czy chcecie sekcję galerii / zdjęć pary?</label>
+              <div class="lf-radio-group">
+                <label class="lf-radio"><input type="radio" name="photos_gallery" value="yes" checked> Tak, mam zdjęcia gotowe</label>
+                <label class="lf-radio"><input type="radio" name="photos_gallery" value="later"> Tak, ale dośle później mailem</label>
+                <label class="lf-radio"><input type="radio" name="photos_gallery" value="no"> Nie, bez galerii</label>
+              </div>
+            </div>
+
+            <div class="lead-form-field">
+              <label for="lf-photos-count">Ile zdjęć przewidujecie? (opcjonalnie)</label>
+              <input type="number" id="lf-photos-count" name="photos_count" min="0" max="100" placeholder="np. 15">
+            </div>
+
+            <div class="lead-form-field">
+              <label>Czy chcecie sekcję „Nasza historia" (chronologia + zdjęcia)?</label>
+              <div class="lf-radio-group">
+                <label class="lf-radio"><input type="radio" name="our_story" value="yes" checked> Tak, dośle treść mailem</label>
+                <label class="lf-radio"><input type="radio" name="our_story" value="short"> Tak, ale krótko (3-4 zdania)</label>
+                <label class="lf-radio"><input type="radio" name="our_story" value="no"> Nie, pomijamy</label>
+              </div>
+            </div>
           </div>
-          <!-- ⚠ UPLOAD ZDJĘĆ ukryty do czasu uruchomienia Supabase Storage bucket "lead-attachments".
-               Po uruchomieniu SQL migration (supabase/migrations/2026-04-30-add-storage-bucket.sql)
-               USUŃ atrybut hidden poniżej żeby pole pojawiło się w formularzu. -->
-          <div class="lead-form-field lead-form-attach" hidden>
-            <label class="lead-form-attach-label">Zdjęcia inspiracyjne (opcjonalnie, max 5 plików / 10 MB)</label>
-            <p class="lead-form-attach-help">Możecie wysłać zdjęcia od razu — mood board, swoje, inspiracje z Pinteresta. Lub przesłać później mailem / WeTransferem po naszej odpowiedzi.</p>
-            <input type="file" id="lf-files" name="files" accept="image/jpeg,image/png,image/heic,image/webp" multiple class="lead-form-file">
-            <div class="lead-form-file-list" id="lf-files-list" aria-live="polite"></div>
+
+          <!-- ━━━ SEKCJA 4: Funkcje opcjonalne ━━━ -->
+          <div class="lf-section">
+            <p class="lf-section-eyebrow">04 — Co ma być na stronie</p>
+            <h3 class="lf-section-title">Funkcje (zaznacz te, które chcecie)</h3>
+            <p class="lf-section-help">Wszystkie są w cenie 699 zł — wybierz tylko te, które realnie wykorzystacie.</p>
+
+            <div class="lf-features-grid">
+              <label class="lf-feature"><input type="checkbox" name="features" value="rsvp" checked> Formularz RSVP (potwierdzanie obecności)</label>
+              <label class="lf-feature"><input type="checkbox" name="features" value="timeline" checked> Plan dnia (harmonogram)</label>
+              <label class="lf-feature"><input type="checkbox" name="features" value="maps" checked> Mapy z lokalizacjami</label>
+              <label class="lf-feature"><input type="checkbox" name="features" value="countdown" checked> Odliczanie do ślubu</label>
+              <label class="lf-feature"><input type="checkbox" name="features" value="gifts"> Lista prezentów / numery kont</label>
+              <label class="lf-feature"><input type="checkbox" name="features" value="hotels"> Lista hoteli dla gości</label>
+              <label class="lf-feature"><input type="checkbox" name="features" value="transport"> Informacja o transporcie/autokarze</label>
+              <label class="lf-feature"><input type="checkbox" name="features" value="music"> Muzyka w tle (link do piosenki)</label>
+              <label class="lf-feature"><input type="checkbox" name="features" value="songs"> Goście proponują piosenki</label>
+              <label class="lf-feature"><input type="checkbox" name="features" value="faq"> FAQ dla gości</label>
+              <label class="lf-feature"><input type="checkbox" name="features" value="qr"> QR kod do druku na papierze</label>
+            </div>
+
+            <div class="lead-form-field" style="margin-top: 1rem;">
+              <label for="lf-music-url">Link do piosenki w tle (jeśli zaznaczone)</label>
+              <input type="url" id="lf-music-url" name="music_url" placeholder="np. https://open.spotify.com/track/...">
+            </div>
           </div>
-          <div class="lead-form-checkbox">
-            <input type="checkbox" id="lf-rodo" name="rodo" required>
-            <label for="lf-rodo">Wyrażam zgodę na przetwarzanie moich danych zgodnie z <a href="/privacy" target="_blank" rel="noopener">Polityką Prywatności</a> i <a href="/terms" target="_blank" rel="noopener">Regulaminem</a>. *</label>
+
+          <!-- ━━━ SEKCJA 5: Kontakt i opcje ━━━ -->
+          <div class="lf-section">
+            <p class="lf-section-eyebrow">05 — Kontakt i opcje</p>
+            <h3 class="lf-section-title">Z kim się kontaktujemy</h3>
+
+            <div class="lead-form-row">
+              <div class="lead-form-field">
+                <label for="lf-name">Imię i nazwisko zamawiającego *</label>
+                <input type="text" id="lf-name" name="name" required autocomplete="name" placeholder="Anna Kowalska">
+              </div>
+              <div class="lead-form-field">
+                <label for="lf-email">E-mail *</label>
+                <input type="email" id="lf-email" name="email" required autocomplete="email" placeholder="anna@example.com">
+              </div>
+            </div>
+
+            <div class="lead-form-row">
+              <div class="lead-form-field">
+                <label for="lf-phone">Telefon</label>
+                <input type="tel" id="lf-phone" name="phone" autocomplete="tel" placeholder="+48 600 000 000">
+              </div>
+              <div class="lead-form-field">
+                <label for="lf-affiliate">Kod rabatowy (opcjonalnie)</label>
+                <input type="text" id="lf-affiliate" name="affiliate" autocomplete="off" maxlength="32" placeholder="np. KORCZEW10">
+                <div class="affiliate-status" id="lf-affiliate-status" aria-live="polite"></div>
+              </div>
+            </div>
+
+            <div class="lead-form-checkbox">
+              <input type="checkbox" id="lf-express" name="express_12h" value="yes">
+              <label for="lf-express"><strong>Express 12 godzin</strong> (+199 zł) — strona gotowa w 12h zamiast 24h. Polecane przy bardzo bliskim terminie ślubu.</label>
+            </div>
+
+            <div class="lead-form-field">
+              <label for="lf-message">Dodatkowe uwagi / inspiracje</label>
+              <textarea id="lf-message" name="message" rows="4" placeholder="np. mood board z Pinteresta (wklej linki), własna paleta kolorów, ulubione zdjęcia inspiracyjne, czego unikać, specjalne życzenia. Inspiracje wizualne dośle mailem po zamówieniu."></textarea>
+            </div>
           </div>
-          <div class="lead-form-checkbox">
-            <input type="checkbox" id="lf-consent-immediate" name="consent_immediate" required>
-            <label for="lf-consent-immediate"><strong>Wyrażam wyraźną zgodę</strong> na rozpoczęcie świadczenia usługi (projekt strony) przed upływem 14-dniowego terminu odstąpienia. Przyjmuję do wiadomości, że po pełnym wykonaniu usługi <strong>tracę prawo odstąpienia</strong> zgodnie z art. 38 ust. 1 pkt 1 ustawy o prawach konsumenta. *</label>
+
+          <!-- ━━━ ZGODY PRAWNE ━━━ -->
+          <div class="lf-section lf-section-consents">
+            <div class="lead-form-checkbox">
+              <input type="checkbox" id="lf-rodo" name="rodo" required>
+              <label for="lf-rodo">Wyrażam zgodę na przetwarzanie moich danych zgodnie z <a href="/privacy" target="_blank" rel="noopener">Polityką Prywatności</a> i <a href="/terms" target="_blank" rel="noopener">Regulaminem</a>. *</label>
+            </div>
+            <div class="lead-form-checkbox">
+              <input type="checkbox" id="lf-consent-immediate" name="consent_immediate" required>
+              <label for="lf-consent-immediate"><strong>Wyrażam wyraźną zgodę</strong> na rozpoczęcie świadczenia usługi (projekt strony) przed upływem 14-dniowego terminu odstąpienia. Przyjmuję do wiadomości, że po pełnym wykonaniu usługi <strong>tracę prawo odstąpienia</strong> zgodnie z art. 38 ust. 1 pkt 1 ustawy o prawach konsumenta. *</label>
+            </div>
           </div>
-          <button type="submit" class="lead-form-submit" id="lf-submit">Chcę takie zaproszenie</button>
+
+          <button type="submit" class="lead-form-submit" id="lf-submit">
+            Zamawiam zaproszenie — 699 zł
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18" style="margin-left:8px;"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          </button>
+          <p class="lf-submit-note">Po kliknięciu przekierujemy Was do bezpiecznej płatności <strong>Stripe</strong> (karta / BLIK / przelew). Po wpłacie odzywamy się jeszcze tego samego dnia.</p>
           <div class="form-msg" id="lf-msg" role="status" aria-live="polite"></div>
           <p class="form-fallback">Wolisz tradycyjnie? <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a></p>
         </form>
-
-        <!-- Success state — pokazuje się po sukcesie zgłoszenia, z linkiem do Stripe (krok 2) -->
-        <div class="lead-success" id="lf-success" hidden>
-          <div class="lead-success-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12L10 17L19 7"/></svg>
-          </div>
-          <h3 class="lead-success-title">Dzięki, mamy Wasze zgłoszenie ✉</h3>
-          <p class="lead-success-msg">Odzywamy się jeszcze <strong>tego samego dnia</strong> z potwierdzeniem szczegółów.</p>
-          <div class="lead-success-divider"></div>
-          <p class="lead-success-step2">Chcecie ruszyć od razu? Możecie zapłacić — projekt zaczyna się w ciągu 24 godzin od momentu wpłaty.</p>
-          <a id="lf-pay-link" href="https://buy.stripe.com/28E00i2UgfYsayo8XQgMw01" target="_blank" rel="noopener" class="btn btn-primary lead-success-pay">
-            Zapłać teraz 699 zł
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-          <p class="lead-success-secure">🔒 Bezpieczna płatność Stripe (karta/BLIK/przelew). Faktura VAT automatycznie po wpłacie.</p>
-          <p class="lead-success-alt">Nie spieszy Wam się? <strong>Nie musicie płacić od razu</strong> — odpowiemy mailowo z potwierdzeniem i zapłacicie później.</p>
-        </div>
       </div>
     </section>
 
@@ -2071,69 +2360,95 @@
       msgEl.className = 'form-msg';
 
       const affRaw = (fd.get('affiliate') || '').toString().trim();
+      // Zbierz wszystkie zaznaczone features
+      const features = Array.from(form.querySelectorAll('input[name="features"]:checked')).map(c => c.value);
       const payload = {
         name, email,
-        phone:       (fd.get('phone') || '').toString().trim() || null,
-        event_type:  (fd.get('event_type') || '').toString() || null,
-        event_date:  (fd.get('event_date') || '').toString() || null,
-        message:     (fd.get('message') || '').toString().trim() || null,
-        source:      'landing',
-        user_agent:  navigator.userAgent.slice(0, 500),
-        referrer:    (document.referrer || '').slice(0, 500) || null,
+        phone:           (fd.get('phone') || '').toString().trim() || null,
+        event_type:      (fd.get('event_type') || '').toString() || null,
+        event_date:      (fd.get('event_date') || '').toString() || null,
+        couple_names:    (fd.get('couple_names') || '').toString().trim() || null,
+        event_time:      (fd.get('event_time') || '').toString() || null,
+        venue_ceremony:  (fd.get('venue_ceremony') || '').toString().trim() || null,
+        venue_reception: (fd.get('venue_reception') || '').toString().trim() || null,
+        guests_count:    parseInt(fd.get('guests_count')) || null,
+        rsvp_deadline:   (fd.get('rsvp_deadline') || '').toString() || null,
+        palette:         (fd.get('palette') || '').toString() || null,
+        style:           (fd.get('style') || '').toString() || null,
+        quote:           (fd.get('quote') || '').toString().trim() || null,
+        dress_code:      (fd.get('dress_code') || '').toString().trim() || null,
+        photos_gallery:  (fd.get('photos_gallery') || '').toString() || null,
+        photos_count:    parseInt(fd.get('photos_count')) || null,
+        our_story:       (fd.get('our_story') || '').toString() || null,
+        features:        features.length ? features : null,
+        music_url:       (fd.get('music_url') || '').toString().trim() || null,
+        express_12h:     (fd.get('express_12h') || '').toString() === 'yes',
+        message:         (fd.get('message') || '').toString().trim() || null,
+        source:          'landing-checkout',
+        user_agent:      navigator.userAgent.slice(0, 500),
+        referrer:        (document.referrer || '').slice(0, 500) || null,
         affiliate_code:         affRaw ? affRaw.toUpperCase() : null,
         affiliate_discount_pct: (affValidated && affValidated.valid) ? affValidated.discount_pct : null,
       };
 
       try {
-        // Insert lead first to get ID for storage path
-        const { data: leadRow, error } = await sb.from('leads').insert(payload).select('id').single();
-        if (error) throw error;
+        // Insert lead first to get ID — będzie client_reference_id w Stripe
+        // Tylko podstawowe pola które na pewno istnieją w schemacie. Reszta w 'message' jako JSON fallback.
+        const corePayload = {
+          name, email,
+          phone: payload.phone,
+          event_type: payload.event_type,
+          event_date: payload.event_date,
+          message: payload.message,
+          source: payload.source,
+          user_agent: payload.user_agent,
+          referrer: payload.referrer,
+          affiliate_code: payload.affiliate_code,
+          affiliate_discount_pct: payload.affiliate_discount_pct,
+        };
+        // Dorzuć rozszerzone pola — jeśli kolumna nie istnieje w DB, Supabase ją pominie (PostgREST tolerant) tylko gdy unknown columns errors są disabled. Bezpieczniej: stack do JSON w message.
+        const extendedSummary = `
+=== BRIEF KLIENTA ===
+Para: ${payload.couple_names || '—'}
+Data: ${payload.event_date || '—'} ${payload.event_time || ''}
+Ceremonia: ${payload.venue_ceremony || '—'}
+Przyjęcie: ${payload.venue_reception || '—'}
+Goście: ${payload.guests_count || '—'} | RSVP do: ${payload.rsvp_deadline || '—'}
+Paleta: ${payload.palette || '—'} | Styl: ${payload.style || '—'}
+Cytat: ${payload.quote || '—'}
+Dress code: ${payload.dress_code || '—'}
+Galeria zdjęć: ${payload.photos_gallery || '—'} (przewidziano: ${payload.photos_count || '—'})
+Nasza historia: ${payload.our_story || '—'}
+Funkcje: ${features.length ? features.join(', ') : '—'}
+Muzyka URL: ${payload.music_url || '—'}
+Express 12h: ${payload.express_12h ? 'TAK (+199 zł)' : 'NIE'}
+=== /BRIEF ===
+${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
+        corePayload.message = extendedSummary;
 
-        // Upload attached files (jeśli wybrane) — best-effort, nie blokuje sukcesu leada
-        if (leadRow && selectedFiles.length > 0) {
-          submitBtn.textContent = 'Wysyłamy zdjęcia…';
-          const uploads = selectedFiles.map(async (file) => {
-            const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_').slice(0, 60);
-            const path = `${leadRow.id}/${Date.now()}-${safeName}`;
-            const { error: upErr } = await sb.storage.from('lead-attachments').upload(path, file, { upsert: false, contentType: file.type });
-            if (upErr) console.warn('upload fail:', file.name, upErr);
-          });
-          await Promise.allSettled(uploads);
-        }
+        const { data: leadRow, error } = await sb.from('leads').insert(corePayload).select('id').single();
+        if (error) throw error;
 
         if (affValidated && affValidated.valid && affRaw) {
           sb.rpc('register_discount_code_use', { p_code: affRaw }).catch((e) => console.warn(e));
         }
-        form.reset();
-        selectedFiles = [];
-        if (filesListEl) filesListEl.innerHTML = '';
-        affStatus.className = 'affiliate-status';
-        affStatus.textContent = '';
-        affValidated = null;
 
-        // Pokaż success state z personalized Stripe link (lead_id w client_reference_id + prefilled email)
-        const successEl = document.getElementById('lf-success');
-        const payLinkEl = document.getElementById('lf-pay-link');
-        if (successEl && payLinkEl && leadRow) {
-          const baseStripeUrl = 'https://buy.stripe.com/28E00i2UgfYsayo8XQgMw01';
-          const params = new URLSearchParams({
-            prefilled_email: email,
-            client_reference_id: leadRow.id,
-          });
-          payLinkEl.href = `${baseStripeUrl}?${params.toString()}`;
-          form.hidden = true;
-          successEl.hidden = false;
-          // Smooth scroll do success boxa
-          setTimeout(() => successEl.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-        } else {
-          showMsg('Dzięki! Odzywamy się jeszcze dziś — sprawdźcie skrzynkę za kilka godzin ✉', 'success');
-          submitBtn.textContent = 'Wysłano ✓';
-        }
+        // Buduj Stripe URL z prefilled email + leadId i przekieruj OD RAZU
+        submitBtn.textContent = 'Przekierowuję do płatności…';
+        const baseStripeUrl = 'https://buy.stripe.com/28E00i2UgfYsayo8XQgMw01';
+        const params = new URLSearchParams({
+          prefilled_email: email,
+          client_reference_id: leadRow.id,
+        });
+        // Krótkie opóźnienie żeby user zobaczył komunikat
+        setTimeout(() => {
+          window.location.href = `${baseStripeUrl}?${params.toString()}`;
+        }, 400);
       } catch (err) {
         console.error('lead insert failed:', err);
         showMsg('Coś poszło nie tak. Spróbuj ponownie lub napisz na kontakt@zaproszeniaonline.com', 'error');
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Chcę takie zaproszenie';
+        submitBtn.textContent = 'Zamawiam zaproszenie — 699 zł';
       }
     });
 
