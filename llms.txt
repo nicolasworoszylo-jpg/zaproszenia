@@ -15,7 +15,7 @@
   - interaktywne mapy ceremonii, przyjęcia, hoteli (Google Maps)
   - galeria zdjęć pary (do 5 obróbek w cenie)
   - sekcja "Nasza historia" z chronologią
-  - custom paleta kolorów (4 gotowe lub własna)
+  - paleta kolorów do wyboru z 4 wariantów (leśna zieleń, granat+róż, bordo+kość, rdzawa terracotta)
   - opcjonalna muzyka w tle
   - animowane przejścia
 - **Dla kogo:** narzeczeni 25-35 lat, śluby cywilne i kościelne, chrzciny, urodziny, jubileusze, eventy firmowe
