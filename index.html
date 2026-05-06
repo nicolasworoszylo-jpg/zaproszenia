@@ -852,6 +852,23 @@
     }
     .form-msg.show { opacity: 1; max-height: 200px; }
 
+    /* Time hint przed formularzem — informuje klienta że to nie odbija */
+    .lf-time-hint {
+      max-width: 640px;
+      margin: 0 auto 2rem;
+      padding: 0.85rem 1.25rem;
+      background: rgba(201,169,110,0.08);
+      border-left: 3px solid var(--gold);
+      border-radius: 4px;
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      display: flex; align-items: center; gap: 0.85rem;
+      text-align: left;
+      line-height: 1.55;
+    }
+    .lf-time-hint-icon { font-size: 1.5rem; line-height: 1; flex-shrink: 0; }
+    .lf-time-hint strong { color: var(--ink); font-weight: 500; }
+
     /* ─── Extended lead form: sekcje grupujące pola ─── */
     .lead-form-extended { max-width: 720px; margin: 0 auto; text-align: left; }
     .lf-section {
@@ -1640,7 +1657,12 @@
       <div class="container-narrow text-center">
         <p class="section-eyebrow">Zamówienie</p>
         <h2 class="section-title">Zróbmy <em>Wasze</em> zaproszenie razem</h2>
-        <p class="section-text" style="margin: 0 auto 2.5rem;">Krótki brief — wszystko czego potrzebujemy do projektu. Po wysłaniu przechodzicie do bezpiecznej płatności Stripe (699 zł). Strona gotowa w 24 godziny.</p>
+        <p class="section-text" style="margin: 0 auto 1.5rem;">Krótki brief — wszystko czego potrzebujemy do projektu. Po wysłaniu przechodzicie do bezpiecznej płatności Stripe (699 zł). Strona gotowa w 24 godziny.</p>
+
+        <div class="lf-time-hint">
+          <span class="lf-time-hint-icon">⏱</span>
+          <span><strong>5 sekcji</strong> · ~3 minuty wypełnienia · <strong>tylko 6 pól wymaganych</strong> (reszta opcjonalna — możecie uzupełnić w mailu po wpłacie)</span>
+        </div>
 
         <form class="lead-form lead-form-extended" id="leadForm" novalidate>
 
@@ -1844,7 +1866,7 @@
 
             <div class="lead-form-checkbox">
               <input type="checkbox" id="lf-express" name="express_12h" value="yes">
-              <label for="lf-express"><strong>Express 12 godzin</strong> (+199 zł) — strona gotowa w 12h zamiast 24h. Polecane przy bardzo bliskim terminie ślubu.</label>
+              <label for="lf-express"><strong>Express 12 godzin</strong> (+199 zł) — strona gotowa w 12h zamiast 24h. <em>Dopłata fakturowana osobno po wpłacie głównej (699 zł) — wyślemy link do dopłaty mailem.</em></label>
             </div>
 
             <div class="lead-form-field">
@@ -2340,10 +2362,18 @@
       const fd = new FormData(form);
       const name = (fd.get('name') || '').toString().trim();
       const email = (fd.get('email') || '').toString().trim();
+      const couple = (fd.get('couple_names') || '').toString().trim();
+      const eventDate = (fd.get('event_date') || '').toString();
       const rodo = document.getElementById('lf-rodo').checked;
       const consentImmediate = document.getElementById('lf-consent-immediate')?.checked ?? false;
+      if (!couple || !eventDate) {
+        showMsg('Wymagane: imiona pary + data wydarzenia (sekcja 01).', 'error');
+        document.getElementById('lf-couple').scrollIntoView({behavior:'smooth', block:'center'});
+        return;
+      }
       if (!name || !email) {
-        showMsg('Imię i e-mail są wymagane.', 'error');
+        showMsg('Wymagane: imię zamawiającego + e-mail (sekcja 05).', 'error');
+        document.getElementById('lf-name').scrollIntoView({behavior:'smooth', block:'center'});
         return;
       }
       if (!rodo) {
