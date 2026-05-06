@@ -1389,9 +1389,8 @@
             Chcę takie zaproszenie
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
-          <!-- ⚠ STRIPE: po założeniu Payment Link wklej URL w atrybut data-stripe-link
-               i USUŃ atrybut hidden poniżej. Instrukcja w STRIPE_SETUP.md -->
-          <a href="#" data-stripe-link="" class="btn btn-stripe price-pay-cta" hidden>
+          <!-- Stripe Payment Link aktywny -->
+          <a href="https://buy.stripe.com/28E00i2UgfYsayo8XQgMw01" data-stripe-link="https://buy.stripe.com/28E00i2UgfYsayo8XQgMw01" target="_blank" rel="noopener" class="btn btn-stripe price-pay-cta">
             Zapłać teraz 699 zł
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
           </a>
@@ -1468,6 +1467,10 @@
             <input type="checkbox" id="lf-rodo" name="rodo" required>
             <label for="lf-rodo">Wyrażam zgodę na przetwarzanie moich danych zgodnie z <a href="/privacy" target="_blank" rel="noopener">Polityką Prywatności</a> i <a href="/terms" target="_blank" rel="noopener">Regulaminem</a>. *</label>
           </div>
+          <div class="lead-form-checkbox">
+            <input type="checkbox" id="lf-consent-immediate" name="consent_immediate" required>
+            <label for="lf-consent-immediate"><strong>Wyrażam wyraźną zgodę</strong> na rozpoczęcie świadczenia usługi (projekt strony) przed upływem 14-dniowego terminu odstąpienia. Przyjmuję do wiadomości, że po pełnym wykonaniu usługi <strong>tracę prawo odstąpienia</strong> zgodnie z art. 38 ust. 1 pkt 1 ustawy o prawach konsumenta. *</label>
+          </div>
           <button type="submit" class="lead-form-submit" id="lf-submit">Chcę takie zaproszenie</button>
           <div class="form-msg" id="lf-msg" role="status" aria-live="polite"></div>
           <p class="form-fallback">Wolisz tradycyjnie? <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a></p>
@@ -1537,6 +1540,7 @@
       <a href="/cookies">Cookies</a>
       <a href="/terms">Regulamin</a>
       <a href="/returns">Zwroty i reklamacje</a>
+      <a href="mailto:kontakt@zaproszeniaonline.com?subject=Zg%C5%82oszenie%20nielegalnej%20tre%C5%9Bci">Zgłoś nielegalną treść</a>
     </nav>
   </footer>
 
@@ -1906,12 +1910,17 @@
       const name = (fd.get('name') || '').toString().trim();
       const email = (fd.get('email') || '').toString().trim();
       const rodo = document.getElementById('lf-rodo').checked;
+      const consentImmediate = document.getElementById('lf-consent-immediate')?.checked ?? false;
       if (!name || !email) {
         showMsg('Imię i e-mail są wymagane.', 'error');
         return;
       }
       if (!rodo) {
         showMsg('Żeby wysłać, potrzebujemy zgody na Politykę Prywatności i Regulamin.', 'error');
+        return;
+      }
+      if (!consentImmediate) {
+        showMsg('Potrzebujemy wyraźnej zgody na rozpoczęcie usługi przed 14-dniowym terminem odstąpienia (drugi checkbox).', 'error');
         return;
       }
 
@@ -2197,10 +2206,33 @@
     })();
   </script>
 
-  <!-- Vercel Web Analytics — privacy-first, zero cookies (RODO clean), free do 2.5k events/mo -->
-  <script defer src="/_vercel/insights/script.js"></script>
-  <!-- Vercel Speed Insights — Core Web Vitals real-user monitoring -->
-  <script defer src="/_vercel/speed-insights/script.js"></script>
+  <!-- Vercel Web Analytics + Speed Insights — privacy-first, zero cookies tracking, ALE ładujemy DOPIERO po consent zgodnie z art. 173 PKE -->
+  <script>
+    (function() {
+      let consent = null;
+      try { consent = localStorage.getItem('cookie_consent'); } catch (e) {}
+      // Ładuj analytics tylko gdy user zaakceptował 'all' (NIE 'essential', NIE null)
+      if (consent === 'all') {
+        const s1 = document.createElement('script');
+        s1.defer = true; s1.src = '/_vercel/insights/script.js';
+        document.head.appendChild(s1);
+        const s2 = document.createElement('script');
+        s2.defer = true; s2.src = '/_vercel/speed-insights/script.js';
+        document.head.appendChild(s2);
+      }
+      // Re-load po klik 'Akceptuję' bez full reload (UX)
+      document.getElementById('cookie-all')?.addEventListener('click', () => {
+        if (!document.querySelector('script[src="/_vercel/insights/script.js"]')) {
+          const s1 = document.createElement('script');
+          s1.defer = true; s1.src = '/_vercel/insights/script.js';
+          document.head.appendChild(s1);
+          const s2 = document.createElement('script');
+          s2.defer = true; s2.src = '/_vercel/speed-insights/script.js';
+          document.head.appendChild(s2);
+        }
+      }, { once: true });
+    })();
+  </script>
 
 </body>
 </html>
