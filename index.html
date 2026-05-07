@@ -1016,40 +1016,104 @@
       display: inline-block;
     }
     .lf-palette-name { font-size: 0.78rem; color: var(--ink-soft); line-height: 1.3; }
-    /* Radio group — yes/no/later */
-    .lf-radio-group { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.4rem; }
+    /* Radio group — yes/no chips (custom, ukryty input + visual checkmark) */
+    .lf-radio-group { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; }
     .lf-radio {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 8px 14px;
-      border: 1px solid var(--line);
+      position: relative;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 18px 10px 16px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--line);
       border-radius: 100px;
       cursor: pointer;
-      font-size: 0.88rem;
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--ink-soft);
       transition: all 0.2s var(--ease);
+      user-select: none;
     }
-    .lf-radio:has(input:checked) { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-    .lf-radio input { accent-color: var(--accent); }
-    /* Features grid — multi-checkbox */
+    .lf-radio:hover { border-color: var(--accent); color: var(--ink); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(44,62,45,0.06); }
+    /* Native input ukryty (a11y zachowany — zostaje focusable) */
+    .lf-radio input {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+      pointer-events: none;
+    }
+    /* Custom dot przed labelem */
+    .lf-radio::before {
+      content: '';
+      width: 16px; height: 16px;
+      border: 1.5px solid var(--line);
+      border-radius: 50%;
+      transition: all 0.2s var(--ease);
+      flex-shrink: 0;
+    }
+    .lf-radio:hover::before { border-color: var(--accent); }
+    /* Selected state: zielone tło, biały tekst, kropka w środku */
+    .lf-radio:has(input:checked) {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+      box-shadow: 0 4px 14px rgba(44,62,45,0.18);
+    }
+    .lf-radio:has(input:checked)::before {
+      border-color: #FFFFFF;
+      background: radial-gradient(circle, #FFFFFF 0 5px, transparent 6px);
+    }
+    .lf-radio:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* Features grid — multi-checkbox z custom checkmark */
     .lf-features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 0.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.55rem;
       margin-top: 0.5rem;
     }
     .lf-feature {
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
+      position: relative;
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
       cursor: pointer;
-      font-size: 0.88rem;
+      font-size: 0.92rem;
       line-height: 1.4;
       transition: all 0.2s var(--ease);
+      color: var(--ink-soft);
+      user-select: none;
+    }
+    .lf-feature:hover { border-color: var(--accent); color: var(--ink); background: #FAFAF8; }
+    .lf-feature input {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+      pointer-events: none;
+    }
+    /* Custom checkbox box */
+    .lf-feature::before {
+      content: '';
+      width: 20px; height: 20px;
+      border: 1.5px solid var(--line);
+      border-radius: 5px;
+      background: #FFFFFF;
+      transition: all 0.2s var(--ease);
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center; justify-content: center;
+    }
+    /* Selected: forest box z białym checkmarkiem (SVG przez background-image) */
+    .lf-feature:has(input:checked) {
+      border-color: var(--accent);
+      background: rgba(44,62,45,0.04);
       color: var(--ink);
     }
-    .lf-feature:hover { border-color: var(--accent); background: rgba(44,62,45,0.02); }
-    .lf-feature:has(input:checked) { border-color: var(--accent); background: rgba(44,62,45,0.04); }
-    .lf-feature input { accent-color: var(--accent); width: 16px; height: 16px; flex-shrink: 0; }
+    .lf-feature:has(input:checked)::before {
+      background: var(--accent) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>") center/14px no-repeat;
+      border-color: var(--accent);
+    }
+    .lf-feature:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
     /* Submit + note */
     .lead-form-submit {
       width: 100%;
