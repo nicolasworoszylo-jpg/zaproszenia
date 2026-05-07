@@ -3,8 +3,34 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://zaproszeniaonline.com/</loc>
-    <lastmod>2026-05-04T22:00:00+02:00</lastmod>
+    <lastmod>2026-05-07T10:00:00+02:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="pl-PL" href="https://zaproszeniaonline.com/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://zaproszeniaonline.com/"/>
+  </url>
+  <url>
+    <loc>https://zaproszeniaonline.com/privacy</loc>
+    <lastmod>2026-05-07T10:00:00+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://zaproszeniaonline.com/terms</loc>
+    <lastmod>2026-05-07T10:00:00+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://zaproszeniaonline.com/cookies</loc>
+    <lastmod>2026-05-07T10:00:00+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://zaproszeniaonline.com/returns</loc>
+    <lastmod>2026-05-07T10:00:00+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
   </url>
 </urlset>

@@ -4,6 +4,15 @@
   "description": "Premium cyfrowe zaproszenia ślubne online — pełna strona z RSVP, plan dnia, mapy, galeria. Realizacja 24h. Cena 699 zł jednorazowo.",
   "url": "https://zaproszeniaonline.com",
   "version": "1.0.0",
+  "contact": {
+    "email": "kontakt@zaproszeniaonline.com",
+    "language": "pl"
+  },
+  "provider": {
+    "name": "Nicolas Woroszyło + Dominika Kuś",
+    "country": "PL",
+    "areaServed": "Polska"
+  },
   "capabilities": {
     "streaming": false,
     "pushNotifications": false,
@@ -14,41 +23,46 @@
       "id": "search_content",
       "name": "Search site content",
       "description": "Full-text search across all pages on this website",
-      "inputModes": [
-        "text"
-      ],
-      "outputModes": [
-        "text",
-        "data"
-      ]
+      "inputModes": ["text"],
+      "outputModes": ["text", "data"]
     },
     {
       "id": "get_page",
       "name": "Get page content",
       "description": "Retrieve clean Markdown content of any page by URL",
-      "inputModes": [
-        "text"
-      ],
-      "outputModes": [
-        "text",
-        "data"
-      ]
+      "inputModes": ["text"],
+      "outputModes": ["text", "data"]
     },
     {
       "id": "list_pages",
       "name": "List all pages",
       "description": "Get a structured list of all pages on this website",
-      "inputModes": [
-        "text"
-      ],
-      "outputModes": [
-        "text",
-        "data"
-      ]
+      "inputModes": ["text"],
+      "outputModes": ["text", "data"]
     }
   ],
   "endpoints": {
     "a2a": "https://zaproszeniaonline.com/.well-known/agent-card.json",
-    "llmsTxt": "https://zaproszeniaonline.com/llms.txt"
-  }
+    "llmsTxt": "https://zaproszeniaonline.com/llms.txt",
+    "sitemap": "https://zaproszeniaonline.com/sitemap.xml",
+    "robots": "https://zaproszeniaonline.com/robots.txt"
+  },
+  "product": {
+    "name": "Cyfrowe zaproszenie ślubne",
+    "price": "699 PLN",
+    "currency": "PLN",
+    "deliveryTime": "24 godziny",
+    "hostingMonths": 12,
+    "features": [
+      "RSVP formularz",
+      "plan dnia",
+      "mapy Google",
+      "galeria zdjęć",
+      "Nasza historia",
+      "palety kolorów",
+      "muzyka w tle",
+      "faktura VAT"
+    ]
+  },
+  "lastUpdated": "2026-05-07"
 }
