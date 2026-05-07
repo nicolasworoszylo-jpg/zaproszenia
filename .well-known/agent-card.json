@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0",
+  "name": "Zaproszenia Online",
+  "description": "Premium cyfrowe zaproszenia ślubne online — pełna strona z RSVP, plan dnia, mapy, galeria. Realizacja 24h. Cena 699 zł jednorazowo.",
+  "url": "https://zaproszeniaonline.com",
+  "version": "1.0.0",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "skills": [
+    {
+      "id": "search_content",
+      "name": "Search site content",
+      "description": "Full-text search across all pages on this website",
+      "inputModes": [
+        "text"
+      ],
+      "outputModes": [
+        "text",
+        "data"
+      ]
+    },
+    {
+      "id": "get_page",
+      "name": "Get page content",
+      "description": "Retrieve clean Markdown content of any page by URL",
+      "inputModes": [
+        "text"
+      ],
+      "outputModes": [
+        "text",
+        "data"
+      ]
+    },
+    {
+      "id": "list_pages",
+      "name": "List all pages",
+      "description": "Get a structured list of all pages on this website",
+      "inputModes": [
+        "text"
+      ],
+      "outputModes": [
+        "text",
+        "data"
+      ]
+    }
+  ],
+  "endpoints": {
+    "a2a": "https://zaproszeniaonline.com/.well-known/agent-card.json",
+    "llmsTxt": "https://zaproszeniaonline.com/llms.txt"
+  }
+}
