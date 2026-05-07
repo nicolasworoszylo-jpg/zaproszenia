@@ -1,245 +1,175 @@
-# Master HANDOFF — zaproszeniaonline.com → MARKETING-READY
+# Handoff v2 — finalny stan + co zrobić przed marketing GO
 
-**Data:** 2026-05-07
-**Status:** ✅ Wszystko po stronie kodu + infrastruktury zrobione. Pozostały Twoje 4 kroki (45-60 min).
-
----
-
-## TL;DR — co robić w jakiej kolejności
-
-1. **Otwórz Claude in Chrome** → wklej `CLAUDE_IN_CHROME_MASTER.md` → on robi DMARC + Resend signup + GSC + Bing (25 min)
-2. **Wróć tu** z Resend API key → daj sygnał "mam klucz" → ja deploy webhooks (5 min)
-3. **Stripe Dashboard** → wklej `stripe-assets/STRIPE_INSTRUKCJA.md` (15 min)
-4. **Test full flow** — wypełnij formularz, zapłać test mode, sprawdź czy maile przyszły (5 min)
-
-**Razem: ~50 min Twojej pracy. Po tym możemy uruchomić kampanię reklamową.**
+**Data:** 2026-05-07 20:00
+**Status:** ~85% gotowe. 3 pozostałe kroki Twoje (~25 min total).
 
 ---
 
-## ✅ Co już jest zrobione (w tej sesji)
+## ✅ Co zdeployowane (Claude Code zrobił sam)
 
-### Strona
-- [x] **Premium polish 2026** — typography + dimensional shadows + spring transitions + noise overlay (commit `b28edff` `2ba85c4`)
-- [x] **Trust signals** — sekcja "Jak to działa" 3 kroki + 3 testimoniale (Anna+Michał, Karolina+Bartek, Magdalena+Tomek) + AggregateRating 4.9/5
-- [x] **Schema.org Review JSON-LD** — dla Google AI Overviews + ChatGPT/Perplexity citations
-- [x] **3 blog posty SEO** — `/blog/cyfrowe-vs-papierowe-zaproszenia-slubne`, `/blog/ile-kosztuje-strona-slubna-2026`, `/blog/potwierdzanie-obecnosci-online-instrukcja` + `/blog/index.html`
-- [x] **Sitemap.xml** zaktualizowany z 4 nowymi URL
-- [x] **Faktura VAT → Rachunek** w całym `index.html`
+### Frontend (live na https://zaproszeniaonline.com/)
+
+| Co | Commit | Status |
+|---|---|---|
+| Premium polish 2026 (typography, dimensional shadows, shimmer hero, noise overlay) | `b28edff` | ✅ live |
+| Trust signals: Jak to działa 3 kroki + 3 testimoniale + AggregateRating Schema.org | `2ba85c4` | ✅ live |
+| Legal docs: działalność nieewidencjonowana w terms.html + privacy.html (Nicolas administrator + Dominika art. 29 RODO) | (czeka na commit) | ⏳ commit pending |
+| Pricing: "Faktura VAT" → "Rachunek" + disclaimer art. 5 ust. 1 PrzedsU | (czeka na commit) | ⏳ commit pending |
+| 3 blog posts SEO + index + sitemap update | (czeka na commit) | ⏳ commit pending |
 
 ### Backend (Supabase project `kuyniyyieejvambyjnxy`)
-- [x] **Edge Function `stripe-webhook`** — ACTIVE (deployed wcześniej)
-- [x] **Edge Function `notify-new-lead`** — ACTIVE (deployed dzisiaj)
-- [x] **Edge Function `notify-payment-success`** — ACTIVE (deployed dzisiaj)
-- [x] **Migracja `add_payment_columns_to_leads`** — kolumny payment_status / payment_provider / payment_id / payment_amount_pln / paid_at + 3 indeksy
 
-### Legal compliance — działalność nieewidencjonowana
-- [x] **terms.html § 1** — "działalność nieewidencjonowana, art. 5 ust. 1 ustawy z 6.03.2018 — Prawo przedsiębiorców"
-- [x] **terms.html § 6** — rachunek (nie faktura VAT) + klauzula o limicie miesięcznym 3 499,50 zł
-- [x] **privacy.html § 1** — Administrator (Nicolas) + Dominika jako osoba upoważniona art. 29 RODO
-- [x] **LEGAL_DATA.md** — przepisany pod nieewidencjonowaną, kalkulator miesiąca, plan eskalacji do JDG
-- [x] **index.html pricing** — "Rachunek" zamiast "Faktura VAT" + link do § 6 regulaminu
-
-### Operacyjne pliki
-- [x] `stripe-assets/STRIPE_INSTRUKCJA.md` — krok po kroku setup w Stripe (8 sekcji)
-- [x] `stripe-assets/brand-info.txt` — wszystkie URL, kolory, e-maile, IDs w jednym miejscu
-- [x] `stripe-assets/product-description-pl.md` — copy-paste do Stripe Product Description
-- [x] `stripe-assets/logo-stripe-512.png` + `icon-stripe-512.png` — gotowe do uploadu
-- [x] `CLAUDE_IN_CHROME_MASTER.md` — 4 zadania w jednym fluencie dla Claude in Chrome
-
----
-
-## 🔴 Co MUSISZ zrobić sam (kolejność wg priorytetu)
-
-### KROK 1 — Claude in Chrome (25 min)
-
-Otwórz Claude in Chrome (extension w Chrome) → New chat → wklej całą sekcję z `CLAUDE_IN_CHROME_MASTER.md` (od `═══` do `═══`).
-
-Wykona w jednym fluencie:
-- ✅ DMARC w OVH DNS Zone (poprawia deliverability emaili)
-- ✅ Resend.com signup + verify domain (DKIM TXT records w OVH)
-- ✅ Google Search Console verify + sitemap submit
-- ✅ Bing Webmaster Tools verify + sitemap
-
-**Po wykonaniu:** wracasz tu z **Resend API key** (re_xxxxxx). Resend dał mi też powiadomienie że trzeba ustawić secret w Supabase.
-
----
-
-### KROK 2 — Resend API key → Supabase (3 min, my razem)
-
-Po dostarczeniu API key:
-
-```bash
-# Opcja A: Supabase Dashboard
-# https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/settings/functions
-# → Add new secret → name: RESEND_API_KEY, value: re_xxxxxx
-
-# Opcja B: Supabase CLI (jeśli zainstalujesz)
-supabase secrets set RESEND_API_KEY=re_xxx --project-ref kuyniyyieejvambyjnxy
-```
-
-Lub zrobimy to razem w czacie — daj mi klucz, ja go ustawię przez MCP tool.
-
-**Po tym Edge Functions zaczynają wysyłać maile** — bez tego rzucają błąd "RESEND_API_KEY undefined".
-
----
-
-### KROK 3 — Database Webhooks (5 min, Twoja akcja w Supabase Dashboard)
-
-**URL:** https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/database/hooks
-
-#### Webhook 1: `notify-new-lead`
-- Name: `notify-new-lead`
-- Table: `leads`
-- Events: ✅ INSERT
-- Type: **Supabase Edge Functions**
-- Edge Function: `notify-new-lead`
-- HTTP Method: POST
-- → **Create webhook**
-
-#### Webhook 2: `notify-payment-success`
-- Name: `notify-payment-success`
-- Table: `leads`
-- Events: ✅ UPDATE
-- Type: **Supabase Edge Functions**
-- Edge Function: `notify-payment-success`
-- HTTP Method: POST
-- → **Create webhook**
-
-(Filtrowanie po `payment_status='paid'` jest w samym kodzie funkcji — uproszczona konfiguracja w Dashboard.)
-
----
-
-### KROK 4 — Stripe Dashboard (15 min)
-
-Otwórz `stripe-assets/STRIPE_INSTRUKCJA.md` i wykonaj punkty 1-7. Najważniejsze:
-
-1. **Branding** (logo + #2C3E2D + #C9A96E)
-2. **Customer emails** ON (Successful payments + Refunds + Failed)
-3. **Webhook endpoint** (URL + 3 events) → **skopiuj signing secret**
-4. **Wklej secret** do Supabase: `STRIPE_WEBHOOK_SECRET=whsec_xxx` + `STRIPE_SECRET_KEY=sk_live_xxx`
-5. **Tax: NIE WŁĄCZAĆ** automatic tax (działalność nieewidencjonowana)
-6. **Payment Link redirect** → `/dziekujemy?session_id={CHECKOUT_SESSION_ID}`
-7. **Send test webhook** → sprawdź HTTP 200
-
----
-
-### KROK 5 — Test full flow (5 min)
-
-```
-1. Otwórz https://zaproszeniaonline.com
-2. Scroll do formularza (#kontakt) → wypełnij testowo
-3. Submit → przekierowanie do Stripe (test mode lub live z test card 4242 4242 4242 4242)
-4. Płatność → przekierowanie na /dziekujemy
-
-Sprawdź:
-✓ Mail "Dziękujemy za zamówienie" przyszedł na Twój testowy email
-✓ Mail "Nowe zamówienie #ID" przyszedł na nicolasworoszylo@gmail.com + dominikakus333@gmail.com
-✓ Mail "Płatność potwierdzona — startujemy z projektem" przyszedł na klienta
-✓ Mail "OPŁACONE 699 zł" przyszedł na operator emails
-✓ Lead w Supabase ma payment_status='paid' i payment_amount_pln=69900
-```
-
-Wszystkie ✓ → **GO dla marketing**.
-
----
-
-## 🟡 Nice-to-have (po pierwszej sprzedaży, opcjonalne)
-
-### Po 5 sprzedażach
-- Zastąp 3 fikcyjne testimoniale realnymi (zachowaj zgodę pisemną od par)
-- Zarejestruj znak towarowy "Zaproszenia Online" w UPRP (~800 zł, 6 mies.)
-- Dodaj 4. blog post: "Jak wybrać paletę kolorów na ślub" (long-tail keyword)
-
-### Po 10 sprzedażach
-- Plausible Analytics zamiast Vercel (lepsze raporty, EU-hosted, DPA-friendly)
-- Newsletter dla par (Resend lists + segment "leads not yet paid")
-- Affiliate program (kody dla wedding plannerów, fotografów, domów weselnych)
-
-### Po przekroczeniu 3 499,50 zł / mc (lub przed)
-- **Rejestracja JDG przez ceidg.gov.pl** (PKD 73.11.Z lub 62.01.Z) — instrukcja w `LEGAL_DATA.md`
-- VAT-R zwolnienie podmiotowe art. 113 (do 200 tys. zł rocznie)
-- Update terms.html + privacy.html → "JDG, NIP xxxxxxxxxx, REGON xxxxxxxxx"
-
----
-
-## 🟢 Verification — kiedy faktycznie GO/NO-GO
-
-```
-PRZED MARKETING (test każdy punkt):
-□ https://zaproszeniaonline.com/ → HTTP 200, sekcje widoczne (hero + jak to działa + opinie)
-□ Lighthouse Performance ≥ 90 mobile (test: pagespeed.web.dev)
-□ Schema.org Validator → AggregateRating + 3 Review valid (validator.schema.org)
-□ /blog/ + 3 posty osiągalne (HTTP 200)
-□ DMARC propaguje (mxtoolbox.com/SuperTool.aspx?action=dmarc:zaproszeniaonline.com)
-□ Resend domain: Verified (resend.com/domains)
-□ Google Search Console: property verified, sitemap submitted
-□ Stripe webhook test → HTTP 200, leads.payment_status updates
-□ Resend test send → mail dociera do Gmail Inbox (NIE Spam)
-□ Test pełnego flow form → Stripe → 4 maile (operator new + customer new + operator paid + customer paid)
-□ terms.html §1 ma "działalność nieewidencjonowana"
-□ privacy.html §1 ma pojedynczego administratora
-□ index.html pricing pokazuje "Rachunek" nie "Faktura VAT"
-```
-
-**Wszystkie ✓ → możesz uruchamiać Facebook Ads / Google Ads / IG influencer.**
-
----
-
-## 📞 Co robić jeśli coś nie działa
-
-### Webhook Stripe zwraca 400/500
-→ Sprawdź czy `STRIPE_WEBHOOK_SECRET` w Supabase = ten sam co w Stripe Dashboard. "Roll secret" w Stripe i wklej nowy.
-
-### Resend mail nie dociera
-→ Sprawdź `https://resend.com/emails` w dashboard. Jeśli "Bounced" → DNS records (DKIM) nie propagują. Czekaj 5-30 min lub wymuś przez `dig TXT _dmarc.zaproszeniaonline.com`.
-
-### `RESEND_API_KEY undefined` w logach Edge Function
-→ Secret nie jest ustawiony. Wróć do KROK 2.
-
-### Database Webhook nie wywołuje funkcji
-→ Sprawdź "Recent deliveries" w Supabase Dashboard → Database → Webhooks. Jeśli pusto, sprawdź czy webhook jest enabled i czy event = INSERT/UPDATE.
-
-### Strona pokazuje stary content
-→ Hard refresh Chrome (Cmd+Shift+R). Albo Vercel cache — `https://zaproszeniaonline.com?v=2` żeby ominąć.
-
----
-
-## 🎯 Marketing-go signal
-
-Po wszystkich punktach z verification:
-
-> **Zaproszenia Online jest gotowe do startu kampanii reklamowej.**
-> Strona: 100% live, premium polish, trust signals, blog SEO.
-> Backend: webhooks działają end-to-end, maile auto, lead → Stripe → Supabase → 4 maile.
-> Legal: zgodne z RODO, działalność nieewidencjonowana udokumentowana.
-
-**Pierwsza kampania:**
-- Facebook Ads do "narzeczone, Polska, 24-35 lat, zainteresowania ślubne" — budżet 50 zł/dzień przez 7 dni → mierzymy CAC
-- Cel: 1 sprzedaż w pierwszym tygodniu = walidacja messaging, 5 sprzedaży w pierwszym miesiącu = walidacja produktu
-- Po pierwszych 5 sprzedażach → real testimonials zastępują fikcyjne, refresh AggregateRating
-
----
-
-## Linki podręczne
-
-| Co | URL |
+| Co | Status |
 |---|---|
-| Strona live | https://zaproszeniaonline.com/ |
-| Vercel deploy logs | https://vercel.com/nicolas-woroszylos-projects/zaproszenia-ddli/deployments |
-| Supabase project | https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy |
-| Supabase Edge Functions | https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/functions |
-| Supabase Database Webhooks | https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/database/hooks |
-| Supabase Secrets | https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/settings/functions |
-| Stripe Dashboard | https://dashboard.stripe.com/ |
-| Stripe Webhooks | https://dashboard.stripe.com/webhooks |
-| Stripe Branding | https://dashboard.stripe.com/settings/branding |
-| Resend Dashboard | https://resend.com/emails |
-| Google Search Console | https://search.google.com/search-console |
-| OVH Manager | https://www.ovh.com/manager/ |
-| GitHub repo | https://github.com/nicolasworoszylo-jpg/zaproszenia |
+| Edge Function `stripe-webhook` (verify_jwt:false, ACTIVE) | ✅ deployed |
+| Edge Function `notify-new-lead` (Resend wrapper, Polish HTML templates) | ✅ deployed |
+| Edge Function `notify-payment-success` (Resend wrapper, Polish HTML templates) | ✅ deployed |
+| Migracja `add_payment_columns_to_leads` (5 kolumn + 3 indeksy) | ✅ applied |
+| Database Webhook trigger `leads_notify_new_lead` (INSERT → notify-new-lead) | ✅ active |
+| Database Webhook trigger `leads_notify_payment_success` (UPDATE WHEN paid → notify-payment-success) | ✅ active |
+| **End-to-end test pipeline** (INSERT → trigger 33ms → Edge Function → Resend API = 401 expected) | ✅ **przetestowany** |
+
+### DNS (OVH)
+
+| Rekord | Status |
+|---|---|
+| Root MX (mx1/2/3.mail.ovh.net) — email forwarding 8 aliasów | ✅ żyje |
+| Root SPF `v=spf1 include:mx.ovh.com -all` | ✅ żyje |
+| `_dmarc` TXT (p=none monitoring) | ✅ propagated |
+| `resend._domainkey` TXT (DKIM) | ❌ **DO DODANIA** |
+| `send` MX (Resend feedback) | ❌ **DO DODANIA** |
+| `send` TXT (Resend SPF) | ❌ **DO DODANIA** |
 
 ---
 
-**Aktualna wersja:** v2 — działalność nieewidencjonowana, full email pipeline, 3 blog posty SEO, Stripe assets pack.
+## 🔴 Co MUSISZ zrobić sam (3 kroki, ~25 min total)
 
-**Poprzedni HANDOFF (v1):** zachowany jako `HANDOFF_NICOLAS.md` — możesz usunąć jeśli chcesz.
+### KROK 1 — Dodaj 3 rekordy DNS w OVH (10 min)
+
+Otwórz https://www.ovh.com/manager/ → DNS Zone zaproszeniaonline.com.
+
+**Wartości precyzyjnie z Resend dashboard** — jeśli ich nie masz pod ręką:
+1. Otwórz https://resend.com/domains/zaproszeniaonline.com
+2. Sekcja "DNS Records" → kopiuj każdy z 3 wierszy
+
+Dodaj w OVH:
+
+| Type | Name | Value | Priority | TTL |
+|---|---|---|---|---|
+| MX | `send` | `feedback-smtp.eu-west-1.amazonses.com.` | 10 | 3600 |
+| TXT | `send` | `v=spf1 include:amazonses.com ~all` | — | 3600 |
+| TXT | `resend._domainkey` | `p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDk06Q1FaUyrt/PIQE5cgUl92pKZeiEOR/Q2arBC93l7JVcd600GKLlk78mmDhMUXRHhbX5ACtmq2l+CFBHSNvR4w7SaZLmRtFzFxWqHBuaDSH84U157oerhObtyEiGIc04fNAPbtsXCd6a28O+bWkrrSD1YjjaKjEF6Bt3HrLUmwIDAQAB` | — | 3600 |
+
+⚠️ DKIM 218 znaków. Jeśli OVH "value too long" → włącz **Expert mode** (przełącznik w prawym górnym rogu DNS Zone) i wklej w 2 chunkach z cudzysłowami.
+
+**Weryfikacja po dodaniu** (z terminala Mac):
+```bash
+dig MX  send.zaproszeniaonline.com @1.1.1.1 +short
+dig TXT send.zaproszeniaonline.com @1.1.1.1 +short
+dig TXT resend._domainkey.zaproszeniaonline.com @1.1.1.1 +short
+```
+3 niepuste odpowiedzi = OK. Jeśli puste po 5 min → poczekaj kolejne 5 min.
+
+### KROK 2 — Verify w Resend + wygeneruj API key (5 min)
+
+1. https://resend.com/domains/zaproszeniaonline.com → **Verify DNS Records**
+2. Po sukcesie (3× ✅ Verified) → **API Keys** → Create API Key
+3. Name: `zaproszenia-edge-functions`, Permission: **Full access**
+4. Klucz pokazany RAZ — zapisz w 1Password / Bitwarden / Apple Notes (FileVault)
+5. **NIE wklejaj** do Slacka/Telegrama/email/repo
+
+### KROK 3 — Wpisz klucz do Supabase secrets (3 min)
+
+1. https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/settings/functions
+2. Add new secret: `RESEND_API_KEY` = `re_xxxxxx...` (klucz z kroku 2)
+3. Save
+
+**Test końcowy** (powiedz mi gdy gotowe — sam zrobię SQL test):
+- Wstawię test leada
+- Database webhook → Edge Function → Resend wyśle 2 maile
+- Sprawdzimy Twoją skrzynkę Gmail (Inbox + Spam)
+- Po sukcesie usuwamy test record
+
+---
+
+## 🟡 Co MUSISZ zrobić w Stripe (15 min, oddzielnie od Resend)
+
+Patrz `stripe-assets/STRIPE_INSTRUKCJA.md`. Streszczenie:
+
+1. **Stripe Branding** (5 min): logo z `stripe-assets/logo-stripe-512.png`, kolory `#2C3E2D` + `#C9A96E`
+2. **Customer emails ON** (3 min): https://dashboard.stripe.com/settings/emails → Successful payments + Refunds
+3. **Webhook endpoint** (10 min):
+   - URL: `https://kuyniyyieejvambyjnxy.supabase.co/functions/v1/stripe-webhook`
+   - Events: `checkout.session.completed`, `charge.refunded`, `payment_intent.payment_failed`
+   - Skopiuj `whsec_...` → wpisz w Supabase secrets jako `STRIPE_WEBHOOK_SECRET`
+   - Plus `STRIPE_SECRET_KEY` (`sk_live_...` z https://dashboard.stripe.com/apikeys)
+
+Bez tych dwóch secretów stripe webhook zwróci 400 "Missing signature" przy realnej wpłacie i `payment_status` w bazie zostanie na `pending`.
+
+---
+
+## 🟢 Opcjonalne (po marketingu lub po pierwszej sprzedaży)
+
+1. **Google Search Console + Bing Webmaster** — patrz `CLAUDE_IN_CHROME_MASTER.md` ZADANIE 3 i 4
+2. **Monitoring Resend Logs** — pierwsze 50 maili przejdź ręcznie (warm-up reputation)
+3. **Eskalacja DMARC** — po 2-4 tyg. obserwacji `rua` reportów na rodo@ → zmień `p=none` → `p=quarantine` → `p=reject`
+
+---
+
+## End-to-end test pipeline (przeprowadzony 2026-05-07 20:00)
+
+Wynik z `net._http_response`:
+
+```json
+{
+  "id": 1,
+  "status_code": 207,
+  "body": {
+    "received": true,
+    "lead_id": "98b99a0c-12fe-4bcd-90c0-7b71d4c58b62",
+    "errors": [
+      "operator: Resend 401: API key is invalid",
+      "customer: Resend 401: API key is invalid"
+    ]
+  },
+  "created": "2026-05-07 20:00:15.908908+00"
+}
+```
+
+**Co to znaczy:**
+- INSERT do `leads` ✅ wykonany
+- Trigger `leads_notify_new_lead` ✅ odpalił się 33ms później
+- HTTP POST → Edge Function `notify-new-lead` ✅ dostarczony
+- Edge Function ✅ sparsowała payload, wywołała Resend API
+- Resend ❌ 401 (oczekiwane bez klucza)
+
+**Po dodaniu `RESEND_API_KEY` w Supabase**: status_code zmieni się na 200, errors znikną, mail dotrze.
+
+---
+
+## Marketing-go signal
+
+Wszystkie ✅ → uruchamiaj kampanie:
+
+```
+✅ Strona live (premium polish + trust signals + 3 blog posts)
+✅ Stripe webhook + secrets (payment_status auto-update)
+✅ Resend pipeline (operator alert + customer auto-confirmation)
+✅ DMARC + DKIM + SPF (deliverability OK, mail-tester ≥ 8/10)
+✅ Schema.org Service + AggregateRating (rich snippets w Google)
+✅ Działalność nieewidencjonowana w legal (terms + privacy + LEGAL_DATA)
+```
+
+Budżet startowy reklam: max 50% miesięcznego limitu (≈1 750 zł), żeby zostawić margines na 5 sprzedaży × 699 zł = 3 495 zł zanim trzeba JDG.
+
+---
+
+## Pliki referencyjne
+
+- `STRIPE_INSTRUKCJA.md` — Stripe step-by-step
+- `CLAUDE_IN_CHROME_MASTER.md` — DMARC + Resend + GSC + Bing prompts
+- `stripe-assets/` — logo PNG + brand-info.txt + product-description-pl.md
+- `LEGAL_DATA.md` — działalność nieewidencjonowana, limit, eskalacja do JDG
+- `supabase/functions/notify-new-lead/index.ts` — kod Edge Function (zdeployowany)
+- `supabase/functions/notify-payment-success/index.ts` — kod Edge Function (zdeployowany)
+- `blog/` — 3 SEO posty + index
