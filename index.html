@@ -1674,6 +1674,239 @@
       .hero h1 em::after { transform: scaleX(1); }
       .demo-card { animation: none; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       PREMIUM POLISH 2026 — chirurgia (typography + dimensional + tactile)
+       Bazuje na Awwwards SOTD wedding 2025-26 + Figma Resource Library
+       Każda zmiana zachowuje istniejący layout — tylko refinement
+       ═══════════════════════════════════════════════════════════════════ */
+
+    /* T1 — text-wrap balance/pretty (Chrome 114+, Safari 17.4+, FF 121+) */
+    h1, h2, h3, .hero h1, .section-title, .lf-summary-title, .faq-item summary {
+      text-wrap: balance;
+    }
+    p, .hero-sub, .section-text, .lf-section-help, .price-pay-note, .faq-item p, .lf-submit-note, .lf-photos-mail-info {
+      text-wrap: pretty;
+    }
+
+    /* T2 — Tabular numerals (no jitter on count-up + clean prices) */
+    .trust-num, .price-amount, .price-amount .currency, .price-features li, .lf-summary-num {
+      font-variant-numeric: tabular-nums lining-nums;
+      font-feature-settings: "tnum", "lnum";
+    }
+
+    /* T3 — Refined typography on body — kerning + ligatures + stylistic alts */
+    body {
+      font-feature-settings: "kern", "liga", "calt";
+      text-rendering: optimizeLegibility;
+    }
+
+    /* T4 — Hero h1 — opsz + ligatures + small-caps option */
+    .hero h1 {
+      font-feature-settings: "kern", "liga", "dlig";
+    }
+
+    /* L1 — Pricing card — dimensional shadow 2026 (3 layers) + lift on hover */
+    .price-card {
+      box-shadow:
+        0 1px 2px rgba(44,62,45,0.04),
+        0 8px 24px rgba(44,62,45,0.06),
+        0 32px 64px rgba(44,62,45,0.08);
+      position: relative;
+      transition: box-shadow 0.6s var(--ease), transform 0.5s var(--spring);
+    }
+    .price-card:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 1px 2px rgba(44,62,45,0.05),
+        0 14px 36px rgba(44,62,45,0.08),
+        0 48px 96px rgba(44,62,45,0.13);
+    }
+
+    /* L2 — "Najczęściej wybierany" floating badge above price-card */
+    .price-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 7px 16px;
+      background: var(--accent);
+      color: #FAF6EF;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 6px 18px rgba(44,62,45,0.24);
+      white-space: nowrap;
+      z-index: 1;
+    }
+    .price-badge::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      margin-right: 7px;
+      vertical-align: 1px;
+      box-shadow: 0 0 0 3px rgba(201,169,110,0.22);
+    }
+
+    /* L3 — Demo card — premium dimensional shadow */
+    .demo-card {
+      box-shadow:
+        0 1px 3px rgba(0,0,0,0.03),
+        0 12px 32px rgba(0,0,0,0.05),
+        0 36px 72px rgba(0,0,0,0.06);
+    }
+
+    /* M1 — Form palette — premium check ring on selected (rounded ✓) */
+    .lf-palette-option { position: relative; }
+    .lf-palette-option:has(input:checked)::after {
+      content: '';
+      position: absolute;
+      top: 8px; right: 10px;
+      width: 18px; height: 18px;
+      background: var(--accent) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>") center/11px no-repeat;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(44,62,45,0.32);
+      animation: badge-pop 0.45s var(--spring);
+    }
+    @keyframes badge-pop {
+      0% { transform: scale(0); opacity: 0; }
+      55% { transform: scale(1.18); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* M2 — Form invalid state (browser-native :user-invalid, polish) */
+    .lead-form-field input:user-invalid:not(:placeholder-shown),
+    .lead-form-field select:user-invalid {
+      border-color: #C44536;
+      box-shadow: 0 0 0 3px rgba(196,69,54,0.08);
+    }
+    .lead-form-field input:user-valid:not(:placeholder-shown) {
+      border-color: rgba(44,62,45,0.4);
+    }
+
+    /* P1 — content-visibility on heavy below-fold sections (perf win) */
+    .faq-section {
+      content-visibility: auto;
+      contain-intrinsic-size: 1px 800px;
+    }
+
+    /* A1 — Subtle noise texture overlay (premium tactile feel, 2.2% opacity) */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.022;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='240' height='240' filter='url(%23n)' opacity='0.6'/></svg>");
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body::before { opacity: 0; }
+    }
+
+    /* A2 — Hero h1 em — refined gold-accent shimmer (1× run, then settled) */
+    @keyframes shimmer-once {
+      0%, 100% { background-position: 200% center; }
+      50% { background-position: -200% center; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .hero h1 em {
+        background: linear-gradient(110deg, var(--ink) 35%, var(--accent) 50%, var(--ink) 65%);
+        background-size: 220% 100%;
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer-once 3.6s ease-out 1.2s 1 forwards;
+      }
+    }
+
+    /* A3 — Apple-grade transition curve on interactive elements */
+    .btn, .lead-form-submit, .nav-cta, .lf-radio, .lf-feature, .lf-palette-option, .price-card, .demo-card, .trust-item, .faq-item summary {
+      transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    /* A4 — Trust bar items — dimensional lift on hover */
+    .trust-item {
+      transition: transform 0.4s var(--spring);
+    }
+    .trust-item:hover {
+      transform: translateY(-2px);
+    }
+    .trust-item:hover .trust-num {
+      color: var(--accent);
+      transition: color 0.3s var(--ease);
+    }
+
+    /* A5 — Form section open — subtle pulse ring on number badge */
+    .lf-section[open] .lf-summary-num {
+      position: relative;
+      box-shadow: 0 0 0 0 rgba(201,169,110,0.55);
+      animation: pulse-once 1.6s var(--ease) 0s 1 both;
+    }
+    @keyframes pulse-once {
+      0%   { box-shadow: 0 0 0 0 rgba(201,169,110,0.55); }
+      100% { box-shadow: 0 0 0 14px rgba(201,169,110,0); }
+    }
+
+    /* A6 — Scroll-driven reveal — extended to more elements */
+    @supports (animation-timeline: view()) {
+      .price-card, .lf-section, .faq-item, .trust-item {
+        animation: section-fade-in linear both;
+        animation-timeline: view();
+        animation-range: entry 5% cover 25%;
+      }
+    }
+
+    /* A7 — Buttons primary — subtle inner highlight (premium edge) */
+    .btn-primary,
+    .lead-form-submit {
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 1px 2px rgba(0,0,0,0.06),
+        0 8px 20px rgba(44,62,45,0.10);
+    }
+    .btn-primary:hover,
+    .lead-form-submit:hover {
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.14),
+        0 2px 4px rgba(0,0,0,0.08),
+        0 14px 32px rgba(44,62,45,0.18);
+    }
+
+    /* A8 — Section eyebrows — small refinement (gold dot prefix optional) */
+    .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-eyebrow::before {
+      content: '';
+      width: 4px; height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* A9 — Selection highlight refinement (warmer gold accent) */
+    ::selection {
+      background: var(--accent);
+      color: #FAF6EF;
+    }
+
+    /* A10 — Scrollbar refinement (modern thin, accent color) */
+    @media (hover: hover) {
+      html { scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(44,62,45,0.25); border-radius: 100px; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    }
   </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -1836,6 +2069,7 @@
         <p class="section-text" style="margin: 0 auto;">Bez abonamentu, bez doliczeń. Strona działa przez cały okres Twojego wydarzenia.</p>
 
         <div class="price-card">
+          <span class="price-badge" aria-label="Najczęściej wybierany pakiet">Najczęściej wybierany</span>
           <span class="price-tag">Pakiet kompletny</span>
           <div class="price-amount">699<span class="currency">zł</span></div>
           <div class="price-period">jednorazowo</div>
