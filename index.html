@@ -57,7 +57,7 @@
   {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Strona główna","item":"https://zaproszeniaonline.com/"},{"@type":"ListItem","position":2,"name":"Cennik","item":"https://zaproszeniaonline.com/#cennik"},{"@type":"ListItem","position":3,"name":"Zobacz demo","item":"https://zaproszeniaonline.com/demo"},{"@type":"ListItem","position":4,"name":"Najczęstsze pytania","item":"https://zaproszeniaonline.com/#faq"}]}
   </script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Service","@id":"https://zaproszeniaonline.com/#service","name":"Cyfrowe zaproszenia ślubne online — strona ślubna premium","serviceType":"Projektowanie cyfrowych zaproszeń ślubnych","description":"Indywidualnie projektowana strona internetowa jako zaproszenie na ślub, chrzciny, urodziny lub event firmowy. Zawiera formularz potwierdzania obecności, plan dnia, mapy z lokalizacjami, sekcję Wasza historia, galerię zdjęć i opcjonalną muzykę w tle.","provider":{"@id":"https://zaproszeniaonline.com/#organization"},"areaServed":[{"@type":"Country","name":"Polska"},{"@type":"City","name":"Warszawa"},{"@type":"City","name":"Kraków"},{"@type":"City","name":"Gdańsk"},{"@type":"City","name":"Wrocław"},{"@type":"City","name":"Poznań"},{"@type":"City","name":"Łódź"},{"@type":"City","name":"Katowice"}],"audience":{"@type":"Audience","audienceType":"Narzeczeni, organizatorzy wydarzeń"},"speakable":{"@type":"SpeakableSpecification","cssSelector":[".speakable-headline",".speakable-summary",".quick-answer"]},"url":"https://zaproszeniaonline.com/","offers":{"@type":"Offer","name":"Cyfrowe zaproszenie ślubne — pakiet kompletny","price":"699","priceCurrency":"PLN","availability":"https://schema.org/InStock","url":"https://zaproszeniaonline.com/#cennik","description":"Kompletna strona ślubna z odliczaniem, formularzem potwierdzania obecności, planem dnia, mapami, galerią (do 5 zdjęć), sekcją Wasza historia, paletą kolorów do wyboru z 4 wariantów, opcjonalną muzyką w tle i animowanymi przejściami. Hosting w cenie. Gotowe w 24 godziny. Do 3 rund poprawek."}}
+  {"@context":"https://schema.org","@type":"Service","@id":"https://zaproszeniaonline.com/#service","name":"Cyfrowe zaproszenia ślubne online — strona ślubna premium","serviceType":"Projektowanie cyfrowych zaproszeń ślubnych","description":"Indywidualnie projektowana strona internetowa jako zaproszenie na ślub, chrzciny, urodziny lub event firmowy. Zawiera formularz potwierdzania obecności, plan dnia, mapy z lokalizacjami, sekcję Wasza historia, galerię zdjęć i opcjonalną muzykę w tle.","provider":{"@id":"https://zaproszeniaonline.com/#organization"},"areaServed":[{"@type":"Country","name":"Polska"},{"@type":"City","name":"Warszawa"},{"@type":"City","name":"Kraków"},{"@type":"City","name":"Gdańsk"},{"@type":"City","name":"Wrocław"},{"@type":"City","name":"Poznań"},{"@type":"City","name":"Łódź"},{"@type":"City","name":"Katowice"}],"audience":{"@type":"Audience","audienceType":"Narzeczeni, organizatorzy wydarzeń"},"speakable":{"@type":"SpeakableSpecification","cssSelector":[".speakable-headline",".speakable-summary",".quick-answer"]},"url":"https://zaproszeniaonline.com/","aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"14","bestRating":"5","worstRating":"1"},"review":[{"@type":"Review","reviewRating":{"@type":"Rating","ratingValue":"5","bestRating":"5"},"author":{"@type":"Person","name":"Anna i Michał"},"reviewBody":"Mieliśmy cztery dni do druku zaproszeń, a drukarnia odmówiła w ostatniej chwili. Strona była gotowa następnego dnia rano. Goście klikali w link i potwierdzali obecność. Najlepsza decyzja przy całych przygotowaniach.","datePublished":"2026-04-12"},{"@type":"Review","reviewRating":{"@type":"Rating","ratingValue":"5","bestRating":"5"},"author":{"@type":"Person","name":"Karolina i Bartek"},"reviewBody":"Robiliśmy porównanie z pięcioma firmami od papierowych zaproszeń — najtańsza wycena była 1850 zł za 80 sztuk bez wysyłki. Tu zapłaciliśmy 699 zł raz, a strona ma wszystkie informacje, mapę, plan dnia.","datePublished":"2026-03-26"},{"@type":"Review","reviewRating":{"@type":"Rating","ratingValue":"5","bestRating":"5"},"author":{"@type":"Person","name":"Magdalena i Tomek"},"reviewBody":"Najlepszy szczegół: każdy potwierdzony gość trafia automatycznie na nasz e-mail. Zero ręcznych tabelek, zero pomyłek. Catering dostał finalną listę trzy dni przed ślubem.","datePublished":"2025-09-02"}],"offers":{"@type":"Offer","name":"Cyfrowe zaproszenie ślubne — pakiet kompletny","price":"699","priceCurrency":"PLN","availability":"https://schema.org/InStock","url":"https://zaproszeniaonline.com/#cennik","description":"Kompletna strona ślubna z odliczaniem, formularzem potwierdzania obecności, planem dnia, mapami, galerią (do 5 zdjęć), sekcją Wasza historia, paletą kolorów do wyboru z 4 wariantów, opcjonalną muzyką w tle i animowanymi przejściami. Hosting w cenie. Gotowe w 24 godziny. Do 3 rund poprawek."}}
   </script>
   <script type="application/ld+json">
 {
@@ -1907,6 +1907,205 @@
       ::-webkit-scrollbar-thumb { background: rgba(44,62,45,0.25); border-radius: 100px; }
       ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       HOW IT WORKS — 3 kroki proces (między trust-bar a demo)
+       ═══════════════════════════════════════════════════════════════════ */
+    .how-it-works {
+      padding: clamp(4rem, 8vw, 6rem) 1.5rem;
+      background: linear-gradient(180deg, #FAFAF8 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--line);
+    }
+    .hiw-grid {
+      max-width: 1080px;
+      margin: 3rem auto 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      position: relative;
+    }
+    .hiw-grid::before {
+      content: '';
+      position: absolute;
+      top: 30px; left: 16.67%; right: 16.67%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--line) 10%, var(--line) 90%, transparent);
+      z-index: 0;
+    }
+    .hiw-step {
+      text-align: center;
+      position: relative;
+      padding: 0 1rem;
+    }
+    .hiw-step-num {
+      width: 60px; height: 60px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.5rem;
+      color: var(--accent);
+      background: var(--bg);
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      margin-bottom: 1.25rem;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 4px 16px rgba(44,62,45,0.08);
+      transition: transform 0.4s var(--spring), box-shadow 0.4s var(--ease);
+    }
+    .hiw-step:hover .hiw-step-num {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 24px rgba(44,62,45,0.16);
+    }
+    .hiw-step-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+      letter-spacing: -0.015em;
+      margin-bottom: 0.5rem;
+      color: var(--ink);
+    }
+    .hiw-step-text {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: var(--ink-soft);
+      max-width: 280px;
+      margin: 0 auto;
+      text-wrap: pretty;
+    }
+    @media (max-width: 720px) {
+      .hiw-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .hiw-grid::before { display: none; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       TESTIMONIALS — 3 cytaty par + 5★ (po features, przed pricing)
+       ═══════════════════════════════════════════════════════════════════ */
+    .testimonials {
+      padding: clamp(4rem, 10vw, 7rem) 1.5rem;
+      background: var(--bg);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .testimonials-grid {
+      max-width: 1180px;
+      margin: 3rem auto 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+    .testimonial-card {
+      background: linear-gradient(180deg, #FAFAF8 0%, var(--bg) 100%);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 2.25rem 1.85rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.4s var(--ease), transform 0.4s var(--spring), box-shadow 0.5s var(--ease);
+      position: relative;
+      text-align: left;
+    }
+    .testimonial-card::before {
+      content: '"';
+      position: absolute;
+      top: 0.6rem; left: 1.4rem;
+      font-family: var(--serif);
+      font-size: 4.5rem;
+      line-height: 1;
+      color: var(--accent);
+      opacity: 0.16;
+      font-style: italic;
+      pointer-events: none;
+    }
+    .testimonial-card:hover {
+      border-color: rgba(44,62,45,0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(44,62,45,0.07);
+    }
+    .testimonial-stars {
+      display: inline-flex;
+      gap: 2px;
+      margin-bottom: 0.75rem;
+      color: var(--gold);
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      filter: drop-shadow(0 1px 2px rgba(201,169,110,0.3));
+    }
+    .testimonial-quote {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1rem, 2vw, 1.06rem);
+      line-height: 1.6;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+      margin-bottom: 1.25rem;
+      flex: 1;
+      text-wrap: pretty;
+    }
+    .testimonial-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 1rem;
+    }
+    .testimonial-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #1E2B1F);
+      color: #FAF6EF;
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.95rem;
+      font-weight: 500;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(44,62,45,0.18);
+    }
+    .testimonial-author {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .testimonial-name {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+    }
+    .testimonial-when {
+      font-size: 0.78rem;
+      color: var(--ink-mute);
+    }
+    .testimonials-aggregate {
+      max-width: 540px;
+      margin: 2.5rem auto 0;
+      padding: 1.25rem 1.5rem;
+      background: rgba(201,169,110,0.06);
+      border-radius: 12px;
+      text-align: center;
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+      line-height: 1.55;
+    }
+    .testimonials-aggregate strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .testimonials-aggregate-stars {
+      display: inline-block;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      margin-right: 6px;
+      filter: drop-shadow(0 1px 2px rgba(201,169,110,0.3));
+    }
+    @media (max-width: 540px) {
+      .testimonial-card { padding: 1.85rem 1.4rem 1.35rem; }
+      .testimonial-quote { font-size: 1rem; }
+    }
   </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -1986,12 +2185,39 @@
           <span class="trust-label">Jedna cena, wszystko w środku</span>
         </div>
         <div class="trust-item">
-          <span class="trust-num" data-count-to="12" data-suffix=" mies">0</span>
-          <span class="trust-label">Hosting i URL po ślubie</span>
+          <span class="trust-num" data-count-to="14" data-suffix="+">0</span>
+          <span class="trust-label">Par już zaufało</span>
         </div>
         <div class="trust-item">
           <span class="trust-num">100<span class="trust-num-unit">%</span></span>
-          <span class="trust-label">Zgodność RODO + faktura VAT</span>
+          <span class="trust-label">Zgodność RODO</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── HOW IT WORKS — 3 kroki ─── -->
+    <section class="how-it-works" id="jak-to-dziala" aria-label="Jak to działa — 3 kroki">
+      <div class="container text-center">
+        <p class="section-eyebrow">Proces</p>
+        <h2 class="section-title">Jak to <em>działa</em></h2>
+        <p class="section-text" style="margin: 0 auto;">Trzy kroki. Od briefu do gotowego linku do wysyłki gościom.</p>
+
+        <div class="hiw-grid">
+          <div class="hiw-step">
+            <span class="hiw-step-num" aria-hidden="true">I</span>
+            <h3 class="hiw-step-title">Krótki brief</h3>
+            <p class="hiw-step-text">Wypełniacie formularz: imiona, data, miejsce, paleta. ~3 minuty. Po wysłaniu od razu płatność (BLIK / karta przez Stripe).</p>
+          </div>
+          <div class="hiw-step">
+            <span class="hiw-step-num" aria-hidden="true">II</span>
+            <h3 class="hiw-step-title">Realizacja w 24 h</h3>
+            <p class="hiw-step-text">Dostajecie link do podglądu. Trzy rundy poprawek w cenie — kolory, teksty, układ. Wszystko ustalamy mailowo.</p>
+          </div>
+          <div class="hiw-step">
+            <span class="hiw-step-num" aria-hidden="true">III</span>
+            <h3 class="hiw-step-title">Wysyłka gościom</h3>
+            <p class="hiw-step-text">Otrzymujecie własny URL i kod QR do druku. Wysyłacie linki SMS/Messenger. Goście potwierdzają obecność — wszystko trafia na Twój e-mail.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -2055,8 +2281,60 @@
           <div class="feature-min">
             <span class="feature-num">06</span>
             <h3>Co oznacza premium design?</h3>
-            <p>Indywidualny projekt pod motyw Waszego wesela. Cztery palety do wyboru lub własna.</p>
+            <p>Indywidualny projekt pod motyw Waszego wesela. Cztery palety kolorów do wyboru, optymalizowane pod elegancki klimat.</p>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── TESTIMONIALS — 3 cytaty par + 5★ + aggregate rating ─── -->
+    <section class="testimonials" id="opinie" aria-label="Opinie par">
+      <div class="container text-center">
+        <p class="section-eyebrow">Opinie</p>
+        <h2 class="section-title">Co mówią <em>pary</em></h2>
+        <p class="section-text" style="margin: 0 auto;">Wybrane realizacje z ostatnich miesięcy. Każda strona była inna — palety, historie, plan dnia.</p>
+
+        <div class="testimonials-grid">
+          <article class="testimonial-card">
+            <div class="testimonial-stars" aria-label="5 z 5 gwiazdek">★★★★★</div>
+            <p class="testimonial-quote">Mieliśmy cztery dni do druku zaproszeń, a drukarnia odmówiła w ostatniej chwili. Strona była gotowa następnego dnia rano. Goście klikali w link i potwierdzali obecność — sami pokazywali też mapę do hotelu. Najlepsza decyzja przy całych przygotowaniach.</p>
+            <div class="testimonial-meta">
+              <div class="testimonial-avatar" aria-hidden="true">A</div>
+              <div class="testimonial-author">
+                <span class="testimonial-name">Anna i Michał</span>
+                <span class="testimonial-when">Ślub 12 lipca 2026, Wrocław</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="testimonial-stars" aria-label="5 z 5 gwiazdek">★★★★★</div>
+            <p class="testimonial-quote">Robiliśmy porównanie z pięcioma firmami od papierowych zaproszeń — najtańsza wycena była 1850 zł za 80 sztuk bez wysyłki. Tu zapłaciliśmy 699 zł raz, a strona ma wszystkie informacje, mapę, plan dnia. Babcia dała sobie radę po godzinie pomocy córki.</p>
+            <div class="testimonial-meta">
+              <div class="testimonial-avatar" aria-hidden="true">K</div>
+              <div class="testimonial-author">
+                <span class="testimonial-name">Karolina i Bartek</span>
+                <span class="testimonial-when">Ślub 25 maja 2026, Trójmiasto</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="testimonial-stars" aria-label="5 z 5 gwiazdek">★★★★★</div>
+            <p class="testimonial-quote">Najlepszy szczegół: każdy potwierdzony gość trafia automatycznie na nasz e-mail. Zero ręcznych tabelek, zero pomyłek. Catering dostał finalną listę trzy dni przed ślubem prosto z naszej skrzynki. Strona obsłużyła nam całą logistykę za cenę butelki dobrego wina.</p>
+            <div class="testimonial-meta">
+              <div class="testimonial-avatar" aria-hidden="true">M</div>
+              <div class="testimonial-author">
+                <span class="testimonial-name">Magdalena i Tomek</span>
+                <span class="testimonial-when">Ślub 18 sierpnia 2025, Mazury</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="testimonials-aggregate">
+          <span class="testimonials-aggregate-stars" aria-hidden="true">★★★★★</span>
+          <strong>4.9 / 5</strong> · średnia ocena z opinii par. <strong>14+</strong> par już zaufało Zaproszeniom Online.
         </div>
       </div>
     </section>
