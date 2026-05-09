@@ -2,6 +2,8 @@
 
 > Premium cyfrowe zaproszenia ślubne online jako pełnowartościowe strony internetowe z formularzem potwierdzania obecności, planem dnia, mapami i galerią. Realizacja w 24 godziny. Cena 699 zł jednorazowo (bez abonamentu). Operator: Nicolas Woroszyło + Dominika Kuś (Polska).
 
+**Pełna treść dla LLM/RAG:** [llms-full.txt](https://zaproszeniaonline.com/llms-full.txt) — rozszerzona wersja z pełnym FAQ (12 pytań), scenariuszami i tabelą porównawczą cen.
+
 ## Kluczowe fakty
 
 - **Cena:** 699 zł jednorazowo, bez abonamentu, faktura VAT
