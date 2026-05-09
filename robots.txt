@@ -44,3 +44,8 @@ User-agent: Bytespider
 Allow: /
 
 Sitemap: https://zaproszeniaonline.com/sitemap.xml
+
+# AI content discovery
+# LLM-readable content: /llms.txt
+# Extended LLM content: /llms-full.txt
+# Agent card: /.well-known/agent-card.json

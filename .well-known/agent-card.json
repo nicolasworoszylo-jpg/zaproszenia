@@ -44,6 +44,7 @@
   "endpoints": {
     "a2a": "https://zaproszeniaonline.com/.well-known/agent-card.json",
     "llmsTxt": "https://zaproszeniaonline.com/llms.txt",
+    "llmsFullTxt": "https://zaproszeniaonline.com/llms-full.txt",
     "sitemap": "https://zaproszeniaonline.com/sitemap.xml",
     "robots": "https://zaproszeniaonline.com/robots.txt"
   },
@@ -64,5 +65,5 @@
       "faktura VAT"
     ]
   },
-  "lastUpdated": "2026-05-07"
+  "lastUpdated": "2026-05-09"
 }
