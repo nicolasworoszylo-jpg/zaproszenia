@@ -308,7 +308,7 @@ function customerEmailHTML(lead: Lead): string {
           </div>
         </td>
         <td>
-          <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:1.15rem;color:#2C3E2D;letter-spacing:-0.012em;">Nicolas i Dominika</p>
+          <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:1.15rem;color:#2C3E2D;letter-spacing:-0.012em;">Zespół Zaproszenia Online</p>
           <p style="margin:1px 0 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.82rem;color:#999999;letter-spacing:0.005em;">Zaproszenia Online</p>
         </td>
       </tr>
@@ -355,7 +355,7 @@ Zobacz przykład gotowej strony: https://zaproszeniaonline.com/demo
 Macie pytania? Odpowiedzcie na tego maila — czytamy każdą wiadomość.
 
 Do usłyszenia,
-Nicolas i Dominika
+Zespół Zaproszenia Online
 Zaproszenia Online · https://zaproszeniaonline.com/
 
 Numer zamówienia: ${lead.id.slice(0,8)} · ${new Date(lead.created_at).toLocaleDateString("pl-PL")}`;

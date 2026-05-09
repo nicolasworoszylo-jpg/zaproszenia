@@ -265,7 +265,7 @@ function customerPaidHTML(lead: Lead): string {
           </div>
         </td>
         <td>
-          <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:1.15rem;color:#2C3E2D;letter-spacing:-0.012em;">Nicolas i Dominika</p>
+          <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:1.15rem;color:#2C3E2D;letter-spacing:-0.012em;">Zespół Zaproszenia Online</p>
           <p style="margin:1px 0 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.82rem;color:#999999;letter-spacing:0.005em;">Zaproszenia Online</p>
         </td>
       </tr>
@@ -309,7 +309,7 @@ Wyślijcie 2-3 ulubione zdjęcia pary i kilka zdań Waszej historii na zamowieni
 Rachunek (działalność nieewidencjonowana — bez VAT) zostanie wysłany w osobnym mailu w ciągu 24 godzin. W razie pytań — odpiszcie na tego maila.
 
 Do zobaczenia za ~24h,
-Nicolas i Dominika
+Zespół Zaproszenia Online
 Zaproszenia Online · https://zaproszeniaonline.com/
 
 Numer zamówienia: ${lead.id.slice(0,8)}`;
