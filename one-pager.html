@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Zaproszenie ślubne - one-pager do druku</title>
+<!--
+  ONE-PAGER do druku (A4 portrait).
+
+  CEL: minimalistyczna karta z imionami, datą i kodem QR do strony zaproszenia.
+  Para drukuje 10-50 sztuk i dorzuca do papierowego save-the-date dla starszych gości
+  albo wkleja do koperty z winetkami.
+
+  UŻYCIE:
+    /one-pager.html?names=Anna+i+Michał&date=20+czerwca+2026&venue=Wrocław&url=https://zaproszeniaonline.com/anna-michal&qr=DATA_URI_LUB_URL_DO_PNG
+
+  PARAMETRY:
+    ?names    - imiona pary, np. "Anna i Michał" (default: "Wasze Imiona")
+    ?date     - data ślubu, np. "20 czerwca 2026" (default: "Data ślubu")
+    ?venue    - miasto / lokalizacja, np. "Wrocław" lub "Pałac Brunów"
+    ?url      - URL strony zaproszenia, np. https://zaproszeniaonline.com/anna-michal
+    ?qr       - data URI obrazka QR (data:image/png;base64,...) ALBO URL do PNG QR
+
+  GENEROWANIE QR DLA URL:
+    macOS (po brew install qrencode):
+      qrencode -s 12 -o anna-michal-qr.png "https://zaproszeniaonline.com/anna-michal"
+    Lub online (jednorazowo, free):
+      https://www.qr-code-generator.com (PNG download)
+      → wgraj plik na zaproszeniaonline.com/qr-<slug>.png lub use data URI
+
+  PRINT: otwórz w przeglądarce → Cmd+P → "Save as PDF" lub bezpośrednio drukarka.
+  Print stylesheet (@media print) chowa instrukcje, używa A4 portrait.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF6EF;
+    --ink: #0A0A0A;
+    --ink-soft: #4A4A4A;
+    --ink-mute: #999;
+    --accent: #2C3E2D;
+    --gold: #C9A96E;
+    --line: #E5DDC9;
+    --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #EDEAE2; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 40px 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Toolbar (screen only) ────────────────────────────────────── */
+  .toolbar {
+    max-width: 800px;
+    margin: 0 auto 24px;
+    padding: 16px 20px;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .toolbar h2 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.05rem;
+    color: var(--accent);
+    margin-right: auto;
+    letter-spacing: -0.01em;
+  }
+  .toolbar button {
+    padding: 10px 22px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 100px;
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.3s;
+    letter-spacing: -0.005em;
+  }
+  .toolbar button:hover { background: #1E2B1F; transform: translateY(-1px); }
+  .toolbar button.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .toolbar button.secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  .info-banner {
+    max-width: 800px;
+    margin: 0 auto 24px;
+    padding: 14px 18px;
+    background: rgba(201,169,110,0.10);
+    border-left: 3px solid var(--gold);
+    border-radius: 6px;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .info-banner code {
+    font-family: 'SF Mono', Menlo, Monaco, monospace;
+    font-size: 0.82rem;
+    background: rgba(44,62,45,0.08);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--accent);
+  }
+
+  /* ── Page (A4 portrait) ───────────────────────────────────────── */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    max-width: 100%;
+    margin: 0 auto;
+    background: var(--bg);
+    color: var(--ink);
+    padding: 28mm 22mm;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.10);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle ornaments */
+  .page::before,
+  .page::after {
+    content: '';
+    position: absolute;
+    width: 80mm;
+    height: 80mm;
+    border: 1px solid var(--gold);
+    opacity: 0.20;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .page::before { top: -40mm; left: -40mm; }
+  .page::after { bottom: -40mm; right: -40mm; }
+
+  /* ── Header ───────────────────────────────────────────────────── */
+  header.op-head {
+    text-align: center;
+    position: relative;
+  }
+  .op-eyebrow {
+    font-family: var(--sans);
+    font-size: 0.74rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .op-eyebrow::before,
+  .op-eyebrow::after {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .op-monogram {
+    width: 64px;
+    height: 64px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.8rem;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  /* ── Names (centerpiece) ──────────────────────────────────────── */
+  .op-names {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(2.8rem, 8vw, 4.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    text-align: center;
+    margin: 18px 0 24px;
+    text-wrap: balance;
+  }
+  .op-names .op-amp {
+    display: inline-block;
+    margin: 0 0.18em;
+    color: var(--gold);
+    font-style: italic;
+    font-weight: 400;
+    transform: translateY(0.04em);
+  }
+
+  /* ── Divider ─────────────────────────────────────────────────── */
+  .op-divider {
+    margin: 14px auto 14px;
+    width: 60px;
+    height: 1px;
+    background: var(--accent);
+    position: relative;
+  }
+  .op-divider::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ── Date + venue ─────────────────────────────────────────────── */
+  .op-date {
+    text-align: center;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.15rem, 3vw, 1.6rem);
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  .op-venue {
+    text-align: center;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ── Middle filler ───────────────────────────────────────────── */
+  .op-quote {
+    text-align: center;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(0.96rem, 2.2vw, 1.05rem);
+    color: var(--ink-soft);
+    max-width: 80%;
+    margin: 36px auto 0;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  /* ── QR section ──────────────────────────────────────────────── */
+  .op-qr-section {
+    text-align: center;
+    padding-top: 24px;
+  }
+  .op-qr-label {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 14px;
+  }
+  .op-qr-frame {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    padding: 14px;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .op-qr-frame img,
+  .op-qr-frame canvas,
+  .op-qr-frame svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .op-qr-placeholder {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    color: var(--ink-mute);
+    text-align: center;
+    padding: 12px;
+    line-height: 1.5;
+  }
+  .op-qr-placeholder strong { color: var(--accent); font-weight: 500; }
+  .op-url {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    color: var(--ink-mute);
+    margin-top: 14px;
+    letter-spacing: 0.02em;
+    word-break: break-all;
+  }
+  .op-url strong {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* ── Footer ──────────────────────────────────────────────────── */
+  .op-footer {
+    text-align: center;
+    margin-top: 36px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    color: var(--ink-mute);
+    letter-spacing: 0.06em;
+    line-height: 1.55;
+  }
+  .op-footer .op-call-to-action {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+
+  /* ── Print stylesheet ────────────────────────────────────────── */
+  @media print {
+    @page { size: A4 portrait; margin: 0; }
+    html, body { background: white; }
+    body { padding: 0; }
+    .toolbar, .info-banner { display: none !important; }
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      box-shadow: none;
+      border-radius: 0;
+      page-break-after: always;
+    }
+    .page::before, .page::after { opacity: 0.16; }
+  }
+
+  /* ── Mobile preview ──────────────────────────────────────────── */
+  @media (max-width: 720px) {
+    body { padding: 16px 8px; }
+    .page { padding: 18mm 14mm; }
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .toolbar h2 { margin-right: 0; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR (tylko ekran, znika przy druku) -->
+<div class="toolbar" role="toolbar" aria-label="Akcje one-pagera">
+  <h2>One-pager - podgląd przed drukiem</h2>
+  <button onclick="window.print()" type="button">Drukuj / zapisz PDF</button>
+  <button class="secondary" onclick="document.getElementById('config-modal').showModal()" type="button">Edytuj dane</button>
+</div>
+
+<div class="info-banner">
+  Dane pobierane z URL params. Aby spersonalizować, dodaj: <code>?names=Anna+i+Michał&date=20+czerwca+2026&venue=Wrocław&url=https://zaproszeniaonline.com/anna-michal&qr=URL_LUB_DATA_URI_DO_QR_PNG</code>
+</div>
+
+<!-- A4 PAGE -->
+<article class="page" id="op-page">
+  <header class="op-head">
+    <div class="op-monogram" id="op-mono" aria-hidden="true">A</div>
+    <div class="op-eyebrow">Zaproszenie ślubne</div>
+
+    <h1 class="op-names" id="op-names">
+      Anna<span class="op-amp">&amp;</span>Michał
+    </h1>
+
+    <div class="op-divider" aria-hidden="true"></div>
+
+    <div class="op-date" id="op-date">20 czerwca 2026</div>
+    <div class="op-venue" id="op-venue">Wrocław</div>
+
+    <p class="op-quote" id="op-quote">
+      Z radością zapraszamy Was do udziału w najpiękniejszym dniu naszego życia.
+      Wszystkie szczegóły - plan dnia, mapy, potwierdzenie obecności - znajdziecie pod kodem QR.
+    </p>
+  </header>
+
+  <section class="op-qr-section">
+    <div class="op-qr-label">Zeskanuj telefonem</div>
+
+    <div class="op-qr-frame" id="op-qr-frame">
+      <!-- QR slot: <img> ustawiany przez JS z URL param ?qr= -->
+      <!-- Fallback placeholder (widoczny dopóki nie ma ?qr=) -->
+      <div class="op-qr-placeholder" id="op-qr-placeholder">
+        <strong>Tu trafi kod QR</strong><br>
+        Dodaj <code>?qr=URL</code> do adresu strony
+      </div>
+    </div>
+
+    <div class="op-url">
+      lub wpisz w przeglądarkę: <strong id="op-url-text">zaproszeniaonline.com/anna-michal</strong>
+    </div>
+  </section>
+
+  <footer class="op-footer">
+    <div class="op-call-to-action">Potwierdźcie obecność do <span id="op-rsvp-date">15 maja 2026</span></div>
+    Pełny program, mapy do ceremonii i miejsca przyjęcia, plan dnia - wszystko na stronie.
+  </footer>
+</article>
+
+<!-- CONFIG MODAL -->
+<dialog id="config-modal" style="border:none;border-radius:14px;padding:24px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.18);">
+  <form method="dialog" id="config-form">
+    <h3 style="font-family:var(--serif);font-style:italic;font-weight:400;margin-bottom:18px;color:var(--accent);">Konfiguruj one-pager</h3>
+
+    <label style="display:block;margin-bottom:14px;font-size:0.85rem;color:var(--ink-soft);">
+      Imiona pary:
+      <input id="cfg-names" type="text" placeholder="np. Anna i Michał" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-top:4px;font-family:var(--sans);">
+    </label>
+
+    <label style="display:block;margin-bottom:14px;font-size:0.85rem;color:var(--ink-soft);">
+      Data ślubu (po polsku):
+      <input id="cfg-date" type="text" placeholder="np. 20 czerwca 2026" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-top:4px;font-family:var(--sans);">
+    </label>
+
+    <label style="display:block;margin-bottom:14px;font-size:0.85rem;color:var(--ink-soft);">
+      Miejsce / miasto:
+      <input id="cfg-venue" type="text" placeholder="np. Wrocław" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-top:4px;font-family:var(--sans);">
+    </label>
+
+    <label style="display:block;margin-bottom:14px;font-size:0.85rem;color:var(--ink-soft);">
+      URL strony zaproszenia:
+      <input id="cfg-url" type="url" placeholder="https://zaproszeniaonline.com/anna-michal" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-top:4px;font-family:var(--sans);">
+    </label>
+
+    <label style="display:block;margin-bottom:18px;font-size:0.85rem;color:var(--ink-soft);">
+      QR (URL do PNG albo data:image/png;base64,...):
+      <input id="cfg-qr" type="text" placeholder="np. /qr-anna-michal.png" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-top:4px;font-family:var(--sans);">
+    </label>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button type="button" onclick="document.getElementById('config-modal').close()" style="padding:10px 18px;background:transparent;border:1px solid var(--line);border-radius:100px;cursor:pointer;">Anuluj</button>
+      <button type="button" onclick="applyConfig()" style="padding:10px 18px;background:var(--accent);color:white;border:none;border-radius:100px;cursor:pointer;">Zastosuj</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  // Read URL params + render
+  function init() {
+    const p = new URLSearchParams(location.search);
+
+    const names = p.get('names') || 'Anna i Michał';
+    const date = p.get('date') || '20 czerwca 2026';
+    const venue = p.get('venue') || 'Wrocław';
+    const url = p.get('url') || 'https://zaproszeniaonline.com/anna-michal';
+    const qr = p.get('qr');
+    const rsvpDate = p.get('rsvp') || computeRsvpDate(date);
+
+    renderNames(names);
+    document.getElementById('op-date').textContent = date;
+    document.getElementById('op-venue').textContent = venue;
+    document.getElementById('op-url-text').textContent = url.replace(/^https?:\/\//, '');
+    document.getElementById('op-rsvp-date').textContent = rsvpDate;
+
+    if (qr) renderQR(qr);
+
+    // Pre-fill config modal
+    document.getElementById('cfg-names').value = names;
+    document.getElementById('cfg-date').value = date;
+    document.getElementById('cfg-venue').value = venue;
+    document.getElementById('cfg-url').value = url;
+    document.getElementById('cfg-qr').value = qr || '';
+  }
+
+  function renderNames(names) {
+    // "Anna i Michał" → "Anna<&>Michał" with gold ampersand
+    const parts = names.split(/ i | & | and /i);
+    let html;
+    if (parts.length === 2) {
+      html = `${escapeHtml(parts[0].trim())}<span class="op-amp">&amp;</span>${escapeHtml(parts[1].trim())}`;
+    } else {
+      html = escapeHtml(names);
+    }
+    document.getElementById('op-names').innerHTML = html;
+    // Monogram = first letters of first names
+    const initials = parts.map(s => s.trim()[0] || '').join('').slice(0, 2).toUpperCase() || 'AM';
+    document.getElementById('op-mono').textContent = initials;
+  }
+
+  function renderQR(src) {
+    const frame = document.getElementById('op-qr-frame');
+    const placeholder = document.getElementById('op-qr-placeholder');
+    if (placeholder) placeholder.remove();
+    // src może być: data: URI, absolute URL lub relatywna ścieżka
+    const img = document.createElement('img');
+    img.alt = 'Kod QR do strony zaproszenia';
+    img.src = src;
+    img.onerror = () => {
+      frame.innerHTML = '<div class="op-qr-placeholder"><strong>Błąd ładowania QR</strong><br>Sprawdź URL/data URI</div>';
+    };
+    frame.appendChild(img);
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function computeRsvpDate(weddingDateStr) {
+    // Heurystyka: deadline RSVP = 5 tygodni przed ślubem
+    // Próbujemy sparsować "20 czerwca 2026" → Date
+    const months = {styczeń:0,stycznia:0,lutego:1,marca:2,kwietnia:3,maja:4,czerwca:5,lipca:6,sierpnia:7,września:8,października:9,listopada:10,grudnia:11};
+    const m = weddingDateStr.match(/(\d{1,2})\s+(\S+)\s+(\d{4})/);
+    if (!m) return '5 tygodni przed ślubem';
+    const day = parseInt(m[1], 10);
+    const month = months[m[2].toLowerCase()];
+    const year = parseInt(m[3], 10);
+    if (month === undefined) return '5 tygodni przed ślubem';
+    const wedding = new Date(year, month, day);
+    wedding.setDate(wedding.getDate() - 35); // 5 tygodni wcześniej
+    const polishMonths = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+    return `${wedding.getDate()} ${polishMonths[wedding.getMonth()]} ${wedding.getFullYear()}`;
+  }
+
+  function applyConfig() {
+    const cfg = {
+      names: document.getElementById('cfg-names').value,
+      date: document.getElementById('cfg-date').value,
+      venue: document.getElementById('cfg-venue').value,
+      url: document.getElementById('cfg-url').value,
+      qr: document.getElementById('cfg-qr').value,
+    };
+    const params = new URLSearchParams();
+    if (cfg.names) params.set('names', cfg.names);
+    if (cfg.date) params.set('date', cfg.date);
+    if (cfg.venue) params.set('venue', cfg.venue);
+    if (cfg.url) params.set('url', cfg.url);
+    if (cfg.qr) params.set('qr', cfg.qr);
+    location.search = '?' + params.toString();
+  }
+
+  init();
+</script>
+</body>
+</html>
