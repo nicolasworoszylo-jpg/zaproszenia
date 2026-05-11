@@ -120,17 +120,27 @@ git add . && git commit -m "..." && git push
 - Touch targets 44×44, safe-area-inset, hover-only effects
 - RODO compliance (privacy + cookies + terms + checkbox required)
 
-🟡 **Czeka na akcję właściciela:**
-- Uzupełnienie NIP/REGON/adres w `privacy.html` i `terms.html`
-- Założenie skrzynki `kontakt@zaproszeniaonline.com`
-- Akceptacja DPA z Supabase i Vercel (Settings → Compliance)
-- Pełne TODO: zob. `LEGAL_TODO.md`
+---
 
-🔵 **Roadmap:**
-- Email notyfikacja przy nowym leadzie (Edge Function `notify-on-new-lead`)
-- Multi-tenant routing `/anna-michal` (przyszły wzorzec)
-- Panel admin dla edycji zaproszeń
-- Bucket Storage dla zdjęć par
+## 📚 Dokumentacja (dla nowego developera / Claude Code)
+
+Czytaj w tej kolejności:
+
+1. **[`ONBOARDING_CLAUDE.md`](./ONBOARDING_CLAUDE.md)** — entry point: 60-sekundowy obraz, zasady święte, zakazy, test scenarios
+2. **[`ARCHITECTURE.md`](./ARCHITECTURE.md)** — end-to-end system flow, data model, deployment, failure modes
+3. **[`AUTOMATIONS.md`](./AUTOMATIONS.md)** — wszystkie triggery, webhooki, cron jobs, scheduled actions
+4. **[`SEO.md`](./SEO.md)** — strategia SEO/AEO/GEO, target queries, content plan
+5. **[`PROJECT_STATUS.md`](./PROJECT_STATUS.md)** — live snapshot: GO/NO-GO, outstanding tasks
+6. **[`HANDOFF_NICOLAS_v2.md`](./HANDOFF_NICOLAS_v2.md)** — per-session handoff od Nicolasa
+
+### Setup docs (operacyjne)
+
+- **[`STRIPE_SETUP.md`](./STRIPE_SETUP.md)** — referencyjny Stripe setup
+- **[`DOMINIKA_STRIPE_INSTRUKCJA.md`](./DOMINIKA_STRIPE_INSTRUKCJA.md)** — tutorial Stripe configuration (Dominika side)
+- **[`CLAUDE_IN_CHROME_MASTER.md`](./CLAUDE_IN_CHROME_MASTER.md)** — DMARC + Resend + GSC prompts dla Claude in Chrome
+- **[`LEGAL_DATA.md`](./LEGAL_DATA.md)** — dane biznesowe (działalność nieewidencjonowana, plan eskalacji do JDG)
+- **[`AFFILIATE_INSTRUCTIONS.md`](./AFFILIATE_INSTRUCTIONS.md)** — program partnerski
+- **[`SEO_SUBMIT_INSTRUCTIONS.md`](./SEO_SUBMIT_INSTRUCTIONS.md)** — submisja do search engines
 
 ---
 
