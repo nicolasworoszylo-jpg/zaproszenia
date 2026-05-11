@@ -7,7 +7,7 @@
 // Wymaga secretu: RESEND_API_KEY (https://resend.com/api-keys)
 //
 // HTML templates v2 (2026-05-09): brand-aligned z landing zaproszeniaonline.com
-// — preheader, monogramowy logo "Z", forest gradient, gold accents, dimensional shadows,
+// - preheader, monogramowy logo "Z", forest gradient, gold accents, dimensional shadows,
 //   responsive 600px max-width, polskie ligatures w body, footer z legal info
 
 // @ts-ignore: Deno deps
@@ -128,8 +128,8 @@ function eyebrow(text: string, color = "#FAF6EF", dotColor = "#C9A96E"): string 
 }
 
 function operatorEmailHTML(lead: Lead): string {
-  const eventDate = lead.event_date ? new Date(lead.event_date).toLocaleDateString("pl-PL", { day: "numeric", month: "long", year: "numeric" }) : "—";
-  const phone = lead.phone || "—";
+  const eventDate = lead.event_date ? new Date(lead.event_date).toLocaleDateString("pl-PL", { day: "numeric", month: "long", year: "numeric" }) : "-";
+  const phone = lead.phone || "-";
   const createdLocal = new Date(lead.created_at).toLocaleString("pl-PL", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
 
   const bodyHtml = `
@@ -155,7 +155,7 @@ function operatorEmailHTML(lead: Lead): string {
       <tr><td style="padding:10px 0;color:#999999;border-top:1px solid #EBEBEB;font-size:0.82rem;letter-spacing:0.04em;text-transform:uppercase;font-weight:500;">Data wydarzenia</td>
           <td style="padding:10px 0;border-top:1px solid #EBEBEB;color:#0A0A0A;font-weight:500;">${escapeHtml(eventDate)}</td></tr>
       <tr><td style="padding:10px 0;color:#999999;border-top:1px solid #EBEBEB;font-size:0.82rem;letter-spacing:0.04em;text-transform:uppercase;font-weight:500;">Pakiet / paleta</td>
-          <td style="padding:10px 0;border-top:1px solid #EBEBEB;color:#0A0A0A;">${escapeHtml(lead.package || "—")}</td></tr>
+          <td style="padding:10px 0;border-top:1px solid #EBEBEB;color:#0A0A0A;">${escapeHtml(lead.package || "-")}</td></tr>
       <tr><td style="padding:10px 0;color:#999999;border-top:1px solid #EBEBEB;font-size:0.82rem;letter-spacing:0.04em;text-transform:uppercase;font-weight:500;">Źródło</td>
           <td style="padding:10px 0;border-top:1px solid #EBEBEB;color:#0A0A0A;">${escapeHtml(lead.source || "landing")}</td></tr>
     </table>
@@ -173,7 +173,7 @@ function operatorEmailHTML(lead: Lead): string {
           <a href="https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/editor" style="display:inline-block;padding:13px 24px;background:#0A0A0A;color:#FFFFFF;border-radius:100px;font-size:0.92rem;font-weight:500;letter-spacing:-0.005em;">Otwórz w Supabase →</a>
         </td>
         <td>
-          <a href="mailto:${escapeHtml(lead.email)}?subject=${encodeURIComponent('Re: zaproszeniaonline.com — Wasza strona ślubna')}" style="display:inline-block;padding:13px 24px;background:#FFFFFF;color:#0A0A0A;border:1px solid #EBEBEB;border-radius:100px;font-size:0.92rem;font-weight:500;letter-spacing:-0.005em;">Odpisz parze →</a>
+          <a href="mailto:${escapeHtml(lead.email)}?subject=${encodeURIComponent('Re: zaproszeniaonline.com - Wasza strona ślubna')}" style="display:inline-block;padding:13px 24px;background:#FFFFFF;color:#0A0A0A;border:1px solid #EBEBEB;border-radius:100px;font-size:0.92rem;font-weight:500;letter-spacing:-0.005em;">Odpisz parze →</a>
         </td>
       </tr>
     </table>
@@ -193,13 +193,13 @@ function operatorEmailHTML(lead: Lead): string {
 }
 
 function operatorEmailText(lead: Lead): string {
-  return `NOWE ZAMÓWIENIE — Lead #${lead.id.slice(0,8)}
+  return `NOWE ZAMÓWIENIE - Lead #${lead.id.slice(0,8)}
 
 Para: ${lead.name}
 E-mail: ${lead.email}
-Telefon: ${lead.phone || "—"}
-Data wydarzenia: ${lead.event_date || "—"}
-Pakiet: ${lead.package || "—"}
+Telefon: ${lead.phone || "-"}
+Data wydarzenia: ${lead.event_date || "-"}
+Pakiet: ${lead.package || "-"}
 Źródło: ${lead.source || "landing"}
 
 ${lead.message ? `Wiadomość od pary:\n${lead.message}\n\n` : ""}Otwórz w Supabase: https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/editor
@@ -208,7 +208,7 @@ Odpisz parze: ${lead.email}
 Lead utworzony: ${new Date(lead.created_at).toLocaleString("pl-PL")}
 Status: Oczekujemy na wpłatę Stripe (699 zł)
 
-—
+-
 Zaproszenia Online · zaproszeniaonline.com`;
 }
 
@@ -222,7 +222,7 @@ function customerEmailHTML(lead: Lead): string {
     ${BRAND_MARK_SVG}
     ${eyebrow("Zaproszenia Online")}
     <h1 class="h1" style="margin:14px 0 10px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:400;font-size:2.1rem;letter-spacing:-0.022em;line-height:1.12;color:#FAF6EF;">
-      Cześć ${escapeHtml(firstName)} —<br/>mamy Wasz brief.
+      Cześć ${escapeHtml(firstName)} -<br/>mamy Wasz brief.
     </h1>
     <p style="margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:1.02rem;color:rgba(250,246,239,0.85);line-height:1.55;letter-spacing:-0.005em;max-width:440px;margin-left:auto;margin-right:auto;">
       Cieszymy się że wybraliście naszą stronę dla Waszego ślubu${package_}.
@@ -245,7 +245,7 @@ function customerEmailHTML(lead: Lead): string {
               <div class="num" style="width:36px;height:36px;border-radius:50%;background:#2C3E2D;color:#FAF6EF;text-align:center;line-height:36px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.98rem;">I</div>
             </td>
             <td valign="top" style="padding-top:5px;">
-              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">W ciągu 24 godzin</strong> dostaniecie link do podglądu Waszej strony — z imionami, datą, wybraną paletą i wszystkimi sekcjami.
+              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">W ciągu 24 godzin</strong> dostaniecie link do podglądu Waszej strony - z imionami, datą, wybraną paletą i wszystkimi sekcjami.
             </td>
           </tr>
         </table>
@@ -258,7 +258,7 @@ function customerEmailHTML(lead: Lead): string {
               <div class="num" style="width:36px;height:36px;border-radius:50%;background:#2C3E2D;color:#FAF6EF;text-align:center;line-height:36px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.98rem;">II</div>
             </td>
             <td valign="top" style="padding-top:5px;">
-              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">Trzy rundy poprawek w cenie</strong> — odpisujecie na tego maila z uwagami: kolory, teksty, układ, zdjęcia. Wszystko ustalamy mailowo, bez calls.
+              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">Trzy rundy poprawek w cenie</strong> - odpisujecie na tego maila z uwagami: kolory, teksty, układ, zdjęcia. Wszystko ustalamy mailowo, bez calls.
             </td>
           </tr>
         </table>
@@ -271,7 +271,7 @@ function customerEmailHTML(lead: Lead): string {
               <div class="num" style="width:36px;height:36px;border-radius:50%;background:#2C3E2D;color:#FAF6EF;text-align:center;line-height:36px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.98rem;">III</div>
             </td>
             <td valign="top" style="padding-top:5px;">
-              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">Dostajecie własny URL i kod QR</strong> do druku. Wysyłacie linki gościom — potwierdzenia obecności trafiają od razu na Waszą skrzynkę.
+              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">Dostajecie własny URL i kod QR</strong> do druku. Wysyłacie linki gościom - potwierdzenia obecności trafiają od razu na Waszą skrzynkę.
             </td>
           </tr>
         </table>
@@ -284,9 +284,9 @@ function customerEmailHTML(lead: Lead): string {
         <span style="display:inline-block;width:5px;height:5px;background:#C9A96E;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>Co warto przygotować
       </p>
       <p style="margin:0;font-size:0.96rem;line-height:1.6;color:#0A0A0A;">
-        Jeśli zaznaczyliście „tak" przy zdjęciach pary lub sekcji „Nasza historia" — wyślijcie nam materiały na adres
+        Jeśli zaznaczyliście „tak" przy zdjęciach pary lub sekcji „Nasza historia" - wyślijcie nam materiały na adres
         <strong><a href="mailto:zamowienia@zaproszeniaonline.com" style="color:#2C3E2D;text-decoration:underline;text-underline-offset:2px;">zamowienia@zaproszeniaonline.com</a></strong>.
-        Dwa-trzy ulubione zdjęcia + kilka zdań Waszej historii w wolnej formie. Reszta poczeka — odezwiemy się sami.
+        Dwa-trzy ulubione zdjęcia + kilka zdań Waszej historii w wolnej formie. Reszta poczeka - odezwiemy się sami.
       </p>
     </div>
 
@@ -296,7 +296,7 @@ function customerEmailHTML(lead: Lead): string {
     </div>
 
     <p style="margin:28px 0 0;color:#4A4A4A;font-size:0.95rem;">
-      Macie pytania? Po prostu odpowiedzcie na tego maila — czytamy każdą wiadomość.
+      Macie pytania? Po prostu odpowiedzcie na tego maila - czytamy każdą wiadomość.
     </p>
 
     <!-- SIGNATURE -->
@@ -330,29 +330,29 @@ function customerEmailHTML(lead: Lead): string {
   `;
 
   return emailShell({
-    preheader: `Cześć ${firstName} — mamy Wasz brief. W 24h dostaniecie link do podglądu strony.`,
-    title: `Dziękujemy za zamówienie — Zaproszenia Online`,
+    preheader: `Cześć ${firstName} - mamy Wasz brief. W 24h dostaniecie link do podglądu strony.`,
+    title: `Dziękujemy za zamówienie - Zaproszenia Online`,
     bodyHtml,
   });
 }
 
 function customerEmailText(lead: Lead): string {
   const firstName = lead.name.split(/[ &]+/)[0] || "Państwo";
-  return `Cześć ${firstName} — mamy Wasz brief.
+  return `Cześć ${firstName} - mamy Wasz brief.
 
 Otrzymaliśmy Wasze zamówienie i już zaczynamy przygotowywać projekt strony.
 
 Co dalej:
-I.   W ciągu 24 godzin dostaniecie link do podglądu strony — z imionami, datą, wybraną paletą.
-II.  Trzy rundy poprawek w cenie — odpisujecie na tego maila z uwagami.
-III. Dostajecie własny URL i kod QR do druku. Wysyłacie linki gościom — potwierdzenia obecności trafiają na Waszą skrzynkę.
+I.   W ciągu 24 godzin dostaniecie link do podglądu strony - z imionami, datą, wybraną paletą.
+II.  Trzy rundy poprawek w cenie - odpisujecie na tego maila z uwagami.
+III. Dostajecie własny URL i kod QR do druku. Wysyłacie linki gościom - potwierdzenia obecności trafiają na Waszą skrzynkę.
 
 Co warto przygotować:
-Jeśli wybraliście zdjęcia pary lub sekcję „Nasza historia" — wyślijcie materiały na zamowienia@zaproszeniaonline.com (2-3 zdjęcia + kilka zdań Waszej historii).
+Jeśli wybraliście zdjęcia pary lub sekcję „Nasza historia" - wyślijcie materiały na zamowienia@zaproszeniaonline.com (2-3 zdjęcia + kilka zdań Waszej historii).
 
 Zobacz przykład gotowej strony: https://zaproszeniaonline.com/demo
 
-Macie pytania? Odpowiedzcie na tego maila — czytamy każdą wiadomość.
+Macie pytania? Odpowiedzcie na tego maila - czytamy każdą wiadomość.
 
 Do usłyszenia,
 Zespół Zaproszenia Online
@@ -377,7 +377,7 @@ serve(async (req) => {
 
   const lead = payload.record;
   if (!lead?.email) {
-    console.error("Lead bez emaila — pomijam");
+    console.error("Lead bez emaila - pomijam");
     return new Response(JSON.stringify({ skipped: true, reason: "no email" }), { status: 200 });
   }
 
@@ -401,7 +401,7 @@ serve(async (req) => {
   try {
     await sendEmail(
       lead.email,
-      `Dziękujemy za zamówienie — mamy Wasz brief`,
+      `Dziękujemy za zamówienie - mamy Wasz brief`,
       customerEmailHTML(lead),
       customerEmailText(lead),
     );

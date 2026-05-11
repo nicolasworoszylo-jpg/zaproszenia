@@ -1,8 +1,8 @@
-# Stripe Product Description — copy-paste do dashboard.stripe.com
+# Stripe Product Description - copy-paste do dashboard.stripe.com
 
 ## Wersja krótka (200 znaków, na receipt + checkout)
 
-Cyfrowe zaproszenie ślubne — strona internetowa z potwierdzaniem obecności online, planem dnia, mapami, galerią i Waszą historią. Gotowe w 24 godziny. Hosting i URL w cenie.
+Cyfrowe zaproszenie ślubne - strona internetowa z potwierdzaniem obecności online, planem dnia, mapami, galerią i Waszą historią. Gotowe w 24 godziny. Hosting i URL w cenie.
 
 ## Wersja długa (do Product Description w dashboard)
 
@@ -11,14 +11,14 @@ Cyfrowe zaproszenie ślubne — strona internetowa z potwierdzaniem obecności o
 Kompletny pakiet z 24-godzinną realizacją:
 
 ✓ Strona pod indywidualnym URL (np. zaproszeniaonline.com/anna-michal)
-✓ Potwierdzanie obecności online — każde potwierdzenie ląduje na Twoim e-mailu
+✓ Potwierdzanie obecności online - każde potwierdzenie ląduje na Twoim e-mailu
 ✓ Plan dnia z godzinami, opisami, ikonami
 ✓ Interaktywne mapy: ceremonia, przyjęcie, hotele
 ✓ Galeria zdjęć pary
 ✓ Sekcja „Nasza historia" z chronologią
-✓ Cztery palety kolorów do wyboru — pod motyw Waszego wesela
+✓ Cztery palety kolorów do wyboru - pod motyw Waszego wesela
 ✓ Muzyka w tle (opcjonalnie)
-✓ Kod QR do druku — wklej w albumie ślubnym lub na pamiątkach
+✓ Kod QR do druku - wklej w albumie ślubnym lub na pamiątkach
 
 **Współpraca:**
 - Realizacja w 24 godziny od briefu
@@ -56,5 +56,5 @@ language: pl
 ## Tax category
 
 ```
-txcd_99999999 (general — non-taxable, działalność nieewidencjonowana)
+txcd_99999999 (general - non-taxable, działalność nieewidencjonowana)
 ```

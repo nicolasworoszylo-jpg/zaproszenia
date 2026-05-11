@@ -1,4 +1,4 @@
-# Automations — co się dzieje samo
+# Automations - co się dzieje samo
 
 Lista wszystkich automatyzacji w projekcie. Triggers, schedules, hooks.
 
@@ -66,7 +66,7 @@ Vercel webhook → build (zero build dla static, instant) → atomic swap → CD
 ### `notify-new-lead` (auto-triggered by DB)
 - Trigger: Postgres `leads_notify_new_lead`
 - Action: 2 maile parallel → Resend API
-- Idempotent: NO (każdy INSERT odpala raz — nie ma deduplikacji)
+- Idempotent: NO (każdy INSERT odpala raz - nie ma deduplikacji)
 - Status: ✅ v5 active
 
 ### `notify-payment-success` (auto-triggered by DB)
@@ -117,9 +117,9 @@ Vercel webhook → build (zero build dla static, instant) → atomic swap → CD
 | `rodo@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com |
 
 ### DNS records (zweryfikowane)
-- `MX root` → mx1/2/3.mail.ovh.net (priorities 1/5/100) — OVH forwarding (inbound)
-- `SPF root` → `v=spf1 include:mx.ovh.com -all` — hardfail (wszystko spoza OVH = spam)
-- `DMARC` → `v=DMARC1; p=none; rua=mailto:rodo@...` — monitoring tylko (na razie)
+- `MX root` → mx1/2/3.mail.ovh.net (priorities 1/5/100) - OVH forwarding (inbound)
+- `SPF root` → `v=spf1 include:mx.ovh.com -all` - hardfail (wszystko spoza OVH = spam)
+- `DMARC` → `v=DMARC1; p=none; rua=mailto:rodo@...` - monitoring tylko (na razie)
 - `DKIM resend._domainkey` → Resend public key (outbound)
 - `MX send.zaproszeniaonline.com` → feedback-smtp.eu-west-1.amazonses.com (Resend bounce)
 - `SPF send.zaproszeniaonline.com` → `v=spf1 include:amazonses.com ~all` (Resend)
@@ -133,21 +133,21 @@ Vercel webhook → build (zero build dla static, instant) → atomic swap → CD
 ## 7. Schema.org indexing (rich snippets)
 
 ### W index.html (landing)
-- `Organization` — branding info
-- `Service` — pakiet 699 zł z aggregateRating (4.9/5) i 3 reviews
-- `FAQPage` — 8 pytań z odpowiedziami
-- `HowTo` — 3 kroki "Jak to działa"
-- `Product` — pakiet kompletny
+- `Organization` - branding info
+- `Service` - pakiet 699 zł z aggregateRating (4.9/5) i 3 reviews
+- `FAQPage` - 8 pytań z odpowiedziami
+- `HowTo` - 3 kroki "Jak to działa"
+- `Product` - pakiet kompletny
 - `BreadcrumbList`
 
 ### W blog posts (każdy)
-- `BlogPosting` — autor, data, wordcount, keywords
-- `BreadcrumbList` — nav trail
+- `BlogPosting` - autor, data, wordcount, keywords
+- `BreadcrumbList` - nav trail
 - Opcjonalnie `FAQPage` (4-8 pytań)
 
 ### W blog/index.html
-- `Blog` — meta o całym blogu
-- `ItemList` — lista postów z descriptions
+- `Blog` - meta o całym blogu
+- `ItemList` - lista postów z descriptions
 
 ---
 
@@ -189,10 +189,10 @@ curl -s -o /dev/null -w "%{http_code}\n" https://zaproszeniaonline.com/
 # (przez Supabase Dashboard → Edge Functions → tabs Logs)
 
 # Resend deliverability
-# (Resend Dashboard → Logs — sprawdź % delivered vs bounced)
+# (Resend Dashboard → Logs - sprawdź % delivered vs bounced)
 
 # Stripe webhook health
-# (Stripe Dashboard → Webhooks → endpoint → Recent events — % 2xx)
+# (Stripe Dashboard → Webhooks → endpoint → Recent events - % 2xx)
 
 # DNS sanity
 dig MX zaproszeniaonline.com @1.1.1.1 +short

@@ -2,7 +2,7 @@
 -- Applied: 2026-04-27 11:40:04 UTC
 -- Reverse-engineered from live database (current state 2026-05-10)
 --
--- This migration creates the `leads` table — main entry point for lead capture
+-- This migration creates the `leads` table - main entry point for lead capture
 -- from the landing page form. RLS enabled with anon INSERT policy + service-role
 -- full access for Edge Functions.
 
@@ -30,7 +30,7 @@ CREATE INDEX IF NOT EXISTS leads_affiliate_code_idx
   ON public.leads (UPPER(affiliate_code))
   WHERE affiliate_code IS NOT NULL;
 
--- RLS — public form (anon role) can INSERT only
+-- RLS - public form (anon role) can INSERT only
 ALTER TABLE public.leads ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY anon_insert_leads ON public.leads
@@ -41,4 +41,4 @@ CREATE POLICY anon_insert_leads ON public.leads
 -- Note: returning rows from INSERT requires Prefer: return=minimal header
 -- (RLS without SELECT policy would otherwise block PostgREST RETURNING).
 COMMENT ON TABLE public.leads IS
-  'Lead capture from landing form. RLS anon INSERT only — frontend posts via PostgREST with Prefer: return=minimal.';
+  'Lead capture from landing form. RLS anon INSERT only - frontend posts via PostgREST with Prefer: return=minimal.';

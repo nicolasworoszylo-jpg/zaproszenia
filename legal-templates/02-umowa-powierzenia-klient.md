@@ -6,20 +6,20 @@
 
 **zawarta w dniu** ___________ pomiędzy:
 
-**Administratorem (Klient — para młoda):**
+**Administratorem (Klient - para młoda):**
 [IMIONA_PARY], adres: [ADRES_KLIENTA], e-mail: [EMAIL_KLIENTA]
 (dalej: "Administrator")
 
 a
 
 **Podmiotem przetwarzającym (Procesor):**
-**Nicolas Woroszyło i Dominika Kuś** — współadministratorzy prowadzący działalność pod marką **zaproszeniaonline.com** (dalej: "Procesor"), kontakt: kontakt@zaproszeniaonline.com
+**Nicolas Woroszyło i Dominika Kuś** - współadministratorzy prowadzący działalność pod marką **zaproszeniaonline.com** (dalej: "Procesor"), kontakt: kontakt@zaproszeniaonline.com
 
 ---
 
 ## Preambuła
 
-Administrator zamówił u Procesora wykonanie cyfrowego zaproszenia ślubnego — strony internetowej zawierającej formularz potwierdzania obecności (RSVP) dla gości Administratora.
+Administrator zamówił u Procesora wykonanie cyfrowego zaproszenia ślubnego - strony internetowej zawierającej formularz potwierdzania obecności (RSVP) dla gości Administratora.
 
 W ramach realizacji umowy Procesor przetwarza dane osobowe gości Administratora. Administrator pozostaje **administratorem** tych danych w rozumieniu RODO; Procesor działa wyłącznie na podstawie i w granicach niniejszej umowy.
 
@@ -40,7 +40,7 @@ Niniejsza umowa stanowi **umowę powierzenia przetwarzania** w rozumieniu **art.
    - deklaracja obecności (tak/nie)
    - liczba osób towarzyszących
    - preferencje menu (np. wegetariańskie, bezglutenowe)
-   - **alergie pokarmowe** — dane szczególnej kategorii w rozumieniu art. 9 RODO (dane dotyczące zdrowia)
+   - **alergie pokarmowe** - dane szczególnej kategorii w rozumieniu art. 9 RODO (dane dotyczące zdrowia)
    - potrzeba transportu
    - potrzeba noclegu
    - dodatkowe uwagi
@@ -54,9 +54,9 @@ Niniejsza umowa stanowi **umowę powierzenia przetwarzania** w rozumieniu **art.
 
 Procesor zobowiązuje się:
 
-1. **Przetwarzać dane wyłącznie na udokumentowane polecenie Administratora** — w szczególności w zakresie celu i sposobu wskazanego w § 1. Polecenia mogą być przekazywane przez Administratora w formie elektronicznej (e-mail).
+1. **Przetwarzać dane wyłącznie na udokumentowane polecenie Administratora** - w szczególności w zakresie celu i sposobu wskazanego w § 1. Polecenia mogą być przekazywane przez Administratora w formie elektronicznej (e-mail).
 
-2. **Zapewnić poufność** — osoby uprawnione do przetwarzania (Nicolas Woroszyło, Dominika Kuś) zobowiązują się do zachowania poufności bezterminowo.
+2. **Zapewnić poufność** - osoby uprawnione do przetwarzania (Nicolas Woroszyło, Dominika Kuś) zobowiązują się do zachowania poufności bezterminowo.
 
 3. **Stosować środki techniczne i organizacyjne** zapewniające bezpieczeństwo przetwarzania (art. 32 RODO):
    - Szyfrowanie at-rest (AES-256) i in-transit (TLS 1.3)
@@ -68,11 +68,11 @@ Procesor zobowiązuje się:
 
 5. **Pomagać Administratorowi** w wykonywaniu obowiązków:
    - odpowiadanie na żądania osób (art. 15-22 RODO)
-   - zgłaszanie naruszeń (art. 33-34 RODO) — Procesor zgłasza Administratorowi w ciągu **24 godzin** od wykrycia
+   - zgłaszanie naruszeń (art. 33-34 RODO) - Procesor zgłasza Administratorowi w ciągu **24 godzin** od wykrycia
    - oceny skutków (DPIA, art. 35 RODO)
    - konsultacje z UODO (art. 36 RODO)
 
-6. **Po zakończeniu świadczenia usługi** (po terminie z § 1 ust. 3) — usunąć lub zwrócić Administratorowi wszystkie dane osobowe oraz usunąć kopie, chyba że prawo Unii lub państwa członkowskiego wymaga ich przechowywania.
+6. **Po zakończeniu świadczenia usługi** (po terminie z § 1 ust. 3) - usunąć lub zwrócić Administratorowi wszystkie dane osobowe oraz usunąć kopie, chyba że prawo Unii lub państwa członkowskiego wymaga ich przechowywania.
 
 ---
 
@@ -107,7 +107,7 @@ Sub-procesorzy ze Stanów Zjednoczonych (Supabase, Vercel) przetwarzają dane na
    - prawdopodobne konsekwencje
    - środki podjęte lub proponowane do zaradzenia
 
-2. Administrator jest odpowiedzialny za zgłoszenie naruszenia do **PUODO** w ciągu 72 godzin (art. 33 ust. 1 RODO) — Procesor pomaga w zakresie technicznym.
+2. Administrator jest odpowiedzialny za zgłoszenie naruszenia do **PUODO** w ciągu 72 godzin (art. 33 ust. 1 RODO) - Procesor pomaga w zakresie technicznym.
 
 ---
 
@@ -117,7 +117,7 @@ Administrator ma prawo do audytu Procesora w zakresie wykonywania niniejszej umo
 - audyty dokonywane są na koszt Administratora
 - z **30-dniowym wyprzedzeniem**
 - nie częściej niż **raz na 12 miesięcy** (chyba że nastąpiło naruszenie)
-- Procesor udostępnia audyty stron trzecich (np. SOC 2 Supabase, Vercel) — w pierwszej kolejności rekomendowane
+- Procesor udostępnia audyty stron trzecich (np. SOC 2 Supabase, Vercel) - w pierwszej kolejności rekomendowane
 
 ---
 
@@ -125,7 +125,7 @@ Administrator ma prawo do audytu Procesora w zakresie wykonywania niniejszej umo
 
 1. Po dniu **wydarzenia + 6 miesięcy** (np. galeria zdjęć dostępna 6 miesięcy po ślubie):
    - Procesor **usuwa dane RSVP gości**, lub
-   - na wyraźne pisemne polecenie Administratora — przekazuje pełen eksport CSV i usuwa po przekazaniu
+   - na wyraźne pisemne polecenie Administratora - przekazuje pełen eksport CSV i usuwa po przekazaniu
 
 2. Hosting strony zaproszenia: **12 miesięcy** od dnia realizacji (zgodnie z regulaminem). Po tym terminie strona przestaje być dostępna pod URL i jest usuwana z infrastruktury Procesora.
 
@@ -135,7 +135,7 @@ Administrator ma prawo do audytu Procesora w zakresie wykonywania niniejszej umo
 
 1. Strony ponoszą odpowiedzialność za szkody wyrządzone osobom, których dane dotyczą, na zasadach art. 82 RODO.
 
-2. **Roszczenia regresowe** — Procesor może domagać się od Administratora zwrotu odszkodowań wypłaconych z winy Administratora (np. niezgodnego z prawem polecenia przetwarzania).
+2. **Roszczenia regresowe** - Procesor może domagać się od Administratora zwrotu odszkodowań wypłaconych z winy Administratora (np. niezgodnego z prawem polecenia przetwarzania).
 
 ---
 
@@ -163,6 +163,6 @@ Data: ___________
 
 ## ⚙️ Workflow operacyjny (instrukcja dla Was)
 
-1. Po otrzymaniu zamówienia — automatyczny e-mail do Klienta z linkiem do tego dokumentu (PDF generowany z tego MD lub jako Google Doc share-link)
-2. Klient akceptuje przez kliknięcie linka "Zgadzam się" w mailu (timestamped) — to jest dowód zawarcia umowy w formie elektronicznej (art. 60 KC)
+1. Po otrzymaniu zamówienia - automatyczny e-mail do Klienta z linkiem do tego dokumentu (PDF generowany z tego MD lub jako Google Doc share-link)
+2. Klient akceptuje przez kliknięcie linka "Zgadzam się" w mailu (timestamped) - to jest dowód zawarcia umowy w formie elektronicznej (art. 60 KC)
 3. Procesor przechowuje kopię akceptacji + dane Klienta w `~/Desktop/Claude/Zaproszeniaonline/legal/dpa-clients/[KLIENT]/` przez 5 lat od zakończenia umowy (Ordynacja podatkowa)

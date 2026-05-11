@@ -1,7 +1,7 @@
-# Stripe konfiguracja — instrukcja dla Dominiki
+# Stripe konfiguracja - instrukcja dla Dominiki
 
 **Czas:** ~15 minut. Wszystko w przeglądarce.
-**Zakres:** Konfigurujesz tylko Stripe (logo + maile + webhook). Klucze przesyłasz Nicolasowi — on wpisze je do Supabase.
+**Zakres:** Konfigurujesz tylko Stripe (logo + maile + webhook). Klucze przesyłasz Nicolasowi - on wpisze je do Supabase.
 
 **Co potrzebujesz przed startem:**
 - Login do **Stripe Dashboard** (Nicolas wyśle Ci osobno)
@@ -9,7 +9,7 @@
 
 ---
 
-## CZĘŚĆ A — Logo i kolory na Stripe (5 minut)
+## CZĘŚĆ A - Logo i kolory na Stripe (5 minut)
 
 ### A.1 Pobierz logo
 
@@ -38,7 +38,7 @@ Save.
 
 ---
 
-## CZĘŚĆ B — Maile do klientów (3 minuty)
+## CZĘŚĆ B - Maile do klientów (3 minuty)
 
 Otwórz: **https://dashboard.stripe.com/settings/emails**
 
@@ -54,7 +54,7 @@ Save.
 
 ---
 
-## CZĘŚĆ C — Webhook (7 minut, NAJWAŻNIEJSZE)
+## CZĘŚĆ C - Webhook (7 minut, NAJWAŻNIEJSZE)
 
 ### C.1 Wejdź na Webhooks
 
@@ -73,12 +73,12 @@ https://kuyniyyieejvambyjnxy.supabase.co/functions/v1/stripe-webhook
 ### C.3 Add endpoint
 
 1. Niebieski przycisk **Add endpoint** (góra prawa)
-2. **Endpoint URL** — wklej DOKŁADNIE (bez spacji):
+2. **Endpoint URL** - wklej DOKŁADNIE (bez spacji):
 ```
 https://kuyniyyieejvambyjnxy.supabase.co/functions/v1/stripe-webhook
 ```
 3. **Description** (opcjonalne): `Supabase leads sync`
-4. **API version** — zostaw default
+4. **API version** - zostaw default
 
 ### C.4 Wybierz events
 
@@ -88,7 +88,7 @@ Pod URL → **Select events** → wpisz każdy w wyszukiwarce i zaznacz checkbox
 - ☑ `charge.refunded`
 - ☑ `payment_intent.payment_failed`
 
-(Tylko te 3 — nic więcej.)
+(Tylko te 3 - nic więcej.)
 
 Add events → na dole **Add endpoint**.
 
@@ -99,7 +99,7 @@ Po utworzeniu endpoint zobaczysz stronę z detalami. Po prawej **Signing secret*
 1. Kliknij **Reveal**
 2. Pojawi się klucz `whsec_xxxxxx...` (~70-80 znaków)
 3. Skopiuj CAŁY (Cmd+A → Cmd+C w polu)
-4. **Zapisz w Apple Notes na razie** — za chwilę wyślesz Nicolasowi
+4. **Zapisz w Apple Notes na razie** - za chwilę wyślesz Nicolasowi
 
 ### C.6 Pobierz Stripe Secret Key
 
@@ -112,7 +112,7 @@ Sekcja **Standard keys** → wiersz **Secret key**:
 
 ---
 
-## CZĘŚĆ D — Wyślij klucze Nicolasowi (1 minuta)
+## CZĘŚĆ D - Wyślij klucze Nicolasowi (1 minuta)
 
 ⚠️ **WAŻNE: NIE wysyłaj na zwykły SMS, Slack ani publiczny czat.**
 
@@ -144,9 +144,9 @@ STRIPE_WEBHOOK_SECRET = [tutaj wklej klucz zaczynający się od whsec_]
 STRIPE_SECRET_KEY = [tutaj wklej klucz zaczynający się od sk_live_ lub sk_test_]
 ```
 
-(Wklej PEŁNE klucze — Nicolas wpisze je do Supabase z mojego końca.)
+(Wklej PEŁNE klucze - Nicolas wpisze je do Supabase z mojego końca.)
 
-Po wysłaniu — możesz usunąć klucze z Apple Notes (Nicolas już je ma).
+Po wysłaniu - możesz usunąć klucze z Apple Notes (Nicolas już je ma).
 
 ---
 
@@ -161,13 +161,13 @@ Po wysłaniu — możesz usunąć klucze z Apple Notes (Nicolas już je ma).
 ## Troubleshooting
 
 ### "Nie mogę się zalogować do Stripe"
-Spróbuj `zamowienia@zaproszeniaonline.com` lub `nicolasworoszylo@gmail.com` — Nicolas Ci powie którego.
+Spróbuj `zamowienia@zaproszeniaonline.com` lub `nicolasworoszylo@gmail.com` - Nicolas Ci powie którego.
 
 ### "Nie widzę przycisku Reveal signing secret"
 Kliknij w endpoint (rozwija szczegóły). Signing secret jest po prawej, nie na górze. Jeśli widzisz `whsec_•••••` → już odsłonięty wcześniej, kliknij tekst.
 
-### "Stripe nie pozwala dodać webhook — Activate account"
+### "Stripe nie pozwala dodać webhook - Activate account"
 Może być potrzebne aktywowanie konta Stripe. Kliknij górę ekranu **Activate account** i przejdź setup. Po aktywacji wróć do C.3.
 
 ### "Pomyłka z kluczem"
-Bez problemu — klucze można w każdej chwili wygenerować ponownie. W Stripe → Webhooks → Roll secret (nowa wartość). Nicolas zaktualizuje po stronie Supabase.
+Bez problemu - klucze można w każdej chwili wygenerować ponownie. W Stripe → Webhooks → Roll secret (nowa wartość). Nicolas zaktualizuje po stronie Supabase.

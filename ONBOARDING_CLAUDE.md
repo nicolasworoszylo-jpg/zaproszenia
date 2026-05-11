@@ -1,12 +1,12 @@
-# Onboarding — dla każdego Claude Code podejmującego ten projekt
+# Onboarding - dla każdego Claude Code podejmującego ten projekt
 
-**Cześć Claude.** Jeśli Cię tu wywołano — znaczy że pracujesz nad **zaproszeniaonline.com**. Ta strona ma 60 sekund Twojego czasu i potem wiesz wszystko.
+**Cześć Claude.** Jeśli Cię tu wywołano - znaczy że pracujesz nad **zaproszeniaonline.com**. Ta strona ma 60 sekund Twojego czasu i potem wiesz wszystko.
 
 ---
 
 ## 1. Co to jest
 
-**zaproszeniaonline.com** — premium polskie cyfrowe zaproszenia ślubne. **699 zł flat, 24h realizacji.** Statyczna strona (HTML+CSS+vanilla JS) + Supabase backend (lead capture + payment tracking + email automation) + Stripe (płatności) + Resend (transactional email).
+**zaproszeniaonline.com** - premium polskie cyfrowe zaproszenia ślubne. **699 zł flat, 24h realizacji.** Statyczna strona (HTML+CSS+vanilla JS) + Supabase backend (lead capture + payment tracking + email automation) + Stripe (płatności) + Resend (transactional email).
 
 **Owner:** Nicolas Woroszyło (Vidok Studio). **Status prawny:** działalność nieewidencjonowana (art. 5 ust. 1 PrzedsU) do limitu 3 499,50 zł/mc.
 
@@ -14,7 +14,7 @@
 
 ---
 
-## 2. Stack — 60-sekundowy obraz
+## 2. Stack - 60-sekundowy obraz
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -47,7 +47,7 @@
 
 ---
 
-## 3. Kluczowe URL — zapamiętaj na zawsze
+## 3. Kluczowe URL - zapamiętaj na zawsze
 
 | Co | URL |
 |---|---|
@@ -89,7 +89,7 @@
 
 ---
 
-## 5. Struktura repo — co gdzie
+## 5. Struktura repo - co gdzie
 
 ```
 /                                  ← static site (Vercel deploy główny)
@@ -120,7 +120,7 @@
 ├── stripe-assets/                 ← logo + brand info + setup docs (do Stripe Dashboard upload)
 ├── legal-templates/               ← art. 26/28 RODO templates
 │
-├── README.md                      ← public-facing intro (open source NIE — copyright Vidok)
+├── README.md                      ← public-facing intro (open source NIE - copyright Vidok)
 ├── LICENSE.md                     ← All Rights Reserved
 ├── LEGAL_DATA.md                  ← business data (działalność nieewidencjonowana)
 ├── PROJECT_STATUS.md              ← live snapshot stanu projektu
@@ -135,12 +135,12 @@
 
 ---
 
-## 6. Zasady "święte" — nigdy nie łam
+## 6. Zasady "święte" - nigdy nie łam
 
 ### Filozofia kodu
 1. **Chirurgia > rebuild.** <30% zmian = surgical edit. Nie przepisuj od zera tego co działa.
 2. **Vanilla JS na landing.** Bez React/Vue/Svelte na index.html. Demo używa React UMD self-hosted.
-3. **Self-hosted everything** — fonty (/fonts/), JS (/vendor/), zero CDN third-party (RODO clean).
+3. **Self-hosted everything** - fonty (/fonts/), JS (/vendor/), zero CDN third-party (RODO clean).
 4. **Schema.org wszędzie.** Service + AggregateRating + Review + FAQPage + BlogPosting + BreadcrumbList.
 5. **WCAG 2.2.** Focus visible, prefers-reduced-motion, 44px touch targets, semantic HTML.
 
@@ -148,11 +148,11 @@
 1. **Polski only** (ani angielski na landing).
 2. **Forest green + gold accent.** Żadnych innych kolorów. Gold tylko w 1-2 miejscach.
 3. **Bez emoji w tekście.** Wyjątek: trust signals (★), success badges (✓), preheader (rare).
-4. **Profesjonalny ale luźny** — Vidok Studio voice. Bez korpomowy.
-5. **Bez em-dashy** (—) ani półpauz (–). Zwykły dywiz `-`.
+4. **Profesjonalny ale luźny** - Vidok Studio voice. Bez korpomowy.
+5. **Bez em-dashy** (-) ani półpauz (-). Zwykły dywiz `-`.
 
 ### Legal
-1. **Działalność nieewidencjonowana** — bez NIP, bez VAT, rachunek zamiast faktury, limit 3 499,50 zł/mc.
+1. **Działalność nieewidencjonowana** - bez NIP, bez VAT, rachunek zamiast faktury, limit 3 499,50 zł/mc.
 2. **Pojedynczy administrator danych** (Nicolas) + Dominika jako osoba upoważniona art. 29 RODO. **Nie współadministrator.**
 3. **Stripe DPA + Vercel DPA + Supabase DPA** są wpięte automatycznie przy używaniu usług.
 
@@ -168,7 +168,7 @@
 5. Commit + push (Vercel auto-deploy)
 
 ### Modyfikacja landing (index.html)
-1. **NAJPIERW** sprawdź czy zmiana <30% — jeśli tak, chirurgia (Edit tool, nie Write).
+1. **NAJPIERW** sprawdź czy zmiana <30% - jeśli tak, chirurgia (Edit tool, nie Write).
 2. **NIGDY** nie zmieniaj brand colors bez wyraźnej zgody Nicolasa.
 3. **NIGDY** nie usuwaj `prefers-reduced-motion` fallbacks.
 4. **NIGDY** nie dodawaj third-party JS bez self-host.
@@ -205,10 +205,10 @@
 | Nie commituj prawdziwych Stripe / Resend / Supabase kluczy | GitHub Secret Scanning blokuje + ryzyko leak |
 | Nie usuwaj `prefers-reduced-motion` | A11y wymóg |
 | Nie dodawaj reklam Google Analytics / GTM | RODO + Vercel Analytics wystarczy |
-| Nie pisz em-dashy `—` ani półpauz `–` | Brand voice (typowy AI tell) |
+| Nie pisz em-dashy `-` ani półpauz `-` | Brand voice (typowy AI tell) |
 | Nie używaj `git push --force` na main | Bez wyraźnej zgody Nicolasa |
 | Nie dodawaj zewnętrznych fontów z Google Fonts CDN | Self-host w /fonts/ (RODO) |
-| Nie wprowadzaj "Faktura VAT" w copy | "Rachunek" — działalność nieewidencjonowana |
+| Nie wprowadzaj "Faktura VAT" w copy | "Rachunek" - działalność nieewidencjonowana |
 
 ---
 
@@ -249,25 +249,25 @@ Jeśli `Resend 401` → klucz w Supabase secrets niepoprawny.
 ## 10. Co masz pod ręką (tooling)
 
 ### MCPs które używasz
-- `mcp__supabase__*` — list/apply migrations, deploy edge functions, execute SQL
-- `mcp__zapier__gmail_send_email` — emaile do klienta z załącznikami
-- `mcp__comet__*` — Comet browser (Perplexity) automation
-- `mcp__Claude_in_Chrome__*` — sterowanie Chrome (gdy potrzebny login z 2FA)
-- `WebFetch`, `WebSearch` — research
+- `mcp__supabase__*` - list/apply migrations, deploy edge functions, execute SQL
+- `mcp__zapier__gmail_send_email` - emaile do klienta z załącznikami
+- `mcp__comet__*` - Comet browser (Perplexity) automation
+- `mcp__Claude_in_Chrome__*` - sterowanie Chrome (gdy potrzebny login z 2FA)
+- `WebFetch`, `WebSearch` - research
 
 ### Skille Nicolasa (`~/.claude/skills/`)
 Aktywuj automatycznie wg auto-routera w `~/.claude/CLAUDE.md`:
-- `chirurg-kodu` — chirurgiczne edycje HTML/CSS
-- `taste-skill` — premium UI/UX guard (anti-AI-slop)
-- `seo-aeo-geo-master` — SEO/AEO/GEO
-- `prawnik` — prawne (zwłaszcza RODO)
-- `work-verifier` — weryfikacja jakości (10 warstw)
-- `ultramode` — modyfikator jakości (na sygnał "dla klienta")
-- `dyrygentura` / `umysl-ula` — meta-orkiestratory
+- `chirurg-kodu` - chirurgiczne edycje HTML/CSS
+- `taste-skill` - premium UI/UX guard (anti-AI-slop)
+- `seo-aeo-geo-master` - SEO/AEO/GEO
+- `prawnik` - prawne (zwłaszcza RODO)
+- `work-verifier` - weryfikacja jakości (10 warstw)
+- `ultramode` - modyfikator jakości (na sygnał "dla klienta")
+- `dyrygentura` / `umysl-ula` - meta-orkiestratory
 
 ---
 
-## 11. Outstanding (sprawdź zawsze `PROJECT_STATUS.md` — single source of truth dla bieżącego stanu)
+## 11. Outstanding (sprawdź zawsze `PROJECT_STATUS.md` - single source of truth dla bieżącego stanu)
 
 W skrócie (na czas pisania tego pliku, 2026-05-10):
 - 🟢 Wszystko działa poza Stripe webhook secret
@@ -276,7 +276,7 @@ W skrócie (na czas pisania tego pliku, 2026-05-10):
 
 ---
 
-## 12. Jak zacząć — pierwsze 5 minut
+## 12. Jak zacząć - pierwsze 5 minut
 
 ```bash
 # 1. Clone
@@ -293,8 +293,8 @@ cat PROJECT_STATUS.md
 # 4. Sprawdź co miałeś robić
 cat HANDOFF_NICOLAS_v2.md   # ostatni handoff per session
 
-# 5. Jeśli zmieniasz coś — przeczytaj zasady
+# 5. Jeśli zmieniasz coś - przeczytaj zasady
 cat ONBOARDING_CLAUDE.md    # TEN PLIK (sekcja 6 + 8)
 ```
 
-**Powodzenia.** Jak coś niejasne — pytaj Nicolasa, nie improwizuj.
+**Powodzenia.** Jak coś niejasne - pytaj Nicolasa, nie improwizuj.

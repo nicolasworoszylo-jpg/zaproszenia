@@ -1,9 +1,9 @@
-# Stripe — kompletna instrukcja konfiguracji
+# Stripe - kompletna instrukcja konfiguracji
 
 **Cel:** doprowadzić Stripe do stanu, w którym po wpłacie 699 zł:
-1. Klient dostaje markowany e-mail "Receipt — Zaproszenia Online" (nie generic Stripe)
+1. Klient dostaje markowany e-mail "Receipt - Zaproszenia Online" (nie generic Stripe)
 2. `payment_status='paid'` w Supabase aktualizuje się automatycznie
-3. Klient i operator dostają mail z naszego systemu (Resend) — krok osobny
+3. Klient i operator dostają mail z naszego systemu (Resend) - krok osobny
 
 **Czas:** ~25 min. **Co potrzebujesz:** dostęp do Stripe Dashboard (`zamowienia@zaproszeniaonline.com`).
 
@@ -29,11 +29,11 @@
 **URL:** https://dashboard.stripe.com/settings/emails
 
 Włącz wszystkie 3:
-- ✅ **Successful payments** — receipt po sukcesie wpłaty
-- ✅ **Refunds** — gdy zwrot pieniędzy
-- ✅ **Failed payments** — gdy próba nieudana (informuje klienta że można spróbować ponownie)
+- ✅ **Successful payments** - receipt po sukcesie wpłaty
+- ✅ **Refunds** - gdy zwrot pieniędzy
+- ✅ **Failed payments** - gdy próba nieudana (informuje klienta że można spróbować ponownie)
 
-**Język:** Polski (auto-detect na podstawie locale klienta — działa OK).
+**Język:** Polski (auto-detect na podstawie locale klienta - działa OK).
 
 **Reply-to:** `kontakt@zaproszeniaonline.com`
 
@@ -41,14 +41,14 @@ Włącz wszystkie 3:
 
 ---
 
-## 3. Webhook endpoint (10 min — KRYTYCZNE)
+## 3. Webhook endpoint (10 min - KRYTYCZNE)
 
 **URL:** https://dashboard.stripe.com/webhooks
 
 ### 3.1 Add endpoint
 
 - Endpoint URL: `https://kuyniyyieejvambyjnxy.supabase.co/functions/v1/stripe-webhook`
-- Description: `Supabase leads sync — production`
+- Description: `Supabase leads sync - production`
 - Events to send (zaznacz dokładnie te 3):
   - `checkout.session.completed`
   - `charge.refunded`
@@ -59,7 +59,7 @@ Włącz wszystkie 3:
 
 ### 3.2 Skopiuj signing secret
 
-Po utworzeniu zobaczysz kod typu `whsec_xxxxxxxxxxxxxxxx` — kliknij **Reveal** i skopiuj.
+Po utworzeniu zobaczysz kod typu `whsec_xxxxxxxxxxxxxxxx` - kliknij **Reveal** i skopiuj.
 
 ### 3.3 Wklej do Supabase
 
@@ -95,14 +95,14 @@ Znajdź product (powinien być utworzony przy stworzeniu Payment Linka). Edytuj:
 
 | Pole | Wartość |
 |---|---|
-| Name | `Cyfrowe zaproszenie ślubne — pakiet kompletny` |
+| Name | `Cyfrowe zaproszenie ślubne - pakiet kompletny` |
 | Description | (skopiuj z `product-description-pl.md`) |
 | Image | upload `logo-stripe-512.png` |
-| Statement descriptor | `ZAPROSZENIA` (max 22 znaki — to widać na wyciągu karty klienta) |
+| Statement descriptor | `ZAPROSZENIA` (max 22 znaki - to widać na wyciągu karty klienta) |
 | Metadata | `category=wedding-invitation, sku=ZO-DIGITAL-699-PL` |
 
 ### Cena
-- 699 PLN — jednorazowo
+- 699 PLN - jednorazowo
 
 → **Save**
 
@@ -110,7 +110,7 @@ Znajdź product (powinien być utworzony przy stworzeniu Payment Linka). Edytuj:
 
 ## 5. Polish receipt language
 
-**URL:** https://dashboard.stripe.com/settings/emails — **Language preferences**
+**URL:** https://dashboard.stripe.com/settings/emails - **Language preferences**
 
 | Locale | Wartość |
 |---|---|
@@ -129,9 +129,9 @@ Znajdź product (powinien być utworzony przy stworzeniu Payment Linka). Edytuj:
 | Pole | Wartość |
 |---|---|
 | Tax behavior | `Inclusive` (cena 699 zł zawiera już wszystko) |
-| Tax registration status | **NIE WŁĄCZAJ** automatic tax — nie jesteś VAT-em |
+| Tax registration status | **NIE WŁĄCZAJ** automatic tax - nie jesteś VAT-em |
 
-Stripe NIE wyśle do klienta faktury VAT — wyślesz **rachunek** osobno (poza Stripe). Stripe receipt = potwierdzenie wpłaty, nie faktura.
+Stripe NIE wyśle do klienta faktury VAT - wyślesz **rachunek** osobno (poza Stripe). Stripe receipt = potwierdzenie wpłaty, nie faktura.
 
 ---
 
@@ -158,7 +158,7 @@ W Stripe Dashboard → Payment Links → edytuj ten link:
 
 Po wszystkich krokach:
 
-1. **Test mode payment** — w Stripe Dashboard → Developers → API keys → użyj test key. Kup test invitation przez `https://buy.stripe.com/test_xxx` (Stripe sam wygeneruje test version).
+1. **Test mode payment** - w Stripe Dashboard → Developers → API keys → użyj test key. Kup test invitation przez `https://buy.stripe.com/test_xxx` (Stripe sam wygeneruje test version).
 
 2. **Sprawdź:**
    - Otrzymujesz markowany Stripe receipt (logo, kolory, polski język)
@@ -190,7 +190,7 @@ Po wszystkich krokach:
 
 ## Post-setup TODO (opcjonalne, później)
 
-- Setup Apple Pay / Google Pay (wymaga weryfikacji domeny — 5 min)
-- Setup BLIK as primary method (popularny w PL — 30% klientów wybiera)
+- Setup Apple Pay / Google Pay (wymaga weryfikacji domeny - 5 min)
+- Setup BLIK as primary method (popularny w PL - 30% klientów wybiera)
 - Subscription dla "express delivery 12h" (gdyby kiedyś dodać upsell)
 - Recurring billing dla "anniversary website renewal" (1 rok po ślubie)

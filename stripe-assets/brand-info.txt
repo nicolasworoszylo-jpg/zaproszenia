@@ -1,5 +1,5 @@
 ═══════════════════════════════════════════════════════════════
-ZAPROSZENIA ONLINE — Brand info dla Stripe i innych integracji
+ZAPROSZENIA ONLINE - Brand info dla Stripe i innych integracji
 ═══════════════════════════════════════════════════════════════
 
 ASSETS (pliki PNG do uploadu):
@@ -26,7 +26,7 @@ Body sans:                   Inter (Variable, Google Fonts)
 
 PRODUCT:
 ─────────────────────────────
-Nazwa pełna:                 Cyfrowe zaproszenie ślubne — pakiet kompletny
+Nazwa pełna:                 Cyfrowe zaproszenie ślubne - pakiet kompletny
 Nazwa krótka:                Zaproszenie online
 SKU:                         ZO-DIGITAL-699-PL
 Cena:                        699 PLN (jednorazowo)
@@ -68,7 +68,7 @@ SUPABASE:
 ─────────────────────────────
 Project ref:                 kuyniyyieejvambyjnxy
 Dashboard:                   https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy
-Region:                      eu-central-1 (Frankfurt — RODO compliant)
+Region:                      eu-central-1 (Frankfurt - RODO compliant)
 Tables: leads, leads_payment_columns_ext, leads_indexes
 
 VERCEL:
@@ -86,17 +86,17 @@ DNS:                         OVH DNS Zone Editor
 Email forwarding:            OVH Email (free, 1000 aliases limit, 8/1000 used)
 MX records:                  mx1/2/3.mail.ovh.net (priority 1/5/100)
 SPF:                         v=spf1 include:mx.ovh.com -all (hardfail)
-DKIM:                        TODO — Resend doda po verify domain
-DMARC:                       TODO — dodać _dmarc TXT z p=none
+DKIM:                        TODO - Resend doda po verify domain
+DMARC:                       TODO - dodać _dmarc TXT z p=none
 
 BUSINESS:
 ─────────────────────────────
 Status prawny:               Działalność nieewidencjonowana
-                             (art. 5 ust. 1 ustawy z 6.03.2018 — Prawo przedsiębiorców)
+                             (art. 5 ust. 1 ustawy z 6.03.2018 - Prawo przedsiębiorców)
 Limit miesięczny:            3 499,50 zł brutto (50% min wynagrodzenia 2026)
-Owner 1:                     Nicolas Woroszyło — nicolasworoszylo@gmail.com
-Owner 2:                     Dominika Kuś — dominikakus333@gmail.com
-Adres korespondencyjny:      TODO — uzupełnić w LEGAL_DATA.md
+Owner 1:                     Nicolas Woroszyło - nicolasworoszylo@gmail.com
+Owner 2:                     Dominika Kuś - dominikakus333@gmail.com
+Adres korespondencyjny:      TODO - uzupełnić w LEGAL_DATA.md
 
 VOICE / TONE:
 ─────────────────────────────

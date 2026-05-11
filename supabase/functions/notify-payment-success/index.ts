@@ -1,8 +1,8 @@
 // Edge Function: notify-payment-success
 // Wywoływana przez Supabase Database Webhook na UPDATE leads gdy payment_status='paid'
 // Wysyła:
-//   1. Mail do operatora — "OPŁACONE: Lead #xxx (699 zł)"
-//   2. Mail do klienta — "Płatność potwierdzona — startujemy z projektem"
+//   1. Mail do operatora - "OPŁACONE: Lead #xxx (699 zł)"
+//   2. Mail do klienta - "Płatność potwierdzona - startujemy z projektem"
 //
 // Wymaga secretu: RESEND_API_KEY
 //
@@ -113,7 +113,7 @@ function eyebrow(text: string, color = "#FAF6EF", dotColor = "#C9A96E"): string 
   </p>`;
 }
 
-// Animowane checkmark badge — gold ring + cream tick (jak demo na stronie)
+// Animowane checkmark badge - gold ring + cream tick (jak demo na stronie)
 const PAID_BADGE = `<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:0 auto 18px;">
   <tr><td style="background:rgba(201,169,110,0.18);border:2px solid #C9A96E;border-radius:50%;width:64px;height:64px;text-align:center;vertical-align:middle;line-height:60px;">
     <span style="font-family:Georgia,'Times New Roman',serif;font-size:2rem;color:#C9A96E;line-height:60px;">✓</span>
@@ -122,7 +122,7 @@ const PAID_BADGE = `<table role="presentation" cellspacing="0" cellpadding="0" b
 
 function operatorPaidHTML(lead: Lead): string {
   const amount = lead.payment_amount_pln ? (lead.payment_amount_pln / 100).toFixed(0) : "699";
-  const eventDate = lead.event_date ? new Date(lead.event_date).toLocaleDateString("pl-PL", { day: "numeric", month: "long", year: "numeric" }) : "—";
+  const eventDate = lead.event_date ? new Date(lead.event_date).toLocaleDateString("pl-PL", { day: "numeric", month: "long", year: "numeric" }) : "-";
   const stripeUrl = lead.payment_id ? `https://dashboard.stripe.com/payments/${escapeHtml(lead.payment_id)}` : 'https://dashboard.stripe.com/payments';
 
   const bodyHtml = `
@@ -156,9 +156,9 @@ function operatorPaidHTML(lead: Lead): string {
       <tr><td style="padding:9px 0;color:#999999;border-top:1px solid #EBEBEB;font-size:0.78rem;letter-spacing:0.04em;text-transform:uppercase;font-weight:500;">Data wydarzenia</td>
           <td style="padding:9px 0;border-top:1px solid #EBEBEB;font-weight:500;">${escapeHtml(eventDate)}</td></tr>
       <tr><td style="padding:9px 0;color:#999999;border-top:1px solid #EBEBEB;font-size:0.78rem;letter-spacing:0.04em;text-transform:uppercase;font-weight:500;">Pakiet / paleta</td>
-          <td style="padding:9px 0;border-top:1px solid #EBEBEB;">${escapeHtml(lead.package || "—")}</td></tr>
+          <td style="padding:9px 0;border-top:1px solid #EBEBEB;">${escapeHtml(lead.package || "-")}</td></tr>
       <tr><td style="padding:9px 0;color:#999999;border-top:1px solid #EBEBEB;font-size:0.78rem;letter-spacing:0.04em;text-transform:uppercase;font-weight:500;">Stripe payment_intent</td>
-          <td style="padding:9px 0;border-top:1px solid #EBEBEB;font-family:'SF Mono',Menlo,Monaco,monospace;font-size:0.78rem;color:#4A4A4A;">${escapeHtml(lead.payment_id || "—")}</td></tr>
+          <td style="padding:9px 0;border-top:1px solid #EBEBEB;font-family:'SF Mono',Menlo,Monaco,monospace;font-size:0.78rem;color:#4A4A4A;">${escapeHtml(lead.payment_id || "-")}</td></tr>
     </table>
 
     <!-- CTAs: 3 przyciski -->
@@ -171,7 +171,7 @@ function operatorPaidHTML(lead: Lead): string {
           <a href="${stripeUrl}" style="display:inline-block;padding:13px 22px;background:#635BFF;color:#FFFFFF;border-radius:100px;font-size:0.92rem;font-weight:500;letter-spacing:-0.005em;">Stripe →</a>
         </td>
         <td>
-          <a href="mailto:${escapeHtml(lead.email)}?subject=${encodeURIComponent('Re: Wasza strona ślubna — link do podglądu')}" style="display:inline-block;padding:13px 22px;background:#FFFFFF;color:#0A0A0A;border:1px solid #EBEBEB;border-radius:100px;font-size:0.92rem;font-weight:500;letter-spacing:-0.005em;">Odpisz →</a>
+          <a href="mailto:${escapeHtml(lead.email)}?subject=${encodeURIComponent('Re: Wasza strona ślubna - link do podglądu')}" style="display:inline-block;padding:13px 22px;background:#FFFFFF;color:#0A0A0A;border:1px solid #EBEBEB;border-radius:100px;font-size:0.92rem;font-weight:500;letter-spacing:-0.005em;">Odpisz →</a>
         </td>
       </tr>
     </table>
@@ -180,20 +180,20 @@ function operatorPaidHTML(lead: Lead): string {
 
   return emailShell({
     preheader: `OPŁACONE ${amount} zł · ${lead.name} · Klient czeka 24 h na link do podglądu`,
-    title: `OPŁACONE ${amount} zł — Lead #${lead.id.slice(0,8)}`,
+    title: `OPŁACONE ${amount} zł - Lead #${lead.id.slice(0,8)}`,
     bodyHtml,
   });
 }
 
 function operatorPaidText(lead: Lead): string {
   const amount = lead.payment_amount_pln ? (lead.payment_amount_pln / 100).toFixed(0) : "699";
-  return `OPŁACONE ${amount} zł — Lead #${lead.id.slice(0,8)}
+  return `OPŁACONE ${amount} zł - Lead #${lead.id.slice(0,8)}
 
 Para: ${lead.name}
 E-mail: ${lead.email}
-Data wydarzenia: ${lead.event_date || "—"}
-Pakiet: ${lead.package || "—"}
-Stripe payment_intent: ${lead.payment_id || "—"}
+Data wydarzenia: ${lead.event_date || "-"}
+Pakiet: ${lead.package || "-"}
+Stripe payment_intent: ${lead.payment_id || "-"}
 
 AKCJA: Klient dostał potwierdzenie wpłaty + brief co dalej. Wy macie 24h na link do podglądu.
 
@@ -201,7 +201,7 @@ Supabase: https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/editor
 Stripe:   https://dashboard.stripe.com/payments/${lead.payment_id || ""}
 Odpisz:   ${lead.email}
 
-—
+-
 Zaproszenia Online · zaproszeniaonline.com`;
 }
 
@@ -235,7 +235,7 @@ function customerPaidHTML(lead: Lead): string {
         <span style="display:inline-block;width:5px;height:5px;background:#C9A96E;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>Kolejny krok
       </p>
       <p style="margin:0;font-size:1rem;line-height:1.6;color:#0A0A0A;">
-        W ciągu <strong>24 godzin</strong> wyślę link do podglądu Waszej strony — z imionami, datą, wybraną paletą i wszystkimi sekcjami z briefu. Sprawdzicie i odpiszecie z uwagami (3 rundy poprawek w cenie).
+        W ciągu <strong>24 godzin</strong> wyślę link do podglądu Waszej strony - z imionami, datą, wybraną paletą i wszystkimi sekcjami z briefu. Sprawdzicie i odpiszecie z uwagami (3 rundy poprawek w cenie).
       </p>
     </div>
 
@@ -247,13 +247,13 @@ function customerPaidHTML(lead: Lead): string {
       <p style="margin:0;font-size:0.96rem;line-height:1.6;color:#0A0A0A;">
         Wyślijcie 2-3 ulubione zdjęcia pary i kilka zdań Waszej historii na
         <strong><a href="mailto:zamowienia@zaproszeniaonline.com" style="color:#2C3E2D;text-decoration:underline;text-underline-offset:2px;">zamowienia@zaproszeniaonline.com</a></strong>.
-        Im wcześniej, tym lepiej — ale możecie też dorzucić podczas poprawek.
+        Im wcześniej, tym lepiej - ale możecie też dorzucić podczas poprawek.
       </p>
     </div>
 
     <!-- INFO RACHUNEK -->
     <p style="margin:24px 0 0;color:#4A4A4A;font-size:0.93rem;line-height:1.6;">
-      Rachunek (działalność nieewidencjonowana — bez VAT) zostanie wysłany w osobnym mailu w ciągu 24 godzin. W razie pytań — odpiszcie na tego maila.
+      Rachunek (działalność nieewidencjonowana - bez VAT) zostanie wysłany w osobnym mailu w ciągu 24 godzin. W razie pytań - odpiszcie na tego maila.
     </p>
 
     <!-- SIGNATURE -->
@@ -288,7 +288,7 @@ function customerPaidHTML(lead: Lead): string {
 
   return emailShell({
     preheader: `Dziękujemy ${firstName}! Wpłata ${amount} zł potwierdzona. W 24h dostaniecie link do podglądu.`,
-    title: `Płatność potwierdzona — Zaproszenia Online`,
+    title: `Płatność potwierdzona - Zaproszenia Online`,
     bodyHtml,
   });
 }
@@ -301,12 +301,12 @@ function customerPaidText(lead: Lead): string {
 Wpłata ${amount} zł potwierdzona. Mamy wszystko czego potrzeba żeby zacząć projekt Waszej strony ślubnej.
 
 KOLEJNY KROK:
-W ciągu 24 godzin wyślę link do podglądu Waszej strony — z imionami, datą, wybraną paletą i wszystkimi sekcjami z briefu. Sprawdzicie i odpiszecie z uwagami (3 rundy poprawek w cenie).
+W ciągu 24 godzin wyślę link do podglądu Waszej strony - z imionami, datą, wybraną paletą i wszystkimi sekcjami z briefu. Sprawdzicie i odpiszecie z uwagami (3 rundy poprawek w cenie).
 
 JEŚLI WYBRALIŚCIE ZDJĘCIA LUB HISTORIĘ:
-Wyślijcie 2-3 ulubione zdjęcia pary i kilka zdań Waszej historii na zamowienia@zaproszeniaonline.com. Im wcześniej, tym lepiej — ale możecie też dorzucić podczas poprawek.
+Wyślijcie 2-3 ulubione zdjęcia pary i kilka zdań Waszej historii na zamowienia@zaproszeniaonline.com. Im wcześniej, tym lepiej - ale możecie też dorzucić podczas poprawek.
 
-Rachunek (działalność nieewidencjonowana — bez VAT) zostanie wysłany w osobnym mailu w ciągu 24 godzin. W razie pytań — odpiszcie na tego maila.
+Rachunek (działalność nieewidencjonowana - bez VAT) zostanie wysłany w osobnym mailu w ciągu 24 godzin. W razie pytań - odpiszcie na tego maila.
 
 Do zobaczenia za ~24h,
 Zespół Zaproszenia Online
@@ -353,7 +353,7 @@ serve(async (req) => {
   try {
     await sendEmail(
       lead.email,
-      `Płatność potwierdzona — startujemy z projektem`,
+      `Płatność potwierdzona - startujemy z projektem`,
       customerPaidHTML(lead),
       customerPaidText(lead),
     );

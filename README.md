@@ -1,6 +1,6 @@
 # zaproszeniaonline.com
 
-> Cyfrowe zaproszenia ślubne premium — strona ślubna z RSVP, planem dnia, mapami i historią pary. **Realizacja 48 h. Cena 699 zł.**
+> Cyfrowe zaproszenia ślubne premium - strona ślubna z RSVP, planem dnia, mapami i historią pary. **Realizacja 48 h. Cena 699 zł.**
 
 **Live:** [zaproszeniaonline.com](https://zaproszeniaonline.com) · **Demo:** [zaproszeniaonline.com/demo](https://zaproszeniaonline.com/demo)
 
@@ -33,7 +33,7 @@ Kontakt w sprawie licencji komercyjnej: **kontakt@zaproszeniaonline.com**
 | **Backend** | Supabase Postgres 17 + RLS + Edge Functions | Supabase Cloud |
 | **Domena** | zaproszeniaonline.com | Vercel DNS |
 
-Brak build pipeline — pure static, każda zmiana to git push → Vercel auto-deploy.
+Brak build pipeline - pure static, każda zmiana to git push → Vercel auto-deploy.
 
 ---
 
@@ -65,15 +65,15 @@ Brak build pipeline — pure static, każda zmiana to git push → Vercel auto-d
 
 ---
 
-## 🔐 Backend — Supabase
+## 🔐 Backend - Supabase
 
 **Projekt:** `kuyniyyieejvambyjnxy` (eu-west-1, Postgres 17)
 
 **Tabele:**
-- `leads` — zapytania ofertowe z formularza kontaktowego
-- `rsvps` — potwierdzenia obecności gości
-- `song_requests` — propozycje piosenek
-- `discount_codes` — kody afiliacyjne dla partnerów
+- `leads` - zapytania ofertowe z formularza kontaktowego
+- `rsvps` - potwierdzenia obecności gości
+- `song_requests` - propozycje piosenek
+- `discount_codes` - kody afiliacyjne dla partnerów
 
 **RLS:** anon może tylko `INSERT` (przez `Prefer: return=minimal` żeby nie
 wymagać SELECT policy). Walidacja kodu rabatowego przez RPC `SECURITY DEFINER`
@@ -85,9 +85,9 @@ Pełen schema + migracje: zarządzane przez Supabase Studio.
 
 ## 🎨 Design
 
-- **Landing:** minimalistic editorial — pure white + Fraunces serif + Inter sans
+- **Landing:** minimalistic editorial - pure white + Fraunces serif + Inter sans
   + jeden akcent (deep forest #2C3E2D). Apple/Linear/Notion-style.
-- **Demo zaproszenia:** Old Money editorial — forest green + gold + botaniczne
+- **Demo zaproszenia:** Old Money editorial - forest green + gold + botaniczne
   ornamenty SVG. 4 palety do wyboru na żywo (Leśna zieleń / Granat+róż /
   Bordo+kość / Rdzawa terracotta).
 
@@ -126,21 +126,21 @@ git add . && git commit -m "..." && git push
 
 Czytaj w tej kolejności:
 
-1. **[`ONBOARDING_CLAUDE.md`](./ONBOARDING_CLAUDE.md)** — entry point: 60-sekundowy obraz, zasady święte, zakazy, test scenarios
-2. **[`ARCHITECTURE.md`](./ARCHITECTURE.md)** — end-to-end system flow, data model, deployment, failure modes
-3. **[`AUTOMATIONS.md`](./AUTOMATIONS.md)** — wszystkie triggery, webhooki, cron jobs, scheduled actions
-4. **[`SEO.md`](./SEO.md)** — strategia SEO/AEO/GEO, target queries, content plan
-5. **[`PROJECT_STATUS.md`](./PROJECT_STATUS.md)** — live snapshot: GO/NO-GO, outstanding tasks
-6. **[`HANDOFF_NICOLAS_v2.md`](./HANDOFF_NICOLAS_v2.md)** — per-session handoff od Nicolasa
+1. **[`ONBOARDING_CLAUDE.md`](./ONBOARDING_CLAUDE.md)** - entry point: 60-sekundowy obraz, zasady święte, zakazy, test scenarios
+2. **[`ARCHITECTURE.md`](./ARCHITECTURE.md)** - end-to-end system flow, data model, deployment, failure modes
+3. **[`AUTOMATIONS.md`](./AUTOMATIONS.md)** - wszystkie triggery, webhooki, cron jobs, scheduled actions
+4. **[`SEO.md`](./SEO.md)** - strategia SEO/AEO/GEO, target queries, content plan
+5. **[`PROJECT_STATUS.md`](./PROJECT_STATUS.md)** - live snapshot: GO/NO-GO, outstanding tasks
+6. **[`HANDOFF_NICOLAS_v2.md`](./HANDOFF_NICOLAS_v2.md)** - per-session handoff od Nicolasa
 
 ### Setup docs (operacyjne)
 
-- **[`STRIPE_SETUP.md`](./STRIPE_SETUP.md)** — referencyjny Stripe setup
-- **[`DOMINIKA_STRIPE_INSTRUKCJA.md`](./DOMINIKA_STRIPE_INSTRUKCJA.md)** — tutorial Stripe configuration (Dominika side)
-- **[`CLAUDE_IN_CHROME_MASTER.md`](./CLAUDE_IN_CHROME_MASTER.md)** — DMARC + Resend + GSC prompts dla Claude in Chrome
-- **[`LEGAL_DATA.md`](./LEGAL_DATA.md)** — dane biznesowe (działalność nieewidencjonowana, plan eskalacji do JDG)
-- **[`AFFILIATE_INSTRUCTIONS.md`](./AFFILIATE_INSTRUCTIONS.md)** — program partnerski
-- **[`SEO_SUBMIT_INSTRUCTIONS.md`](./SEO_SUBMIT_INSTRUCTIONS.md)** — submisja do search engines
+- **[`STRIPE_SETUP.md`](./STRIPE_SETUP.md)** - referencyjny Stripe setup
+- **[`DOMINIKA_STRIPE_INSTRUKCJA.md`](./DOMINIKA_STRIPE_INSTRUKCJA.md)** - tutorial Stripe configuration (Dominika side)
+- **[`CLAUDE_IN_CHROME_MASTER.md`](./CLAUDE_IN_CHROME_MASTER.md)** - DMARC + Resend + GSC prompts dla Claude in Chrome
+- **[`LEGAL_DATA.md`](./LEGAL_DATA.md)** - dane biznesowe (działalność nieewidencjonowana, plan eskalacji do JDG)
+- **[`AFFILIATE_INSTRUCTIONS.md`](./AFFILIATE_INSTRUCTIONS.md)** - program partnerski
+- **[`SEO_SUBMIT_INSTRUCTIONS.md`](./SEO_SUBMIT_INSTRUCTIONS.md)** - submisja do search engines
 
 ---
 

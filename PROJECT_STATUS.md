@@ -1,4 +1,4 @@
-# Project Status — zaproszeniaonline.com
+# Project Status - zaproszeniaonline.com
 
 **Ostatnia weryfikacja:** 2026-05-10 (automated check Claude Code)
 **Owner:** Nicolas Woroszyło (działalność nieewidencjonowana, art. 5 ust. 1 PrzedsU)
@@ -19,7 +19,7 @@
 | Email pipeline (notify-new-lead) | 🟢 GO | test 200 OK, brand-aligned v4 |
 | Email pipeline (notify-payment-success) | 🟢 GO | test 200 OK, brand-aligned v4 |
 | Stripe webhook deployed | 🟢 GO | endpoint odpowiada |
-| **Stripe webhook secret** | 🔴 **BRAK** | `Key length is zero` — czekam na klucz od Dominiki |
+| **Stripe webhook secret** | 🔴 **BRAK** | `Key length is zero` - czekam na klucz od Dominiki |
 | **Stripe Branding + Customer emails** | 🔴 **TODO Dominika** | konfiguracja w toku |
 | Google Search Console | 🟢 GO | property verified via TXT, sitemap submitted |
 | Legal docs (terms + privacy) | 🟢 GO | działalność nieewidencjonowana wstawiona |
@@ -41,7 +41,7 @@
 - **Project ref:** `kuyniyyieejvambyjnxy`
 - **Region:** eu-central-1 (Frankfurt, RODO compliant)
 - **Dashboard:** https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy
-- **Tables:** `leads` (19 kolumn — original 14 + 5 payment columns)
+- **Tables:** `leads` (19 kolumn - original 14 + 5 payment columns)
 - **Total leads:** 2 (oba testowe, sprzed marketingu)
 
 ### Domain (OVH)
@@ -79,7 +79,7 @@
 | `stripe-webhook` | v3 | false | ACTIVE ⚠️ czeka na `STRIPE_WEBHOOK_SECRET` |
 | `notify-new-lead` | v5 | false | ACTIVE (brand templates) |
 | `notify-payment-success` | v5 | false | ACTIVE (brand templates) |
-| `helpwave-scan-tx` | v3 | true | ACTIVE (inny projekt — helpwave) |
+| `helpwave-scan-tx` | v3 | true | ACTIVE (inny projekt - helpwave) |
 
 ### Database Webhooks (PG triggers)
 
@@ -210,7 +210,7 @@ Wszystkie wrażliwe dane są **TYLKO** w:
 - Supabase Service Role Key
 - Hasła do żadnych kont
 
-GitHub Secret Scanning push protection włączone — testowane (zablokowało wcześniejszy placeholder w docs).
+GitHub Secret Scanning push protection włączone - testowane (zablokowało wcześniejszy placeholder w docs).
 
 ---
 
@@ -241,8 +241,8 @@ Ostatnie sprawdzenie (zaktualizowane przy każdym commit do tego pliku):
 ## 🎯 Outstanding tasks (otwarte)
 
 ### KRYTYCZNE (przed marketing GO)
-1. **Stripe webhook secret** — Dominika konfiguruje, ja wpisuję do Supabase
-2. **Stripe Branding** (logo + kolory + Customer emails ON) — Dominika
+1. **Stripe webhook secret** - Dominika konfiguruje, ja wpisuję do Supabase
+2. **Stripe Branding** (logo + kolory + Customer emails ON) - Dominika
 
 ### NICE-TO-HAVE (po marketing start)
 - Bing Webmaster Tools verify
@@ -257,11 +257,11 @@ Ostatnie sprawdzenie (zaktualizowane przy każdym commit do tego pliku):
 ```
 8ccceca feat: IndexNow key file dla Bing
 fb7d1df Blog FAZA 2: 4 nowe artykuły SEO dla Google long-tail
-ac7129b fix(schema): GSC warnings — Service review usunięte
+ac7129b fix(schema): GSC warnings - Service review usunięte
 c5e7fcd fix(schema): Product aggregateRating + review
 8166583 ai-layer: day-5/7 tests + fixes
 ddddd8f docs: instrukcja Stripe dla Dominiki (v1)
-ffb386f docs: instrukcja Stripe v2 — Dominika kopiuje klucze
+ffb386f docs: instrukcja Stripe v2 - Dominika kopiuje klucze
 ba206bf feat(emails): signature 'Zespół Zaproszenia Online'
 9a55b93 feat(emails): brand-aligned HTML templates v2
 f4bf562 fix(seo): /blog trailing slash + #paragraf-6 anchor
@@ -271,7 +271,7 @@ f4bf562 fix(seo): /blog trailing slash + #paragraf-6 anchor
 
 ## 🛡️ Status legal
 
-- **Forma:** działalność nieewidencjonowana (art. 5 ust. 1 ustawy z 6.03.2018 — Prawo przedsiębiorców)
+- **Forma:** działalność nieewidencjonowana (art. 5 ust. 1 ustawy z 6.03.2018 - Prawo przedsiębiorców)
 - **Limit miesięczny:** 3 499,50 zł brutto (50% min wynagrodzenia 2026)
 - **VAT:** zwolniony (nie jest podatnikiem)
 - **Dokument:** rachunek (nie faktura VAT), na żądanie klienta

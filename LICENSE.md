@@ -54,7 +54,7 @@ Wykrycie kradzieży kodu lub designu skutkuje:
 
 ## Kontakt w sprawie licencji komercyjnej
 
-Jeśli chcesz reużyć dowolny element tego projektu w celach komercyjnych —
+Jeśli chcesz reużyć dowolny element tego projektu w celach komercyjnych -
 napisz na **kontakt@zaproszeniaonline.com**. Możliwa licencja na
 indywidualnych warunkach.
 
@@ -62,11 +62,11 @@ indywidualnych warunkach.
 
 Projekt używa następujących bibliotek open-source (zachowane są ich licencje):
 
-- **React 18** — MIT License (Meta)
-- **@supabase/supabase-js** — MIT License (Supabase)
-- **@babel/standalone** — MIT License (Babel team)
+- **React 18** - MIT License (Meta)
+- **@supabase/supabase-js** - MIT License (Supabase)
+- **@babel/standalone** - MIT License (Babel team)
 - **Google Fonts** (Fraunces, Inter, Playfair Display, Cormorant Garamond,
-  Outfit, DM Mono) — SIL Open Font License
+  Outfit, DM Mono) - SIL Open Font License
 
 Te biblioteki **nie zmieniają** licencji własnego kodu Vidok Studio
 zawartego w tym repozytorium.
@@ -84,8 +84,8 @@ Dlaczego repo jest publiczne mimo to:
 - Migracja do Vercel Pro ($20/m-c) z prywatnym repo jest planowana
   na etapie 5+ płacących klientów
 
-Jeśli widzisz ten kod jako inspirację — **OK, inspiruj się**. Jeśli widzisz
-ten kod jako gotową kopię do uruchomienia własnego biznesu — **NIE**.
+Jeśli widzisz ten kod jako inspirację - **OK, inspiruj się**. Jeśli widzisz
+ten kod jako gotową kopię do uruchomienia własnego biznesu - **NIE**.
 
 ---
 

@@ -1,6 +1,6 @@
-# robots.txt — zaproszeniaonline.com
+# robots.txt - zaproszeniaonline.com
 # Strategia: indeksować landing (/), nie indeksować demo (/demo) ani podzasobów.
-# AI crawlers explicit allow — żeby ChatGPT, Claude, Perplexity, Gemini mogły cytować markę.
+# AI crawlers explicit allow - żeby ChatGPT, Claude, Perplexity, Gemini mogły cytować markę.
 
 User-agent: *
 Allow: /

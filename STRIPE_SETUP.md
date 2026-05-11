@@ -1,4 +1,4 @@
-# Stripe Setup — zaproszeniaonline.com
+# Stripe Setup - zaproszeniaonline.com
 
 > Od zera do działającej płatności online w **~15 minut** (bez webhook'a) lub **~45 min** (z webhookiem auto-update Supabase).
 
@@ -6,13 +6,13 @@
 
 ## Co już jest gotowe (od 2026-05-05)
 
-Cała infrastruktura przygotowana — wystarczy wkleić jedno URL po stworzeniu Payment Link:
+Cała infrastruktura przygotowana - wystarczy wkleić jedno URL po stworzeniu Payment Link:
 
 - ✅ Tabela `leads` ma 4 kolumny: `payment_status`, `payment_provider`, `payment_id`, `payment_amount_pln` (migration: `supabase/migrations/2026-04-30-add-payment-cols.sql`)
 - ✅ **Strona sukcesu**: `/dziekujemy` (HTML z animowanym checkiem + next steps)
 - ✅ **Strona anulowania**: `/platnosc-anulowana` (HTML z opcją "spróbuj ponownie")
-- ✅ **Stripe button placeholder** w cenniku — ukryty (`hidden` attribute) dopóki nie wkleisz `data-stripe-link`
-- ✅ **Edge Function** `supabase/functions/stripe-webhook/index.ts` — gotowa do deploy, obsługuje `checkout.session.completed`, `charge.refunded`, `payment_intent.payment_failed`
+- ✅ **Stripe button placeholder** w cenniku - ukryty (`hidden` attribute) dopóki nie wkleisz `data-stripe-link`
+- ✅ **Edge Function** `supabase/functions/stripe-webhook/index.ts` - gotowa do deploy, obsługuje `checkout.session.completed`, `charge.refunded`, `payment_intent.payment_failed`
 - ✅ **vercel.json** routing: `/dziekujemy` i `/platnosc-anulowana` dostępne (cleanUrls)
 
 Twoje zadanie: 3 kroki.
@@ -24,13 +24,13 @@ Twoje zadanie: 3 kroki.
 1. Idź na **[stripe.com/pl](https://stripe.com/pl)** → "Zarejestruj się"
 2. E-mail służbowy: `kontakt@zaproszeniaonline.com` (jak go założysz) lub Twój prywatny
 3. Hasło + 2FA (recommended: Authy / Google Authenticator)
-4. Aktywacja konta — Stripe spyta o:
+4. Aktywacja konta - Stripe spyta o:
    - Forma działalności: **Jednoosobowa działalność gospodarcza** (lub spółka jeśli inaczej)
    - NIP/REGON
    - Adres firmy
-   - Numer konta bankowego (do wypłat — wypłata co tydzień, automatycznie)
+   - Numer konta bankowego (do wypłat - wypłata co tydzień, automatycznie)
    - Skan dowodu osobistego (KYC)
-5. Po aktywacji: trwa **0–48 h** weryfikacja. Możesz tworzyć Payment Linki od razu (test mode), real payments po weryfikacji.
+5. Po aktywacji: trwa **0-48 h** weryfikacja. Możesz tworzyć Payment Linki od razu (test mode), real payments po weryfikacji.
 
 **Stripe pobiera prowizję:** 1.5% + 1 zł od każdej polskiej karty (BLIK podobnie). Czyli z 699 zł → ~688 zł netto Tobie. Brak abonamentu, brak miesięcznego setup fee.
 
@@ -41,7 +41,7 @@ Twoje zadanie: 3 kroki.
 W panelu Stripe (po lewej menu):
 
 1. **Products** → **+ Add product**
-2. Nazwa: `Cyfrowe zaproszenie ślubne — pakiet kompletny`
+2. Nazwa: `Cyfrowe zaproszenie ślubne - pakiet kompletny`
 3. Opis: `Strona ślubna pod własnym URL z RSVP, planem dnia, mapami, galerią. Realizacja w 24h.`
 4. Image: wgraj `og-image.png` z repo (`/tmp/zaproszenia/og-image.png`) lub własne zdjęcie
 5. Pricing model: **One-time**
@@ -54,16 +54,16 @@ Następnie:
 2. Wybierz produkt: "Cyfrowe zaproszenie ślubne…"
 3. Quantity: locked, 1
 4. **Confirmation page**:
-   - "Show a confirmation page" (built-in) — domyślne, najprostsze
+   - "Show a confirmation page" (built-in) - domyślne, najprostsze
    - LUB "Don't show a confirmation page" + "Redirect customers to a URL after payment" → wpisz `https://zaproszeniaonline.com/dziekujemy` (możesz dodać tę stronę później; placeholder)
 5. **Advanced**:
-   - ✅ Collect customer info (email — automatyczne)
+   - ✅ Collect customer info (email - automatyczne)
    - ✅ Collect billing address (do faktury VAT)
    - ✅ Allow promotion codes (jeśli chcesz dawać klientom kody zniżkowe Stripe-side oprócz Twoich affiliate codes)
-6. Tax: jeśli jesteś VAT-owcem, włącz **Stripe Tax** (auto-collect). Jeśli korzystasz ze zwolnienia art. 113 — zostaw OFF.
+6. Tax: jeśli jesteś VAT-owcem, włącz **Stripe Tax** (auto-collect). Jeśli korzystasz ze zwolnienia art. 113 - zostaw OFF.
 7. **Create link**
 
-Skopiuj URL — wygląda tak: `https://buy.stripe.com/abc123XYZ`.
+Skopiuj URL - wygląda tak: `https://buy.stripe.com/abc123XYZ`.
 
 ---
 
@@ -85,7 +85,7 @@ Zamień na (wklej swój URL i USUŃ `hidden`):
 <a href="https://buy.stripe.com/abc123XYZ" data-stripe-link="https://buy.stripe.com/abc123XYZ" class="btn btn-stripe price-pay-cta">
 ```
 
-(Albo nawet prościej: wystarczy wkleić URL w `data-stripe-link` — JS sam usunie `hidden` i ustawi `href + target=_blank` przy load.)
+(Albo nawet prościej: wystarczy wkleić URL w `data-stripe-link` - JS sam usunie `hidden` i ustawi `href + target=_blank` przy load.)
 
 Po zmianie:
 ```bash
@@ -120,7 +120,7 @@ Albo w UI Supabase Studio → tabela `leads` → kliknij wiersz → edit.
 
 ### C. Auto-update przez webhook (zalecane, ~30 min)
 
-Edge Function jest już napisana w `supabase/functions/stripe-webhook/index.ts` — gotowa do deploy. Obsługuje:
+Edge Function jest już napisana w `supabase/functions/stripe-webhook/index.ts` - gotowa do deploy. Obsługuje:
 - `checkout.session.completed` → automatycznie aktualizuje lead jako `paid` po e-mailu klienta
 - `charge.refunded` → oznacza jako `refunded`
 - `payment_intent.payment_failed` → oznacza jako `cancelled`
@@ -200,13 +200,13 @@ A: Nie. Niezarejestrowany VAT-owiec = przychód na zwolnieniu, Stripe pobiera pr
 A: Tak. Stripe BLIK aktywuje się automatycznie dla polskich klientów (Stripe wykrywa lokalizację). Klient widzi BLIK + karty + Apple/Google Pay.
 
 **Q: A jak klient woli przelew?**
-A: Stripe ma "Manual payment" / "SEPA Credit Transfer" — wolniejszy (1-3 dni do zaksięgowania), ale dostępny. Albo klient płaci tradycyjnie na Twój numer konta — Ty ręcznie aktualizujesz `payment_status='paid'` w Supabase.
+A: Stripe ma "Manual payment" / "SEPA Credit Transfer" - wolniejszy (1-3 dni do zaksięgowania), ale dostępny. Albo klient płaci tradycyjnie na Twój numer konta - Ty ręcznie aktualizujesz `payment_status='paid'` w Supabase.
 
 **Q: Dlaczego nie PayU/Tpay/imoje?**
-A: Ich provizja 2.5–3.5% wyższa niż Stripe (1.5%). Stripe = lepsza dokumentacja + global ready (jeśli kiedyś chcesz B2C w UE).
+A: Ich provizja 2.5-3.5% wyższa niż Stripe (1.5%). Stripe = lepsza dokumentacja + global ready (jeśli kiedyś chcesz B2C w UE).
 
 **Q: Co z RODO?**
-A: Stripe ma DPA — w Twojej `privacy.html` sekcja "Odbiorcy danych" już wymienia "operator płatności online". Po implementacji upewnij się że specifically wymieniasz "Stripe Inc., USA" (DPA + transfer poza EOG na podstawie SCC).
+A: Stripe ma DPA - w Twojej `privacy.html` sekcja "Odbiorcy danych" już wymienia "operator płatności online". Po implementacji upewnij się że specifically wymieniasz "Stripe Inc., USA" (DPA + transfer poza EOG na podstawie SCC).
 
 ---
 

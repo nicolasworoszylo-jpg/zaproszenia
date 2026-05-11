@@ -1,4 +1,4 @@
-// Stripe webhook handler — odbiera checkout.session.completed + payment_intent.succeeded
+// Stripe webhook handler - odbiera checkout.session.completed + payment_intent.succeeded
 // Aktualizuje payment_status w tabeli `leads`
 //
 // Deploy: `supabase functions deploy stripe-webhook --no-verify-jwt`
@@ -65,7 +65,7 @@ serve(async (req) => {
         const amount = session.amount_total; // w groszach
         const paymentIntentId = session.payment_intent as string;
 
-        // Match po e-mailu — najnowszy lead z tym e-mailem
+        // Match po e-mailu - najnowszy lead z tym e-mailem
         const { data: lead, error: findErr } = await supabase
           .from("leads")
           .select("id")

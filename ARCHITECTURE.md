@@ -1,4 +1,4 @@
-# Architecture — zaproszeniaonline.com
+# Architecture - zaproszeniaonline.com
 
 End-to-end mapa systemu. Czytasz po `ONBOARDING_CLAUDE.md`.
 
@@ -148,12 +148,12 @@ CREATE POLICY anon_insert_leads ON public.leads
 
 ### Indexes
 - `leads_pkey` (PRIMARY KEY on id)
-- `leads_created_at_idx` — DESC for recent leads dashboard
-- `leads_email_idx` — match leads by customer email (Stripe webhook lookup)
-- `leads_affiliate_code_idx` — case-insensitive WHERE NOT NULL
-- `idx_leads_payment_status` — filter paid/pending
-- `idx_leads_payment_id` — webhook idempotency lookup
-- `idx_leads_email_created` — compound (email, created_at DESC) for newest lead per email
+- `leads_created_at_idx` - DESC for recent leads dashboard
+- `leads_email_idx` - match leads by customer email (Stripe webhook lookup)
+- `leads_affiliate_code_idx` - case-insensitive WHERE NOT NULL
+- `idx_leads_payment_status` - filter paid/pending
+- `idx_leads_payment_id` - webhook idempotency lookup
+- `idx_leads_email_created` - compound (email, created_at DESC) for newest lead per email
 
 ---
 
@@ -161,7 +161,7 @@ CREATE POLICY anon_insert_leads ON public.leads
 
 ### From `kontakt@zaproszeniaonline.com` (Resend)
 - **DKIM:** signed by Resend (`resend._domainkey` TXT)
-- **SPF:** aligned via `send.zaproszeniaonline.com` (separate subdomain — NIE w konflikcie z root OVH MX)
+- **SPF:** aligned via `send.zaproszeniaonline.com` (separate subdomain - NIE w konflikcie z root OVH MX)
 - **DMARC:** `p=none` monitoring (rua reports do `rodo@`)
 
 ### To recipients
@@ -177,7 +177,7 @@ CREATE POLICY anon_insert_leads ON public.leads
 │   ├─ h1 (Georgia italic 2.1rem)
 │   └─ subtitle
 ├─ <body>
-│   ├─ 3 step rows (I/II/III circles) — tylko customer welcome
+│   ├─ 3 step rows (I/II/III circles) - tylko customer welcome
 │   ├─ data table (operator alerts)
 │   ├─ callouts (gold for "co przygotować", forest for "kolejny krok")
 │   ├─ CTA buttons (Supabase / Stripe / mailto)
@@ -232,7 +232,7 @@ CREATE POLICY anon_insert_leads ON public.leads
 | `SUPABASE_ANON_KEY` | Supabase publishable key | YES |
 | `STRIPE_PAYMENT_LINK` | https://buy.stripe.com/28E00i... | YES |
 
-(Note: landing używa `anon_key` po stronie klienta — to bezpieczne bo RLS pilnuje że anon może tylko INSERT.)
+(Note: landing używa `anon_key` po stronie klienta - to bezpieczne bo RLS pilnuje że anon może tylko INSERT.)
 
 ---
 
@@ -246,7 +246,7 @@ CREATE POLICY anon_insert_leads ON public.leads
    ```
 2. Jeśli `Resend 401` → klucz `RESEND_API_KEY` niepoprawny, regeneruj w Resend Dashboard.
 3. Jeśli `Resend 422` → invalid email format lub domain nie verified.
-4. Jeśli `5xx` → przejściowy problem Resend, retry sam się odbędzie (no, pg_net nie retry — manualnie wstaw test record).
+4. Jeśli `5xx` → przejściowy problem Resend, retry sam się odbędzie (no, pg_net nie retry - manualnie wstaw test record).
 
 ### "Stripe webhook zwraca 400 'Key length is zero'"
 - `STRIPE_WEBHOOK_SECRET` w Supabase secrets jest pusty lub same spacje.
@@ -256,15 +256,15 @@ CREATE POLICY anon_insert_leads ON public.leads
 1. Sprawdź czy Stripe webhook endpoint istnieje w Stripe Dashboard.
 2. Sprawdź czy 3 events zaznaczone: `checkout.session.completed`, `charge.refunded`, `payment_intent.payment_failed`.
 3. Sprawdź `STRIPE_WEBHOOK_SECRET` w Supabase.
-4. W Stripe Dashboard → Webhooks → endpoint → "Recent events" — czy widzisz event z 200 OK lub 400/500 error?
+4. W Stripe Dashboard → Webhooks → endpoint → "Recent events" - czy widzisz event z 200 OK lub 400/500 error?
 
 ### "Vercel build fail"
-- Sprawdź `vercel.json` — czy poprawny JSON.
+- Sprawdź `vercel.json` - czy poprawny JSON.
 - Sprawdź czy w repo nie ma plików `>50MB` (Vercel limit).
 - Force redeploy: Vercel Dashboard → Deployments → Redeploy.
 
 ### "Domain DNS leci"
-- `dig MX zaproszeniaonline.com @1.1.1.1 +short` — czy MX z OVH live?
+- `dig MX zaproszeniaonline.com @1.1.1.1 +short` - czy MX z OVH live?
 - Jeśli puste → OVH DNS error, sprawdź panel.
 - DNS propagation max 48h ale OVH typowo <5 min.
 
@@ -277,7 +277,7 @@ CREATE POLICY anon_insert_leads ON public.leads
 git clone https://github.com/nicolasworoszylo-jpg/zaproszenia.git
 cd zaproszenia
 
-# Local serve (no build step — static site)
+# Local serve (no build step - static site)
 python3 -m http.server 8000
 # lub: npx serve
 

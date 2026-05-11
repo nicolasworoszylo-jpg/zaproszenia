@@ -27,7 +27,7 @@ EXECUTE FUNCTION supabase_functions.http_request(
 );
 
 -- Webhook 2: UPDATE where payment_status transitions to 'paid'
--- WHEN clause prevents firing on every UPDATE — only on the transition.
+-- WHEN clause prevents firing on every UPDATE - only on the transition.
 -- Edge Function additionally guards against duplicates (idempotent).
 DROP TRIGGER IF EXISTS leads_notify_payment_success ON public.leads;
 CREATE TRIGGER leads_notify_payment_success
