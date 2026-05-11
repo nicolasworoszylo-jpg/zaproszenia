@@ -3292,6 +3292,12 @@ ${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
           prefilled_email: email,
           client_reference_id: leadRow.id,
         });
+        // Jeśli kod rabatowy zwalidowany, prefill go w Stripe Checkout
+        // Wymaga: utworzony Coupon + Promotion Code w Stripe Dashboard z identyczną nazwą
+        // + "Allow promotion codes" toggle ON na Payment Link
+        if (affValidated && affValidated.valid && affRaw) {
+          params.set('prefilled_promo_code', affRaw.toUpperCase());
+        }
         // Krótkie opóźnienie żeby user zobaczył komunikat
         setTimeout(() => {
           window.location.href = `${baseStripeUrl}?${params.toString()}`;
