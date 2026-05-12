@@ -33,133 +33,22 @@
 <meta name="twitter:description" content="Pełne demo cyfrowego zaproszenia ślubnego - potwierdzanie obecności, plan dnia, mapy, galeria.">
 <meta name="twitter:image" content="https://zaproszeniaonline.com/og-image.png">
 
-<!-- ━━━ PERFORMANCE: preconnect Supabase (bezpieczne, oszczedza ~150ms na pierwszym RSVP) ━━━ -->
-<link rel="preconnect" href="https://kuyniyyieejvambyjnxy.supabase.co" crossorigin>
-<link rel="dns-prefetch" href="https://kuyniyyieejvambyjnxy.supabase.co">
-
-<!-- Self-hosted fonts (RODO clean) -->
+<!-- Self-hosted fonts (RODO clean + zero blocking @import w body) -->
 <link rel="preload" href="/fonts/playfair.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/cormorant.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
   html,body{margin:0;padding:0;background:#FAF6EF}
-  #demo-loading{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#FAF6EF;z-index:9999;font-family:Georgia,serif;color:#2C3E2D;font-style:italic;font-size:18px;letter-spacing:2px;transition:opacity .6s ease;gap:14px}
+  #demo-loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#FAF6EF;z-index:9999;font-family:Georgia,serif;color:#2C3E2D;font-style:italic;font-size:18px;letter-spacing:2px;transition:opacity .6s ease}
   #demo-loading.hidden{opacity:0;pointer-events:none}
-  #demo-loading-spinner{width:36px;height:36px;border:2.5px solid rgba(44,62,45,0.15);border-top-color:#C9A96E;border-radius:50%;animation:demoSpin 0.9s linear infinite}
-  @keyframes demoSpin{to{transform:rotate(360deg)}}
-
-  /* ━━━ Audio fallback - dziala NIEZALEZNIE od React ━━━ */
-  #bg-audio-fallback-wrap{
-    position:fixed;bottom:24px;right:24px;z-index:9999;
-    display:flex;align-items:center;gap:10px;flex-direction:row-reverse;
-    font-family:system-ui,-apple-system,sans-serif;
-    pointer-events:auto;
-  }
-  #bg-audio-fallback-btn{
-    width:56px;height:56px;border-radius:50%;
-    border:2px solid #C9A96E;background:rgba(30,43,31,0.95);
-    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    cursor:pointer;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 6px 24px rgba(0,0,0,.35);
-    transition:transform .3s cubic-bezier(0.16,1,0.3,1);
-    animation:bgAudioPulse 1.6s ease-out infinite;
-    -webkit-tap-highlight-color:transparent;touch-action:manipulation;
-    padding:0;
-  }
-  #bg-audio-fallback-btn:hover{transform:scale(1.08)}
-  #bg-audio-fallback-btn svg{display:block}
-  #bg-audio-fallback-label{
-    background:rgba(30,43,31,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    border:1px solid rgba(201,169,110,0.4);border-radius:10px;
-    padding:10px 16px;white-space:nowrap;
-    box-shadow:0 4px 16px rgba(0,0,0,.3);
-    font-size:11px;color:#C9A96E;letter-spacing:2px;text-transform:uppercase;
-    margin:0;font-weight:500;
-  }
-  @keyframes bgAudioPulse{
-    0%{box-shadow:0 0 0 0 rgba(201,169,110,0.6),0 6px 24px rgba(0,0,0,.35)}
-    70%{box-shadow:0 0 0 18px rgba(201,169,110,0),0 6px 24px rgba(0,0,0,.35)}
-    100%{box-shadow:0 0 0 0 rgba(201,169,110,0),0 6px 24px rgba(0,0,0,.35)}
-  }
-  #bg-audio-fallback-wrap.no-pulse #bg-audio-fallback-btn{animation:none}
-  #bg-audio-fallback-wrap.no-label #bg-audio-fallback-label{display:none}
-  body.has-react-audio #bg-audio-fallback-wrap{display:none}
 </style>
-
-<!-- ━━━ MINIMAL safety net: ukryj loader po 10s (margines dla wolnych laczy/devices) ━━━ -->
-<script>
-  // Twardy timeout: po 10s zawsze ukryj loader. Bez error UI - jak React nie zdazyl, lepiej puste tlo
-  // niz wieczny spinner. Real React render zwykle zdaja w 1-3s, 10s to ekstremalny worst-case fallback.
-  setTimeout(function(){
-    var l=document.getElementById('demo-loading');
-    if(l&&!l.classList.contains('hidden')){
-      l.classList.add('hidden');
-      setTimeout(function(){l.remove();},700);
-    }
-  },10000);
-  // Diagnostyka: console only (zeby Nicolas mogl debugowac, ale bez UI shake-out)
-  window.addEventListener('error',function(e){
-    console.error('[demo] error:',e.message,'@',e.filename+':'+e.lineno);
-  });
-  window.addEventListener('unhandledrejection',function(e){
-    console.error('[demo] promise:',e.reason);
-  });
-</script>
-
 <script defer src="/vendor/react.min.js"></script>
 <script defer src="/vendor/react-dom.min.js"></script>
 <script defer src="/vendor/supabase.min.js"></script>
 </head>
 <body>
-<div id="demo-loading">
-  <div id="demo-loading-spinner" aria-hidden="true"></div>
-  <div>ładowanie zaproszenia…</div>
-</div>
+<div id="demo-loading">ładowanie zaproszenia…</div>
 <div id="root"></div>
-
-<!-- ━━━ AUDIO FALLBACK: gwarantowana muzyka niezaleznie od React ━━━ -->
-<div id="bg-audio-fallback-wrap" role="region" aria-label="Muzyka w tle">
-  <audio id="bg-audio-fallback" src="/audio/demo.mp3" loop preload="none" playsinline crossorigin="anonymous"></audio>
-  <button id="bg-audio-fallback-btn" type="button" aria-label="Włącz muzykę" title="Włącz muzykę">
-    <svg id="bg-audio-icon-play" width="22" height="22" viewBox="0 0 24 24" fill="#C9A96E" stroke="#C9A96E" stroke-width="1.5"><polygon points="7,4 20,12 7,20"/></svg>
-    <svg id="bg-audio-icon-pause" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" stroke-width="2" style="display:none"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
-  </button>
-  <p id="bg-audio-fallback-label">Włącz muzykę</p>
-</div>
-<script>
-  (function(){
-    var audio=document.getElementById('bg-audio-fallback');
-    var btn=document.getElementById('bg-audio-fallback-btn');
-    var iconPlay=document.getElementById('bg-audio-icon-play');
-    var iconPause=document.getElementById('bg-audio-icon-pause');
-    var wrap=document.getElementById('bg-audio-fallback-wrap');
-    var label=document.getElementById('bg-audio-fallback-label');
-    if(!audio||!btn) return;
-    btn.addEventListener('click',function(){
-      wrap.classList.add('no-pulse');
-      if(audio.paused){
-        audio.volume=0.35;
-        var p=audio.play();
-        if(p&&p.then) p.then(function(){
-          iconPlay.style.display='none';iconPause.style.display='block';
-          btn.setAttribute('aria-label','Wycisz muzykę');btn.setAttribute('title','Wycisz muzykę');
-          if(label) label.textContent='Muzyka instrumentalna';
-        }).catch(function(e){console.warn('[audio fallback] play blocked:',e)});
-      } else {
-        audio.pause();
-        iconPlay.style.display='block';iconPause.style.display='none';
-        btn.setAttribute('aria-label','Włącz muzykę');btn.setAttribute('title','Włącz muzykę');
-        if(label) label.textContent='Włącz muzykę';
-      }
-    });
-    setTimeout(function(){wrap.classList.add('no-pulse');wrap.classList.add('no-label');},8000);
-    setTimeout(function(){
-      var reactBtn=document.querySelector('button[aria-label="Włącz muzykę"]:not(#bg-audio-fallback-btn)');
-      if(reactBtn) document.body.classList.add('has-react-audio');
-    },4000);
-  })();
-</script>
-
 <script defer src="/vendor/demo-compiled.js"></script>
 </body>
 </html>
