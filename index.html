@@ -1,6 +1,17 @@
 <!DOCTYPE html><html lang="pl-PL"><head><link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-readable content index">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <script>
+  // Anti-Service-Worker + cache cleanup - usun wszelkie zombie SW z poprzednich deployment
+  (function(){
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.getRegistrations().then(function(r){r.forEach(function(x){x.unregister()})}).catch(function(){});
+    }
+    if('caches' in window){
+      caches.keys().then(function(n){n.forEach(function(k){caches.delete(k)})}).catch(function(){});
+    }
+  })();
+  </script>
 
   <!-- ── FAVICON / BRAND ── -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">

@@ -9,6 +9,30 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 
+<!-- ATAK #2: ANTI-SERVICE-WORKER + cache cleanup (najwczesniej w head, BEFORE wszelkie inne scripty) -->
+<script>
+(function(){
+  // Wykonaj BEZ czekania - od razu unregister wszystkie SW dla tej domeny
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      if (regs.length > 0) {
+        console.warn('[demo cache-buster] Found '+regs.length+' service workers - unregistering ALL');
+        regs.forEach(function(r){ r.unregister(); });
+      }
+    }).catch(function(e){});
+  }
+  // Wyczysc wszystkie Cache Storage entries (Workbox, manual cache itd.)
+  if ('caches' in window) {
+    caches.keys().then(function(names){
+      if (names.length > 0) {
+        console.warn('[demo cache-buster] Clearing '+names.length+' cache storage entries');
+        names.forEach(function(n){ caches.delete(n); });
+      }
+    }).catch(function(e){});
+  }
+})();
+</script>
+
 <!-- ── SEO: demo jest noindex (private demo product) ── -->
 <title>Anna i Michał - przykład cyfrowego zaproszenia ślubnego | zaproszeniaonline.com</title>
 <meta name="description" content="Przykładowe cyfrowe zaproszenie ślubne online - zobacz pełen produkt z formularzem potwierdzeń, planem dnia, mapami i galerią. 4 palety kolorów do podglądu na żywo.">
