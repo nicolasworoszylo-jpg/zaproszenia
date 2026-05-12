@@ -1226,6 +1226,139 @@
       border-color: var(--accent);
     }
     .lf-feature:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* ━━━ NOWE: lf-feat (sekcja 05 v2) - lista zamiast gridu, z opcjami per feature ━━━ */
+    .lf-features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+    }
+    .lf-feat {
+      background: #FFFFFF;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+      overflow: hidden;
+    }
+    .lf-feat:has(input[type="checkbox"]:checked) {
+      border-color: var(--accent);
+      background: rgba(44,62,45,0.03);
+    }
+    .lf-feat-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.94rem;
+      line-height: 1.4;
+      color: var(--ink-soft);
+    }
+    .lf-feat-row input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+      pointer-events: none;
+    }
+    .lf-feat-row::before {
+      content: '';
+      width: 20px; height: 20px;
+      border: 1.5px solid var(--line);
+      border-radius: 5px;
+      background: #FFFFFF;
+      transition: all 0.2s var(--ease);
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center; justify-content: center;
+    }
+    .lf-feat:has(input[type="checkbox"]:checked) .lf-feat-row { color: var(--ink); }
+    .lf-feat:has(input[type="checkbox"]:checked) .lf-feat-row::before {
+      background: var(--accent) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>") center/14px no-repeat;
+      border-color: var(--accent);
+    }
+    .lf-feat-row:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .lf-feat-label {
+      flex: 1;
+    }
+    .lf-feat-auto {
+      font-size: 0.78rem;
+      color: var(--ink-mute);
+      font-style: italic;
+      margin-left: 4px;
+    }
+    /* Options panel: pokazuj tylko gdy checkbox + .lf-feat-options istnieje */
+    .lf-feat-options {
+      display: none;
+      padding: 0 16px 16px 50px;
+      flex-direction: column;
+      gap: 10px;
+      animation: lfOptionsIn 0.3s var(--ease);
+    }
+    @keyframes lfOptionsIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    .lf-feat:has(input[type="checkbox"]:checked) .lf-feat-options { display: flex; }
+    .lf-feat-mode-toggle {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .lf-feat-mode-btn {
+      flex: 1;
+      min-width: 140px;
+      padding: 8px 14px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--line);
+      border-radius: 100px;
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+      text-align: center;
+    }
+    .lf-feat-mode-btn:hover { border-color: var(--accent); color: var(--ink); }
+    .lf-feat-mode-btn.is-active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+    .lf-feat-input {
+      display: none;
+      width: 100%;
+      padding: 11px 14px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: var(--ink);
+      transition: border-color 0.2s var(--ease);
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    .lf-feat-input:focus { border-color: var(--accent); outline: none; }
+    /* Pokazuj input tylko gdy mode=now */
+    .lf-feat-options[data-mode="now"] .lf-feat-input { display: block; }
+    .lf-feat-options[data-mode="now"] .lf-feat-mode-btn[data-mode="now"],
+    .lf-feat-options[data-mode="email"] .lf-feat-mode-btn[data-mode="email"] {
+      background: var(--accent); color: var(--bg); border-color: var(--accent);
+    }
+    .lf-section-help--small {
+      font-size: 0.8rem;
+      color: var(--ink-mute);
+      margin-top: 1rem;
+      padding: 10px 14px;
+      background: rgba(201,169,110,0.08);
+      border-left: 2px solid var(--gold);
+      border-radius: 4px;
+    }
+    @media (max-width: 540px) {
+      .lf-feat-options { padding: 0 14px 14px 14px; }
+      .lf-feat-mode-btn { font-size: 0.78rem; min-width: 120px; }
+    }
+
     /* Submit + note */
     .lead-form-submit {
       width: 100%;
@@ -2581,7 +2714,16 @@
               </div>
 
               <div class="lf-story-details" id="lf-story-details">
-                <p class="lf-section-help">Wpiszcie krótko 3-4 zdania na każdy moment. Te teksty pojawią się w sekcji chronologii w Waszym zaproszeniu (jak w demo).</p>
+                <p class="lf-section-help">Każdy moment to 3-4 zdania - pojawią się w sekcji chronologii w Waszym zaproszeniu (jak w demo). <strong>Możecie wpisać teraz</strong> albo zostawić puste i dosłać mailem po wpłacie.</p>
+
+                <div class="lf-feat-options" data-mode="email" id="lf-story-mode-wrap" style="display:flex;padding:0;margin:0 0 1rem 0;">
+                  <div class="lf-feat-mode-toggle" style="width:100%">
+                    <button type="button" class="lf-feat-mode-btn" data-story-mode="now">Wpisuję teraz</button>
+                    <button type="button" class="lf-feat-mode-btn" data-story-mode="email">Uzupełnię mailowo</button>
+                  </div>
+                </div>
+
+                <div class="lf-story-fields" id="lf-story-fields" style="display:none;">
 
                 <div class="lead-form-field">
                   <label for="lf-story-meeting">Pierwsze spotkanie</label>
@@ -2607,39 +2749,158 @@
                   <label for="lf-story-extra">Dodatkowy moment / „Nasza piosenka" / inne</label>
                   <textarea id="lf-story-extra" name="story_extra" rows="2" placeholder="opcjonalnie - kolejne wspomnienie, anegdota, ulubiona piosenka pary"></textarea>
                 </div>
+
+                </div><!-- /lf-story-fields -->
               </div>
             </div>
           </details>
 
-          <!-- ━━━ SEKCJA 5: Funkcje na stronie ━━━ -->
+          <!-- ━━━ SEKCJA 5: Funkcje na stronie (opcjonalne dane per funkcja) ━━━ -->
           <details class="lf-section">
             <summary style="cursor:pointer">
               <span class="lf-summary-num">05</span>
               <span class="lf-summary-text">
                 <span class="lf-summary-title">Co ma być na stronie</span>
-                <span class="lf-summary-meta">Wybierz funkcje - wszystkie w cenie</span>
+                <span class="lf-summary-meta">Wszystkie w cenie - dane uzupełnicie teraz albo mailem później</span>
               </span>
               <span class="lf-summary-chevron" aria-hidden="true">▾</span>
             </summary>
             <div class="lf-section-body">
-              <p class="lf-section-help">Wszystkie funkcje są w cenie 699 zł - zaznaczcie tylko te, które realnie wykorzystacie.</p>
-              <div class="lf-features-grid">
-                <label class="lf-feature"><input type="checkbox" name="features" value="rsvp" checked="" aria-label="Features - Rsvp" data-ai-enhanced="label"> Potwierdzanie obecności gości</label>
-                <label class="lf-feature"><input type="checkbox" name="features" value="timeline" checked="" aria-label="Features - Timeline" data-ai-enhanced="label"> Plan dnia (harmonogram)</label>
-                <label class="lf-feature"><input type="checkbox" name="features" value="maps" checked="" aria-label="Features - Maps" data-ai-enhanced="label"> Mapy z lokalizacjami</label>
-                <label class="lf-feature"><input type="checkbox" name="features" value="countdown" checked="" aria-label="Features - Countdown" data-ai-enhanced="label"> Odliczanie do ślubu</label>
-                <label class="lf-feature"><input type="checkbox" name="features" value="gifts" aria-label="Features - Gifts" data-ai-enhanced="label"> Lista prezentów / numery kont</label>
-                <label class="lf-feature"><input type="checkbox" name="features" value="hotels" aria-label="Features - Hotels" data-ai-enhanced="label"> Lista hoteli dla gości</label>
-                <label class="lf-feature"><input type="checkbox" name="features" value="transport" aria-label="Features - Transport" data-ai-enhanced="label"> Informacja o transporcie/autokarze</label>
-                <label class="lf-feature"><input type="checkbox" name="features" value="music" aria-label="Features - Music" data-ai-enhanced="label"> Muzyka w tle</label>
-                <label class="lf-feature"><input type="checkbox" name="features" value="songs" aria-label="Features - Songs" data-ai-enhanced="label"> Goście proponują piosenki</label>
-                <label class="lf-feature"><input type="checkbox" name="features" value="faq" aria-label="Features - Faq" data-ai-enhanced="label"> FAQ dla gości</label>
-                <label class="lf-feature"><input type="checkbox" name="features" value="qr" aria-label="Features - Qr" data-ai-enhanced="label"> QR kod do druku na papierze</label>
+              <p class="lf-section-help">Wszystkie funkcje są w cenie 699 zł. Zaznaczcie te, które chcecie mieć - dane do każdej (np. plan dnia, hotele) możecie wpisać teraz <strong>albo dosłać mailowo po wpłacie</strong>. Bez wpisywania też zamawiacie - reszta przychodzi w 24h.</p>
+
+              <div class="lf-features-list">
+                <!-- RSVP (default ON, brak danych do uzupelnienia) -->
+                <div class="lf-feat" data-feature="rsvp">
+                  <label class="lf-feat-row">
+                    <input type="checkbox" name="features" value="rsvp" checked aria-label="Potwierdzanie obecności">
+                    <span class="lf-feat-label">Potwierdzanie obecności gości <span class="lf-feat-auto">(automatyczne)</span></span>
+                  </label>
+                </div>
+
+                <!-- COUNTDOWN (default ON, brak danych - data z sekcji 02) -->
+                <div class="lf-feat" data-feature="countdown">
+                  <label class="lf-feat-row">
+                    <input type="checkbox" name="features" value="countdown" checked aria-label="Odliczanie do ślubu">
+                    <span class="lf-feat-label">Odliczanie do ślubu <span class="lf-feat-auto">(z daty wyżej)</span></span>
+                  </label>
+                </div>
+
+                <!-- TIMELINE (default ON, wymaga danych) -->
+                <div class="lf-feat" data-feature="timeline">
+                  <label class="lf-feat-row">
+                    <input type="checkbox" name="features" value="timeline" checked aria-label="Plan dnia">
+                    <span class="lf-feat-label">Plan dnia (harmonogram)</span>
+                  </label>
+                  <div class="lf-feat-options" role="group" aria-label="Plan dnia - szczegóły">
+                    <div class="lf-feat-mode-toggle">
+                      <button type="button" class="lf-feat-mode-btn" data-mode="now">Wpisz teraz</button>
+                      <button type="button" class="lf-feat-mode-btn" data-mode="email">Uzupełnię mailowo</button>
+                    </div>
+                    <textarea name="feat_timeline_data" class="lf-feat-input" rows="4" placeholder="np.&#10;14:00 ceremonia w kościele&#10;15:30 sesja zdjęciowa&#10;16:30 powitanie gości w sali&#10;17:00 obiad&#10;21:00 pierwszy taniec&#10;23:00 oczepiny"></textarea>
+                  </div>
+                </div>
+
+                <!-- MAPS (default ON, dane z sekcji 02 venue_*) -->
+                <div class="lf-feat" data-feature="maps">
+                  <label class="lf-feat-row">
+                    <input type="checkbox" name="features" value="maps" checked aria-label="Mapy z lokalizacjami">
+                    <span class="lf-feat-label">Mapy z lokalizacjami <span class="lf-feat-auto">(z adresów wyżej)</span></span>
+                  </label>
+                </div>
+
+                <!-- GIFTS (opcjonalne, wymaga danych - numery kont) -->
+                <div class="lf-feat" data-feature="gifts">
+                  <label class="lf-feat-row">
+                    <input type="checkbox" name="features" value="gifts" aria-label="Lista prezentów">
+                    <span class="lf-feat-label">Lista prezentów / numery kont</span>
+                  </label>
+                  <div class="lf-feat-options" role="group" aria-label="Prezenty - szczegóły">
+                    <div class="lf-feat-mode-toggle">
+                      <button type="button" class="lf-feat-mode-btn" data-mode="now">Wpisz teraz</button>
+                      <button type="button" class="lf-feat-mode-btn" data-mode="email">Uzupełnię mailowo</button>
+                    </div>
+                    <textarea name="feat_gifts_data" class="lf-feat-input" rows="4" placeholder="np.&#10;Komentarz: zamiast prezentów prosimy o wsparcie naszej podróży poślubnej&#10;&#10;Konto Anna: PL 61 1090 1014 0000 0712 1981 2874&#10;Konto Michał: PL 42 1160 2202 0000 0003 5612 7890&#10;&#10;(opcjonalnie link do registry, np. Amazon Wedding List)"></textarea>
+                  </div>
+                </div>
+
+                <!-- HOTELS (opcjonalne, wymaga danych) -->
+                <div class="lf-feat" data-feature="hotels">
+                  <label class="lf-feat-row">
+                    <input type="checkbox" name="features" value="hotels" aria-label="Lista hoteli">
+                    <span class="lf-feat-label">Lista hoteli dla gości</span>
+                  </label>
+                  <div class="lf-feat-options" role="group" aria-label="Hotele - szczegóły">
+                    <div class="lf-feat-mode-toggle">
+                      <button type="button" class="lf-feat-mode-btn" data-mode="now">Wpisz teraz</button>
+                      <button type="button" class="lf-feat-mode-btn" data-mode="email">Uzupełnię mailowo</button>
+                    </div>
+                    <textarea name="feat_hotels_data" class="lf-feat-input" rows="4" placeholder="np.&#10;1. Hotel Korczew - ul. Pałacowa 23, Korczew. Hasło rezerwacji: 'wesele Kowalskich' (rabat 15%). Tel. +48 25 631 23 45&#10;2. Pensjonat Pod Lipą - ul. Leśna 5, Korczew. Tel. +48 600 123 456&#10;3. Apartamenty Korczew Park (na booking.com)"></textarea>
+                  </div>
+                </div>
+
+                <!-- TRANSPORT (opcjonalne, wymaga danych) -->
+                <div class="lf-feat" data-feature="transport">
+                  <label class="lf-feat-row">
+                    <input type="checkbox" name="features" value="transport" aria-label="Transport">
+                    <span class="lf-feat-label">Informacja o transporcie / autokarze</span>
+                  </label>
+                  <div class="lf-feat-options" role="group" aria-label="Transport - szczegóły">
+                    <div class="lf-feat-mode-toggle">
+                      <button type="button" class="lf-feat-mode-btn" data-mode="now">Wpisz teraz</button>
+                      <button type="button" class="lf-feat-mode-btn" data-mode="email">Uzupełnię mailowo</button>
+                    </div>
+                    <textarea name="feat_transport_data" class="lf-feat-input" rows="3" placeholder="np.&#10;Autokar z Warszawy (Centrum, parking pod Pałacem Kultury) - odjazd 12:30, powrót po imprezie ok. 4:00.&#10;Zapisy: do 1 czerwca pod 600 123 456."></textarea>
+                  </div>
+                </div>
+
+                <!-- MUSIC (opcjonalne, ma URL input) -->
+                <div class="lf-feat" data-feature="music">
+                  <label class="lf-feat-row">
+                    <input type="checkbox" name="features" value="music" aria-label="Muzyka w tle">
+                    <span class="lf-feat-label">Muzyka w tle (instrumental)</span>
+                  </label>
+                  <div class="lf-feat-options" role="group" aria-label="Muzyka - link">
+                    <div class="lf-feat-mode-toggle">
+                      <button type="button" class="lf-feat-mode-btn" data-mode="now">Wklej link teraz</button>
+                      <button type="button" class="lf-feat-mode-btn" data-mode="email">Wybiorę mailowo</button>
+                    </div>
+                    <input type="url" name="music_url" class="lf-feat-input" placeholder="np. https://open.spotify.com/track/... lub https://www.youtube.com/watch?v=...">
+                  </div>
+                </div>
+
+                <!-- SONGS (opcjonalne, brak danych - system zbiera od gości) -->
+                <div class="lf-feat" data-feature="songs">
+                  <label class="lf-feat-row">
+                    <input type="checkbox" name="features" value="songs" aria-label="Goście proponują piosenki">
+                    <span class="lf-feat-label">Goście proponują piosenki <span class="lf-feat-auto">(formularz dla gości)</span></span>
+                  </label>
+                </div>
+
+                <!-- FAQ (opcjonalne, wymaga danych) -->
+                <div class="lf-feat" data-feature="faq">
+                  <label class="lf-feat-row">
+                    <input type="checkbox" name="features" value="faq" aria-label="FAQ dla gości">
+                    <span class="lf-feat-label">FAQ dla gości</span>
+                  </label>
+                  <div class="lf-feat-options" role="group" aria-label="FAQ - pytania">
+                    <div class="lf-feat-mode-toggle">
+                      <button type="button" class="lf-feat-mode-btn" data-mode="now">Wpisz teraz</button>
+                      <button type="button" class="lf-feat-mode-btn" data-mode="email">Uzupełnię mailowo</button>
+                    </div>
+                    <textarea name="feat_faq_data" class="lf-feat-input" rows="3" placeholder="np.&#10;Q: Czy można z dziećmi? A: Tak, ale prosimy zaznaczyć w RSVP.&#10;Q: Czy jest parking? A: Tak, przy pałacu na 80 aut.&#10;Q: Dress code? A: Elegancki - kobiety długie sukienki, mężczyźni garnitur."></textarea>
+                  </div>
+                </div>
+
+                <!-- QR (opcjonalne, brak danych) -->
+                <div class="lf-feat" data-feature="qr">
+                  <label class="lf-feat-row">
+                    <input type="checkbox" name="features" value="qr" aria-label="QR do druku">
+                    <span class="lf-feat-label">QR kod do druku na papierowych zaproszeniach <span class="lf-feat-auto">(generowany automatycznie)</span></span>
+                  </label>
+                </div>
               </div>
-              <div class="lead-form-field" style="margin-top: 1rem;">
-                <label for="lf-music-url">Link do piosenki w tle (jeśli zaznaczone „Muzyka w tle")</label>
-                <input type="url" id="lf-music-url" name="music_url" placeholder="np. https://open.spotify.com/track/...">
-              </div>
+
+              <p class="lf-section-help lf-section-help--small">Pole „uzupełnię mailowo" = po wpłacie dostaniecie e-mail z prośbą o przesłanie tych danych. Bez nich nie startujemy z projektem.</p>
             </div>
           </details>
 
@@ -3164,6 +3425,45 @@
       });
     }
 
+    // ━━━ SEKCJA 05 v2: handler dla "Wpisz teraz / Uzupełnię mailowo" per feature ━━━
+    // Domyślny tryb: "email" (mniejszy opór przed zakupem).
+    // Klik na "Wpisz teraz" → pokazuje textarea. Klik na "Uzupełnię mailowo" → chowa.
+    document.querySelectorAll('.lf-feat-options').forEach(opts => {
+      // Default mode = email (input ukryty, button "Uzupełnię mailowo" aktywny)
+      opts.dataset.mode = 'email';
+      opts.querySelectorAll('.lf-feat-mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.mode; // "now" lub "email"
+          opts.dataset.mode = mode;
+        });
+      });
+    });
+    // Auto-szybka aktywacja: gdy user zacznie pisać w textarea, ustaw mode=now (bez konieczności klika w button)
+    document.querySelectorAll('.lf-feat-input').forEach(input => {
+      input.addEventListener('focus', () => {
+        const opts = input.closest('.lf-feat-options');
+        if (opts) opts.dataset.mode = 'now';
+      });
+    });
+
+    // ━━━ Sekcja 04 (Nasza historia): toggle "wpisuję teraz / mailowo" ━━━
+    const storyModeWrap = document.getElementById('lf-story-mode-wrap');
+    const storyFields = document.getElementById('lf-story-fields');
+    if (storyModeWrap && storyFields) {
+      const setStoryMode = (mode) => {
+        storyModeWrap.dataset.mode = mode;
+        storyFields.style.display = mode === 'now' ? 'block' : 'none';
+        storyModeWrap.querySelectorAll('.lf-feat-mode-btn').forEach(b => {
+          b.classList.toggle('is-active', b.dataset.storyMode === mode);
+        });
+      };
+      // Default: email (mniejszy opór)
+      setStoryMode('email');
+      storyModeWrap.querySelectorAll('.lf-feat-mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => setStoryMode(btn.dataset.storyMode));
+      });
+    }
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const fd = new FormData(form);
@@ -3199,6 +3499,26 @@
       const affRaw = (fd.get('affiliate') || '').toString().trim();
       // Zbierz wszystkie zaznaczone features
       const features = Array.from(form.querySelectorAll('input[name="features"]:checked')).map(c => c.value);
+      // ━━━ Zbieranie szczegółów per feature (mode: now/email + treść) ━━━
+      // Domyślnie wszystkie pola które wymagają danych = email, jeśli user napisał coś = now
+      const featuresDetails = {};
+      features.forEach(featureValue => {
+        const feat = form.querySelector(`.lf-feat[data-feature="${featureValue}"]`);
+        if (!feat) return;
+        const opts = feat.querySelector('.lf-feat-options');
+        if (!opts) {
+          // Brak opts = funkcja automatyczna (rsvp, countdown, maps, songs, qr)
+          featuresDetails[featureValue] = { mode: 'auto' };
+          return;
+        }
+        const mode = opts.dataset.mode || 'email';
+        const inputEl = opts.querySelector('.lf-feat-input');
+        const content = inputEl ? (inputEl.value || '').toString().trim() : '';
+        featuresDetails[featureValue] = {
+          mode: content ? 'now' : mode,
+          content: content || null,
+        };
+      });
       const payload = {
         name, email,
         phone:           (fd.get('phone') || '').toString().trim() || null,
@@ -3265,11 +3585,24 @@ Paleta: ${payload.palette || '-'}
 Cytat: ${payload.quote || '-'}
 Dress code: ${payload.dress_code || '-'}
 Galeria zdjęć: ${payload.photos_gallery || '-'}${payload.photos_gallery === 'yes' ? ` (planowane: ${payload.photos_count || '-'} zdjęć - wyśle mailem)` : ''}
-Nasza historia: ${payload.our_story || '-'}
+Nasza historia: ${payload.our_story || '-'}${(() => {
+  const sm = document.getElementById('lf-story-mode-wrap');
+  const mode = sm?.dataset?.mode || 'email';
+  if (payload.our_story === 'no') return '';
+  if (mode === 'email' && !storyParts.length) return ' [KLIENT UZUPEŁNI MAILOWO]';
+  return '';
+})()}
 ${storyParts.length ? storyParts.join('\n') : ''}
 Funkcje: ${features.length ? features.join(', ') : '-'}
 Muzyka URL: ${payload.music_url || '-'}
-Express 12h: ${payload.express_12h ? 'TAK (+199 zł, faktura osobna)' : 'NIE'}
+
+--- SZCZEGÓŁY FUNKCJI ---
+${Object.entries(featuresDetails).map(([k, v]) => {
+  if (v.mode === 'auto') return `- ${k}: automatyczne (nic od klienta)`;
+  if (v.mode === 'now' && v.content) return `- ${k} [WPISANE TERAZ]:\n    ${v.content.split('\n').join('\n    ')}`;
+  return `- ${k}: KLIENT UZUPEŁNI MAILOWO (po wpłacie wyślij prośbę)`;
+}).join('\n') || '(brak zaznaczonych funkcji)'}
+--- /SZCZEGÓŁY ---
 === /BRIEF ===
 ${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
         corePayload.message = extendedSummary;
