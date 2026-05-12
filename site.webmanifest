@@ -1,14 +1,18 @@
 {
   "name": "zaproszeniaonline.com - Cyfrowe zaproszenia ślubne",
-  "short_name": "Zaproszenia Online",
-  "description": "Cyfrowe zaproszenia ślubne online jako pełnowartościowa strona internetowa z RSVP, planem dnia i mapami.",
-  "start_url": "/",
+  "short_name": "Zaproszenia",
+  "description": "Cyfrowe zaproszenia ślubne online jako pełnowartościowa strona internetowa z RSVP, planem dnia i mapami. Cena 699 zł, gotowe w 24h.",
+  "start_url": "/?utm_source=pwa",
   "scope": "/",
+  "id": "/",
   "display": "browser",
+  "display_override": ["standalone", "minimal-ui", "browser"],
   "orientation": "portrait-primary",
   "lang": "pl-PL",
+  "dir": "ltr",
   "background_color": "#FAF6EF",
   "theme_color": "#1E2B1F",
+  "categories": ["lifestyle", "events", "business"],
   "icons": [
     {
       "src": "/favicon-192.png",
@@ -23,10 +27,33 @@
       "purpose": "any"
     },
     {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
       "src": "/apple-touch-icon.png",
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Zobacz demo",
+      "url": "/demo",
+      "description": "Przykładowe cyfrowe zaproszenie ślubne"
+    },
+    {
+      "name": "Cennik",
+      "url": "/#cennik",
+      "description": "Zobacz co dostajesz za 699 zł"
+    },
+    {
+      "name": "Zamów",
+      "url": "/#kontakt",
+      "description": "Wypełnij formularz zamówienia"
     }
   ]
 }
