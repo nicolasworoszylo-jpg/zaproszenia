@@ -163,60 +163,85 @@
   });
   setTimeout(function(){wrap.classList.add('no-pulse');wrap.classList.add('no-label');},8000);
 
-  // ━━━ PALETTE SYNC v2: hardcoded 4-paleta mapping + MutationObserver (instant) ━━━
-  // 4 palety demo (z compiled JS, obiekt P=[...]):
+  // ━━━ PALETTE SYNC v3: aggressive multi-source detection + tolerant match ━━━
+  // 4 palety demo (z compiled JS):
   var PALETTES=[
-    {name:'Leśna zieleń',     deepRgb:'30,43,31',  gold:'#C9A96E'},
-    {name:'Granat + róż',     deepRgb:'17,29,43',  gold:'#D4A0A0'},
-    {name:'Bordo + kość',     deepRgb:'53,16,29',  gold:'#C8A87C'},
-    {name:'Rdzawa terracotta',deepRgb:'74,30,21',  gold:'#B85F2E'}
+    {name:'Leśna zieleń',     deep:[30,43,31],  gold:'#C9A96E'},
+    {name:'Granat + róż',     deep:[17,29,43],  gold:'#D4A0A0'},
+    {name:'Bordo + kość',     deep:[53,16,29],  gold:'#C8A87C'},
+    {name:'Rdzawa terracotta',deep:[74,30,21],  gold:'#B85F2E'}
   ];
   function hexToRgb(h){h=h.replace('#','');return parseInt(h.substr(0,2),16)+','+parseInt(h.substr(2,2),16)+','+parseInt(h.substr(4,2),16);}
-  function findNav(){
-    return document.querySelector('#root nav')
-        || document.querySelector('body nav[style*="fixed"]')
-        || document.querySelector('nav');
+  function parseRgb(s){
+    var m=s.match(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+    return m ? [+m[1],+m[2],+m[3]] : null;
   }
-  function getBgRgb(nav){
-    var cs=getComputedStyle(nav);
-    var m=cs.backgroundColor.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
-    return m ? m[1]+','+m[2]+','+m[3] : null;
+  // TOLERANT MATCH: znajdz palete ktora ma najblizszy deep do podanego rgb
+  function findClosestPalette(rgb){
+    var best=null, minDist=Infinity;
+    PALETTES.forEach(function(p){
+      var d=Math.abs(rgb[0]-p.deep[0])+Math.abs(rgb[1]-p.deep[1])+Math.abs(rgb[2]-p.deep[2]);
+      if(d<minDist){minDist=d;best=p;}
+    });
+    return minDist<=60 ? best : null; // tolerancja 60 jednostek total (ok 20 per channel)
+  }
+  // MULTI-SOURCE SCAN: znajdz dominujacy ciemny kolor (deep) na stronie
+  // Sprawdz nav, sekcje, footer - jakiekolwiek element z ciemnym bg
+  function scanForDeepColor(){
+    // Lista kandydatow: nav, footer, ciemne sekcje, ceremony cards
+    var candidates=[
+      document.querySelector('#root nav'),
+      document.querySelector('body nav'),
+      document.querySelector('nav'),
+      document.querySelector('#root footer'),
+      document.querySelector('footer')
+    ].filter(Boolean);
+    // Plus: pierwsze 20 dziadow z computed bg kolorem (skanowanie)
+    if(candidates.length===0){
+      var all=document.querySelectorAll('#root *');
+      for(var i=0;i<Math.min(all.length,30);i++){
+        var bg=getComputedStyle(all[i]).backgroundColor;
+        if(bg && bg!=='rgba(0, 0, 0, 0)' && bg!=='transparent'){
+          var rgb=parseRgb(bg);
+          // Tylko ciemne (suma RGB < 250 = ciemne kolory)
+          if(rgb && rgb[0]+rgb[1]+rgb[2]<250) candidates.push(all[i]);
+        }
+      }
+    }
+    // Sprawdz background kazdego kandydata, znajdz pasujace deep
+    for(var j=0;j<candidates.length;j++){
+      var rgb2=parseRgb(getComputedStyle(candidates[j]).backgroundColor);
+      if(rgb2 && rgb2[0]+rgb2[1]+rgb2[2]<200){ // ciemny
+        var match=findClosestPalette(rgb2);
+        if(match) return match;
+      }
+    }
+    return null;
   }
   function applyPalette(p){
     var r=document.documentElement;
-    if(r.style.getPropertyValue('--audio-gold')===p.gold) return; // idempotent
+    if(r.style.getPropertyValue('--audio-gold')===p.gold) return;
     r.style.setProperty('--audio-gold',p.gold);
-    r.style.setProperty('--audio-deep','rgba('+p.deepRgb+',0.92)');
+    r.style.setProperty('--audio-deep','rgba('+p.deep[0]+','+p.deep[1]+','+p.deep[2]+',0.92)');
     var goldRgb=hexToRgb(p.gold);
     r.style.setProperty('--audio-gold-soft','rgba('+goldRgb+',0.55)');
-    console.log('[audio palette] sync ->', p.name, '| gold:', p.gold);
   }
   function syncPalette(){
-    var nav=findNav();
-    if(!nav){console.log('[audio palette] nav not found yet');return;}
-    var bg=getBgRgb(nav);
-    if(!bg){console.log('[audio palette] no bg color on nav:',getComputedStyle(nav).backgroundColor);return;}
-    // Znajdz palete ktorej deepRgb pasuje do nav bg (dokladnie lub najblizej)
-    var match=PALETTES.find(function(p){return p.deepRgb===bg;});
-    if(match) applyPalette(match);
-    else console.log('[audio palette] no exact match for bg:',bg,'(z 4 palet, fallback Lesna)');
+    var p=scanForDeepColor();
+    if(p) applyPalette(p);
   }
-  // Strategy: pierwszy sync po 800ms + MutationObserver na #root (instant przy zmianie palety)
-  function bootSync(){
-    syncPalette();
-    var root=document.getElementById('root');
-    if(!root){setTimeout(bootSync,300);return;}
-    // MutationObserver - reaguje natychmiast na zmiany inline style w subtree
-    var obs=new MutationObserver(function(muts){
-      // Throttle: tylko sync, nie czytaj setProperty wielokrotnie
-      syncPalette();
+  // Aggressive polling: 300ms (smooth-fade transition 0.4s nie pozwoli zauwazyc)
+  setInterval(syncPalette,300);
+  // Plus MutationObserver na CALE body (nie tylko #root)
+  function bootObserver(){
+    if(!document.body){setTimeout(bootObserver,100);return;}
+    new MutationObserver(syncPalette).observe(document.body,{
+      attributes:true, attributeFilter:['style','class'], subtree:true, childList:true
     });
-    obs.observe(root,{attributes:true,attributeFilter:['style'],subtree:true,childList:true});
-    console.log('[audio palette] MutationObserver active on #root');
   }
-  setTimeout(bootSync,800);
-  // Safety fallback: setInterval co 1s na wypadek gdyby observer ominął coś
-  setInterval(syncPalette,1000);
+  bootObserver();
+  // Pierwsze proby - krotkie, czeste, do czasu az React zaczyna renderowac
+  [200,500,800,1200,2000,3000].forEach(function(t){setTimeout(syncPalette,t);});
 })();
 </script>
 
