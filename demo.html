@@ -163,34 +163,60 @@
   });
   setTimeout(function(){wrap.classList.add('no-pulse');wrap.classList.add('no-label');},8000);
 
-  // ━━━ PALETTE SYNC: czytaj kolory z <nav> aktywnej palety, ustaw CSS variables ━━━
-  // Nav element jest renderowany przez React z `background: ${e.deep}F2`
-  // i `border-bottom: 1px solid ${e.gold}15`. Czytamy computed style → kopiujemy do :root.
-  function rgbaToParts(s){
-    var m=s.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)/);
-    return m ? {r:+m[1],g:+m[2],b:+m[3],a:m[4]?+m[4]:1} : null;
+  // ━━━ PALETTE SYNC v2: hardcoded 4-paleta mapping + MutationObserver (instant) ━━━
+  // 4 palety demo (z compiled JS, obiekt P=[...]):
+  var PALETTES=[
+    {name:'Leśna zieleń',     deepRgb:'30,43,31',  gold:'#C9A96E'},
+    {name:'Granat + róż',     deepRgb:'17,29,43',  gold:'#D4A0A0'},
+    {name:'Bordo + kość',     deepRgb:'53,16,29',  gold:'#C8A87C'},
+    {name:'Rdzawa terracotta',deepRgb:'74,30,21',  gold:'#B85F2E'}
+  ];
+  function hexToRgb(h){h=h.replace('#','');return parseInt(h.substr(0,2),16)+','+parseInt(h.substr(2,2),16)+','+parseInt(h.substr(4,2),16);}
+  function findNav(){
+    return document.querySelector('#root nav')
+        || document.querySelector('body nav[style*="fixed"]')
+        || document.querySelector('nav');
+  }
+  function getBgRgb(nav){
+    var cs=getComputedStyle(nav);
+    var m=cs.backgroundColor.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+    return m ? m[1]+','+m[2]+','+m[3] : null;
+  }
+  function applyPalette(p){
+    var r=document.documentElement;
+    if(r.style.getPropertyValue('--audio-gold')===p.gold) return; // idempotent
+    r.style.setProperty('--audio-gold',p.gold);
+    r.style.setProperty('--audio-deep','rgba('+p.deepRgb+',0.92)');
+    var goldRgb=hexToRgb(p.gold);
+    r.style.setProperty('--audio-gold-soft','rgba('+goldRgb+',0.55)');
+    console.log('[audio palette] sync ->', p.name, '| gold:', p.gold);
   }
   function syncPalette(){
-    var nav=document.querySelector('#root nav');
-    if(!nav) return;
-    var cs=getComputedStyle(nav);
-    var bg=rgbaToParts(cs.backgroundColor);     // deep (z F2 alpha)
-    var bd=rgbaToParts(cs.borderBottomColor);   // gold (z 15 alpha = bardzo blade)
-    if(!bg||!bd) return;
-    // bd ma alpha ~0.08 (15/255) - przywracamy do solid gold dla obrysu
-    var goldHex='rgb('+bd.r+','+bd.g+','+bd.b+')';
-    var deepRgba='rgba('+bg.r+','+bg.g+','+bg.b+',0.92)';
-    var goldSoft='rgba('+bd.r+','+bd.g+','+bd.b+',0.55)';
-    var r=document.documentElement;
-    if(r.style.getPropertyValue('--audio-gold')!==goldHex){
-      r.style.setProperty('--audio-gold',goldHex);
-      r.style.setProperty('--audio-deep',deepRgba);
-      r.style.setProperty('--audio-gold-soft',goldSoft);
-    }
+    var nav=findNav();
+    if(!nav){console.log('[audio palette] nav not found yet');return;}
+    var bg=getBgRgb(nav);
+    if(!bg){console.log('[audio palette] no bg color on nav:',getComputedStyle(nav).backgroundColor);return;}
+    // Znajdz palete ktorej deepRgb pasuje do nav bg (dokladnie lub najblizej)
+    var match=PALETTES.find(function(p){return p.deepRgb===bg;});
+    if(match) applyPalette(match);
+    else console.log('[audio palette] no exact match for bg:',bg,'(z 4 palet, fallback Lesna)');
   }
-  // Sync na start (po 1s gdy React powinien już renderować) + co 600ms (przy zmianie palety)
-  setTimeout(syncPalette,1000);
-  setInterval(syncPalette,600);
+  // Strategy: pierwszy sync po 800ms + MutationObserver na #root (instant przy zmianie palety)
+  function bootSync(){
+    syncPalette();
+    var root=document.getElementById('root');
+    if(!root){setTimeout(bootSync,300);return;}
+    // MutationObserver - reaguje natychmiast na zmiany inline style w subtree
+    var obs=new MutationObserver(function(muts){
+      // Throttle: tylko sync, nie czytaj setProperty wielokrotnie
+      syncPalette();
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['style'],subtree:true,childList:true});
+    console.log('[audio palette] MutationObserver active on #root');
+  }
+  setTimeout(bootSync,800);
+  // Safety fallback: setInterval co 1s na wypadek gdyby observer ominął coś
+  setInterval(syncPalette,1000);
 })();
 </script>
 
