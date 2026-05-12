@@ -41,11 +41,10 @@ const CONFIG = {
   ],
   guestPhotosUrl: "https://drive.google.com/drive/folders/XXXXX",
   photographerGalleryUrl: "https://drive.google.com/drive/folders/YYYYY",
-  // TODO Nicolas: wybrać royalty-free utwór instrumentalny (CC0 / Pixabay Music / Bensound)
-  // i wgrać jako /public/audio/demo.mp3, następnie zmienić poniżej z null na "/audio/demo.mp3".
-  // Bez URL audio player jest ukryty (Music komponent return null jeśli bgMusicUrl===null).
-  bgMusicUrl: null,
-  bgMusicTitle: "Nasza piosenka",
+  // Audio: zmienia się przez `bash scripts/add-music.sh <plik.mp3> "<tytuł>"`
+  // Skrypt: encode 96kbps mono + fade + esbuild rebuild. Bez URL Music komponent return null.
+  bgMusicUrl: "/audio/demo.mp3",
+  bgMusicTitle: "Muzyka instrumentalna",
   venueBrand: "zaproszeniaonline.com", venueUrl: "/",
   calendarTitle: "Ślub Anny i Michała",
   calendarLocation: "Pałac w Korczewie, Korczew 23, 08-108 Korczew",
