@@ -1,4 +1,29 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+/*
+  ⚠️ UWAGA - NIE BUDOWAĆ TEGO PLIKU BEZPOŚREDNIO PRZEZ ESBUILD!
+
+  Ten plik to MASTER TEMPLATE (referencyjny widok komponentów + CONFIG).
+  Faktyczna kompilacja vendor/demo-compiled.js korzysta z build.sh który
+  ekstraktuje JSX z <script type="text/babel"> w demo.html — tam jest
+  pełny entry point z:
+    - destrukturyzacją z globalnego React (`const {useState} = React`)
+    - inicjalizacją Supabase client
+    - `ReactDOM.createRoot(...).render(<App/>)` na końcu
+    - logika hide demo-loading
+
+  Jeśli odpalisz: `npx esbuild wedding-enhanced.jsx ... --outfile=vendor/demo-compiled.js`
+  → zniszczysz oryginał (esbuild widzi `import "react"` → `require("react")` → crash w browser).
+
+  Workflow zmian w demo:
+    1. Edytuj inline JSX w demo.html (sekcja <script type="text/babel">)
+       LUB tu w wedding-enhanced.jsx (jako "źródło prawdy" + ręczne przeniesienie)
+    2. `bash build.sh` — ekstraktuje JSX z demo.html i kompiluje
+    3. Jeśli demo.html nie ma już <script type="text/babel"> (już skompilowane) -
+       build.sh SKIPUJE. Wtedy musisz albo wrócić demo.html do trybu inline,
+       albo zrobić ręczny patch w `vendor/demo-compiled.js` (minified).
+
+  Audio w demo realizowane jest przez inline fallback w demo.html (NIE z tego pliku).
+*/
+const { useState, useEffect, useRef, useCallback } = React; // globalny React z /vendor/react.min.js
 
 const CONFIG = {
   bride: "Anna", groom: "Michał",
