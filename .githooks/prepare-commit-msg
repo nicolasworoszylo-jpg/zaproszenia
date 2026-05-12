@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# Repo Guardian — prepare-commit-msg
+# Injects a structured template into the commit message buffer if the user
+# hasn't typed anything yet (i.e. running plain `git commit` without -m / -F).
+#
+# Template enforces:
+#   - Conventional Commit header line
+#   - "Co / Czemu / Test" body — the *report* required by Nicolas' workflow.
+#
+# Does NOT touch messages from -m, merge, squash, amend, etc.
+
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck disable=SC1091
+. "${HOOK_DIR}/_lib.sh"
+
+COMMIT_MSG_FILE="$1"
+COMMIT_SOURCE="${2:-}"
+
+# Only inject when the user is about to write the message in editor.
+# Sources: "" (plain), "template", "merge", "squash", "commit", "message"
+case "$COMMIT_SOURCE" in
+  message|commit|merge|squash)
+    exit 0  # user supplied something, don't override
+    ;;
+esac
+
+# If the file already has non-comment content, skip
+if grep -v '^#' "$COMMIT_MSG_FILE" 2>/dev/null | grep -qE '\S'; then
+  exit 0
+fi
+
+BRANCH=$(guardian_current_branch)
+HOST=$(hostname 2>/dev/null || echo unknown)
+
+cat > "$COMMIT_MSG_FILE" <<EOF
+type(scope): krotki opis zmiany (do 72 znaków)
+
+# ---- RAPORT (wymagany przez Repo Guardian) ----
+# Każda sekcja: 1-3 zdania. Usuń komentarze (#) jeśli chcesz.
+
+Co:    <co dokładnie się zmieniło — pliki, sekcje, funkcje>
+Czemu: <dlaczego — bug, feature, performance, design, klient>
+Test:  <jak zweryfikowano — curl, manual w przeglądarce, lokalny serve>
+
+# ---- METADANE ----
+# Branch:    ${BRANCH}
+# Host:      ${HOST}
+# Wygenerowano: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+#
+# Conventional Commits types: feat | fix | docs | style | refactor | perf
+#                             test | chore | ci | build | revert | content
+# Scope examples (opcjonalny): demo | landing | supabase | stripe | seo | repo-guardian
+#
+# Przykład:
+#   feat(stripe): dodaj fallback dla webhook secret
+#
+#   Co: nowa zmienna ENV STRIPE_WEBHOOK_FALLBACK + logika w api/webhook.js
+#   Czemu: prod failował gdy secret pusty po rotacji
+#   Test: curl POST + logi Vercel functions live
+#
+# Bypass walidacji (nie polecane): SKIP_HOOKS=1 SKIP_REASON="..." git commit ...
+EOF

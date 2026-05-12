@@ -1,0 +1,41 @@
+type(scope): krotki opis zmiany (do 72 znaków)
+
+# ---- RAPORT (wymagany przez Repo Guardian) ----
+# Wypełnij wszystkie 3 sekcje. Jedna-dwie linijki każda.
+
+Co:
+Czemu:
+Test:
+
+# ---- DODATKOWE (opcjonalne) ----
+# Closes #         <- linki do issues
+# Breaking:
+# Co-Authored-By:
+
+# ---- POMOC ----
+# Conventional Commits types:
+#   feat      nowa funkcjonalność
+#   fix       naprawa buga
+#   docs      dokumentacja
+#   style     formatowanie, brak zmian logiki
+#   refactor  zmiana kodu bez zmiany zachowania
+#   perf      wydajność
+#   test      testy
+#   chore     drobne, infra
+#   ci        CI/CD
+#   build     build system
+#   revert    cofnięcie commit
+#   content   treść strony (copy, blog)
+#
+# Scope (opcjonalny, w nawiasach):
+#   demo | landing | supabase | stripe | seo | resend | repo-guardian | docs
+#
+# Przykład:
+#   feat(stripe): fallback dla webhook secret po rotacji
+#
+#   Co: nowa zmienna ENV STRIPE_WEBHOOK_FALLBACK + retry w api/webhook.js
+#   Czemu: po rotacji secret pusty 10 min, leadu przepadały
+#   Test: stripe-mock POST + curl signature → 200, log Vercel functions
+#
+# Bypass (emergency only):
+#   SKIP_HOOKS=1 SKIP_REASON="domain down, hotfix" git commit ...
