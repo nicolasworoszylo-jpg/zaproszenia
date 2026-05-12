@@ -42,6 +42,15 @@
   #demo-loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#FAF6EF;z-index:9999;font-family:Georgia,serif;color:#2C3E2D;font-style:italic;font-size:18px;letter-spacing:2px;transition:opacity .6s ease}
   #demo-loading.hidden{opacity:0;pointer-events:none}
 </style>
+<!-- Diagnostyka: zapisuje do console TAGI zeby Nicolas widzial co dziala -->
+<script>
+  console.log('[demo] 1/4 HEAD inline script - HTML parser zaczyna body');
+  window.__demoTrace = ['1/4-head'];
+  window.addEventListener('DOMContentLoaded',function(){console.log('[demo] 2/4 DOMContentLoaded - defer scripts zaraz sie wykonaja');window.__demoTrace.push('2/4-dom');});
+  window.addEventListener('load',function(){console.log('[demo] 3/4 load event - wszystkie zasoby gotowe. #root.children.length=',document.getElementById('root')?.children?.length);window.__demoTrace.push('3/4-load-'+(document.getElementById('root')?.children?.length||0));});
+  window.addEventListener('error',function(e){console.error('[demo] X/4 ERROR:',e.message,'@',e.filename+':'+e.lineno+':'+e.colno);window.__demoTrace.push('X-'+e.message);});
+  window.addEventListener('unhandledrejection',function(e){console.error('[demo] X/4 UNHANDLED:',e.reason);window.__demoTrace.push('X-promise');});
+</script>
 <script defer src="/vendor/react.min.js"></script>
 <script defer src="/vendor/react-dom.min.js"></script>
 <script defer src="/vendor/supabase.min.js"></script>
@@ -49,6 +58,6 @@
 <body>
 <div id="demo-loading">ładowanie zaproszenia…</div>
 <div id="root"></div>
-<script defer src="/vendor/demo-compiled.js"></script>
+<script defer src="/vendor/demo-compiled.js" onload="console.log('[demo] 4/4 compiled JS loaded');window.__demoTrace.push('4/4-compiled');" onerror="console.error('[demo] compiled JS FAILED to load');window.__demoTrace.push('X-compiled-failed');"></script>
 </body>
 </html>
