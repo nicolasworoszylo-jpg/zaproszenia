@@ -1,6 +1,6 @@
 # Project Status - zaproszeniaonline.com
 
-**Ostatnia weryfikacja:** 2026-05-10 (automated check Claude Code)
+**Ostatnia weryfikacja:** 2026-05-11 (automated check Claude Code)
 **Owner:** Nicolas Woroszyło (działalność nieewidencjonowana, art. 5 ust. 1 PrzedsU)
 **Partner biznesowy:** Dominika Kuś (osoba upoważniona art. 29 RODO)
 
@@ -19,12 +19,13 @@
 | Email pipeline (notify-new-lead) | 🟢 GO | test 200 OK, brand-aligned v4 |
 | Email pipeline (notify-payment-success) | 🟢 GO | test 200 OK, brand-aligned v4 |
 | Stripe webhook deployed | 🟢 GO | endpoint odpowiada |
-| **Stripe webhook secret** | 🔴 **BRAK** | `Key length is zero` - czekam na klucz od Dominiki |
-| **Stripe Branding + Customer emails** | 🔴 **TODO Dominika** | konfiguracja w toku |
+| **Stripe webhook secret** | 🟢 **GO** | ustawiony 2026-05-11, weryfikacja signature działa |
+| **Stripe secret key** | 🟢 **GO** | ustawiony 2026-05-11, SDK inicjalizuje się poprawnie |
+| **Stripe Branding + Customer emails** | 🟢 GO | skonfigurowane przez Dominikę 2026-05-11 |
 | Google Search Console | 🟢 GO | property verified via TXT, sitemap submitted |
 | Legal docs (terms + privacy) | 🟢 GO | działalność nieewidencjonowana wstawiona |
 
-**Marketing-go:** czeka na klucz Stripe webhook od Dominiki → wtedy ostatni krok i 🚀
+**Marketing-go:** 🚀 **READY** — wszystkie blokery rozwiązane 2026-05-11.
 
 ---
 
@@ -76,7 +77,7 @@
 
 | Function | Version | verify_jwt | Status |
 |---|---|---|---|
-| `stripe-webhook` | v3 | false | ACTIVE ⚠️ czeka na `STRIPE_WEBHOOK_SECRET` |
+| `stripe-webhook` | v3 | false | ACTIVE ✅ sekrety ustawione, signature weryfikacja działa |
 | `notify-new-lead` | v5 | false | ACTIVE (brand templates) |
 | `notify-payment-success` | v5 | false | ACTIVE (brand templates) |
 | `helpwave-scan-tx` | v3 | true | ACTIVE (inny projekt - helpwave) |
@@ -107,8 +108,8 @@ leads_notify_payment_success
 | Secret | Status | Source |
 |---|---|---|
 | `RESEND_API_KEY` | ✅ set, działa | Resend Dashboard → API Keys |
-| `STRIPE_WEBHOOK_SECRET` | 🔴 pusty (`Key length is zero`) | Stripe Dashboard → Webhooks → Reveal signing secret |
-| `STRIPE_SECRET_KEY` | ⏳ niepotwierdzony | Stripe Dashboard → API keys → Reveal live key |
+| `STRIPE_WEBHOOK_SECRET` | ✅ set 2026-05-11, działa | Stripe Dashboard → Webhooks → Reveal signing secret |
+| `STRIPE_SECRET_KEY` | ✅ set 2026-05-11, działa | Stripe Dashboard → API keys → Reveal live key |
 | `SUPABASE_URL` | ✅ auto | Supabase managed |
 | `SUPABASE_SERVICE_ROLE_KEY` | ✅ auto | Supabase managed |
 
@@ -233,7 +234,7 @@ Ostatnie sprawdzenie (zaktualizowane przy każdym commit do tego pliku):
 ✅ https://zaproszeniaonline.com/robots.txt                          HTTP 200
 ✅ https://zaproszeniaonline.com/llms.txt                            HTTP 200
 ✅ Stripe webhook endpoint (POST bez signature):                     HTTP 400 "Missing signature" (oczekiwane)
-⚠️ Stripe webhook endpoint (POST z fake signature):                  "Key length is zero" (BRAK STRIPE_WEBHOOK_SECRET)
+✅ Stripe webhook endpoint (POST z fake signature):                  HTTP 400 "No signatures found matching..." (oczekiwane — sekrety OK)
 ```
 
 ---
@@ -241,8 +242,7 @@ Ostatnie sprawdzenie (zaktualizowane przy każdym commit do tego pliku):
 ## 🎯 Outstanding tasks (otwarte)
 
 ### KRYTYCZNE (przed marketing GO)
-1. **Stripe webhook secret** - Dominika konfiguruje, ja wpisuję do Supabase
-2. **Stripe Branding** (logo + kolory + Customer emails ON) - Dominika
+✅ Wszystko zamknięte 2026-05-11. Marketing-go odblokowane.
 
 ### NICE-TO-HAVE (po marketing start)
 - Bing Webmaster Tools verify
