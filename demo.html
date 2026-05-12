@@ -33,17 +33,11 @@
 <meta name="twitter:description" content="Pełne demo cyfrowego zaproszenia ślubnego - potwierdzanie obecności, plan dnia, mapy, galeria.">
 <meta name="twitter:image" content="https://zaproszeniaonline.com/og-image.png">
 
-<!-- ━━━ PERFORMANCE: preconnect + preload critical resources ━━━ -->
-<!-- Preconnect Supabase (RSVP form -> oszczedza ~150ms TLS handshake) -->
+<!-- ━━━ PERFORMANCE: preconnect Supabase (bezpieczne, oszczedza ~150ms na pierwszym RSVP) ━━━ -->
 <link rel="preconnect" href="https://kuyniyyieejvambyjnxy.supabase.co" crossorigin>
 <link rel="dns-prefetch" href="https://kuyniyyieejvambyjnxy.supabase.co">
 
-<!-- Preload critical scripts z fetchpriority high - browser pobiera je niezaleznie od defer order -->
-<link rel="preload" as="script" href="/vendor/react.min.js?v=51aac08" fetchpriority="high">
-<link rel="preload" as="script" href="/vendor/react-dom.min.js" fetchpriority="high">
-<link rel="preload" as="script" href="/vendor/demo-compiled.js?v=51aac08" fetchpriority="high">
-
-<!-- Self-hosted fonts (RODO clean + zero blocking @import w body) -->
+<!-- Self-hosted fonts (RODO clean) -->
 <link rel="preload" href="/fonts/playfair.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/cormorant.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/fonts/fonts.css">
@@ -53,13 +47,8 @@
   #demo-loading.hidden{opacity:0;pointer-events:none}
   #demo-loading-spinner{width:36px;height:36px;border:2.5px solid rgba(44,62,45,0.15);border-top-color:#C9A96E;border-radius:50%;animation:demoSpin 0.9s linear infinite}
   @keyframes demoSpin{to{transform:rotate(360deg)}}
-  #demo-error-fallback{display:none;position:fixed;inset:0;z-index:10000;background:#FAF6EF;color:#2C3E2D;padding:24px;font-family:Georgia,serif;align-items:center;justify-content:center;flex-direction:column;gap:18px;text-align:center}
-  #demo-error-fallback.show{display:flex}
-  #demo-error-fallback h2{margin:0;font-size:22px;color:#2C3E2D}
-  #demo-error-fallback p{margin:0;max-width:500px;line-height:1.55;color:#5a6b5c}
-  #demo-error-fallback a{color:#C9A96E;text-decoration:underline}
 
-  /* ━━━ Audio fallback - dziala NIEZALEZNIE od React (gwarantowana widocznosc) ━━━ */
+  /* ━━━ Audio fallback - dziala NIEZALEZNIE od React ━━━ */
   #bg-audio-fallback-wrap{
     position:fixed;bottom:24px;right:24px;z-index:9999;
     display:flex;align-items:center;gap:10px;flex-direction:row-reverse;
@@ -94,61 +83,32 @@
   }
   #bg-audio-fallback-wrap.no-pulse #bg-audio-fallback-btn{animation:none}
   #bg-audio-fallback-wrap.no-label #bg-audio-fallback-label{display:none}
-  /* Ukryj fallback gdy React-owy AudioPlayer wyrenderowal sie pomyslnie */
   body.has-react-audio #bg-audio-fallback-wrap{display:none}
 </style>
-<script defer src="/vendor/react.min.js?v=51aac08"></script>
-<script defer src="/vendor/react-dom.min.js"></script>
-<script defer src="/vendor/supabase.min.js"></script>
-<!-- ━━━ SAFETY NET: ukryj loading po 4s + zlap crashe + diagnostyka ━━━ -->
+
+<!-- ━━━ MINIMAL safety net: ukryj loader po 10s (margines dla wolnych laczy/devices) ━━━ -->
 <script>
-  // Hide demo-loading na 100% po 4s (jak React nie zdazyl - lepiej pokazac chocby pusty content niz wieczny loader)
-  window.__demoLoadingHideTimeout = setTimeout(function(){
-    var l = document.getElementById('demo-loading');
-    if (l && !l.classList.contains('hidden')) {
+  // Twardy timeout: po 10s zawsze ukryj loader. Bez error UI - jak React nie zdazyl, lepiej puste tlo
+  // niz wieczny spinner. Real React render zwykle zdaja w 1-3s, 10s to ekstremalny worst-case fallback.
+  setTimeout(function(){
+    var l=document.getElementById('demo-loading');
+    if(l&&!l.classList.contains('hidden')){
       l.classList.add('hidden');
-      setTimeout(function(){ l.remove(); }, 700);
-      console.warn('[demo] loading hidden by safety-net (4s timeout)');
+      setTimeout(function(){l.remove();},700);
     }
-  }, 4000);
-  // Diagnostyka - lapiemy crashe JS (Nicolas zobaczy w console + opcjonalnie na ekranie)
-  window.addEventListener('error', function(e){
-    console.error('[demo] script error:', e.message, 'at', e.filename + ':' + e.lineno);
-    // Po 7s gdy bylo cracha - pokaz fallback message + link do landing
-    setTimeout(function(){
-      var root = document.getElementById('root');
-      if (root && !root.children.length) {
-        var fb = document.getElementById('demo-error-fallback');
-        if (fb) fb.classList.add('show');
-      }
-    }, 3000);
+  },10000);
+  // Diagnostyka: console only (zeby Nicolas mogl debugowac, ale bez UI shake-out)
+  window.addEventListener('error',function(e){
+    console.error('[demo] error:',e.message,'@',e.filename+':'+e.lineno);
   });
-  window.addEventListener('unhandledrejection', function(e){
-    console.error('[demo] unhandled promise:', e.reason);
-  });
-  // Loaded event - log kiedy DOM gotowy
-  window.addEventListener('DOMContentLoaded', function(){
-    console.log('[demo] DOMContentLoaded - czekam na React render');
-  });
-  window.addEventListener('load', function(){
-    console.log('[demo] window.load - zasoby zaladowane');
-    // Jak po 1.5s od load nadal nic w #root - hide loading manualnie
-    setTimeout(function(){
-      var root = document.getElementById('root');
-      var l = document.getElementById('demo-loading');
-      if (root && !root.children.length && l && !l.classList.contains('hidden')) {
-        console.warn('[demo] #root pusty po load+1.5s - hide loading');
-        l.classList.add('hidden');
-        setTimeout(function(){ l.remove(); }, 700);
-        // Pokaz error fallback
-        var fb = document.getElementById('demo-error-fallback');
-        if (fb) fb.classList.add('show');
-      } else if (root && root.children.length && window.__demoLoadingHideTimeout) {
-        clearTimeout(window.__demoLoadingHideTimeout);
-      }
-    }, 1500);
+  window.addEventListener('unhandledrejection',function(e){
+    console.error('[demo] promise:',e.reason);
   });
 </script>
+
+<script defer src="/vendor/react.min.js"></script>
+<script defer src="/vendor/react-dom.min.js"></script>
+<script defer src="/vendor/supabase.min.js"></script>
 </head>
 <body>
 <div id="demo-loading">
@@ -156,14 +116,6 @@
   <div>ładowanie zaproszenia…</div>
 </div>
 <div id="root"></div>
-
-<!-- Fallback error - pokazuje sie po 3s od JS error / 1.5s od load bez render -->
-<div id="demo-error-fallback" role="alert">
-  <h2>Ładowanie demo trwa dłużej niż zwykle</h2>
-  <p>Jeśli widzisz tę wiadomość przez dłuższy czas, demo mogło nie załadować się prawidłowo. Spróbuj odświeżyć stronę (Cmd+Shift+R / Ctrl+Shift+R) albo otwórz w trybie incognito.</p>
-  <p>W razie problemu - <a href="/">wróć na stronę główną</a> albo napisz na <a href="mailto:kontakt@zaproszeniaonline.com">kontakt@zaproszeniaonline.com</a>.</p>
-  <p style="font-size:13px;color:#888;margin-top:8px">Otwórz Konsolę przeglądarki (F12) - tam zobaczysz przyczynę problemu w sekcji Console.</p>
-</div>
 
 <!-- ━━━ AUDIO FALLBACK: gwarantowana muzyka niezaleznie od React ━━━ -->
 <div id="bg-audio-fallback-wrap" role="region" aria-label="Muzyka w tle">
@@ -175,7 +127,6 @@
   <p id="bg-audio-fallback-label">Włącz muzykę</p>
 </div>
 <script>
-  // Audio fallback player - dziala niezaleznie od React (gdyby compiled JS sie nie zaladowal lub crashnal)
   (function(){
     var audio=document.getElementById('bg-audio-fallback');
     var btn=document.getElementById('bg-audio-fallback-btn');
@@ -201,9 +152,7 @@
         if(label) label.textContent='Włącz muzykę';
       }
     });
-    // Po 8s ukryj pulse + label (mniej rozpraszajace dla user'a ktory zauwazyl)
     setTimeout(function(){wrap.classList.add('no-pulse');wrap.classList.add('no-label');},8000);
-    // Po 4s sprawdz czy React wyrenderowal swoj AudioPlayer - jak tak, ukryj fallback
     setTimeout(function(){
       var reactBtn=document.querySelector('button[aria-label="Włącz muzykę"]:not(#bg-audio-fallback-btn)');
       if(reactBtn) document.body.classList.add('has-react-audio');
@@ -211,6 +160,6 @@
   })();
 </script>
 
-<script defer src="/vendor/demo-compiled.js?v=51aac08"></script>
+<script defer src="/vendor/demo-compiled.js"></script>
 </body>
 </html>
