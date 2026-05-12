@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+# Repo Guardian — pre-push
+# The strongest sync gate. Runs BEFORE any commit reaches GitHub.
+# Checks:
+#   1. Remote is reachable (fetch w/ 15 s timeout)
+#   2. Local is not behind origin/<branch>  → forces explicit pull/rebase
+#   3. No uncommitted changes (dirty tree)  → would mean half-finished work
+#   4. Not force-pushing to a protected branch (main/master/production)
+#   5. Optional: smoke test exit 0 if package.json declares `test`
+#
+# Bypass: SKIP_HOOKS=1 SKIP_REASON="..." git push ...
+
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck disable=SC1091
+. "${HOOK_DIR}/_lib.sh"
+
+if guardian_skip_active; then
+  guardian_log_skip "pre-push"
+  exit 0
+fi
+
+REMOTE="${1:-origin}"
+URL="${2:-}"
+
+BRANCH=$(guardian_current_branch)
+[ -z "$BRANCH" ] && BRANCH="HEAD"
+
+# ------------------------------------------------------------------------------
+# 1. Force-push protection (read stdin: each line = <local sha> <local ref> <remote sha> <remote ref>)
+# ------------------------------------------------------------------------------
+PUSH_INFO=$(cat)  # consume stdin once; if empty, we still proceed
+while IFS=' ' read -r local_ref local_sha remote_ref remote_sha; do
+  [ -z "$local_ref" ] && continue
+  ref_short="${remote_ref##*/}"
+  if guardian_is_protected_branch "$ref_short"; then
+    # If remote_sha is non-zero and not ancestor of local_sha → would be force-push
+    if [ "$remote_sha" != "0000000000000000000000000000000000000000" ] && \
+       [ -n "$remote_sha" ] && [ -n "$local_sha" ]; then
+      if ! git merge-base --is-ancestor "$remote_sha" "$local_sha" 2>/dev/null; then
+        guardian_error "Próba force-push do chronionego brancha '$ref_short' — ZABRONIONE."
+        guardian_error "  Force-push na main/master/production przepisuje historię."
+        guardian_error "  Jeśli naprawdę musisz: SKIP_HOOKS=1 SKIP_REASON=\"czemu\" git push --force"
+        guardian_error "  Po stronie GitHub branch protection i tak Cię zablokuje."
+        exit 1
+      fi
+    fi
+  fi
+done <<< "$PUSH_INFO"
+
+# ------------------------------------------------------------------------------
+# 2. Dirty tree check
+# ------------------------------------------------------------------------------
+if ! git diff-index --quiet HEAD -- 2>/dev/null; then
+  guardian_warn "Working tree dirty (są niezacommittowane zmiany)."
+  guardian_warn "  Nieskończona praca może zniknąć przy pull/rebase na drugim laptopie."
+  guardian_warn "  Polecane: 'git stash' albo dokończ commit."
+  guardian_warn "  (To ostrzeżenie, nie blokada. Push idzie dalej.)"
+fi
+
+# ------------------------------------------------------------------------------
+# 3. Fetch remote + behind check
+#    Skip when offline (fail-open with warning, nie blokuj pracy w samolocie)
+# ------------------------------------------------------------------------------
+guardian_log "pre-push: fetch $REMOTE..."
+if ! timeout 15 git fetch --quiet "$REMOTE" 2>/dev/null; then
+  guardian_warn "Nie udało się dosięgnąć $REMOTE (offline?). Pomijam sync-check."
+  guardian_log_activity "pre-push:offline" "branch=$BRANCH"
+else
+  REMOTE_BRANCH="$REMOTE/$BRANCH"
+  if git rev-parse --verify --quiet "$REMOTE_BRANCH" >/dev/null; then
+    BEHIND=$(git rev-list --count "HEAD..${REMOTE_BRANCH}" 2>/dev/null)
+    AHEAD=$(git rev-list --count "${REMOTE_BRANCH}..HEAD" 2>/dev/null)
+    BEHIND=${BEHIND:-0}
+    AHEAD=${AHEAD:-0}
+    guardian_log "Branch '$BRANCH' vs '$REMOTE_BRANCH': $AHEAD ahead, $BEHIND behind"
+
+    if [ "$BEHIND" -gt 0 ]; then
+      guardian_error "Lokalny '$BRANCH' jest o $BEHIND commit(ów) ZA origin."
+      guardian_error "  Push spowodowałby konflikt albo force-push."
+      guardian_error "  Wykonaj: 'git pull --rebase $REMOTE $BRANCH'  i spróbuj ponownie."
+      guardian_error ""
+      guardian_error "  Powód tej kontroli: pracujesz na 2 maszynach. Druga mogła już pchnąć zmiany."
+      guardian_error "  Bypass (tylko gdy wiesz co robisz): SKIP_HOOKS=1 SKIP_REASON=... git push"
+      exit 1
+    fi
+  else
+    guardian_log "Brak remote tracking dla '$BRANCH' — pewnie nowy branch. OK."
+  fi
+fi
+
+# ------------------------------------------------------------------------------
+# 4. Optional smoke test
+# ------------------------------------------------------------------------------
+if [ -f "package.json" ] && grep -q '"test"' package.json 2>/dev/null; then
+  if grep -q '"test"\s*:\s*"echo' package.json 2>/dev/null; then
+    : # placeholder test — skip
+  else
+    guardian_log "Wykryto skrypt 'npm test' — uruchamiam (15 s timeout)..."
+    if ! timeout 15 npm test --silent >/dev/null 2>&1; then
+      guardian_warn "'npm test' failed lub timeout — pomijam (nie blokuję push)."
+    fi
+  fi
+fi
+
+guardian_log_activity "pre-push:pass" "remote=$REMOTE branch=$BRANCH"
+guardian_ok "pre-push OK — push idzie do $REMOTE"
+exit 0

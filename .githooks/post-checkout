@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Repo Guardian — post-checkout
+# Fires after branch switch / file checkout. We only care about branch switches
+# (third arg == "1"). Purpose: cheap activity log + sync hint.
+
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck disable=SC1091
+. "${HOOK_DIR}/_lib.sh"
+
+PREV_HEAD="$1"
+NEW_HEAD="$2"
+IS_BRANCH_SWITCH="$3"
+
+# 0 = file checkout, 1 = branch checkout
+[ "$IS_BRANCH_SWITCH" = "1" ] || exit 0
+
+BRANCH=$(guardian_current_branch)
+guardian_log_activity "checkout" "from=${PREV_HEAD:0:8} to=${NEW_HEAD:0:8} branch=$BRANCH"
+
+# Quiet hint about sync state — non-blocking
+if command -v timeout >/dev/null 2>&1; then
+  if timeout 5 git fetch --quiet origin 2>/dev/null; then
+    if git rev-parse --verify --quiet "origin/$BRANCH" >/dev/null; then
+      BEHIND=$(git rev-list --count "HEAD..origin/$BRANCH" 2>/dev/null || echo 0)
+      AHEAD=$(git rev-list --count "origin/$BRANCH..HEAD" 2>/dev/null || echo 0)
+      if [ "$BEHIND" -gt 0 ]; then
+        guardian_warn "Branch '$BRANCH' jest $BEHIND za origin. Polecane: git pull --rebase."
+      elif [ "$AHEAD" -gt 0 ]; then
+        guardian_log "Branch '$BRANCH' jest $AHEAD przed origin. Push gdy gotowe."
+      fi
+    fi
+  fi
+fi
+
+exit 0

@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+# Repo Guardian — commit-msg
+# Validates the *final* commit message against:
+#   1. Conventional Commits header  (type(scope): subject  — under 72 chars)
+#   2. Required "Co:" "Czemu:" "Test:" report sections (the reporting gate)
+#
+# Bypass: SKIP_HOOKS=1 SKIP_REASON="..." git commit -m "..."
+
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck disable=SC1091
+. "${HOOK_DIR}/_lib.sh"
+
+if guardian_skip_active; then
+  guardian_log_skip "commit-msg"
+  exit 0
+fi
+
+MSG_FILE="$1"
+# Strip comment lines and trailing blanks
+MSG=$(grep -v '^#' "$MSG_FILE" | sed -e 's/[[:space:]]*$//')
+
+if [ -z "$(echo "$MSG" | tr -d '[:space:]')" ]; then
+  guardian_error "Empty commit message — aborting."
+  exit 1
+fi
+
+HEADER=$(echo "$MSG" | head -1)
+BODY=$(echo "$MSG" | tail -n +2)
+
+# ------------------------------------------------------------------------------
+# 1. Skip validation for special commits Git makes for us
+# ------------------------------------------------------------------------------
+case "$HEADER" in
+  "Merge "*|"Revert "*|"Initial commit"|"fixup! "*|"squash! "*|"amend! "*)
+    guardian_ok "commit-msg: special commit recognized, skipping validation"
+    exit 0
+    ;;
+esac
+
+# ------------------------------------------------------------------------------
+# 2. Conventional Commits header check
+#    Allowed types: feat fix docs style refactor perf test chore ci build revert content
+#    Optional scope in parens. Subject must exist. Header under 72 chars.
+# ------------------------------------------------------------------------------
+TYPES_REGEX='^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert|content)(\([a-z0-9_./-]+\))?!?: .+'
+
+if ! echo "$HEADER" | grep -qE "$TYPES_REGEX"; then
+  guardian_error "Header nie spełnia Conventional Commits."
+  guardian_error "  Otrzymano:  $HEADER"
+  guardian_error ""
+  guardian_error "  Wymagane:   type(scope): krótki opis"
+  guardian_error "  Dozwolone:  feat fix docs style refactor perf test chore ci build revert content"
+  guardian_error "  Przykład:   feat(stripe): dodaj fallback dla webhook secret"
+  guardian_error ""
+  guardian_error "  Bypass:     SKIP_HOOKS=1 SKIP_REASON=... git commit ..."
+  exit 1
+fi
+
+HEADER_LEN=${#HEADER}
+if [ "$HEADER_LEN" -gt 100 ]; then
+  guardian_error "Header za długi: $HEADER_LEN znaków (max 100, zalecane 72)."
+  exit 1
+elif [ "$HEADER_LEN" -gt 72 ]; then
+  guardian_warn "Header ma $HEADER_LEN znaków (zalecane ≤72) — zaakceptowano."
+fi
+
+# ------------------------------------------------------------------------------
+# 3. Report sections check
+#    Skip on tiny patches: docs-only changes, single-line fixes, hotfix tags.
+# ------------------------------------------------------------------------------
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR 2>/dev/null)
+DOC_ONLY=1
+while IFS= read -r f; do
+  [ -z "$f" ] && continue
+  case "$f" in
+    *.md|.github/*|.githooks/*|.guardian/*|CHANGELOG.md) ;;
+    *) DOC_ONLY=0 ;;
+  esac
+done <<< "$STAGED_FILES"
+
+# revert/chore(deps)/docs are exempt from report-section requirement
+case "$HEADER" in
+  revert*|chore\(deps*)
+    DOC_ONLY=1
+    ;;
+esac
+
+if [ "$DOC_ONLY" = "0" ]; then
+  MISSING=""
+  echo "$BODY" | grep -qiE '^[[:space:]]*Co:' || MISSING="$MISSING Co:"
+  echo "$BODY" | grep -qiE '^[[:space:]]*Czemu:' || MISSING="$MISSING Czemu:"
+  echo "$BODY" | grep -qiE '^[[:space:]]*Test:' || MISSING="$MISSING Test:"
+
+  if [ -n "$MISSING" ]; then
+    guardian_error "Brak wymaganych sekcji raportu w body:$MISSING"
+    guardian_error ""
+    guardian_error "  Każdy commit z kodem produkcyjnym wymaga:"
+    guardian_error "    Co:    co dokładnie się zmieniło"
+    guardian_error "    Czemu: dlaczego — bug/feature/performance"
+    guardian_error "    Test:  jak zweryfikowano"
+    guardian_error ""
+    guardian_error "  Dla commitów tylko-docs (pliki .md / .github / .githooks) ten check się nie odpala."
+    guardian_error "  Bypass: SKIP_HOOKS=1 SKIP_REASON=... git commit ..."
+    exit 1
+  fi
+fi
+
+guardian_log_activity "commit-msg:pass" "header=$HEADER"
+guardian_ok "commit-msg OK"
+exit 0

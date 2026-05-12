@@ -1,4 +1,26 @@
 .vercel
 *.jsx.tmp
+
+# Local IDE / tools
 .claude/
+
+# Repo Guardian state — keep folder, ignore contents (own .gitignore inside)
 .guardian/
+
+# Env files — must never enter the repo
+.env
+.env.*
+*.env
+*.env.local
+*.env.production
+
+# Common junk
+.DS_Store
+node_modules/
+npm-debug.log*
+.idea/
+.vscode/
+
+# Build artifacts
+dist/
+build/
