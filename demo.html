@@ -70,6 +70,43 @@
   html,body{margin:0;padding:0;background:#FAF6EF}
   #demo-loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#FAF6EF;z-index:9999;font-family:Georgia,serif;color:#2C3E2D;font-style:italic;font-size:18px;letter-spacing:2px;transition:opacity .6s ease}
   #demo-loading.hidden{opacity:0;pointer-events:none}
+
+  /* ━━━ AUDIO PLAYER - kolory dynamicznie z aktywnej palety przez CSS variables ━━━
+     Fallback (zanim React zaczyta paletę): Leśna zieleń (gold + deep forest). */
+  :root{
+    --audio-gold: #C9A96E;
+    --audio-deep: rgba(30,43,31,0.92);
+    --audio-gold-soft: rgba(201,169,110,0.55);
+  }
+  #bg-audio-wrap{position:fixed;bottom:24px;right:24px;z-index:9000;display:flex;align-items:center;gap:10px;flex-direction:row-reverse;font-family:system-ui,-apple-system,sans-serif;pointer-events:auto}
+  #bg-audio-btn{
+    width:56px;height:56px;border-radius:50%;
+    border:2px solid var(--audio-gold);
+    background:var(--audio-deep);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 24px rgba(0,0,0,.35);
+    transition:transform .3s cubic-bezier(0.16,1,0.3,1), border-color .4s ease, background-color .4s ease;
+    animation:bgAudioPulse 1.6s ease-out infinite;
+    -webkit-tap-highlight-color:transparent;touch-action:manipulation;padding:0;
+  }
+  #bg-audio-btn:hover{transform:scale(1.08)}
+  #bg-audio-btn svg{display:block}
+  #bg-audio-btn svg .audio-icon-shape{fill:var(--audio-gold);stroke:var(--audio-gold);transition:fill .4s ease, stroke .4s ease}
+  #bg-audio-label{
+    background:var(--audio-deep);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border:1px solid var(--audio-gold-soft);border-radius:10px;padding:10px 16px;
+    white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.3);
+    font-size:11px;color:var(--audio-gold);letter-spacing:2px;text-transform:uppercase;margin:0;font-weight:500;
+    transition:background-color .4s ease, border-color .4s ease, color .4s ease;
+  }
+  @keyframes bgAudioPulse{
+    0%{box-shadow:0 0 0 0 var(--audio-gold-soft),0 6px 24px rgba(0,0,0,.35)}
+    70%{box-shadow:0 0 0 18px rgba(0,0,0,0),0 6px 24px rgba(0,0,0,.35)}
+    100%{box-shadow:0 0 0 0 rgba(0,0,0,0),0 6px 24px rgba(0,0,0,.35)}
+  }
+  #bg-audio-wrap.no-pulse #bg-audio-btn{animation:none}
+  #bg-audio-wrap.no-label #bg-audio-label{display:none}
 </style>
 <!-- Diagnostyka: zapisuje do console TAGI zeby Nicolas widzial co dziala -->
 <script>
@@ -87,6 +124,76 @@
 <body>
 <div id="demo-loading">ładowanie zaproszenia… <span style="display:block;margin-top:8px;font-size:11px;color:#999;font-style:normal;letter-spacing:0">v=cb12-clean</span></div>
 <div id="root"></div>
+
+<!-- ━━━ AUDIO PLAYER (inline, niezalezny od React) z palette-aware colors ━━━ -->
+<div id="bg-audio-wrap" role="region" aria-label="Muzyka w tle">
+  <audio id="bg-audio-el" src="/audio/demo.mp3" loop preload="none" playsinline crossorigin="anonymous"></audio>
+  <button id="bg-audio-btn" type="button" aria-label="Włącz muzykę" title="Włącz muzykę">
+    <svg id="bg-audio-icon-play" width="22" height="22" viewBox="0 0 24 24"><polygon class="audio-icon-shape" points="7,4 20,12 7,20" stroke-width="1.5"/></svg>
+    <svg id="bg-audio-icon-pause" width="22" height="22" viewBox="0 0 24 24" style="display:none"><rect class="audio-icon-shape" x="6" y="4" width="4" height="16" rx="1" stroke-width="2" fill="none"/><rect class="audio-icon-shape" x="14" y="4" width="4" height="16" rx="1" stroke-width="2" fill="none"/></svg>
+  </button>
+  <p id="bg-audio-label">Włącz muzykę</p>
+</div>
+<script>
+(function(){
+  var audio=document.getElementById('bg-audio-el');
+  var btn=document.getElementById('bg-audio-btn');
+  var iconPlay=document.getElementById('bg-audio-icon-play');
+  var iconPause=document.getElementById('bg-audio-icon-pause');
+  var wrap=document.getElementById('bg-audio-wrap');
+  var label=document.getElementById('bg-audio-label');
+
+  // ━━━ AUDIO toggle ━━━
+  btn.addEventListener('click',function(){
+    wrap.classList.add('no-pulse');
+    if(audio.paused){
+      audio.volume=0.35;
+      var p=audio.play();
+      if(p&&p.then) p.then(function(){
+        iconPlay.style.display='none';iconPause.style.display='block';
+        btn.setAttribute('aria-label','Wycisz muzykę');btn.setAttribute('title','Wycisz muzykę');
+        if(label) label.textContent='Muzyka instrumentalna';
+      }).catch(function(e){console.warn('[audio] play blocked:',e)});
+    } else {
+      audio.pause();
+      iconPlay.style.display='block';iconPause.style.display='none';
+      btn.setAttribute('aria-label','Włącz muzykę');btn.setAttribute('title','Włącz muzykę');
+      if(label) label.textContent='Włącz muzykę';
+    }
+  });
+  setTimeout(function(){wrap.classList.add('no-pulse');wrap.classList.add('no-label');},8000);
+
+  // ━━━ PALETTE SYNC: czytaj kolory z <nav> aktywnej palety, ustaw CSS variables ━━━
+  // Nav element jest renderowany przez React z `background: ${e.deep}F2`
+  // i `border-bottom: 1px solid ${e.gold}15`. Czytamy computed style → kopiujemy do :root.
+  function rgbaToParts(s){
+    var m=s.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)/);
+    return m ? {r:+m[1],g:+m[2],b:+m[3],a:m[4]?+m[4]:1} : null;
+  }
+  function syncPalette(){
+    var nav=document.querySelector('#root nav');
+    if(!nav) return;
+    var cs=getComputedStyle(nav);
+    var bg=rgbaToParts(cs.backgroundColor);     // deep (z F2 alpha)
+    var bd=rgbaToParts(cs.borderBottomColor);   // gold (z 15 alpha = bardzo blade)
+    if(!bg||!bd) return;
+    // bd ma alpha ~0.08 (15/255) - przywracamy do solid gold dla obrysu
+    var goldHex='rgb('+bd.r+','+bd.g+','+bd.b+')';
+    var deepRgba='rgba('+bg.r+','+bg.g+','+bg.b+',0.92)';
+    var goldSoft='rgba('+bd.r+','+bd.g+','+bd.b+',0.55)';
+    var r=document.documentElement;
+    if(r.style.getPropertyValue('--audio-gold')!==goldHex){
+      r.style.setProperty('--audio-gold',goldHex);
+      r.style.setProperty('--audio-deep',deepRgba);
+      r.style.setProperty('--audio-gold-soft',goldSoft);
+    }
+  }
+  // Sync na start (po 1s gdy React powinien już renderować) + co 600ms (przy zmianie palety)
+  setTimeout(syncPalette,1000);
+  setInterval(syncPalette,600);
+})();
+</script>
+
 <script defer src="/vendor/demo-compiled.js?cb=cb12-clean-20260512" onload="console.log('[demo] 4/4 compiled JS loaded');window.__demoTrace.push('4/4-compiled');" onerror="console.error('[demo] compiled JS FAILED to load');window.__demoTrace.push('X-compiled-failed');"></script>
 </body>
 </html>
