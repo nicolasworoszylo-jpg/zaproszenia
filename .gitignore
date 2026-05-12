@@ -1,3 +1,4 @@
 .vercel
 *.jsx.tmp
 .claude/
+.guardian/
