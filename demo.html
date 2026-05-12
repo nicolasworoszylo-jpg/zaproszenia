@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 
+<!-- ATAK #1 NA CACHE: zero cache w browser / proxy / CDN -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
 <!-- ── SEO: demo jest noindex (private demo product) ── -->
 <title>Anna i Michał - przykład cyfrowego zaproszenia ślubnego | zaproszeniaonline.com</title>
 <meta name="description" content="Przykładowe cyfrowe zaproszenie ślubne online - zobacz pełen produkt z formularzem potwierdzeń, planem dnia, mapami i galerią. 4 palety kolorów do podglądu na żywo.">
@@ -56,8 +61,8 @@
 <script defer src="/vendor/supabase.min.js"></script>
 </head>
 <body>
-<div id="demo-loading">ładowanie zaproszenia…</div>
+<div id="demo-loading">ładowanie zaproszenia… <span style="display:block;margin-top:8px;font-size:11px;color:#999;font-style:normal;letter-spacing:0">v=cb12-clean</span></div>
 <div id="root"></div>
-<script defer src="/vendor/demo-compiled.js" onload="console.log('[demo] 4/4 compiled JS loaded');window.__demoTrace.push('4/4-compiled');" onerror="console.error('[demo] compiled JS FAILED to load');window.__demoTrace.push('X-compiled-failed');"></script>
+<script defer src="/vendor/demo-compiled.js?cb=cb12-clean-20260512" onload="console.log('[demo] 4/4 compiled JS loaded');window.__demoTrace.push('4/4-compiled');" onerror="console.error('[demo] compiled JS FAILED to load');window.__demoTrace.push('X-compiled-failed');"></script>
 </body>
 </html>
