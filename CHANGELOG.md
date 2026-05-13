@@ -1,0 +1,38 @@
+# Changelog
+
+Wszystkie istotne zmiany w projekcie zaproszeniaonline.com.
+
+Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+wersjonowanie: [SemVer](https://semver.org/spec/v2.0.0.html).
+
+Każdy commit z plikami źródłowymi (`*.html`, `*.jsx`, `api/*`, `supabase/*` itd.)
+**musi** mieć wpis w sekcji `[Unreleased]`. Wymusza to Repo Guardian (pre-commit + GitHub Action).
+
+Szybkie dodanie wpisu: `npm run report` (lub `bash scripts/report.sh`).
+
+## [Unreleased]
+
+- **Added**: Repo Guardian — hard-gate raportowania + auto-sync check + GitHub Actions walidacja + branch protection. _(2026-05-12)_
+
+## [2026-04-30]
+
+- **Fixed**: demo audio palette — hardcoded 4-palette mapping + MutationObserver _(a5701cc)_
+- **Added**: palette-aware kolory + restore inline audio player _(8912058)_
+- **Fixed**: anti-Service-Worker + cache storage cleanup w demo + index _(94f3508)_
+- **Fixed**: 3 ataki na cache + widoczny version marker _(e2ff92b)_
+- **Fixed**: cache invalidation + diagnostyka /demo-test + trace markers _(fe59bb7)_
+
+<!--
+Format wpisu:
+  - **Kategoria**: opis _(opcjonalnie data albo SHA)_
+
+Kategorie:
+  Added       — nowa funkcjonalność
+  Changed     — zmiana istniejącej
+  Fixed       — naprawa buga
+  Removed     — usunięte
+  Deprecated  — wycofywane
+  Security    — bezpieczeństwo
+
+Przy release: przenieś wpisy z [Unreleased] do nowej sekcji [X.Y.Z] - YYYY-MM-DD.
+-->

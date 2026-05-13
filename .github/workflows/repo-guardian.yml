@@ -1,0 +1,253 @@
+name: Repo Guardian
+
+# Serverowa weryfikacja. Działa NAWET jeśli ktoś ominie lokalne hooki (SKIP_HOOKS=1 push).
+# Trigger: każdy push i każdy PR do main + manualne uruchomienie.
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: guardian-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout (with history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # potrzebne do diff vs base
+
+      - name: Determine base ref
+        id: base
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+          else
+            # Push event — porównaj z poprzednim HEAD (pierwszy push: empty)
+            BASE="${{ github.event.before }}"
+            if [ "$BASE" = "0000000000000000000000000000000000000000" ] || [ -z "$BASE" ]; then
+              # Fallback: porównaj z poprzednim commitem na branchu
+              BASE=$(git rev-parse HEAD~1 2>/dev/null || git rev-parse HEAD)
+            fi
+          fi
+          echo "base=$BASE" >> "$GITHUB_OUTPUT"
+          echo "Base ref: $BASE"
+
+      - name: Validate commit messages
+        run: |
+          set -uo pipefail
+          BASE="${{ steps.base.outputs.base }}"
+          HEAD="${{ github.sha }}"
+
+          if [ "$BASE" = "$HEAD" ]; then
+            echo "Base == HEAD, nic do walidacji."
+            exit 0
+          fi
+
+          echo "Sprawdzam commity między $BASE a $HEAD..."
+          COMMITS=$(git rev-list --no-merges "$BASE..$HEAD" 2>/dev/null || true)
+          if [ -z "$COMMITS" ]; then
+            echo "Brak commitów do sprawdzenia (merge-only push?)."
+            exit 0
+          fi
+
+          FAIL=0
+          TYPES='feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert|content'
+          REGEX="^(${TYPES})(\([a-z0-9_./-]+\))?!?: .+"
+
+          for sha in $COMMITS; do
+            msg=$(git log -1 --pretty=format:%s "$sha")
+            body=$(git log -1 --pretty=format:%b "$sha")
+            short=$(git log -1 --pretty=format:%h "$sha")
+            author=$(git log -1 --pretty=format:%an "$sha")
+
+            echo ""
+            echo "── $short by $author"
+            echo "   $msg"
+
+            # Special commits — skip
+            case "$msg" in
+              "Merge "*|"Revert "*|"Initial commit"|"fixup! "*|"squash! "*|"amend! "*)
+                echo "   ↪ special commit, OK"
+                continue
+                ;;
+            esac
+
+            # Header check
+            if ! echo "$msg" | grep -qE "$REGEX"; then
+              echo "   ❌ Nieprawidłowy header (Conventional Commits)"
+              echo "      Oczekiwany format: type(scope): opis"
+              echo "      Dozwolone typy: feat fix docs style refactor perf test chore ci build revert content"
+              FAIL=1
+              continue
+            fi
+
+            # Header length
+            len=${#msg}
+            if [ "$len" -gt 100 ]; then
+              echo "   ❌ Header za długi: $len znaków (max 100)"
+              FAIL=1
+              continue
+            fi
+
+            # Files changed in this commit
+            files=$(git show --name-only --pretty=format: "$sha" 2>/dev/null | grep -v '^$' || true)
+            doc_only=1
+            if [ -n "$files" ]; then
+              while IFS= read -r f; do
+                case "$f" in
+                  *.md|.github/*|.githooks/*|.guardian/*|CHANGELOG.md) ;;
+                  *) doc_only=0; break ;;
+                esac
+              done <<< "$files"
+            fi
+
+            # revert / chore(deps) exempt
+            case "$msg" in
+              revert*|chore\(deps*) doc_only=1 ;;
+            esac
+
+            if [ "$doc_only" = "0" ]; then
+              missing=""
+              echo "$body" | grep -qiE '^[[:space:]]*Co:' || missing="$missing Co:"
+              echo "$body" | grep -qiE '^[[:space:]]*Czemu:' || missing="$missing Czemu:"
+              echo "$body" | grep -qiE '^[[:space:]]*Test:' || missing="$missing Test:"
+              if [ -n "$missing" ]; then
+                echo "   ❌ Brak sekcji raportu w body:$missing"
+                echo "   Wymagane Co: / Czemu: / Test:"
+                FAIL=1
+                continue
+              fi
+            fi
+
+            echo "   ✓ OK"
+          done
+
+          if [ "$FAIL" = "1" ]; then
+            echo ""
+            echo "Niektóre commity nie spełniają standardu Repo Guardian."
+            echo "Lokalnie zwykle wyłapie to commit-msg hook — sprawdź czy core.hooksPath = .githooks (uruchom: bash scripts/setup-hooks.sh)."
+            exit 1
+          fi
+
+          echo ""
+          echo "Wszystkie commit messages OK."
+
+      - name: Check CHANGELOG.md updated when source changes
+        run: |
+          set -uo pipefail
+          BASE="${{ steps.base.outputs.base }}"
+          HEAD="${{ github.sha }}"
+
+          if [ "$BASE" = "$HEAD" ]; then exit 0; fi
+
+          CHANGED=$(git diff --name-only "$BASE" "$HEAD" 2>/dev/null || true)
+          if [ -z "$CHANGED" ]; then
+            echo "Brak zmian — OK."
+            exit 0
+          fi
+
+          SOURCE_CHANGED=0
+          CHANGELOG_TOUCHED=0
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              *.html|*.jsx|*.tsx|*.js|*.ts|*.css|*.json|*.sh|*.py|*.sql) SOURCE_CHANGED=1 ;;
+              api/*|scripts/*|supabase/*) SOURCE_CHANGED=1 ;;
+              vercel.json|robots.txt|sitemap.xml|site.webmanifest) SOURCE_CHANGED=1 ;;
+            esac
+            if [ "$f" = "CHANGELOG.md" ]; then
+              CHANGELOG_TOUCHED=1
+            fi
+          done <<< "$CHANGED"
+
+          if [ "$SOURCE_CHANGED" = "1" ] && [ "$CHANGELOG_TOUCHED" = "0" ]; then
+            echo "❌ Zmiany w plikach źródłowych ale CHANGELOG.md nie zaktualizowany."
+            echo ""
+            echo "Dodaj wpis pod ## [Unreleased]:"
+            echo "  - **Fixed**: opis zmiany"
+            echo ""
+            echo "Lub uruchom lokalnie: npm run report"
+            exit 1
+          fi
+          echo "✓ CHANGELOG.md sync."
+
+      - name: Detect secrets in diff
+        run: |
+          set -uo pipefail
+          BASE="${{ steps.base.outputs.base }}"
+          HEAD="${{ github.sha }}"
+          if [ "$BASE" = "$HEAD" ]; then exit 0; fi
+
+          DIFF=$(git diff "$BASE" "$HEAD" -- ':!*.lock' ':!package-lock.json' 2>/dev/null || true)
+          if echo "$DIFF" | grep -E '(\+|-).*(sk_live_[A-Za-z0-9]{20,}|whsec_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|SUPABASE_SERVICE_ROLE_KEY\s*=\s*[^\s]{20,}|RESEND_API_KEY\s*=\s*re_[A-Za-z0-9]{20,})' >/dev/null; then
+            echo "❌ Wykryto wzorzec sekretu w diff."
+            echo "Sprawdź: Stripe live, AWS, Supabase service role, Resend API key"
+            exit 1
+          fi
+          echo "✓ Brak oczywistych sekretów w diff."
+
+      - name: Refuse forbidden files
+        run: |
+          set -uo pipefail
+          BASE="${{ steps.base.outputs.base }}"
+          HEAD="${{ github.sha }}"
+          if [ "$BASE" = "$HEAD" ]; then exit 0; fi
+
+          CHANGED=$(git diff --name-only "$BASE" "$HEAD" 2>/dev/null || true)
+          FAIL=0
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              .env|.env.*|*.env|*.env.local|*.env.production)
+                echo "❌ Plik .env w diff: $f — to nie może wjechać do repo."
+                FAIL=1
+                ;;
+            esac
+          done <<< "$CHANGED"
+          if [ "$FAIL" = "1" ]; then exit 1; fi
+          echo "✓ Brak zakazanych plików."
+
+      - name: Hook integrity (sanity)
+        run: |
+          set -uo pipefail
+          MISSING=""
+          for h in _lib.sh pre-commit prepare-commit-msg commit-msg pre-push post-merge post-checkout; do
+            if [ ! -f ".githooks/$h" ]; then
+              MISSING="$MISSING $h"
+            fi
+          done
+          if [ -n "$MISSING" ]; then
+            echo "❌ Brakujące hooki w repo:$MISSING"
+            exit 1
+          fi
+          # check that hooks are executable
+          for h in pre-commit prepare-commit-msg commit-msg pre-push post-merge post-checkout; do
+            if [ ! -x ".githooks/$h" ]; then
+              echo "⚠️  Hook .githooks/$h nie jest +x — uruchom 'bash scripts/setup-hooks.sh' lokalnie."
+            fi
+          done
+          echo "✓ Hooki kompletne."
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Repo Guardian — Wynik" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Event: ${{ github.event_name }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Branch: ${{ github.ref_name }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Commit: ${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Status: ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"

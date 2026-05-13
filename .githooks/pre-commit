@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+# Repo Guardian — pre-commit gate.
+# Blocks commits that:
+#   1. Stage suspected secrets (Stripe live, AWS, JWT, Supabase service role, Resend API)
+#   2. Modify source files but don't update CHANGELOG.md (forces reporting)
+#   3. Stage files >5 MB (Vercel deploy & git-clone hostile)
+#   4. Stage a .env-style file
+#
+# Bypass: SKIP_HOOKS=1 SKIP_REASON="hotfix — domain down" git commit ...
+
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck disable=SC1091
+. "${HOOK_DIR}/_lib.sh"
+
+if guardian_skip_active; then
+  guardian_log_skip "pre-commit"
+  exit 0
+fi
+
+# ------------------------------------------------------------------------------
+# 1. Collect staged files
+# ------------------------------------------------------------------------------
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
+if [ -z "$STAGED_FILES" ]; then
+  guardian_warn "Empty staged set — nothing to validate. (Hook still passes; git will reject the empty commit.)"
+  exit 0
+fi
+
+guardian_log "pre-commit: validating $(echo "$STAGED_FILES" | wc -l | tr -d ' ') staged file(s)"
+
+FAIL=0
+
+# ------------------------------------------------------------------------------
+# 2. Secret scan
+# ------------------------------------------------------------------------------
+while IFS= read -r f; do
+  [ -z "$f" ] && continue
+  # Block .env files outright, regardless of content
+  case "$f" in
+    .env|.env.*|*.env|*.env.local|*.env.production|*.env.development)
+      guardian_error "Refusing to commit env file: $f"
+      guardian_error "  → add it to .gitignore, then 'git rm --cached $f'"
+      FAIL=1
+      continue
+      ;;
+  esac
+  # Skip binaries — secret scan only on text
+  if [ -f "$f" ] && file "$f" 2>/dev/null | grep -qE '(text|JSON|XML|HTML|empty)'; then
+    staged_content=$(git diff --cached -- "$f" 2>/dev/null | grep '^+' | grep -v '^+++')
+    if [ -n "$staged_content" ] && guardian_looks_like_secret "$staged_content"; then
+      guardian_error "Possible secret detected in staged content of: $f"
+      guardian_error "  → review the diff. If false positive, use SKIP_HOOKS=1 SKIP_REASON=... to bypass."
+      FAIL=1
+    fi
+  fi
+done <<< "$STAGED_FILES"
+
+# ------------------------------------------------------------------------------
+# 3. Large-file guard (>5 MB)
+# ------------------------------------------------------------------------------
+while IFS= read -r f; do
+  [ -z "$f" ] && continue
+  [ -f "$f" ] || continue
+  size=$(wc -c < "$f" 2>/dev/null | tr -d ' ')
+  if [ -n "$size" ] && [ "$size" -gt 5242880 ]; then
+    mb=$((size / 1024 / 1024))
+    guardian_error "Refusing to commit large file ($mb MB): $f"
+    guardian_error "  → move to Vercel Blob / Supabase Storage / git-lfs, then re-stage."
+    FAIL=1
+  fi
+done <<< "$STAGED_FILES"
+
+# ------------------------------------------------------------------------------
+# 4. CHANGELOG.md reporting gate
+# ------------------------------------------------------------------------------
+SOURCE_CHANGED=0
+CHANGELOG_TOUCHED=0
+DOC_ONLY=1
+while IFS= read -r f; do
+  [ -z "$f" ] && continue
+  if guardian_is_source_change "$f"; then
+    SOURCE_CHANGED=1
+    DOC_ONLY=0
+  fi
+  if [ "$f" = "CHANGELOG.md" ]; then
+    CHANGELOG_TOUCHED=1
+  fi
+  # docs/templates don't count as source — but also don't count as "code-only"
+  case "$f" in
+    *.md|.github/*|.githooks/*|.guardian/*) ;;
+    *) DOC_ONLY=0 ;;
+  esac
+done <<< "$STAGED_FILES"
+
+if [ "$SOURCE_CHANGED" = "1" ] && [ "$CHANGELOG_TOUCHED" = "0" ]; then
+  guardian_error "Source files changed but CHANGELOG.md is untouched."
+  guardian_error ""
+  guardian_error "  Required: add an entry under [Unreleased] in CHANGELOG.md"
+  guardian_error "    1. Open CHANGELOG.md"
+  guardian_error "    2. Under '## [Unreleased]' add a line like:"
+  guardian_error "       - <Added|Changed|Fixed|Removed|Security>: <one-line opis>"
+  guardian_error "    3. git add CHANGELOG.md && re-commit"
+  guardian_error ""
+  guardian_error "  Shortcut: 'npm run report' opens a prompt that appends for you."
+  guardian_error "  Emergency bypass: SKIP_HOOKS=1 SKIP_REASON=\"why\" git commit ..."
+  FAIL=1
+fi
+
+# ------------------------------------------------------------------------------
+# 5. Result
+# ------------------------------------------------------------------------------
+if [ "$FAIL" = "1" ]; then
+  guardian_error "pre-commit FAILED — commit aborted."
+  exit 1
+fi
+
+guardian_log_activity "pre-commit:pass" "files=$(echo "$STAGED_FILES" | wc -l | tr -d ' ')"
+guardian_ok "pre-commit OK"
+exit 0

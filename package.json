@@ -1,0 +1,24 @@
+{
+    "name": "zaproszeniaonline",
+    "version": "0.1.0",
+    "private": true,
+    "description": "zaproszeniaonline.com \u2014 statyczna strona + lead form + demo + Stripe + Supabase. Vercel auto-deploy.",
+    "homepage": "https://zaproszeniaonline.com",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nicolasworoszylo-jpg/zaproszenia.git"
+    },
+    "scripts": {
+        "setup": "bash scripts/setup-hooks.sh",
+        "postinstall": "bash scripts/setup-hooks.sh || true",
+        "preflight": "bash scripts/preflight.sh",
+        "report": "bash scripts/report.sh",
+        "guardian:protect": "bash scripts/setup-branch-protection.sh",
+        "guardian:status": "bash scripts/setup-branch-protection.sh --check",
+        "test": "echo \"no automated tests yet \u2014 static site\" && exit 0"
+    },
+    "engines": {
+        "node": ">=18"
+    },
+    "license": "UNLICENSED"
+}
