@@ -2979,11 +2979,15 @@
           <div class="lf-section lf-section-consents">
             <div class="lead-form-checkbox">
               <input type="checkbox" id="lf-rodo" name="rodo" required="">
-              <label for="lf-rodo">Wyrażam zgodę na przetwarzanie moich danych zgodnie z <a href="/privacy" target="_blank" rel="noopener">Polityką Prywatności</a> i <a href="/terms" target="_blank" rel="noopener">Regulaminem</a>. *</label>
+              <label for="lf-rodo">Wyrażam zgodę na przetwarzanie moich danych zgodnie z <a href="/privacy" target="_blank" rel="noopener">Polityką Prywatności</a> i <a href="/terms" target="_blank" rel="noopener">Regulaminem</a>. Niezależnie od zgody marketingowej otrzymam wiadomości <strong>transakcyjne</strong> niezbędne do realizacji zamówienia (potwierdzenie, link do strony, status). *</label>
             </div>
             <div class="lead-form-checkbox">
               <input type="checkbox" id="lf-consent-immediate" name="consent_immediate" required="">
-              <label for="lf-consent-immediate"><strong>Wyrażam wyraźną zgodę</strong> na rozpoczęcie świadczenia usługi (projekt strony) przed upływem 14-dniowego terminu odstąpienia. Przyjmuję do wiadomości, że po pełnym wykonaniu usługi <strong>tracę prawo odstąpienia</strong> zgodnie z art. 38 ust. 1 pkt 1 ustawy o prawach konsumenta. *</label>
+              <label for="lf-consent-immediate"><strong>Wyrażam wyraźną zgodę</strong> na rozpoczęcie świadczenia usługi (projekt strony) przed upływem 14-dniowego terminu odstąpienia. Przyjmuję do wiadomości, że po pełnym wykonaniu usługi <strong>tracę prawo odstąpienia</strong> zgodnie z art. 38 pkt 3 ustawy o prawach konsumenta. *</label>
+            </div>
+            <div class="lead-form-checkbox lead-form-checkbox--optional">
+              <input type="checkbox" id="lf-consent-marketing" name="consent_marketing">
+              <label for="lf-consent-marketing"><em>Opcjonalnie:</em> chcę otrzymywać inspiracje, informacje o nowych funkcjach i rabaty dla powracających par (1-2 maile / miesiąc, można wypisać się jednym kliknięciem). Zgoda dobrowolna — brak nie blokuje zamówienia.</label>
             </div>
           </div>
 
@@ -3505,6 +3509,9 @@
       const eventDate = (fd.get('event_date') || '').toString();
       const rodo = document.getElementById('lf-rodo').checked;
       const consentImmediate = document.getElementById('lf-consent-immediate')?.checked ?? false;
+      const consentMarketing = document.getElementById('lf-consent-marketing')?.checked ?? false;
+      const consentTimestamp = new Date().toISOString();
+      const consentVersion = 'privacy-2026-05-13';
       if (!couple || !eventDate) {
         showMsg('Wymagane: imiona pary + data wydarzenia (sekcja 01).', 'error');
         document.getElementById('lf-couple').scrollIntoView({behavior:'smooth', block:'center'});
@@ -3581,6 +3588,12 @@
         referrer:        (document.referrer || '').slice(0, 500) || null,
         affiliate_code:         affRaw ? affRaw.toUpperCase() : null,
         affiliate_discount_pct: (affValidated && affValidated.valid) ? affValidated.discount_pct : null,
+        // RODO art. 7 ust. 1 - rejestr zgód (timestamp + wersja treści)
+        consent_marketing:      consentMarketing,
+        consent_rodo_at:        consentTimestamp,
+        consent_immediate_at:   consentTimestamp,
+        consent_marketing_at:   consentMarketing ? consentTimestamp : null,
+        consent_version:        consentVersion,
       };
 
       try {
@@ -3597,6 +3610,12 @@
           referrer: payload.referrer,
           affiliate_code: payload.affiliate_code,
           affiliate_discount_pct: payload.affiliate_discount_pct,
+          // RODO art. 7 - rejestr zgód (wymaga kolumn w Supabase, patrz supabase/migrations/2026-05-13_consent_log.sql)
+          consent_marketing:    payload.consent_marketing,
+          consent_rodo_at:      payload.consent_rodo_at,
+          consent_immediate_at: payload.consent_immediate_at,
+          consent_marketing_at: payload.consent_marketing_at,
+          consent_version:      payload.consent_version,
         };
         // Dorzuć rozszerzone pola - jeśli kolumna nie istnieje w DB, Supabase ją pominie (PostgREST tolerant) tylko gdy unknown columns errors są disabled. Bezpieczniej: stack do JSON w message.
         const storyParts = [
@@ -3749,13 +3768,15 @@ ${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
     </div>
   </dialog>
 
-  <!-- ─── COOKIE CONSENT BANNER (RODO) ─── -->
-  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Zgoda na cookies" hidden="">
-    <p class="cookie-text">Używamy plików cookies, żeby strona działała sprawnie i zapamiętała Wasze preferencje. <strong>Nie używamy reklam ani trackerów</strong>. <a href="/cookies" data-legal="cookies">Czytaj więcej</a>.</p>
+  <!-- ─── COOKIE CONSENT BANNER (RODO + ePrivacy / PKE art. 173 + EDPB 03/2022) ─── -->
+  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Zgoda na cookies i analitykę" hidden="">
+    <p class="cookie-text"><strong>Cookies i analityka.</strong> Strona działa w pełni anonimowo — nie używamy reklam ani trackerów reklamowych. Możemy uruchomić cookieless analitykę Vercel (mierzenie liczby wizyt, bez identyfikacji osób) tylko po Waszej zgodzie. <a href="/cookies" data-legal="cookies">Czytaj więcej</a>.</p>
     <div class="cookie-actions">
-      <button type="button" class="cookie-btn cookie-btn-essential" id="cookie-essential" style="cursor:pointer">Tylko niezbędne</button>
-      <button type="button" class="cookie-btn cookie-btn-all" id="cookie-all" style="cursor:pointer">Akceptuję</button>
+      <button type="button" class="cookie-btn cookie-btn-equal" id="cookie-reject" style="cursor:pointer">Odrzuć</button>
+      <button type="button" class="cookie-btn cookie-btn-equal" id="cookie-essential" style="cursor:pointer">Tylko niezbędne</button>
+      <button type="button" class="cookie-btn cookie-btn-equal" id="cookie-all" style="cursor:pointer">Akceptuję wszystko</button>
     </div>
+    <p class="cookie-meta">Zgoda jest ważna 12 miesięcy. Możecie ją zmienić w dowolnym momencie klikając <button type="button" class="cookie-link-btn" id="cookie-reset-link">Zarządzaj zgodą</button>.</p>
   </div>
 
   <style>
@@ -3852,21 +3873,28 @@ ${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
     .cookie-text { font-size: 0.85rem; color: #4A4A4A; line-height: 1.55; margin: 0 0 1rem; }
     .cookie-text strong { color: #2C3E2D; }
     .cookie-text a { color: #2C3E2D; text-decoration: underline; }
-    .cookie-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .cookie-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
     .cookie-btn {
-      flex: 1; min-width: 130px;
+      flex: 1; min-width: 110px;
       padding: 10px 14px;
       font-family: inherit; font-size: 0.85rem; font-weight: 500;
       border-radius: 100px; cursor: pointer;
       transition: all 0.2s;
     }
-    .cookie-btn-essential { background: transparent; color: #4A4A4A; border: 1px solid #EBEBEB; }
-    .cookie-btn-essential:hover { border-color: #2C3E2D; color: #2C3E2D; }
-    .cookie-btn-all { background: #2C3E2D; color: #FFFFFF; border: 1px solid #2C3E2D; }
-    .cookie-btn-all:hover { background: #1E2B1F; transform: translateY(-1px); }
+    /* RÓWNORZĘDNE WIZUALNIE (EDPB Guidelines 03/2022: brak dark patterns) */
+    .cookie-btn-equal { background: transparent; color: #2C3E2D; border: 1px solid #2C3E2D; }
+    .cookie-btn-equal:hover { background: #2C3E2D; color: #FFFFFF; transform: translateY(-1px); }
+    .cookie-meta { font-size: 0.72rem; color: #999; margin: 0.85rem 0 0; line-height: 1.45; }
+    .cookie-meta button.cookie-link-btn {
+      background: none; border: none; padding: 0; color: #2C3E2D; cursor: pointer;
+      font: inherit; text-decoration: underline; text-underline-offset: 2px;
+    }
+    .cookie-meta button.cookie-link-btn:hover { color: #1E2B1F; }
     @media (max-width: 600px) {
       .cookie-banner { left: 0.75rem; right: 0.75rem; padding: 1rem 1.1rem; }
       .cookie-text { font-size: 0.8rem; }
+      .cookie-actions { gap: 0.4rem; }
+      .cookie-btn { min-width: 100%; }
     }
   </style>
 
@@ -3934,38 +3962,96 @@ ${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
       });
     })();
 
-    /* ─── COOKIE CONSENT ─── */
+    /* ─── COOKIE CONSENT (RODO + ePrivacy/PKE art. 173 + EDPB 03/2022)
+     * Stany: 'all' (akceptacja analytics), 'essential' (tylko niezbędne), 'reject' (brak analitiki)
+     * TTL: 12 miesięcy (rekomendacja UODO + EDPB - re-prompt po roku)
+     * Record: {v: value, t: timestamp_ms, ver: content_version}
+     */
     (function() {
       const banner = document.getElementById('cookie-banner');
       if (!banner) return;
-      let consent = null;
-      try { consent = localStorage.getItem('cookie_consent'); } catch (e) {}
+      const CONSENT_KEY = 'cookie_consent';
+      const CONSENT_TTL_MS = 365 * 24 * 60 * 60 * 1000; // 12 miesięcy
+      const CONSENT_VERSION = '2026-05-13'; // bump przy zmianie treści banner-a / polityk
 
-      if (!consent) {
-        // Show banner po krótkim opóźnieniu (UX, żeby user najpierw zobaczył hero)
-        setTimeout(() => { banner.hidden = false; }, 1200);
+      function readConsent() {
+        try {
+          const raw = localStorage.getItem(CONSENT_KEY);
+          if (!raw) return null;
+          // Backward compat: stara forma 'all'/'essential' (string)
+          if (raw === 'all' || raw === 'essential' || raw === 'reject') {
+            return { v: raw, t: 0, ver: 'legacy' };
+          }
+          const parsed = JSON.parse(raw);
+          if (!parsed || !parsed.v) return null;
+          // Expire after TTL
+          if (Date.now() - (parsed.t || 0) > CONSENT_TTL_MS) return null;
+          // Force re-consent jeśli wersja treści zmieniona
+          if (parsed.ver !== CONSENT_VERSION) return null;
+          return parsed;
+        } catch (e) { return null; }
       }
 
-      function setConsent(value) {
-        try { localStorage.setItem('cookie_consent', value); } catch (e) {}
+      function writeConsent(value) {
+        const record = { v: value, t: Date.now(), ver: CONSENT_VERSION };
+        try { localStorage.setItem(CONSENT_KEY, JSON.stringify(record)); } catch (e) {}
+        // Dispatch event - analytics loader uses this
+        document.dispatchEvent(new CustomEvent('consentchange', { detail: record }));
+      }
+
+      function hideBanner() {
         banner.style.transition = 'opacity 0.4s, transform 0.4s';
         banner.style.opacity = '0';
         banner.style.transform = 'translateY(20px)';
         setTimeout(() => { banner.hidden = true; }, 400);
       }
 
+      function showBanner() {
+        banner.hidden = false;
+        banner.style.opacity = '';
+        banner.style.transform = '';
+      }
+
+      function setConsent(value) {
+        writeConsent(value);
+        hideBanner();
+      }
+
+      const current = readConsent();
+      if (!current) {
+        setTimeout(() => { showBanner(); }, 1200);
+      }
+
       document.getElementById('cookie-all')?.addEventListener('click', () => setConsent('all'));
       document.getElementById('cookie-essential')?.addEventListener('click', () => setConsent('essential'));
+      document.getElementById('cookie-reject')?.addEventListener('click', () => setConsent('reject'));
+
+      // "Zarządzaj zgodą" - ponowne otwarcie banner-a
+      document.getElementById('cookie-reset-link')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        try { localStorage.removeItem(CONSENT_KEY); } catch (err) {}
+        showBanner();
+      });
+
+      // Globalny helper żeby reset z innych miejsc (np. footer link "Ustawienia cookies")
+      window.openCookieSettings = function() {
+        try { localStorage.removeItem(CONSENT_KEY); } catch (err) {}
+        showBanner();
+      };
+
+      // Expose dla analytics loader
+      window.getCookieConsent = function() {
+        const r = readConsent();
+        return r ? r.v : null;
+      };
     })();
   </script>
 
-  <!-- Vercel Web Analytics + Speed Insights - privacy-first, zero cookies tracking, ALE ładujemy DOPIERO po consent zgodnie z art. 173 PKE -->
+  <!-- Vercel Web Analytics + Speed Insights — cookieless, ładowane DOPIERO po consent='all' (art. 173 PKE + EDPB 03/2022) -->
   <script>
     (function() {
-      let consent = null;
-      try { consent = localStorage.getItem('cookie_consent'); } catch (e) {}
-      // Ładuj analytics tylko gdy user zaakceptował 'all' (NIE 'essential', NIE null)
-      if (consent === 'all') {
+      function loadAnalytics() {
+        if (document.querySelector('script[src="/_vercel/insights/script.js"]')) return;
         const s1 = document.createElement('script');
         s1.defer = true; s1.src = '/_vercel/insights/script.js';
         document.head.appendChild(s1);
@@ -3973,17 +4059,23 @@ ${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
         s2.defer = true; s2.src = '/_vercel/speed-insights/script.js';
         document.head.appendChild(s2);
       }
-      // Re-load po klik 'Akceptuję' bez full reload (UX)
-      document.getElementById('cookie-all')?.addEventListener('click', () => {
-        if (!document.querySelector('script[src="/_vercel/insights/script.js"]')) {
-          const s1 = document.createElement('script');
-          s1.defer = true; s1.src = '/_vercel/insights/script.js';
-          document.head.appendChild(s1);
-          const s2 = document.createElement('script');
-          s2.defer = true; s2.src = '/_vercel/speed-insights/script.js';
-          document.head.appendChild(s2);
-        }
-      }, { once: true });
+
+      // Initial check (DOMContentLoaded gdy banner script już ustawił helper)
+      function check() {
+        const consent = (window.getCookieConsent && window.getCookieConsent()) || null;
+        if (consent === 'all') loadAnalytics();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', check);
+      } else {
+        check();
+      }
+
+      // React on user accepting later (no full reload)
+      document.addEventListener('consentchange', (e) => {
+        if (e.detail && e.detail.v === 'all') loadAnalytics();
+      });
     })();
   </script>
 

@@ -22,6 +22,7 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Security**: Audyt RODO + ePrivacy + EDPB 03/2022 — 8 luk naprawionych (3 krytyczne). Self-host fonts w privacy/terms/returns/404/one-pager (eliminacja transferu IP do Google LLC, LG München 3 O 17493/20). Cookie banner: 3 równorzędne przyciski + TTL 12 mc + content_version + "Zarządzaj zgodą". Privacy: Resend aktywny procesor, sekcja transakcyjne vs marketing opt-in, rejestr zgód. Lead form: 3. checkbox consent_marketing + timestamp rejestr. Demo/Alergie: disclaimer art. 9. CSP w vercel.json. RCP: 8. proces + RCP_metadata.md. Migracja Supabase consent_log_rodo zaaplikowana _(2026-05-13)_
 - **Changed**: Repo Guardian — poluzowano wymóg Co/Czemu/Test (z hard-fail na soft-warning + minimalny body 30 chars). Workflow + commit-msg hook _(2026-05-13)_
 - **Added**: Conditional Reminders system — `.repo-rules.yml` (19 reguł deklaratywnych), `.githooks/post-commit` (lokalne reminders + macOS notification), `.github/workflows/conditional-reminders.yml` (auto-komentarze na PR/commit) _(2026-05-13)_
 - **Added**: `scripts/setup-multi-pc.sh` — jedno-klikowy installer dla 2-laptop workflow (aktywuje core.hooksPath, pull.rebase, rerere) _(2026-05-13)_

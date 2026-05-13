@@ -11,9 +11,10 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&family=Playfair+Display:ital,wght@1,400&family=Outfit:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Self-hosted fonts (RODO clean - zero transferu do Google). 404 używa Cormorant+Playfair (z palety demo) + system sans w miejsce Outfit. -->
+  <link rel="preload" href="/fonts/cormorant.woff2" as="font" type="font/woff2" crossorigin="">
+  <link rel="preload" href="/fonts/playfair-italic.woff2" as="font" type="font/woff2" crossorigin="">
+  <link rel="stylesheet" href="/fonts/fonts.css">
 
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing: border-box; }
@@ -27,7 +28,7 @@
       padding: 2rem 1.5rem;
       background: linear-gradient(170deg, #1E2B1F 0%, #2C3E2D 50%, #1E2B1F 100%);
       color: #FAF6EF;
-      font-family: 'Outfit', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       position: relative;
       overflow: hidden;
     }

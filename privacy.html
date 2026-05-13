@@ -9,9 +9,10 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+  <!-- Self-hosted fonts (RODO clean - zero transferu danych do Google) -->
+  <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin="">
+  <link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin="">
+  <link rel="stylesheet" href="/fonts/fonts.css">
 
   <style>
     :root {
@@ -175,7 +176,7 @@
     <a href="/" class="legal-back">← Wróć na stronę główną</a>
     <p class="legal-eyebrow">Polityka prywatności</p>
     <h1 class="legal-title">Twoje dane są <em>bezpieczne</em></h1>
-    <p class="legal-meta">Ostatnia aktualizacja: 28 kwietnia 2026</p>
+    <p class="legal-meta">Ostatnia aktualizacja: 13 maja 2026</p>
   </div>
 
   <main>
@@ -256,12 +257,37 @@
       <li><strong>Sugestia:</strong> jeśli chcesz uniknąć przetwarzania prawdziwych danych, w demo używaj wartości testowych (np. „Jan Testowy", brak prawdziwego adresu e-mail)</li>
     </ul>
 
+    <h3>2.8 Wiadomości transakcyjne i opcjonalna komunikacja marketingowa</h3>
+    <p>Po złożeniu zapytania i dokonaniu płatności wysyłamy Wam <strong>wiadomości transakcyjne</strong> niezbędne do realizacji umowy — bez nich nie da się zrealizować usługi:</p>
+    <ul>
+      <li>Potwierdzenie złożenia zapytania (na adres podany w formularzu)</li>
+      <li>Potwierdzenie otrzymania płatności</li>
+      <li>Link do gotowej strony ślubnej i instrukcja użycia</li>
+      <li>Powiadomienia o statusie zamówienia, ewentualnych poprawkach, terminach</li>
+    </ul>
+    <ul>
+      <li><strong>Podstawa prawna:</strong> art. 6 ust. 1 lit. b RODO - wykonanie umowy. Tych wiadomości <strong>nie da się wyłączyć</strong> bo są integralną częścią usługi.</li>
+      <li><strong>Dostawca:</strong> Resend Inc. (USA) - patrz sekcja 3</li>
+    </ul>
+    <p>Jeśli przy zamówieniu wyraziliście dodatkową, dobrowolną zgodę marketingową (osobny checkbox - <em>Wyrażam zgodę na otrzymywanie informacji o nowych funkcjach i materiałów inspiracyjnych</em>), możemy wysyłać Wam także:</p>
+    <ul>
+      <li>Inspiracje, pomysły, case studies innych par (na życzenie)</li>
+      <li>Informacje o nowych funkcjach produktu</li>
+      <li>Rabaty dla osób, które już skorzystały z usługi</li>
+    </ul>
+    <ul>
+      <li><strong>Podstawa prawna:</strong> art. 6 ust. 1 lit. a RODO (zgoda) + art. 10 ust. 2 ustawy o świadczeniu usług drogą elektroniczną + art. 172 ust. 1 Prawa komunikacji elektronicznej</li>
+      <li><strong>Możesz wycofać zgodę</strong> w dowolnym momencie - link „rezygnuj z subskrypcji" w stopce każdego maila marketingowego lub mail na <a href="mailto:rodo@zaproszeniaonline.com">rodo@zaproszeniaonline.com</a>. Wycofanie nie wpływa na legalność wcześniejszego przetwarzania.</li>
+      <li><strong>Brak zgody marketingowej</strong> nie blokuje zamówienia - dostaniecie tylko maile transakcyjne.</li>
+    </ul>
+
     <h2>3. Odbiorcy danych</h2>
     <p>Twoje dane mogą być powierzane następującym podmiotom (procesorom):</p>
     <ul>
       <li><strong>Supabase Inc.</strong> (USA) - hosting bazy danych zgłoszeń, potwierdzeń obecności, kodów rabatowych. Przetwarzanie na podstawie Standard Contractual Clauses (SCC) zatwierdzonych przez Komisję Europejską oraz DPA Supabase (do podpisania w panelu administracyjnym Supabase)</li>
       <li><strong>Vercel Inc.</strong> (USA) - hosting strony internetowej, dostarczanie zasobów, logi serwera. Przetwarzanie na SCC oraz DPA Vercel (do akceptacji w ustawieniach projektu Vercel)</li>
-      <li><strong>Resend Inc.</strong> (USA) - wysyłka powiadomień e-mail. <em>Funkcjonalność jeszcze nieuruchomiona</em> - gdy zostanie wdrożona, niniejsza polityka zostanie zaktualizowana, a transfer odbywać się będzie na podstawie SCC oraz DPA Resend</li>
+      <li><strong>Resend Inc.</strong> (548 Market Street, San Francisco, CA 94104, USA) - dostawca infrastruktury e-mail, używany do wysyłki <strong>wiadomości transakcyjnych</strong>: potwierdzenia złożenia zapytania, potwierdzenia płatności, linku do gotowej strony ślubnej, powiadomień o statusie zamówienia. Przekazujemy: adres e-mail odbiorcy, imię, treść wiadomości, identyfikator zamówienia. Transfer w obrębie UE oraz do USA na podstawie SCC zgodnie z DPA Resend (<a href="https://resend.com/legal/dpa" target="_blank" rel="noopener">resend.com/legal/dpa</a>). Polityka Resend: <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">resend.com/legal/privacy-policy</a></li>
+      <li><strong>Vercel Inc. - Web Analytics i Speed Insights</strong> (USA) - <em>cookieless</em> analityka odwiedzin (liczba wizyt, urządzenie, kraj na podstawie zanonimizowanego IP), uruchamiana <strong>wyłącznie po Twojej zgodzie</strong> wyrażonej w banerze cookies („Akceptuję wszystko"). Brak identyfikacji osoby, brak personalizowanych reklam, brak danych przekazywanych brokerom. Polityka: <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">vercel.com/legal/privacy-policy</a></li>
       <li><strong>Stripe Payments Europe Ltd.</strong> (Irlandia, główna siedziba; spółka zależna Stripe Inc., USA) - operator płatności online. Przetwarza dane karty (numer, data ważności, CVC), kwotę, e-mail kupującego, adres do faktury. Zaproszeniaonline.com <strong>nie przechowuje</strong> danych karty - są one obsługiwane wyłącznie przez Stripe (PCI DSS Level 1). Transfer w obrębie UE oraz do USA na podstawie SCC zgodnie z DPA Stripe (<a href="https://stripe.com/legal/dpa" target="_blank" rel="noopener">stripe.com/legal/dpa</a>)</li>
       <li><strong>Biuro rachunkowe</strong> - w zakresie obsługi księgowej (dane z faktur)</li>
       <li><strong>Organy państwowe</strong> - w przypadku obowiązku ustawowego (np. żądanie sądu, kontrola PUODO)</li>
@@ -309,19 +335,25 @@
     <p>Bez podania wymaganych danych nie będziemy w stanie zrealizować usługi.</p>
 
     <h2>8. Bezpieczeństwo danych</h2>
-    <p>Stosujemy następujące środki techniczne i organizacyjne:</p>
+    <p>Stosujemy następujące środki techniczne i organizacyjne (art. 32 RODO):</p>
     <ul>
-      <li>Szyfrowanie połączeń (HTTPS/TLS) na wszystkich stronach</li>
+      <li>Szyfrowanie połączeń (HTTPS/TLS) na wszystkich stronach z HSTS preload</li>
       <li>Szyfrowanie bazy danych w spoczynku (Supabase encryption at rest)</li>
       <li>Kontrolę dostępu - tylko upoważnione osoby mają dostęp do danych</li>
-      <li>Row Level Security (RLS) na bazie danych - dane formularza nie są publicznie odczytywalne</li>
+      <li>Row Level Security (RLS) na bazie danych - anon może tylko zapisać własne zgłoszenie (bez SELECT)</li>
+      <li>Content Security Policy (CSP) ograniczająca źródła skryptów i zasobów - ochrona przed XSS</li>
+      <li>Permissions Policy wyłączająca dostęp do kamery / mikrofonu / lokalizacji</li>
       <li>Regularne kopie zapasowe (codzienne, retencja 7 dni)</li>
+      <li>Logging i monitoring zgłoszeń (Supabase + Vercel) - wyłącznie cel bezpieczeństwa</li>
     </ul>
 
-    <h2>9. Cookies</h2>
-    <p>Szczegółowe informacje o stosowanych plikach cookies znajdziesz w naszej <a href="/cookies">Polityce Cookies</a>.</p>
+    <h2>9. Rejestr zgód</h2>
+    <p>Każda zgoda wyrażona w naszych formularzach (zgoda na przetwarzanie, zgoda marketingowa, zgoda na rozpoczęcie świadczenia przed upływem 14-dniowego terminu odstąpienia, zgoda na cookies) jest rejestrowana wraz ze stemplem czasowym, wersją treści zgody i identyfikatorem zgłoszenia. Pozwala to udowodnić udzielenie zgody zgodnie z art. 7 ust. 1 RODO oraz pozwala na jej skuteczne wycofanie. Zgoda na cookies dodatkowo wygasa automatycznie po 12 miesiącach i wymaga ponownego wyrażenia.</p>
 
-    <h2>10. Zmiany Polityki Prywatności</h2>
+    <h2>10. Cookies i ustawienia prywatności</h2>
+    <p>Szczegółowe informacje o stosowanych plikach cookies oraz logach serwera znajdziesz w naszej <a href="/cookies">Polityce Cookies</a>. Możesz w każdej chwili zmienić swoją zgodę na cookies klikając przycisk <strong>„Zarządzaj zgodą"</strong> w banerze cookies (lub w stopce na stronie głównej).</p>
+
+    <h2>11. Zmiany Polityki Prywatności</h2>
     <p>Zastrzegamy sobie prawo do zmian Polityki. Każda zmiana zostanie opublikowana na tej stronie z aktualizacją daty obowiązywania. O istotnych zmianach poinformujemy aktywnych klientów drogą e-mailową.</p>
 
     <div class="legal-callout">
