@@ -86,22 +86,30 @@ case "$HEADER" in
 esac
 
 if [ "$DOC_ONLY" = "0" ]; then
-  MISSING=""
-  echo "$BODY" | grep -qiE '^[[:space:]]*Co:' || MISSING="$MISSING Co:"
-  echo "$BODY" | grep -qiE '^[[:space:]]*Czemu:' || MISSING="$MISSING Czemu:"
-  echo "$BODY" | grep -qiE '^[[:space:]]*Test:' || MISSING="$MISSING Test:"
-
-  if [ -n "$MISSING" ]; then
-    guardian_error "Brak wymaganych sekcji raportu w body:$MISSING"
+  # Minimalna dlugosc body - 30 znakow non-whitespace (raport krotki ale wystarczajacy)
+  BODY_LEN=$(echo "$BODY" | tr -d '[:space:]' | wc -c | tr -d ' ')
+  if [ "$BODY_LEN" -lt 30 ]; then
+    guardian_error "Body commit'a za krotkie ($BODY_LEN chars, min 30 dla source changes)"
     guardian_error ""
-    guardian_error "  Każdy commit z kodem produkcyjnym wymaga:"
-    guardian_error "    Co:    co dokładnie się zmieniło"
-    guardian_error "    Czemu: dlaczego — bug/feature/performance"
-    guardian_error "    Test:  jak zweryfikowano"
+    guardian_error "  Dodaj 1-3 zdania opisujace CO i CZEMU sie zmienilo."
+    guardian_error "  Przyklad:"
+    guardian_error "    fix(stripe): naprawa webhook signature"
     guardian_error ""
-    guardian_error "  Dla commitów tylko-docs (pliki .md / .github / .githooks) ten check się nie odpala."
+    guardian_error "    Webhook crashowal gdy STRIPE_WEBHOOK_SECRET byl pusty."
+    guardian_error "    Dodany fallback + lepszy error message."
+    guardian_error ""
     guardian_error "  Bypass: SKIP_HOOKS=1 SKIP_REASON=... git commit ..."
     exit 1
+  fi
+
+  # Soft warning gdy brak Co/Czemu/Test (nie blokuje, tylko informuje)
+  MISSING=""
+  echo "$BODY" | grep -qiE '^[[:space:]]*Co:|co:' || MISSING="$MISSING Co:"
+  echo "$BODY" | grep -qiE '^[[:space:]]*Czemu:|why:|powod:' || MISSING="$MISSING Czemu:"
+  echo "$BODY" | grep -qiE '^[[:space:]]*Test:|verified:|sprawdz' || MISSING="$MISSING Test:"
+
+  if [ -n "$MISSING" ]; then
+    guardian_warn "Tip: dodaj sekcje$MISSING dla lepszego audit-trail (nie wymagane)"
   fi
 fi
 

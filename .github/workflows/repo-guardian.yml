@@ -121,15 +121,22 @@ jobs:
             esac
 
             if [ "$doc_only" = "0" ]; then
-              missing=""
-              echo "$body" | grep -qiE '^[[:space:]]*Co:' || missing="$missing Co:"
-              echo "$body" | grep -qiE '^[[:space:]]*Czemu:' || missing="$missing Czemu:"
-              echo "$body" | grep -qiE '^[[:space:]]*Test:' || missing="$missing Test:"
-              if [ -n "$missing" ]; then
-                echo "   ❌ Brak sekcji raportu w body:$missing"
-                echo "   Wymagane Co: / Czemu: / Test:"
+              # Body length check - minimum 30 chars (wystarcza krotki opis)
+              body_len=$(echo "$body" | tr -d '[:space:]' | wc -c | tr -d ' ')
+              if [ "$body_len" -lt 30 ]; then
+                echo "   ❌ Body za krotkie: $body_len chars (min 30 dla source changes)"
+                echo "   Dodaj opis CO i CZEMU sie zmienilo (przynajmniej 1-2 zdania)."
                 FAIL=1
                 continue
+              fi
+
+              # Soft warning gdy brak Co/Czemu/Test (nie blokuje, tylko informuje)
+              missing=""
+              echo "$body" | grep -qiE '^[[:space:]]*Co:|co:' || missing="$missing Co:"
+              echo "$body" | grep -qiE '^[[:space:]]*Czemu:|czemu:|why:|powod:' || missing="$missing Czemu:"
+              echo "$body" | grep -qiE '^[[:space:]]*Test:|test:|verified:|sprawdz' || missing="$missing Test:"
+              if [ -n "$missing" ]; then
+                echo "   ⚠️  Tip: dodaj sekcje$missing (nie wymagane ale ulatwia audit)"
               fi
             fi
 

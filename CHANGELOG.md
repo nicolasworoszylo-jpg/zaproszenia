@@ -12,6 +12,7 @@ Szybkie dodanie wpisu: `npm run report` (lub `bash scripts/report.sh`).
 
 ## [Unreleased]
 
+- **Changed**: Repo Guardian — poluzowano wymóg Co/Czemu/Test (z hard-fail na soft-warning + minimalny body 30 chars). Workflow + commit-msg hook _(2026-05-13)_
 - **Added**: Conditional Reminders system — `.repo-rules.yml` (19 reguł deklaratywnych), `.githooks/post-commit` (lokalne reminders + macOS notification), `.github/workflows/conditional-reminders.yml` (auto-komentarze na PR/commit) _(2026-05-13)_
 - **Added**: `scripts/setup-multi-pc.sh` — jedno-klikowy installer dla 2-laptop workflow (aktywuje core.hooksPath, pull.rebase, rerere) _(2026-05-13)_
 - **Added**: `MULTI_PC_SYSTEM.md` — pełna dokumentacja 4-warstwowego systemu samoregulacji repo _(2026-05-13)_
