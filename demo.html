@@ -163,85 +163,80 @@
   });
   setTimeout(function(){wrap.classList.add('no-pulse');wrap.classList.add('no-label');},8000);
 
-  // ━━━ PALETTE SYNC v3: aggressive multi-source detection + tolerant match ━━━
-  // 4 palety demo (z compiled JS):
-  var PALETTES=[
-    {name:'Leśna zieleń',     deep:[30,43,31],  gold:'#C9A96E'},
-    {name:'Granat + róż',     deep:[17,29,43],  gold:'#D4A0A0'},
-    {name:'Bordo + kość',     deep:[53,16,29],  gold:'#C8A87C'},
-    {name:'Rdzawa terracotta',deep:[74,30,21],  gold:'#B85F2E'}
-  ];
-  function hexToRgb(h){h=h.replace('#','');return parseInt(h.substr(0,2),16)+','+parseInt(h.substr(2,2),16)+','+parseInt(h.substr(4,2),16);}
-  function parseRgb(s){
-    var m=s.match(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
-    return m ? [+m[1],+m[2],+m[3]] : null;
-  }
-  // TOLERANT MATCH: znajdz palete ktora ma najblizszy deep do podanego rgb
-  function findClosestPalette(rgb){
-    var best=null, minDist=Infinity;
-    PALETTES.forEach(function(p){
-      var d=Math.abs(rgb[0]-p.deep[0])+Math.abs(rgb[1]-p.deep[1])+Math.abs(rgb[2]-p.deep[2]);
-      if(d<minDist){minDist=d;best=p;}
+  // ━━━ PALETTE SYNC v4: celuj w aria-pressed="true" button palette switcher ━━━
+  // React renderuje 4 buttony palety z onClick + aria-pressed.
+  // Aktywny ma aria-pressed="true" + background: linear-gradient(135deg, FOREST 0%, GOLD 100%)
+  // Parsujemy gradient -> ekstraktujemy forest + gold -> ustawiamy CSS variables.
+
+  function rgbStr(r,g,b){return 'rgb('+r+','+g+','+b+')';}
+  function hexToRgbStr(h){h=h.replace('#','');return rgbStr(parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16));}
+
+  // Wyciąga 2 rgb z linear-gradient(135deg, rgb(r,g,b) 0%, rgb(r,g,b) 100%)
+  function parseGradient(s){
+    if(!s||s==='none') return null;
+    var matches=s.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/g);
+    if(!matches||matches.length<2) return null;
+    var p=matches.map(function(m){
+      var n=m.match(/(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+      return rgbStr(+n[1],+n[2],+n[3]);
     });
-    return minDist<=60 ? best : null; // tolerancja 60 jednostek total (ok 20 per channel)
+    return {forest:p[0], gold:p[1]};
   }
-  // MULTI-SOURCE SCAN: znajdz dominujacy ciemny kolor (deep) na stronie
-  // Sprawdz nav, sekcje, footer - jakiekolwiek element z ciemnym bg
-  function scanForDeepColor(){
-    // Lista kandydatow: nav, footer, ciemne sekcje, ceremony cards
-    var candidates=[
-      document.querySelector('#root nav'),
-      document.querySelector('body nav'),
-      document.querySelector('nav'),
-      document.querySelector('#root footer'),
-      document.querySelector('footer')
-    ].filter(Boolean);
-    // Plus: pierwsze 20 dziadow z computed bg kolorem (skanowanie)
-    if(candidates.length===0){
-      var all=document.querySelectorAll('#root *');
-      for(var i=0;i<Math.min(all.length,30);i++){
-        var bg=getComputedStyle(all[i]).backgroundColor;
-        if(bg && bg!=='rgba(0, 0, 0, 0)' && bg!=='transparent'){
-          var rgb=parseRgb(bg);
-          // Tylko ciemne (suma RGB < 250 = ciemne kolory)
-          if(rgb && rgb[0]+rgb[1]+rgb[2]<250) candidates.push(all[i]);
-        }
+
+  function findActivePaletteBtn(){
+    // Strategy 1: aria-pressed="true" na button (palette switcher)
+    var btns=document.querySelectorAll('button[aria-pressed="true"]');
+    for(var i=0;i<btns.length;i++){
+      var bg=getComputedStyle(btns[i]).backgroundImage;
+      if(bg && bg.indexOf('linear-gradient')>=0){
+        return btns[i];
       }
     }
-    // Sprawdz background kazdego kandydata, znajdz pasujace deep
-    for(var j=0;j<candidates.length;j++){
-      var rgb2=parseRgb(getComputedStyle(candidates[j]).backgroundColor);
-      if(rgb2 && rgb2[0]+rgb2[1]+rgb2[2]<200){ // ciemny
-        var match=findClosestPalette(rgb2);
-        if(match) return match;
+    // Strategy 2: button z aria-label "Zmień paletę:" + scale(1.2) lub box-shadow
+    var allBtns=document.querySelectorAll('button[aria-label*="palet"]');
+    for(var j=0;j<allBtns.length;j++){
+      var cs=getComputedStyle(allBtns[j]);
+      if(cs.transform && cs.transform.indexOf('1.2')>=0){
+        return allBtns[j];
       }
     }
     return null;
   }
-  function applyPalette(p){
+
+  function applyColors(forest, gold){
     var r=document.documentElement;
-    if(r.style.getPropertyValue('--audio-gold')===p.gold) return;
-    r.style.setProperty('--audio-gold',p.gold);
-    r.style.setProperty('--audio-deep','rgba('+p.deep[0]+','+p.deep[1]+','+p.deep[2]+',0.92)');
-    var goldRgb=hexToRgb(p.gold);
-    r.style.setProperty('--audio-gold-soft','rgba('+goldRgb+',0.55)');
+    if(r.style.getPropertyValue('--audio-gold')===gold) return; // idempotent
+    r.style.setProperty('--audio-gold',gold);
+    // deep = forest darkened (multiply 0.65) → rgba z alpha 0.92
+    var m=forest.match(/(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+    if(m){
+      var dr=Math.round(+m[1]*0.65), dg=Math.round(+m[2]*0.65), db=Math.round(+m[3]*0.65);
+      r.style.setProperty('--audio-deep','rgba('+dr+','+dg+','+db+',0.92)');
+    }
+    // gold-soft = gold z alpha 0.55
+    var gm=gold.match(/(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+    if(gm) r.style.setProperty('--audio-gold-soft','rgba('+gm[1]+','+gm[2]+','+gm[3]+',0.55)');
   }
+
   function syncPalette(){
-    var p=scanForDeepColor();
-    if(p) applyPalette(p);
+    var btn=findActivePaletteBtn();
+    if(!btn) return;
+    var bg=getComputedStyle(btn).backgroundImage;
+    var p=parseGradient(bg);
+    if(p) applyColors(p.forest, p.gold);
   }
-  // Aggressive polling: 300ms (smooth-fade transition 0.4s nie pozwoli zauwazyc)
+
+  // Aggressive: poll co 300ms + MutationObserver na body (attribute changes)
   setInterval(syncPalette,300);
-  // Plus MutationObserver na CALE body (nie tylko #root)
   function bootObserver(){
     if(!document.body){setTimeout(bootObserver,100);return;}
     new MutationObserver(syncPalette).observe(document.body,{
-      attributes:true, attributeFilter:['style','class'], subtree:true, childList:true
+      attributes:true, attributeFilter:['aria-pressed','style','class'], subtree:true, childList:true
     });
   }
   bootObserver();
-  // Pierwsze proby - krotkie, czeste, do czasu az React zaczyna renderowac
-  [200,500,800,1200,2000,3000].forEach(function(t){setTimeout(syncPalette,t);});
+  // Initial burst - React renderuje w różnych momentach
+  [200,500,800,1200,2000,3000,5000].forEach(function(t){setTimeout(syncPalette,t);});
 })();
 </script>
 
