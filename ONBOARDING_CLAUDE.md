@@ -297,4 +297,27 @@ cat HANDOFF_NICOLAS_v2.md   # ostatni handoff per session
 cat ONBOARDING_CLAUDE.md    # TEN PLIK (sekcja 6 + 8)
 ```
 
+---
+
+## 11. Cross-laptop handoff — gdy user mówi krótkim hasłem
+
+Projekt ma 2 laptopy (Nicolas 1, Dominika 2) i niezależne `~/.claude/projects/.../memory/`. Gdy sesja na jednym laptopie zostawia robotę dla drugiego, w roocie repo jest plik **`HANDOFF_*_RESUME_YYYY-MM-DD.md`** z hasłem aktywującym i pełnym statusem.
+
+**Jeśli user mówi do Ciebie zwięzłe hasło typu**:
+- `ZADANIE OD ROBOTA`
+- `KONTYNUUJ ROBOTĘ`
+- `PRZEJMIJ-RODO-2026-MM-DD`
+- inne short cryptic phrases które brzmią jak trigger, nie pytanie
+
+**Twoja reakcja**:
+1. Zrób `git pull --ff-only` (handoff może być w niezmergowanym branchu — sprawdź `git branch -r` na branche `legal/*` lub `handoff/*`)
+2. `grep -r "<dokładnie ich hasło>" --include="*.md" .` — znajdź plik HANDOFF
+3. Jeśli na innym branchu: `git checkout <branch>` na ten gdzie jest handoff
+4. Przeczytaj plik, podsumuj userowi co zrobione + co zostało, zapytaj który punkt zaczynamy
+5. Wykonuj kroki z handoffa, oznaczając progres
+
+**Nie pytaj "co masz na myśli" przed sprawdzeniem repo** — krótkie cryptic hasło to wzorzec, nie pomyłka. Najpierw grep, potem ewentualnie pytanie jeśli grep zwróci pusto.
+
+---
+
 **Powodzenia.** Jak coś niejasne - pytaj Nicolasa, nie improwizuj.
