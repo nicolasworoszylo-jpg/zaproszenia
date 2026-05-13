@@ -26,7 +26,7 @@
 
 ## 📝 Notatka od Dominiki
 
-Zrobiłam zadania 1–3 z Twojej listy. Stripe i Resend są auto-binding, więc żaden info-stamping nie był potrzebny — wszystko zarchiwizowane w repo. Supabase DPA podpisałeś dzisiaj sam, zostaje wrzucenie executed PDF.
+Zrobiłam zadania 1–4 z Twojej listy. Stripe i Resend są auto-binding, więc żaden info-stamping nie był potrzebny — wszystko zarchiwizowane w repo. Supabase DPA podpisałeś dzisiaj sam, zostaje wrzucenie executed PDF.
 
 Dalej nie poszłam, bo login OVH który wysłałeś po prostu nie zadziałał. A zadania 5 i 6 logicznie wymagają wejścia do OVH, więc się zatrzymałam.
 
