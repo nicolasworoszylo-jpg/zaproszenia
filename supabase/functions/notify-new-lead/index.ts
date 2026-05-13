@@ -271,7 +271,7 @@ function customerEmailHTML(lead: Lead): string {
               <div class="num" style="width:36px;height:36px;border-radius:50%;background:#2C3E2D;color:#FAF6EF;text-align:center;line-height:36px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.98rem;">III</div>
             </td>
             <td valign="top" style="padding-top:5px;">
-              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">Dostajecie własny URL i kod QR</strong> do druku. Wysyłacie linki gościom - potwierdzenia obecności trafiają od razu na Waszą skrzynkę.
+              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">Dostajecie własny URL i kod QR</strong> do druku. Wysyłacie linki gościom - potwierdzenia obecności trafiają od razu na Waszej skrzynce.
             </td>
           </tr>
         </table>
@@ -345,7 +345,7 @@ Otrzymaliśmy Wasze zamówienie i już zaczynamy przygotowywać projekt strony.
 Co dalej:
 I.   W ciągu 24 godzin dostaniecie link do podglądu strony - z imionami, datą, wybraną paletą.
 II.  Trzy rundy poprawek w cenie - odpisujecie na tego maila z uwagami.
-III. Dostajecie własny URL i kod QR do druku. Wysyłacie linki gościom - potwierdzenia obecności trafiają na Waszą skrzynkę.
+III. Dostajecie własny URL i kod QR do druku. Wysyłacie linki gościom - potwierdzenia obecności trafiają na Waszej skrzynce.
 
 Co warto przygotować:
 Jeśli wybraliście zdjęcia pary lub sekcję „Nasza historia" - wyślijcie materiały na zamowienia@zaproszeniaonline.com (2-3 zdjęcia + kilka zdań Waszej historii).
