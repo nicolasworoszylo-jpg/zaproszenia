@@ -16,6 +16,29 @@
 
 ---
 
+## 📝 Notatka od Dominiki — co poszło dobrze, co nie
+
+Wzięłam Twoją listę 6 zadań (4× DPA + OVH skrzynki + verification) i zrobiłam tyle, ile dało się **bez Twoich loginów**:
+
+**Co się udało:**
+- DPA Stripe i Resend — wszystko zarchiwizowane w repo, plus odkryłam że Twoje pierwotne instrukcje miały błędy (Stripe i Resend są **auto-binding**, w panelach nie ma żadnych przycisków "Accept" — manualnie zweryfikowane). Poprawiłam 3 pliki instruktażowe (`CLAUDE_IN_CHROME_PROMPTS`, `FIRST_CLIENT_CHECKLIST`, `LEGAL_TODO`).
+- Vercel — przy okazji wyszło że jesteśmy na Hobby, a Vercel DPA pokrywa **tylko Pro/Enterprise**. Czyli mamy lukę RODO. Zrobiłam decision doc z 4 opcjami — wymaga Twojej decyzji.
+- Supabase DPA — Ty podpisałeś dzisiaj w panelu (super!), zostaje tylko wrzucenie executed PDF do repo.
+
+**Gdzie utknęłam:**
+- **OVH Manager** (punkt 5️⃣ z Twojego promptu) — próbowałam się zalogować, hasło nie pasowało (albo coś z 2FA, albo zły login). Bez wejścia do panelu nie mogę założyć 3 skrzynek (kontakt/rodo/faktury) ani ustawić forwardowania na Twojego Gmaila. Nie chciałam też resetować Twojego hasła OVH na własną rękę, bo to Twój główny dostęp do domeny.
+- **Verification stack** (punkt 6️⃣) — zostawiłam bo to test produkcyjny który Ty znasz na pamięć, a ja w incognito bez kontekstu cookie bannera mogłabym zinterpretować coś źle (np. trzy przyciski równorzędne = test wzrokowy).
+
+**Dlaczego stop, a nie próbowałam dalej:**
+Reset Twojego hasła OVH = zmiana shared infrastruktury, której nie powinnam robić bez Twojej zgody. Plus było 20:30, byłabyś niepotrzebnie zaspamowana powiadomieniami z 2FA. Wybrałam czysty handoff zamiast półprodukt.
+
+**Co dostajesz w pakiecie:**
+- 4 commity na branchu `legal/stripe-dpa-vercel-decision-2026-05-13` gotowe do PR (link niżej)
+- Ten plik z Twoimi pierwotnymi promptami zachowanymi verbatim, żeby Twój Claude in Chrome mógł je wziąć 1:1
+- Hasło aktywujące do Twojego robota (na górze tego pliku)
+
+---
+
 ## Co już zrobione 2026-05-13
 
 ### ✅ Pull Request gotowy do merge
