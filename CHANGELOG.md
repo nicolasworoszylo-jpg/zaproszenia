@@ -26,6 +26,7 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 - **Added**: Conditional Reminders system — `.repo-rules.yml` (19 reguł deklaratywnych), `.githooks/post-commit` (lokalne reminders + macOS notification), `.github/workflows/conditional-reminders.yml` (auto-komentarze na PR/commit) _(2026-05-13)_
 - **Added**: `scripts/setup-multi-pc.sh` — jedno-klikowy installer dla 2-laptop workflow (aktywuje core.hooksPath, pull.rebase, rerere) _(2026-05-13)_
 - **Added**: `MULTI_PC_SYSTEM.md` — pełna dokumentacja 4-warstwowego systemu samoregulacji repo _(2026-05-13)_
+- **Added**: `/onepager` — premium A4 print card pod ukrytym URL (forest+gold+cream brand match, passe-partout border, botanical corner SVG, monogram ring, L-bracket QR frame, Fraunces 9..144 italic). Inline SVG QR do strony głównej. Disallow w robots.txt, noindex, brak w sitemap, brak linków z home. _(2026-05-13)_
 - **Added**: Repo Guardian — hard-gate raportowania + auto-sync check + GitHub Actions walidacja + branch protection. _(2026-05-12)_
 
 ## [2026-04-30]

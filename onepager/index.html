@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>One-pager - zaproszeniaonline.com</title>
+<link rel="canonical" href="https://zaproszeniaonline.com/onepager">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-page: #EDEAE2;
+    --bg-card: #FAF6EF;
+    --bg-card-warm: #F5EFE3;
+    --ink: #0A0A0A;
+    --ink-soft: #4A4A4A;
+    --ink-mute: #8A8278;
+    --forest: #2C3E2D;
+    --forest-deep: #1E2B1F;
+    --gold: #C9A96E;
+    --gold-soft: #D4B97F;
+    --gold-mute: #E8DCB8;
+    --terra: #B85F2E;
+    --line: #E5DDC9;
+    --line-soft: #EFE8D6;
+    --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--bg-page); }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 32px 16px 56px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
+  }
+
+  /* ── Toolbar (screen-only) ──────────────────────────────────── */
+  .toolbar {
+    max-width: 820px;
+    margin: 0 auto 20px;
+    padding: 14px 20px;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    box-shadow: 0 2px 14px rgba(44,62,45,0.04);
+  }
+  .toolbar h2 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.02rem;
+    color: var(--forest);
+    margin-right: auto;
+    letter-spacing: -0.01em;
+  }
+  .toolbar button {
+    padding: 10px 22px;
+    background: var(--forest);
+    color: var(--bg-card);
+    border: none;
+    border-radius: 999px;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 180ms ease, transform 220ms cubic-bezier(.2,.7,.2,1);
+    letter-spacing: -0.005em;
+  }
+  .toolbar button:hover { background: var(--forest-deep); transform: translateY(-1px); }
+  .toolbar button.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .toolbar button.secondary:hover { border-color: var(--forest); color: var(--forest); transform: translateY(-1px); }
+
+  .info-banner {
+    max-width: 820px;
+    margin: 0 auto 22px;
+    padding: 12px 16px;
+    background: rgba(201,169,110,0.10);
+    border-left: 2px solid var(--gold);
+    border-radius: 6px;
+    font-size: 0.83rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    font-family: var(--sans);
+  }
+  .info-banner code {
+    font-family: 'SF Mono', Menlo, Monaco, monospace;
+    font-size: 0.78rem;
+    background: rgba(44,62,45,0.08);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--forest);
+  }
+
+  /* ── A4 PAGE (210x297mm) ────────────────────────────────────── */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    max-width: 100%;
+    margin: 0 auto;
+    background: var(--bg-card);
+    color: var(--ink);
+    padding: 22mm 20mm;
+    box-shadow: 0 14px 50px rgba(20,30,20,0.12);
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,169,110,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(44,62,45,0.04) 0%, transparent 70%);
+  }
+
+  /* ── Passe-partout double border ────────────────────────────── */
+  .page::before {
+    content: '';
+    position: absolute;
+    top: 12mm; right: 12mm; bottom: 12mm; left: 12mm;
+    border: 0.5px solid var(--gold);
+    opacity: 0.55;
+    pointer-events: none;
+    border-radius: 1px;
+  }
+  .page::after {
+    content: '';
+    position: absolute;
+    top: 13.5mm; right: 13.5mm; bottom: 13.5mm; left: 13.5mm;
+    border: 0.3px solid var(--gold);
+    opacity: 0.30;
+    pointer-events: none;
+    border-radius: 1px;
+  }
+
+  /* ── Corner ornaments (botanical buds) ──────────────────────── */
+  .corner-ornament {
+    position: absolute;
+    width: 26mm;
+    height: 26mm;
+    pointer-events: none;
+    opacity: 0.72;
+  }
+  .corner-ornament.tl { top: 8mm; left: 8mm; }
+  .corner-ornament.tr { top: 8mm; right: 8mm; transform: scaleX(-1); }
+  .corner-ornament.bl { bottom: 8mm; left: 8mm; transform: scaleY(-1); }
+  .corner-ornament.br { bottom: 8mm; right: 8mm; transform: scale(-1,-1); }
+
+  /* ── Inner stage ─────────────────────────────────────────────── */
+  .stage {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 6mm 4mm 0;
+  }
+
+  /* ── Header / monogram ──────────────────────────────────────── */
+  header.op-head { text-align: center; }
+
+  .op-monogram-wrap {
+    width: 68px; height: 68px;
+    margin: 0 auto 22px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .op-monogram-ring {
+    position: absolute; inset: 0;
+    border: 0.5px solid var(--gold);
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+  .op-monogram {
+    width: 56px; height: 56px;
+    border: 1.2px solid var(--forest);
+    border-radius: 50%;
+    background: var(--bg-card-warm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.55rem;
+    color: var(--forest);
+    letter-spacing: -0.04em;
+    text-indent: 0.02em;
+  }
+
+  .op-eyebrow {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--forest);
+    font-weight: 500;
+    margin-bottom: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .op-eyebrow::before,
+  .op-eyebrow::after {
+    content: '';
+    width: 36px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold) 40%, var(--gold) 60%, transparent);
+  }
+
+  /* ── Names ──────────────────────────────────────────────────── */
+  .op-names-wrap { position: relative; margin: 6px 0 12px; }
+  .op-names {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(2.6rem, 7vw, 4.2rem);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    text-align: center;
+    text-wrap: balance;
+    font-variation-settings: "opsz" 96;
+    position: relative;
+    z-index: 2;
+  }
+  .op-names .op-amp {
+    display: inline-block;
+    margin: 0 0.14em;
+    color: var(--gold);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 1.05em;
+    transform: translateY(0.04em);
+    font-variation-settings: "opsz" 144;
+  }
+
+  /* ── Ornament divider ───────────────────────────────────────── */
+  .op-flourish {
+    margin: 14px auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .op-flourish .bar {
+    width: 56px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--forest) 50%, var(--forest));
+    opacity: 0.8;
+  }
+  .op-flourish .bar:last-child {
+    background: linear-gradient(to left, transparent, var(--forest) 50%, var(--forest));
+  }
+  .op-flourish .diamond {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    box-shadow: 0 0 0 0.5px rgba(120,90,30,0.25);
+  }
+  .op-flourish .dot {
+    width: 3px; height: 3px;
+    background: var(--gold-soft);
+    border-radius: 50%;
+  }
+
+  /* ── Date + venue ───────────────────────────────────────────── */
+  .op-date {
+    text-align: center;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.18rem, 2.6vw, 1.55rem);
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+    font-variation-settings: "opsz" 36;
+  }
+  .op-venue {
+    text-align: center;
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ── Quote ──────────────────────────────────────────────────── */
+  .op-quote {
+    text-align: center;
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(0.96rem, 1.9vw, 1.08rem);
+    color: var(--ink-soft);
+    max-width: 78%;
+    margin: 32px auto 0;
+    line-height: 1.7;
+    text-wrap: pretty;
+    font-variation-settings: "opsz" 20;
+  }
+
+  /* ── Spacer push ────────────────────────────────────────────── */
+  .op-spacer { flex: 1; min-height: 18mm; }
+
+  /* ── QR section ─────────────────────────────────────────────── */
+  .op-qr-section {
+    text-align: center;
+    padding-top: 8mm;
+  }
+  .op-qr-label {
+    font-family: var(--sans);
+    font-size: 0.74rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--forest);
+    font-weight: 500;
+    margin-bottom: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .op-qr-label::before,
+  .op-qr-label::after {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--gold);
+    opacity: 0.7;
+  }
+
+  .op-qr-frame-wrap {
+    width: 56mm;
+    height: 56mm;
+    margin: 0 auto;
+    position: relative;
+  }
+  .op-qr-frame {
+    width: 100%; height: 100%;
+    padding: 4mm;
+    background: #FFFFFF;
+    border: 0.5px solid var(--line);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 1px 0 rgba(120,90,30,0.06);
+  }
+  .op-qr-frame img,
+  .op-qr-frame svg {
+    width: 100%; height: 100%;
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+  /* L-shaped corner brackets */
+  .op-qr-frame-wrap::before,
+  .op-qr-frame-wrap::after,
+  .op-qr-corner {
+    position: absolute;
+    width: 7mm; height: 7mm;
+    border: 1px solid var(--gold);
+    pointer-events: none;
+  }
+  .op-qr-frame-wrap::before { top: -3mm; left: -3mm; border-right: 0; border-bottom: 0; }
+  .op-qr-frame-wrap::after  { bottom: -3mm; right: -3mm; border-left: 0; border-top: 0; }
+  .op-qr-corner.tr { top: -3mm; right: -3mm; border-left: 0; border-bottom: 0; }
+  .op-qr-corner.bl { bottom: -3mm; left: -3mm; border-right: 0; border-top: 0; }
+
+  .op-qr-placeholder {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    color: var(--ink-mute);
+    text-align: center;
+    padding: 12px;
+    line-height: 1.5;
+  }
+  .op-qr-placeholder strong { color: var(--forest); font-weight: 500; }
+
+  .op-url {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    color: var(--ink-mute);
+    margin-top: 16px;
+    letter-spacing: 0.04em;
+    word-break: break-word;
+  }
+  .op-url strong {
+    color: var(--forest);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Footer ──────────────────────────────────────────────────── */
+  .op-footer {
+    text-align: center;
+    margin-top: 8mm;
+    padding-top: 5mm;
+    position: relative;
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    color: var(--ink-mute);
+    letter-spacing: 0.06em;
+    line-height: 1.65;
+  }
+  .op-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--line) 30%, var(--gold) 50%, var(--line) 70%, transparent);
+  }
+  .op-footer .op-call-to-action {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 0.94rem;
+    color: var(--forest);
+    letter-spacing: -0.005em;
+    margin-bottom: 6px;
+    font-variation-settings: "opsz" 24;
+  }
+  .op-footer .op-call-to-action span { color: var(--ink); font-weight: 500; }
+
+  /* ── Print ──────────────────────────────────────────────────── */
+  @media print {
+    @page { size: A4 portrait; margin: 0; }
+    html, body { background: white !important; padding: 0 !important; }
+    .toolbar, .info-banner { display: none !important; }
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      page-break-after: always;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+    .page::before, .page::after { opacity: 0.45 !important; }
+    .corner-ornament { opacity: 0.65 !important; }
+  }
+
+  /* ── Mobile ──────────────────────────────────────────────────── */
+  @media (max-width: 720px) {
+    body { padding: 14px 6px 28px; }
+    .page { padding: 16mm 12mm; }
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .toolbar h2 { margin-right: 0; text-align: center; }
+    .op-qr-frame-wrap { width: 52mm; height: 52mm; }
+  }
+
+  /* ── Config modal ────────────────────────────────────────────── */
+  dialog#config-modal {
+    border: none;
+    border-radius: 16px;
+    padding: 26px;
+    max-width: 480px;
+    width: 92%;
+    box-shadow: 0 24px 70px rgba(20,30,20,0.20);
+    background: var(--bg-card);
+  }
+  dialog#config-modal::backdrop { background: rgba(20,30,20,0.30); backdrop-filter: blur(4px); }
+  dialog#config-modal h3 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.4rem;
+    margin-bottom: 18px;
+    color: var(--forest);
+  }
+  dialog#config-modal label {
+    display: block;
+    margin-bottom: 14px;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.01em;
+  }
+  dialog#config-modal input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-top: 4px;
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    color: var(--ink);
+    background: #FFFFFF;
+    transition: border-color 150ms ease;
+  }
+  dialog#config-modal input:focus { outline: none; border-color: var(--forest); }
+  dialog#config-modal .modal-actions {
+    display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px;
+  }
+  dialog#config-modal button {
+    padding: 10px 20px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 150ms ease, border-color 150ms ease;
+  }
+  dialog#config-modal button[type="button"].cancel {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+  dialog#config-modal button[type="button"].cancel:hover { border-color: var(--forest); color: var(--forest); }
+  dialog#config-modal button.primary {
+    background: var(--forest);
+    color: var(--bg-card);
+    border: none;
+  }
+  dialog#config-modal button.primary:hover { background: var(--forest-deep); }
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR (screen only) -->
+<div class="toolbar" role="toolbar" aria-label="Akcje one-pagera">
+  <h2>One-pager &middot; podgląd przed drukiem</h2>
+  <button onclick="window.print()" type="button">Drukuj / zapisz PDF</button>
+  <button class="secondary" onclick="document.getElementById('config-modal').showModal()" type="button">Edytuj dane</button>
+</div>
+
+<div class="info-banner">
+  Dane pobierane z URL params. Aby spersonalizować, dodaj: <code>?names=Anna+i+Michał&date=20+czerwca+2026&venue=Wrocław&url=https://zaproszeniaonline.com/anna-michal&qr=/onepager/_assets/qr-home.svg</code>
+</div>
+
+<!-- A4 PAGE -->
+<article class="page" id="op-page">
+
+  <!-- Corner botanical ornaments (subtle gold line art) -->
+  <svg class="corner-ornament tl" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+    <path d="M5 50 Q5 5 50 5" stroke="#C9A96E" stroke-width="0.6" stroke-linecap="round"/>
+    <path d="M5 50 Q5 5 50 5" stroke="#C9A96E" stroke-width="0.3" stroke-linecap="round" transform="translate(2 2)"/>
+    <path d="M12 22 Q18 16 22 22 Q18 28 12 22 Z" fill="#C9A96E" opacity="0.45"/>
+    <path d="M22 12 Q28 18 22 22 Q16 18 22 12 Z" fill="#C9A96E" opacity="0.35"/>
+    <circle cx="32" cy="8" r="1.2" fill="#C9A96E" opacity="0.6"/>
+    <circle cx="8" cy="32" r="1" fill="#C9A96E" opacity="0.5"/>
+    <path d="M40 8 Q44 12 42 16" stroke="#C9A96E" stroke-width="0.4" stroke-linecap="round" fill="none"/>
+    <path d="M8 40 Q12 44 16 42" stroke="#C9A96E" stroke-width="0.4" stroke-linecap="round" fill="none"/>
+  </svg>
+  <svg class="corner-ornament tr" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+    <path d="M5 50 Q5 5 50 5" stroke="#C9A96E" stroke-width="0.6" stroke-linecap="round"/>
+    <path d="M5 50 Q5 5 50 5" stroke="#C9A96E" stroke-width="0.3" stroke-linecap="round" transform="translate(2 2)"/>
+    <path d="M12 22 Q18 16 22 22 Q18 28 12 22 Z" fill="#C9A96E" opacity="0.45"/>
+    <path d="M22 12 Q28 18 22 22 Q16 18 22 12 Z" fill="#C9A96E" opacity="0.35"/>
+    <circle cx="32" cy="8" r="1.2" fill="#C9A96E" opacity="0.6"/>
+    <circle cx="8" cy="32" r="1" fill="#C9A96E" opacity="0.5"/>
+  </svg>
+  <svg class="corner-ornament bl" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+    <path d="M5 50 Q5 5 50 5" stroke="#C9A96E" stroke-width="0.6" stroke-linecap="round"/>
+    <path d="M5 50 Q5 5 50 5" stroke="#C9A96E" stroke-width="0.3" stroke-linecap="round" transform="translate(2 2)"/>
+    <path d="M12 22 Q18 16 22 22 Q18 28 12 22 Z" fill="#C9A96E" opacity="0.45"/>
+    <path d="M22 12 Q28 18 22 22 Q16 18 22 12 Z" fill="#C9A96E" opacity="0.35"/>
+    <circle cx="32" cy="8" r="1.2" fill="#C9A96E" opacity="0.6"/>
+    <circle cx="8" cy="32" r="1" fill="#C9A96E" opacity="0.5"/>
+  </svg>
+  <svg class="corner-ornament br" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+    <path d="M5 50 Q5 5 50 5" stroke="#C9A96E" stroke-width="0.6" stroke-linecap="round"/>
+    <path d="M5 50 Q5 5 50 5" stroke="#C9A96E" stroke-width="0.3" stroke-linecap="round" transform="translate(2 2)"/>
+    <path d="M12 22 Q18 16 22 22 Q18 28 12 22 Z" fill="#C9A96E" opacity="0.45"/>
+    <path d="M22 12 Q28 18 22 22 Q16 18 22 12 Z" fill="#C9A96E" opacity="0.35"/>
+    <circle cx="32" cy="8" r="1.2" fill="#C9A96E" opacity="0.6"/>
+    <circle cx="8" cy="32" r="1" fill="#C9A96E" opacity="0.5"/>
+  </svg>
+
+  <div class="stage">
+    <header class="op-head">
+      <div class="op-monogram-wrap">
+        <span class="op-monogram-ring" aria-hidden="true"></span>
+        <div class="op-monogram" id="op-mono">A</div>
+      </div>
+
+      <div class="op-eyebrow">Zaproszenie ślubne</div>
+
+      <div class="op-names-wrap">
+        <h1 class="op-names" id="op-names">Anna<span class="op-amp">&amp;</span>Michał</h1>
+      </div>
+
+      <div class="op-flourish" aria-hidden="true">
+        <span class="bar"></span>
+        <span class="dot"></span>
+        <span class="diamond"></span>
+        <span class="dot"></span>
+        <span class="bar"></span>
+      </div>
+
+      <div class="op-date" id="op-date">20 czerwca 2026</div>
+      <div class="op-venue" id="op-venue">Wrocław</div>
+
+      <p class="op-quote" id="op-quote">
+        Z radością zapraszamy Was do udziału w najpiękniejszym dniu naszego życia.
+        Wszystkie szczegóły &mdash; plan dnia, mapy, potwierdzenie obecności &mdash; znajdziecie pod kodem QR.
+      </p>
+    </header>
+
+    <div class="op-spacer"></div>
+
+    <section class="op-qr-section">
+      <div class="op-qr-label">Zeskanuj telefonem</div>
+
+      <div class="op-qr-frame-wrap">
+        <span class="op-qr-corner tr" aria-hidden="true"></span>
+        <span class="op-qr-corner bl" aria-hidden="true"></span>
+        <div class="op-qr-frame" id="op-qr-frame">
+          <img id="op-qr-img" src="/onepager/_assets/qr-home.svg" alt="Kod QR do strony zaproszenia">
+        </div>
+      </div>
+
+      <div class="op-url">
+        lub wpisz w przeglądarkę: <strong id="op-url-text">zaproszeniaonline.com</strong>
+      </div>
+    </section>
+
+    <footer class="op-footer">
+      <div class="op-call-to-action">Potwierdźcie obecność do <span id="op-rsvp-date">16 maja 2026</span></div>
+      Pełny program, mapy do ceremonii i miejsca przyjęcia, plan dnia &mdash; wszystko na stronie.
+    </footer>
+  </div>
+</article>
+
+<!-- CONFIG MODAL -->
+<dialog id="config-modal">
+  <form method="dialog" id="config-form">
+    <h3>Konfiguruj one-pager</h3>
+
+    <label>
+      Imiona pary
+      <input id="cfg-names" type="text" placeholder="np. Anna i Michał">
+    </label>
+
+    <label>
+      Data ślubu (po polsku)
+      <input id="cfg-date" type="text" placeholder="np. 20 czerwca 2026">
+    </label>
+
+    <label>
+      Miejsce / miasto
+      <input id="cfg-venue" type="text" placeholder="np. Wrocław">
+    </label>
+
+    <label>
+      URL strony zaproszenia
+      <input id="cfg-url" type="url" placeholder="https://zaproszeniaonline.com/anna-michal">
+    </label>
+
+    <label>
+      QR (URL do SVG/PNG albo data:image/...;base64,...)
+      <input id="cfg-qr" type="text" placeholder="/qr-codes/anna-michal-qr.svg">
+    </label>
+
+    <div class="modal-actions">
+      <button type="button" class="cancel" onclick="document.getElementById('config-modal').close()">Anuluj</button>
+      <button type="button" class="primary" onclick="applyConfig()">Zastosuj</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  function init() {
+    const p = new URLSearchParams(location.search);
+
+    const names = p.get('names') || 'Anna i Michał';
+    const date = p.get('date') || '20 czerwca 2026';
+    const venue = p.get('venue') || 'Wrocław';
+    const url = p.get('url') || 'https://zaproszeniaonline.com';
+    const qr = p.get('qr');
+    const rsvpDate = p.get('rsvp') || computeRsvpDate(date);
+
+    renderNames(names);
+    document.getElementById('op-date').textContent = date;
+    document.getElementById('op-venue').textContent = venue;
+    document.getElementById('op-url-text').textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    document.getElementById('op-rsvp-date').textContent = rsvpDate;
+
+    if (qr) renderQR(qr);
+
+    document.getElementById('cfg-names').value = names;
+    document.getElementById('cfg-date').value = date;
+    document.getElementById('cfg-venue').value = venue;
+    document.getElementById('cfg-url').value = url;
+    document.getElementById('cfg-qr').value = qr || '';
+  }
+
+  function renderNames(names) {
+    const parts = names.split(/ i | & | and /i);
+    let html;
+    if (parts.length === 2) {
+      html = `${escapeHtml(parts[0].trim())}<span class="op-amp">&amp;</span>${escapeHtml(parts[1].trim())}`;
+    } else {
+      html = escapeHtml(names);
+    }
+    document.getElementById('op-names').innerHTML = html;
+    const initials = parts.map(s => s.trim()[0] || '').join('').slice(0, 2).toUpperCase() || 'AM';
+    document.getElementById('op-mono').textContent = initials;
+  }
+
+  function renderQR(src) {
+    const img = document.getElementById('op-qr-img');
+    img.src = src;
+    img.onerror = () => {
+      const frame = document.getElementById('op-qr-frame');
+      frame.innerHTML = '<div class="op-qr-placeholder"><strong>Błąd ładowania QR</strong><br>Sprawdź URL/data URI</div>';
+    };
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function computeRsvpDate(weddingDateStr) {
+    const months = {styczeń:0,stycznia:0,lutego:1,marca:2,kwietnia:3,maja:4,czerwca:5,lipca:6,sierpnia:7,września:8,października:9,listopada:10,grudnia:11};
+    const m = weddingDateStr.match(/(\d{1,2})\s+(\S+)\s+(\d{4})/);
+    if (!m) return '5 tygodni przed ślubem';
+    const day = parseInt(m[1], 10);
+    const month = months[m[2].toLowerCase()];
+    const year = parseInt(m[3], 10);
+    if (month === undefined) return '5 tygodni przed ślubem';
+    const wedding = new Date(year, month, day);
+    wedding.setDate(wedding.getDate() - 35);
+    const polishMonths = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+    return `${wedding.getDate()} ${polishMonths[wedding.getMonth()]} ${wedding.getFullYear()}`;
+  }
+
+  function applyConfig() {
+    const cfg = {
+      names: document.getElementById('cfg-names').value,
+      date: document.getElementById('cfg-date').value,
+      venue: document.getElementById('cfg-venue').value,
+      url: document.getElementById('cfg-url').value,
+      qr: document.getElementById('cfg-qr').value,
+    };
+    const params = new URLSearchParams();
+    if (cfg.names) params.set('names', cfg.names);
+    if (cfg.date) params.set('date', cfg.date);
+    if (cfg.venue) params.set('venue', cfg.venue);
+    if (cfg.url) params.set('url', cfg.url);
+    if (cfg.qr) params.set('qr', cfg.qr);
+    location.search = '?' + params.toString();
+  }
+
+  init();
+</script>
+</body>
+</html>

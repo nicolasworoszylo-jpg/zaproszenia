@@ -11,6 +11,8 @@ Disallow: /magda-tomek
 Disallow: /magda-tomek/
 Disallow: /one-pager
 Disallow: /one-pager.html
+Disallow: /onepager
+Disallow: /onepager/
 Disallow: /api/
 Disallow: /vendor/
 Disallow: /audio/
