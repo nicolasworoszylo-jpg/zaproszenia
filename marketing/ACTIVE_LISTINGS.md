@@ -55,6 +55,15 @@
 
 ---
 
+## Assety wizualne - WSPÓLNE wszystkich listingów
+
+Wszystkie 3 listingi (Janachowska + Wedding.pl + Google Business Profile) używają **tego samego logo**:
+- Plik: `C:/Users/domin/Desktop/dysk/brand-zaproszenia-2026-05-12/profile-1080.png` (1080x1080, square)
+- Brand identity only (monogram Z + wieniec eukaliptusa), bez offer-info
+- Stabilne long-term - nie wymaga re-renderu przy zmianach oferty
+
+⚠️ **Zmiana brand identity** (logo, kolor, monogram) → wymaga uploadu nowego pliku na **wszystkie 3 katalogi** (Janachowska + Wedding.pl + GBP) plus pełny re-render rejestru brand-assets per `clients/zaproszenia/fanpage-fb/ASSET-REGISTRY.md`.
+
 ## ⚠️ KIEDY ZAKTUALIZOWAĆ
 
 Każda zmiana poniższych wymaga manualnej aktualizacji w panelu Janachowska:

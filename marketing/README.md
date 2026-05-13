@@ -134,6 +134,11 @@ Pary porównują źle: 699 zł vs 5 zł × 80 = 400 zł. Realne = papier+koperty
 - `brand-profiles/zaproszenia/AGENT_INSTRUCTIONS.md` - routing skilli + lazy-loading
 - `_logs/decisions.jsonl` - machine-readable decisions log (D-001 do D-010)
 
+**Brand assets (grafika produkcyjna - 2026-05-12):**
+- [BRAND-ASSETS-REGISTRY.md](BRAND-ASSETS-REGISTRY.md) - rejestr wszystkich grafik (profile, banery FB/Google, square hero z QR, wizytówka, wallet, bio PDF) + jakie info z oferty zawiera każdy asset + checklist re-renderu przy zmianie ceny/czasu/funkcji
+- Templates + render scripts: `C:/Projekty/dyrektor-marketingu/clients/zaproszenia/fanpage-fb/`
+- Final deliverables: `C:/Users/domin/Desktop/dysk/brand-zaproszenia-2026-05-12/`
+
 ---
 
 ## 📞 Kontakt
