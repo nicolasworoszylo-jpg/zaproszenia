@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#1A2418">
+<title>Galeria one-pagerów &middot; zaproszeniaonline.com</title>
+<link rel="canonical" href="https://zaproszeniaonline.com/onepager/galeria">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-page:  #1A2418;
+    --ink:      #FAF6EF;
+    --ink-soft: #D4C6A8;
+    --gold:     #C9A96E;
+    --gold-soft:#D4B97F;
+    --line:     rgba(201,169,110,0.30);
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg-page); }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 56px 24px 80px;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201,169,110,0.10) 0%, transparent 70%);
+  }
+  .container { max-width: 1240px; margin: 0 auto; }
+
+  .head {
+    text-align: center;
+    margin-bottom: 44px;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .eyebrow::before, .eyebrow::after {
+    content: '';
+    width: 36px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+  h1 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 14px;
+    color: var(--ink);
+    font-variation-settings: "opsz" 60;
+  }
+  .lead {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.65;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+    margin-bottom: 36px;
+  }
+
+  .card {
+    position: relative;
+    aspect-ratio: 210 / 297;
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 18px;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.45);
+    transition: transform 240ms cubic-bezier(.2,.7,.2,1), box-shadow 240ms ease;
+    border: 1px solid transparent;
+  }
+  .card:hover {
+    transform: translateY(-6px) scale(1.015);
+    box-shadow: 0 22px 56px rgba(0,0,0,0.60);
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 10px; right: 10px; bottom: 10px; left: 10px;
+    border: 0.5px solid var(--card-gold);
+    opacity: 0.7;
+    pointer-events: none;
+    border-radius: 2px;
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 11.5px; right: 11.5px; bottom: 11.5px; left: 11.5px;
+    border: 0.3px solid var(--card-gold);
+    opacity: 0.40;
+    pointer-events: none;
+    border-radius: 2px;
+  }
+  .card-inner {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--card-cream);
+    padding: 12px 8px;
+  }
+  .card .eyebrow-mini {
+    font-family: var(--sans);
+    font-size: 0.56rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--card-gold);
+    font-weight: 500;
+    margin-bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card .eyebrow-mini::before, .card .eyebrow-mini::after {
+    content: ''; width: 14px; height: 1px; background: var(--card-gold); opacity: 0.7;
+  }
+  .card .mini-mono {
+    width: 36px; height: 36px;
+    border: 1px solid var(--card-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--card-cream);
+    margin-bottom: 14px;
+  }
+  .card .mini-names {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.4rem, 3.5vw, 2.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin-bottom: 10px;
+    color: var(--card-cream);
+  }
+  .card .mini-names .amp { color: var(--card-gold); margin: 0 0.06em; }
+  .card .mini-flourish {
+    width: 40px; height: 1px;
+    background: var(--card-gold);
+    opacity: 0.6;
+    margin: 4px auto 10px;
+    position: relative;
+  }
+  .card .mini-flourish::after {
+    content: '';
+    position: absolute;
+    width: 4px; height: 4px;
+    background: var(--card-gold);
+    transform: translate(-50%, -50%) rotate(45deg);
+    top: 50%; left: 50%;
+  }
+  .card .mini-date {
+    font-family: var(--serif);
+    font-size: 0.78rem;
+    color: var(--card-cream);
+    margin-bottom: 4px;
+  }
+  .card .mini-venue {
+    font-family: var(--sans);
+    font-size: 0.55rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--card-cream);
+    opacity: 0.85;
+  }
+  .card .footer-label {
+    position: absolute;
+    bottom: 22px; left: 0; right: 0;
+    text-align: center;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .card .footer-label .pal-name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.92rem;
+    color: var(--card-gold);
+    font-weight: 500;
+  }
+  .card .footer-label .pal-url {
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 0.68rem;
+    color: var(--card-cream);
+    opacity: 0.65;
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  .card.forest {
+    background: #2C3E2D;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,169,110,0.14) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(0,0,0,0.30) 0%, transparent 70%);
+    --card-gold: #C9A96E;
+    --card-cream: #FAF6EF;
+  }
+  .card.navy {
+    background: #1B2838;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(212,160,160,0.14) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(0,0,0,0.30) 0%, transparent 70%);
+    --card-gold: #D4A0A0;
+    --card-cream: #FDF8F6;
+  }
+  .card.wine {
+    background: #4A1C2B;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(200,168,124,0.14) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(0,0,0,0.30) 0%, transparent 70%);
+    --card-gold: #C8A87C;
+    --card-cream: #FBF7F0;
+  }
+  .card.terracotta {
+    background: #6B2F22;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(184,95,46,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(0,0,0,0.30) 0%, transparent 70%);
+    --card-gold: #B85F2E;
+    --card-cream: #FAF1E0;
+  }
+
+  .info {
+    background: rgba(0,0,0,0.30);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--gold);
+    border-radius: 8px;
+    padding: 18px 22px;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .info strong { color: var(--ink); font-weight: 500; }
+  .info code {
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 0.82rem;
+    background: rgba(201,169,110,0.10);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--gold-soft);
+  }
+
+  @media (max-width: 720px) {
+    body { padding: 32px 14px 56px; }
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .card { padding: 14px 12px; }
+    .card .mini-mono { width: 28px; height: 28px; font-size: 0.85rem; margin-bottom: 8px; }
+    .card .mini-names { font-size: 1.2rem; }
+    .card .footer-label .pal-name { font-size: 0.78rem; }
+    .card .footer-label .pal-url { font-size: 0.6rem; }
+  }
+  @media (max-width: 480px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="head">
+    <div class="eyebrow">Zaproszenie ślubne &middot; karta A4 do druku</div>
+    <h1>Cztery palety jednego one-pagera</h1>
+    <p class="lead">
+      Wybierz paletę dopasowaną do tła głównej strony zaproszenia.
+      Każda karta jest gotowa do druku A4 z kodem QR prowadzącym do strony pary.
+    </p>
+  </div>
+
+  <div class="grid">
+    <a class="card forest" href="/onepager/forest">
+      <div class="card-inner">
+        <div class="eyebrow-mini">Zaproszenie ślubne</div>
+        <div class="mini-mono">AM</div>
+        <div class="mini-names">Anna<span class="amp">&amp;</span>Michał</div>
+        <div class="mini-flourish"></div>
+        <div class="mini-date">20 czerwca 2026</div>
+        <div class="mini-venue">Wrocław</div>
+      </div>
+      <div class="footer-label">
+        <div class="pal-name">Leśna zieleń</div>
+        <div class="pal-url">/onepager/forest</div>
+      </div>
+    </a>
+
+    <a class="card navy" href="/onepager/navy-rose">
+      <div class="card-inner">
+        <div class="eyebrow-mini">Zaproszenie ślubne</div>
+        <div class="mini-mono">AM</div>
+        <div class="mini-names">Anna<span class="amp">&amp;</span>Michał</div>
+        <div class="mini-flourish"></div>
+        <div class="mini-date">20 czerwca 2026</div>
+        <div class="mini-venue">Wrocław</div>
+      </div>
+      <div class="footer-label">
+        <div class="pal-name">Granat + róż</div>
+        <div class="pal-url">/onepager/navy-rose</div>
+      </div>
+    </a>
+
+    <a class="card wine" href="/onepager/bordo">
+      <div class="card-inner">
+        <div class="eyebrow-mini">Zaproszenie ślubne</div>
+        <div class="mini-mono">AM</div>
+        <div class="mini-names">Anna<span class="amp">&amp;</span>Michał</div>
+        <div class="mini-flourish"></div>
+        <div class="mini-date">20 czerwca 2026</div>
+        <div class="mini-venue">Wrocław</div>
+      </div>
+      <div class="footer-label">
+        <div class="pal-name">Bordo + kość</div>
+        <div class="pal-url">/onepager/bordo</div>
+      </div>
+    </a>
+
+    <a class="card terracotta" href="/onepager/terracotta">
+      <div class="card-inner">
+        <div class="eyebrow-mini">Zaproszenie ślubne</div>
+        <div class="mini-mono">AM</div>
+        <div class="mini-names">Anna<span class="amp">&amp;</span>Michał</div>
+        <div class="mini-flourish"></div>
+        <div class="mini-date">20 czerwca 2026</div>
+        <div class="mini-venue">Wrocław</div>
+      </div>
+      <div class="footer-label">
+        <div class="pal-name">Rdzawa terracotta</div>
+        <div class="pal-url">/onepager/terracotta</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="info">
+    <strong>Personalizacja przez URL params</strong>: na każdej palecie dodaj dane pary, np.
+    <code>/onepager/forest?names=Anna+i+Michał&date=20+czerwca+2026&venue=Wrocław&url=https://zaproszeniaonline.com/anna-michal</code>.
+    Wbudowany generator (przycisk <strong>Edytuj dane</strong>) prowadzi przez wszystkie pola bez ręcznego sklejania URL-a. Każda strona jest gotowa do druku (Cmd/Ctrl+P → A4 portrait).
+  </div>
+
+  <nav class="exits" aria-label="Powrót" style="margin-top:36px;padding-top:24px;border-top:1px solid var(--line);text-align:center;font-family:var(--sans);font-size:0.84rem;color:var(--ink-soft);letter-spacing:0.04em">
+    <a href="/demo" style="color:var(--gold);text-decoration:none;border-bottom:1px dashed rgba(201,169,110,0.4);padding-bottom:2px;margin:0 14px;transition:color .2s ease,border-color .2s ease">&larr; Wróć do demo</a>
+    <a href="/" style="color:var(--ink-soft);text-decoration:none;border-bottom:1px dashed var(--line);padding-bottom:2px;margin:0 14px;transition:color .2s ease,border-color .2s ease">Strona główna</a>
+    <a href="https://github.com/nicolasworoszylo-jpg/zaproszenia/blob/main/ONE_PAGER_GUIDE.md" target="_blank" rel="noopener" style="color:var(--ink-soft);text-decoration:none;border-bottom:1px dashed var(--line);padding-bottom:2px;margin:0 14px;transition:color .2s ease,border-color .2s ease">Workflow (GitHub)</a>
+  </nav>
+
+</div>
+</body>
+</html>

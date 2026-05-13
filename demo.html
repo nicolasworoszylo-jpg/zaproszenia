@@ -107,6 +107,30 @@
   }
   #bg-audio-wrap.no-pulse #bg-audio-btn{animation:none}
   #bg-audio-wrap.no-label #bg-audio-label{display:none}
+
+  /* ━━━ PRINT FAB - link do one-pagera (palette-aware przez te same CSS vars) ━━━ */
+  #print-fab{
+    position:fixed;top:20px;right:20px;z-index:9000;
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 16px;
+    background:var(--audio-deep);
+    border:1px solid var(--audio-gold-soft);
+    border-radius:999px;
+    color:var(--audio-gold);
+    text-decoration:none;
+    font-family:system-ui,-apple-system,sans-serif;
+    font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:500;
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    box-shadow:0 4px 16px rgba(0,0,0,.3);
+    transition:transform .3s cubic-bezier(0.16,1,0.3,1), border-color .4s ease, background-color .4s ease;
+  }
+  #print-fab:hover{transform:scale(1.04);border-color:var(--audio-gold)}
+  #print-fab svg{flex-shrink:0;transition:stroke .4s ease}
+  #print-fab svg path{stroke:var(--audio-gold);transition:stroke .4s ease}
+  @media (max-width:480px){
+    #print-fab{padding:8px 12px;font-size:10px;letter-spacing:0.15em}
+    #print-fab .label-long{display:none}
+  }
 </style>
 <!-- Diagnostyka: zapisuje do console TAGI zeby Nicolas widzial co dziala -->
 <script>
@@ -124,6 +148,16 @@
 <body>
 <div id="demo-loading">ładowanie zaproszenia… <span style="display:block;margin-top:8px;font-size:11px;color:#999;font-style:normal;letter-spacing:0">v=cb12-clean</span></div>
 <div id="root"></div>
+
+<!-- ━━━ PRINT FAB - karta do druku z kodem QR (link do galerii one-pagerów) ━━━ -->
+<a id="print-fab" href="/onepager/galeria" target="_blank" rel="noopener" aria-label="Karta do druku z kodem QR - one-pager">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M6 9V2h12v7"></path>
+    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+    <path d="M6 14h12v8H6z"></path>
+  </svg>
+  <span><span class="label-long">Karta do </span>druku · QR</span>
+</a>
 
 <!-- ━━━ AUDIO PLAYER (inline, niezalezny od React) z palette-aware colors ━━━ -->
 <div id="bg-audio-wrap" role="region" aria-label="Muzyka w tle">

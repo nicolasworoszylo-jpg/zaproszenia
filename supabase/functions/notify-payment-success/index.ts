@@ -281,8 +281,12 @@ function customerPaidHTML(lead: Lead): string {
     <a href="https://zaproszeniaonline.com/blog" style="color:#999999;text-decoration:none;">Blog</a>
     &nbsp;·&nbsp;
     <a href="https://zaproszeniaonline.com/terms" style="color:#999999;text-decoration:none;">Regulamin</a>
+    &nbsp;·&nbsp;
+    <a href="https://zaproszeniaonline.com/returns" style="color:#999999;text-decoration:none;">Polityka zwrotów</a>
     <br/><br/>
     <span style="color:#BBBBBB;">Numer zamówienia: ${lead.id.slice(0,8)} · Stripe: ${escapeHtml((lead.payment_id || "").slice(0,16))}…</span>
+    <br/><br/>
+    <span style="color:#BBBBBB;font-size:0.72rem;line-height:1.5;display:block;text-align:left;">Niniejszym potwierdzamy <strong style="color:#999999;">rozpoczęcie świadczenia usługi</strong> niezwłocznie po zaksięgowaniu wpłaty, zgodnie z udzieloną przez Państwa wyraźną zgodą przy zamówieniu. Tym samym - na podstawie art. 38 ust. 1 pkt 1 oraz art. 38 pkt 3 ustawy z dnia 30 maja 2014 r. o prawach konsumenta - prawo odstąpienia od umowy nie przysługuje, a wpłata po rozpoczęciu świadczenia jest bezzwrotna. Pełne zasady oraz gwarancje świadczone w zamian (3 rundy poprawek, 12 miesięcy hostingu, przesunięcie terminu wydarzenia, voucher w sytuacjach losowych) opisuje § 10 i § 10a Regulaminu oraz Polityka zwrotów.</span>
   </div>
   `;
 
@@ -312,7 +316,10 @@ Do zobaczenia za ~24h,
 Zespół Zaproszenia Online
 Zaproszenia Online · https://zaproszeniaonline.com/
 
-Numer zamówienia: ${lead.id.slice(0,8)}`;
+Numer zamówienia: ${lead.id.slice(0,8)}
+
+---
+INFORMACJA PRAWNA: Niniejszym potwierdzamy rozpoczęcie świadczenia usługi niezwłocznie po zaksięgowaniu wpłaty, zgodnie z udzieloną przez Państwa wyraźną zgodą przy zamówieniu. Tym samym - na podstawie art. 38 ust. 1 pkt 1 oraz art. 38 pkt 3 ustawy z dnia 30 maja 2014 r. o prawach konsumenta - prawo odstąpienia od umowy nie przysługuje, a wpłata po rozpoczęciu świadczenia jest bezzwrotna. Pełne zasady oraz gwarancje świadczone w zamian (3 rundy poprawek, 12 miesięcy hostingu, przesunięcie terminu wydarzenia, voucher w sytuacjach losowych) opisuje § 10 i § 10a Regulaminu (https://zaproszeniaonline.com/terms) oraz Polityka zwrotów (https://zaproszeniaonline.com/returns).`;
 }
 
 serve(async (req) => {
