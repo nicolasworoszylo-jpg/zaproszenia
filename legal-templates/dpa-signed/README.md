@@ -8,10 +8,10 @@
 
 | Procesor | Status | Plik | Mechanizm |
 |---|---|---|---|
-| **Stripe** | ✅ archived | `stripe-dpa-2025-11-18.pdf` | auto-binding przez Stripe Services Agreement (sekcja 13.10), brak osobnego przycisku |
+| **Stripe** | ✅ archived | `stripe-dpa-2025-11-18.pdf` | auto-binding przez Stripe Services Agreement, brak osobnego przycisku |
 | **Supabase** | ⏳ TODO | (oczekiwany) `supabase-dpa-YYYY-MM-DD.png` | Dashboard → Settings → Compliance → Sign DPA |
 | **Vercel** | 🟠 **DECYZJA NICOLASA** | brak | **Hobby plan NIE jest pokryty** przez Vercel DPA (sekcja 1: tylko Pro/Enterprise). Patrz `/DECISION_VERCEL_DPA.md` |
-| **Resend** | ⏳ TODO | (oczekiwany) `resend-dpa-YYYY-MM-DD.png` lub `.pdf` | Resend Dashboard → Settings → Legal/DPA |
+| **Resend** | ✅ archived | `resend-dpa-2025-12-31.pdf` | auto-binding przez Terms of Service (sekcja 12 DPA), wersja executed pobrana z dashboardu 2026-05-13. Bonus: Resend ma certyfikację EU-U.S. DPF (sekcja 11) — dodatkowa podstawa transferu obok SCC |
 
 ## Gotowe prompty Claude in Chrome
 

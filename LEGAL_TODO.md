@@ -39,7 +39,7 @@ Dziś ten adres widnieje w Privacy Policy jako jedyny kanał realizacji praw ROD
 - **Stripe** ✅ — DPA z 18 listopada 2025 archived w `legal-templates/dpa-signed/stripe-dpa-2025-11-18.pdf`. Auto-binding przez Stripe Services Agreement, nic więcej do zrobienia.
 - **Supabase** ⏳ — Dashboard → Settings → Compliance → **„Sign DPA"** (standardowy template, online, 1 minuta). Po akceptacji screenshot do `legal-templates/dpa-signed/supabase-dpa-[data].png`.
 - **Vercel** 🟠 — **WYMAGA DECYZJI NICOLASA**: jesteśmy na planie Hobby, a Vercel DPA stosuje się tylko do Pro/Enterprise (sekcja 1 DPA). Pełna analiza i 4 opcje w **[`DECISION_VERCEL_DPA.md`](DECISION_VERCEL_DPA.md)**. Bez decyzji = luka RODO otwarta.
-- **Resend** ⏳ — Dashboard → Settings → Legal/DPA. Screenshot lub PDF do `legal-templates/dpa-signed/resend-dpa-[data].(png|pdf)`.
+- **Resend** ✅ — DPA z 31 grudnia 2025 (executed version pobrana z dashboardu Resend) archived w `legal-templates/dpa-signed/resend-dpa-2025-12-31.pdf`. Auto-binding przez Terms of Service, brak przycisku Sign w panelu. Bonus: Resend ma certyfikację EU-U.S. Data Privacy Framework.
 
 > ⚠️ Wcześniejsza instrukcja "Vercel: Dashboard → Team Settings → Security & Privacy → kliknij Accept" była **nieprawdziwa** — taki przycisk nie istnieje (potwierdzone manualnie 2026-05-13). To samo dotyczyło `CLAUDE_IN_CHROME_PROMPTS.md` § 2️⃣ i `FIRST_CLIENT_CHECKLIST.md` § 1 — oba zostały poprawione.
 

@@ -50,7 +50,7 @@ Po pełnej sesji (~30 commits od 2026-05-11) Nicolas potwierdził: **"wszystko d
 | **Vendor DPA — Stripe** | 🟢 GO | DPA 2025-11-18 archived w `legal-templates/dpa-signed/` (2026-05-13) |
 | **Vendor DPA — Vercel** | 🟠 **DECYZJA NICOLASA** | Hobby plan nie pokryty przez Vercel DPA → 4 opcje w [`DECISION_VERCEL_DPA.md`](DECISION_VERCEL_DPA.md) |
 | **Vendor DPA — Supabase** | ⏳ TODO | Dashboard → Settings → Compliance → Sign DPA |
-| **Vendor DPA — Resend** | ⏳ TODO | Dashboard → Settings → Legal/DPA |
+| **Vendor DPA — Resend** | 🟢 GO | DPA 2025-12-31 executed version archived w `legal-templates/dpa-signed/` (2026-05-13) |
 
 **Marketing-go:** 🚀 **READY** — wszystkie blokery rozwiązane 2026-05-11. Vendor DPA to compliance follow-up, nie bloker marketing-go.
 

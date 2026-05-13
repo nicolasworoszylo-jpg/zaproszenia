@@ -89,30 +89,22 @@ korzystam ze Stripe Payment Links do zaproszeniaonline.com (699 zł / zamówieni
 
 ## 4️⃣ DPA Resend
 
-**Otwórz w Chrome:** https://resend.com/settings
+> ⚠️ **Zaktualizowane 2026-05-13** — wcześniejsza instrukcja "kliknij Sign DPA" była błędna. Resend DPA (sekcja 12 Signatures) wprost mówi: *"This DPA becomes legally binding upon Customer's acceptance of the Agreement"* — **auto-binding, brak przycisku Sign w panelu**. Bonus: Resend ma certyfikację **EU-U.S. Data Privacy Framework** (sekcja 11) — dodatkowa podstawa transferu obok SCC.
+>
+> **Co jest w panelu zamiast Accept button:** Resend Dashboard udostępnia **executed version** DPA do pobrania (sekcja 12: *"The executed version of this DPA may be accessed by Customer through the Resend dashboard at any time following execution"*). To wystarczy jako dowód.
 
-**Prompt do Claude in Chrome:**
+**Otwórz w Chrome (zalogowana):** https://resend.com/settings (szukaj sekcji Legal / Compliance / DPA)
+
+**Co zrobić:**
 
 ```
-Na ustawieniach Resend:
-1. Znajdź sekcję "Legal" / "Compliance" / "Data Processing" w menu (zwykle dół lewego menu)
-2. Lub bezpośrednio: https://resend.com/settings/legal
-3. Powinien być "Sign DPA" / "View DPA" / "Accept Data Processing Agreement"
-
-Twoje zadanie:
-- Zrób screenshot stanu DPA (przed)
-- Pokaż mi treść DPA lub link do PDF: https://resend.com/legal/dpa
-- NIE klikaj "Sign" - czekam na "OK"
-
-Po akceptacji:
-- Klik "Sign DPA"
-- Screenshot potwierdzenia z datą
-- Zapisz "resend-dpa-2026-MM-DD.png"
-
-Kontekst: jestem Nicolas Woroszyło, używam Resend API do wysyłki maili transakcyjnych
-(potwierdzenie zamówienia, link do strony) z domeny zaproszeniaonline.com.
-DKIM + SPF + DMARC są skonfigurowane.
+1. Znajdź w panelu link "View executed DPA" / "Download DPA" / "DPA copy"
+2. Pobierz PDF do Downloads (Resend serwuje go jako resend-dpa-signed.pdf lub podobnie)
+3. Daj znać - ja przeniose do legal-templates/dpa-signed/resend-dpa-YYYY-MM-DD.pdf
+   (data z dokumentu, nie z dnia pobrania)
 ```
+
+> ✅ **Status 2026-05-13:** Resend DPA (data dokumentu 2025-12-31) zostało zarchiwizowane jako `legal-templates/dpa-signed/resend-dpa-2025-12-31.pdf` (executed version pobrana z dashboardu Resend).
 
 ---
 
