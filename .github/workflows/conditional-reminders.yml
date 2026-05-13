@@ -1,0 +1,215 @@
+name: Conditional Reminders
+
+# Czyta .repo-rules.yml i komentuje pull request / commit z reminderami
+# dla plików ktore zostały zmienione. Dziala niezaleznie od lokalnego post-commit hook —
+# nawet jak ktos użyje SKIP_HOOKS=1 albo committuje z laptop bez setupu.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: reminders-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reminders:
+    name: Generate reminders
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - name: Checkout (with history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine changed files
+        id: diff
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+            HEAD="${{ github.event.pull_request.head.sha }}"
+          else
+            BASE="${{ github.event.before }}"
+            HEAD="${{ github.event.after }}"
+            if [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+              # First push - porownaj do empty tree
+              BASE=$(git hash-object -t tree /dev/null)
+            fi
+          fi
+          echo "base=$BASE" >> $GITHUB_OUTPUT
+          echo "head=$HEAD" >> $GITHUB_OUTPUT
+          git diff --name-only "$BASE" "$HEAD" > .changed-files.txt
+          echo "Changed files:"
+          cat .changed-files.txt
+
+      - name: Install yaml parser
+        run: pip install pyyaml
+
+      - name: Generate reminders from .repo-rules.yml
+        id: gen
+        run: |
+          python3 <<'PYEOF' > .reminders.md
+          import yaml, os, fnmatch, re
+
+          if not os.path.exists('.repo-rules.yml'):
+              print("<!-- no .repo-rules.yml -->")
+              exit(0)
+
+          with open('.repo-rules.yml') as f:
+              data = yaml.safe_load(f) or {}
+
+          with open('.changed-files.txt') as f:
+              changed = [l.strip() for l in f if l.strip()]
+
+          if not changed:
+              print("<!-- no changes -->")
+              exit(0)
+
+          rules = data.get('rules', [])
+          matched = []
+          for rule in rules:
+              patterns = rule.get('match', [])
+              if isinstance(patterns, str):
+                  patterns = [patterns]
+              for pat in patterns:
+                  matched_this_rule = False
+                  for f in changed:
+                      if pat.startswith('r/'):
+                          if re.search(pat[2:], f):
+                              matched.append((rule, [f]))
+                              matched_this_rule = True
+                              break
+                      elif fnmatch.fnmatch(f, pat) or fnmatch.fnmatch(os.path.basename(f), pat):
+                          matched.append((rule, [f]))
+                          matched_this_rule = True
+                          break
+                  if matched_this_rule:
+                      break
+
+          # Dedup
+          seen = set()
+          unique = []
+          for rule, files in matched:
+              t = rule.get('title', '')
+              if t not in seen:
+                  seen.add(t)
+                  unique.append((rule, files))
+
+          if not unique:
+              print("<!-- no matching rules -->")
+              exit(0)
+
+          # Render markdown
+          critical = [r for r in unique if r[0].get('severity') == 'critical']
+          important = [r for r in unique if r[0].get('severity') == 'important']
+          info = [r for r in unique if r[0].get('severity') == 'info']
+
+          print("## 🤖 Repo Guardian — Conditional Reminders")
+          print("")
+          print(f"Wykryto **{len(unique)} reguł** dla **{len(changed)} zmienionych plików** w tym PR/commit.")
+          print("")
+
+          if critical:
+              print(f"### 🔴 Krytyczne ({len(critical)})")
+              print("")
+              for rule, files in critical:
+                  print(f"<details open><summary><b>{rule.get('title', 'Reminder')}</b> · trigger: <code>{', '.join(files)}</code></summary>")
+                  print("")
+                  print(rule.get('remind', '').strip())
+                  print("")
+                  print("</details>")
+                  print("")
+
+          if important:
+              print(f"### 🟡 Ważne ({len(important)})")
+              print("")
+              for rule, files in important:
+                  print(f"<details><summary><b>{rule.get('title', 'Reminder')}</b> · trigger: <code>{', '.join(files)}</code></summary>")
+                  print("")
+                  print(rule.get('remind', '').strip())
+                  print("")
+                  print("</details>")
+                  print("")
+
+          if info:
+              print(f"### 🟢 Info ({len(info)})")
+              print("")
+              for rule, files in info:
+                  print(f"<details><summary><b>{rule.get('title', 'Reminder')}</b> · trigger: <code>{', '.join(files)}</code></summary>")
+                  print("")
+                  print(rule.get('remind', '').strip())
+                  print("")
+                  print("</details>")
+                  print("")
+
+          print("---")
+          print("")
+          print("_Konfiguracja reminderów: [`.repo-rules.yml`](../blob/main/.repo-rules.yml) · Dodaj nową regułę = edytuj YAML._")
+          PYEOF
+
+          # Sprawdz czy jest content
+          if [ ! -s .reminders.md ] || grep -q '<!-- no ' .reminders.md; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "Brak reminderów dla tych zmian."
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+            cat .reminders.md
+          fi
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && steps.gen.outputs.skip != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('.reminders.md', 'utf8');
+
+            // Sprawdz czy juz jest taki komentarz - update zamiast duplikat
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const marker = '🤖 Repo Guardian — Conditional Reminders';
+            const existing = comments.data.find(c => c.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+      - name: Comment on commit (push event)
+        if: github.event_name == 'push' && steps.gen.outputs.skip != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('.reminders.md', 'utf8');
+            await github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: body
+            });

@@ -1,0 +1,228 @@
+# .repo-rules.yml — Conditional Reminders dla repo zaproszeniaonline.com
+#
+# Każda reguła: jeśli `match` (glob/regex pliku) → pokaz `remind` (multiline message).
+# Działa w 2 warstwach:
+#   1. LOKALNIE: post-commit hook → console + macOS notification
+#   2. SERWEROWO: .github/workflows/conditional-reminders.yml → komentarz w PR/commit
+#
+# Format każdej reguły:
+#   - match: ["pattern", "pattern"]    # glob (jak gitignore) lub regex z prefixem r/
+#     severity: "critical|important|info"  # wpływa na format komunikatu
+#     title: "krótki tytuł reminder"
+#     remind: |
+#       Multi-line tekst który pokaże się po commit lub w PR comment.
+#       Może zawierać markdown.
+#
+# WAŻNE: ten plik powinien być editable przez Nicolasa - dodaje nowe reguły
+# bez kodu, deklaratywnie.
+
+rules:
+
+  # ============================================================================
+  # 🔴 KRYTYCZNE - mogą zepsuć demo / production / legal compliance
+  # ============================================================================
+
+  - match: ["vendor/demo-compiled.js", "vendor/magda-compiled.js"]
+    severity: critical
+    title: "⚠️ Compiled JS zmienione - NIE rebuilduj wedding-enhanced.jsx!"
+    remind: |
+      Zmieniłeś `vendor/demo-compiled.js`. WAŻNE:
+      - NIE odpalaj `npx esbuild wedding-enhanced.jsx` ani `bash scripts/add-music.sh`
+        (oba zniszczą demo - esbuild widzi import "react" → require() → crash w browser)
+      - Edycja manualna w minified JS lub restore z git (cfb967f to znany dobry stan)
+      - Test po deploy: incognito → /demo → demo Anna+Michał renderuje się
+
+  - match: ["supabase/functions/stripe-webhook/**"]
+    severity: critical
+    title: "🔐 Stripe webhook zmieniony - wymaga re-deploy"
+    remind: |
+      Zmieniłeś Stripe webhook handler. Akcje wymagane:
+      1. **Re-deploy** przez Supabase MCP:
+         `mcp__supabase__deploy_edge_function name=stripe-webhook`
+      2. Sprawdź **STRIPE_WEBHOOK_SECRET** w Supabase → Functions → Secrets
+      3. Test signature verification:
+         `curl -X POST -H "stripe-signature: fake" .../stripe-webhook`
+         oczekiwane: "No signatures found" lub "signature verification failed"
+      4. Idempotency: trigger powinien działać tylko gdy `OLD.payment_status IS DISTINCT FROM NEW.payment_status`
+
+  - match: ["terms.html", "privacy.html", "returns.html", "cookies.html", "LEGAL_DATA.md"]
+    severity: critical
+    title: "📋 Legal change - wymaga aktualizacji LEGAL_DATA.md + audit"
+    remind: |
+      Zmieniłeś plik legal. Sprawdź:
+      1. **LEGAL_DATA.md** zaktualizowane (single source of truth dla danych prawnych)
+      2. **Spójność**: czy zmiana jest też w innych legal files? (cross-reference)
+      3. Działalność nieewidencjonowana art. 5 ust. 1 ustawy z 6.03.2018 nadal aktualne
+      4. **NIE** używaj "faktura VAT" - mamy **"rachunek"** (nie jesteśmy podatnikami VAT)
+      5. Limit miesięczny 3 499,50 zł brutto (50% min wynagrodzenia 2026) - sprawdź czy aktualny
+
+  - match: ["supabase/migrations/**"]
+    severity: critical
+    title: "🗄️ Migracja Supabase - zastosuj na prod"
+    remind: |
+      Nowa migracja w `supabase/migrations/`. Akcje:
+      1. **Zastosuj na prod**: `mcp__supabase__apply_migration` z lokalnej kopii
+      2. Test idempotency: zastosować 2× nie powinno crashować
+      3. Update **ARCHITECTURE.md** - data model section
+      4. Sprawdź **RLS policies** - nowe tabele powinny mieć insert/select anon explicit
+      5. Backup pre-migration: `pg_dump` lub Supabase Dashboard → Backups
+
+  # ============================================================================
+  # 🟡 WAŻNE - wymaga zewnętrznej akcji (Google, Stripe, marketing)
+  # ============================================================================
+
+  - match: ["index.html"]
+    severity: important
+    title: "📍 Landing zmieniony - sprawdź zewnętrzne integracje"
+    remind: |
+      Zmieniłeś główną stronę. Jeśli zmiana dotyczy:
+      - **Ceny** (699 zł) → zaktualizuj **Stripe Product Description** + **Google Ads** + **Meta Ads** copy
+      - **Opisu firmy** → zaktualizuj **Google Business Profile** (wizytówka Google) → biznes.google.com
+      - **Headline / hero** → testuj A/B w Vercel Analytics przez 7 dni
+      - **Meta description / title** → resubmit sitemap w GSC (search.google.com/search-console)
+      - **Schema.org JSON-LD** → walidacja https://validator.schema.org
+      - **OG image** → debugger https://developers.facebook.com/tools/debug
+
+  - match: ["sitemap.xml", "robots.txt", "llms.txt", "llms-full.txt"]
+    severity: important
+    title: "🔍 SEO files - resubmit w GSC + Bing + IndexNow ping"
+    remind: |
+      Zmieniłeś plik SEO. Akcje (2 minuty łącznie):
+      1. **GSC**: search.google.com/search-console → Sitemaps → Resubmit
+      2. **Bing**: bing.com/webmasters → Sitemaps → Submit
+      3. **IndexNow ping** (powiadom Bing + ChatGPT):
+         ```bash
+         curl "https://api.indexnow.org/indexnow?url=https://zaproszeniaonline.com/&key=06025c5dee34aceed2b01743598512e4"
+         ```
+
+  - match: ["sitemap.xml"]
+    severity: important
+    title: "📋 Sitemap - sprawdź czy lastmod i priority OK"
+    remind: |
+      Sprawdź czy `<lastmod>` jest dziś + priority jest rozsądny:
+      - `/` priority 1.0
+      - `/demo` priority 0.9
+      - `/blog/*` priority 0.7-0.8
+      - `/terms`, `/privacy`, `/cookies` priority 0.3
+      Wszystkie URL muszą zwracać HTTP 200 (nie 404, nie 403, nie redirect).
+
+  - match: ["vercel.json"]
+    severity: important
+    title: "🛡️ Vercel config - test security headers + cache"
+    remind: |
+      Zmieniłeś `vercel.json`. Sprawdź po deploy:
+      1. **securityheaders.com/?q=zaproszeniaonline.com** - target A albo A+
+      2. **HTTP headers** (curl -I) - czy nie ma duplikatów
+      3. **Cache headers** - zmiana max-age może wpłynąć na koszty Vercel
+      4. **Redirects/rewrites** - test każdy URL w incognito
+
+  - match: ["site.webmanifest"]
+    severity: important
+    title: "📱 PWA manifest - test Add to Home Screen"
+    remind: |
+      Zmieniłeś PWA manifest. Test:
+      1. **iOS Safari**: Share → Add to Home Screen → ikona + nazwa OK?
+      2. **Android Chrome**: ⋮ → Install app → ikona maskable OK?
+      3. **Validator**: https://manifest-validator.appspot.com
+
+  - match: ["audio/**"]
+    severity: important
+    title: "🎵 Audio update - sprawdź rozmiar + format + fade"
+    remind: |
+      Zmieniłeś plik audio. Sprawdź:
+      - Format: **mp3** (najszerszy support)
+      - Bitrate: **64 kbps mono** (BG music nie potrzebuje więcej)
+      - Rozmiar: **<1 MB** (mobile transfer)
+      - **Fade in 0.5s + fade out 1s** (smooth loop)
+      - Licencja **CC0 / Pixabay** / royalty-free (sprawdź źródło)
+
+  - match: ["blog/*.html"]
+    severity: important
+    title: "📝 Blog post - update sitemap + internal links + Schema.org"
+    remind: |
+      Nowy/zmieniony blog post. Akcje:
+      1. **sitemap.xml** - dodaj URL z lastmod=dziś, priority 0.7
+      2. **Internal linking** - link do `/`, `/#cennik`, `/demo` w body
+      3. **Schema.org BlogPosting** w JSON-LD z author + datePublished
+      4. **Cross-link** - dodaj z innych blog postów (related content)
+      5. **OG image** - własna (nie default)
+
+  - match: ["dziekujemy.html", "platnosc-anulowana.html"]
+    severity: important
+    title: "✅ Stripe redirect page - test e2e flow"
+    remind: |
+      Zmieniłeś stronę po-płatność. Test:
+      1. Wpłata Stripe test mode → redirect na `/dziekujemy`
+      2. Anulowanie checkout → redirect na `/platnosc-anulowana`
+      3. **noindex** na obu (już jest, sprawdź)
+      4. **Conversion tracking** (gdy dodasz Meta Pixel / Google Ads tag)
+
+  - match: ["index.html"]
+    severity: info
+    title: "💼 Index zmieniony - sprawdź Stripe Payment Link"
+    remind: |
+      Stripe Payment Link aktualnie kończy się na `28E00i2UgfYsayo8XQgMw01`.
+      Jeśli zmieniłeś cenę/opis - **Stripe Dashboard → Payment Links → Edit**
+      i sprawdź czy nadal pasuje do tego co pisze na stronie.
+
+  # ============================================================================
+  # 🟢 INFO - dobrze wiedzieć, ale nie blokuje
+  # ============================================================================
+
+  - match: ["index.html", "demo.html"]
+    severity: info
+    title: "🌐 Frontend zmieniony - resubmit IndexNow (bonus)"
+    remind: |
+      Po deploy wyślij ping do IndexNow (powiadom Bing + ChatGPT że content się zmienił):
+      ```bash
+      curl "https://api.indexnow.org/indexnow?url=https://zaproszeniaonline.com/&key=06025c5dee34aceed2b01743598512e4"
+      ```
+
+  - match: ["*.html"]
+    severity: info
+    title: "♿ HTML zmieniony - sprawdź dostępność"
+    remind: |
+      Quick a11y check po zmianie HTML:
+      - Lighthouse → Accessibility (Chrome DevTools)
+      - Wszystkie `<img>` mają `alt`
+      - Form `<label for="...">` matchuje input id
+      - Contrast tekstu OK (WCAG AA)
+
+  - match: ["scripts/add-music.sh"]
+    severity: critical
+    title: "🎵 scripts/add-music.sh - OSTRZEŻENIE rebuild"
+    remind: |
+      Skrypt `scripts/add-music.sh` zawiera `npx esbuild wedding-enhanced.jsx` co
+      **ZNISZCZY demo** (lesson z commit 0a41d1b).
+
+      **NIE uruchamiaj tego skryptu.** Zamiast tego:
+      ```bash
+      ffmpeg -i ~/Downloads/nowy.mp3 \
+        -af "afade=t=in:st=0:d=0.5,afade=t=out:st=109:d=1" \
+        -ar 44100 -ac 1 -b:a 64k -codec:a libmp3lame \
+        -y audio/demo.mp3
+      git add audio/demo.mp3 && git commit && git push
+      ```
+
+  - match: ["wedding-enhanced.jsx"]
+    severity: critical
+    title: "⚠️ wedding-enhanced.jsx - NIE BUDOWAĆ przez esbuild"
+    remind: |
+      `wedding-enhanced.jsx` to MASTER TEMPLATE (referencyjny), nie pełny build.
+      Brakuje:
+      - inicjalizacji Supabase client
+      - ReactDOM.createRoot(...).render() entry point
+
+      Faktyczna kompilacja vendor/demo-compiled.js via inline JSX w demo.html + build.sh.
+      Jeśli budujesz przez esbuild: import "react" → require() → CRASH w browser.
+
+      Rollback: `git show cfb967f:vendor/demo-compiled.js > vendor/demo-compiled.js`
+
+  - match: [".repo-rules.yml"]
+    severity: info
+    title: "📋 Repo rules zmienione - test conditional reminders"
+    remind: |
+      Zmieniłeś `.repo-rules.yml`. Test:
+      1. **YAML walidacja**: `python3 -c "import yaml; yaml.safe_load(open('.repo-rules.yml'))"`
+      2. Test lokalny: zrób fake commit (zmień jakiś plik z match) - powinien pokazać reminder
+      3. Test serwer: po push GitHub Actions skomentuje commit/PR

@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+# Repo Guardian — post-commit
+# Po udanym commit czyta .repo-rules.yml i pokazuje reminders dla plików
+# które właśnie zmieniliśmy. Łączy:
+#   - console output (kolorowy)
+#   - macOS notification (osascript) jak są critical reminders
+#   - log do .guardian/reminders.log
+
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck disable=SC1091
+. "${HOOK_DIR}/_lib.sh"
+
+if guardian_skip_active; then
+  exit 0
+fi
+
+RULES_FILE=".repo-rules.yml"
+[ -f "$RULES_FILE" ] || exit 0  # Brak reguł = brak reminders
+
+# Files w ostatnim commit
+CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD 2>/dev/null)
+[ -z "$CHANGED_FILES" ] && exit 0
+
+# Python parser .repo-rules.yml — sprawdza glob match + zwraca reminders
+PYTHON_PARSER=$(cat <<'PYEOF'
+import sys, os, fnmatch, re
+try:
+    import yaml
+except ImportError:
+    sys.stderr.write("[guardian] yaml package brak - pip install pyyaml\n")
+    sys.exit(0)
+
+rules_file = sys.argv[1]
+changed = sys.argv[2].split('\n')
+
+with open(rules_file) as f:
+    try:
+        data = yaml.safe_load(f) or {}
+    except yaml.YAMLError as e:
+        sys.stderr.write(f"[guardian] .repo-rules.yml parse error: {e}\n")
+        sys.exit(0)
+
+rules = data.get('rules', [])
+matched = []
+for rule in rules:
+    patterns = rule.get('match', [])
+    if isinstance(patterns, str):
+        patterns = [patterns]
+    for pat in patterns:
+        for f in changed:
+            if not f:
+                continue
+            # regex prefix r/
+            if pat.startswith('r/'):
+                if re.search(pat[2:], f):
+                    matched.append((rule, f))
+                    break
+            # glob
+            elif fnmatch.fnmatch(f, pat) or fnmatch.fnmatch(os.path.basename(f), pat):
+                matched.append((rule, f))
+                break
+
+# Dedup rules (jeśli kilka files matchowało tę samą regułę)
+seen_titles = set()
+unique = []
+for rule, f in matched:
+    title = rule.get('title', '')
+    if title not in seen_titles:
+        seen_titles.add(title)
+        unique.append((rule, f))
+
+# Output: severity|title|remind (delimiter \0\0)
+for rule, f in unique:
+    sev = rule.get('severity', 'info')
+    title = rule.get('title', 'Reminder')
+    remind = rule.get('remind', '').strip()
+    print(f"{sev}\0{title}\0{remind}\0\0", end='')
+PYEOF
+)
+
+# Odpal parser
+OUTPUT=$(python3 -c "$PYTHON_PARSER" "$RULES_FILE" "$CHANGED_FILES" 2>&1)
+
+if [ -z "$OUTPUT" ]; then
+  exit 0  # Brak reminderów = cisza
+fi
+
+echo ""
+guardian_log "post-commit: aktywne reminders z .repo-rules.yml"
+echo ""
+
+CRITICAL_COUNT=0
+IMPORTANT_COUNT=0
+
+# Parse output (split po \0\0)
+while IFS= read -r -d '' entry; do
+  [ -z "$entry" ] && continue
+  # Split entry po \0
+  SEV=$(echo "$entry" | awk -F'\0' '{print $1}')
+  TITLE=$(echo "$entry" | awk -F'\0' '{print $2}')
+  REMIND=$(echo "$entry" | awk -F'\0' '{for(i=3;i<NF;i++) printf "%s%s",$i,(i<NF-1?"\0":"")}')
+
+  case "$SEV" in
+    critical)
+      CRITICAL_COUNT=$((CRITICAL_COUNT + 1))
+      printf '  %s🔴 %s%s\n' "$C_RED" "$TITLE" "$C_OFF"
+      ;;
+    important)
+      IMPORTANT_COUNT=$((IMPORTANT_COUNT + 1))
+      printf '  %s🟡 %s%s\n' "$C_YEL" "$TITLE" "$C_OFF"
+      ;;
+    info|*)
+      printf '  %s🟢 %s%s\n' "$C_GRN" "$TITLE" "$C_OFF"
+      ;;
+  esac
+
+  # Body z indentacją 4 spacji
+  echo "$REMIND" | sed 's/^/    /'
+  echo ""
+
+  # Log do .guardian/reminders.log
+  if [ -d ".guardian" ]; then
+    {
+      echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] $SEV: $TITLE"
+      echo "$REMIND" | sed 's/^/  /'
+      echo "---"
+    } >> .guardian/reminders.log
+  fi
+done < <(printf '%s\0\0' "$OUTPUT" | awk 'BEGIN{RS="\0\0"} {print $0"\0"}')
+
+# macOS notification gdy critical
+if [ "$CRITICAL_COUNT" -gt 0 ] && command -v osascript >/dev/null 2>&1; then
+  osascript -e "display notification \"$CRITICAL_COUNT krytyczny reminder po commicie. Sprawdz terminal.\" with title \"Repo Guardian\" sound name \"Glass\"" 2>/dev/null || true
+fi
+
+if [ "$CRITICAL_COUNT" -gt 0 ] || [ "$IMPORTANT_COUNT" -gt 0 ]; then
+  guardian_warn "post-commit: $CRITICAL_COUNT krytyczne + $IMPORTANT_COUNT wazne reminders. Sprawdz przed push."
+fi
+
+exit 0
