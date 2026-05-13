@@ -83,6 +83,30 @@ rules:
       - **Schema.org JSON-LD** → walidacja https://validator.schema.org
       - **OG image** → debugger https://developers.facebook.com/tools/debug
 
+  - match: ["sprzedaz/**", "FIRST_CLIENT_CHECKLIST.md", "legal-templates/dpa-signed/**", "LEGAL_DATA.md"]
+    severity: critical
+    title: "🎯 Pierwsza sprzedaż / DPA / IBAN - sprawdź FIRST_CLIENT_CHECKLIST.md"
+    remind: |
+      Wykryto zmianę powiązaną z **pierwszą sprzedażą** lub **legal compliance**.
+      Otwórz `FIRST_CLIENT_CHECKLIST.md` i przejdź przez listę:
+
+      🔴 BLOKERY (PRZED przyjęciem wpłaty):
+      1. ☐ DPA zaakceptowane × 4 (Supabase / Vercel / Stripe / Resend) - screenshoty w `legal-templates/dpa-signed/`
+      2. ☐ Skrzynki email założone (kontakt@/rodo@/faktury@) z forwardem do gmail
+      3. ☐ IBAN w `LEGAL_DATA.md` wpisany
+      4. ☐ Supabase: sprawdź `consent_*` kolumny w wpłaconych leadach
+
+      🟡 W CIĄGU TYGODNIA:
+      5. ☐ Rachunek dla klienta (działalność nieewidencjonowana - **bez VAT**)
+      6. ☐ Update RCP po pierwszym kliencie
+      7. ☐ Sprawdź licznik miesięczny (limit 3 499,50 zł brutto)
+
+      🎯 **Prompty Claude in Chrome** do zrobienia DPA + email setup za Ciebie:
+      → `CLAUDE_IN_CHROME_PROMPTS.md`
+
+      🚨 Limit działalności nieewidencjonowanej 2026: **3 499,50 zł/mc** (50% min wynagrodzenia).
+      Przy 6. sprzedaży po 699 zł = 4 194 zł → JDG w 7 dni.
+
   - match: ["sitemap.xml", "robots.txt", "llms.txt", "llms-full.txt"]
     severity: important
     title: "🔍 SEO files - resubmit w GSC + Bing + IndexNow ping"
