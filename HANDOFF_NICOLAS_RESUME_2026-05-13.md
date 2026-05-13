@@ -1,10 +1,10 @@
 # HANDOFF dla Nicolasa — Resume RODO compliance (2026-05-13)
 
-> **Hasło aktywujące dla Twojego Claude Code:** `PRZEJMIJ-RODO-2026-05-13`
+> **Hasło aktywujące dla Twojego Claude Code:** `ZADANIE OD ROBOTA`
 >
 > Po zalogowaniu na laptopie 1 otwórz Claude Code w `C:\Users\Nicolas\Desktop\zaproszenia\` (lub gdzie masz repo) i powiedz:
 >
-> > *Kontynuuj zadanie z hasłem PRZEJMIJ-RODO-2026-05-13*
+> > *ZADANIE OD ROBOTA*
 >
 > Twój Claude wygrepuje to hasło, znajdzie ten plik, przeczyta status i poprowadzi Cię dalej.
 
@@ -194,7 +194,7 @@ Po wszystkim **otwórz PR na linku z góry i zmerge'uj** (`gh` jest zainstalowan
 
 ## Kontekst do MEMORY (zapisuje się automatycznie po przeczytaniu tego pliku)
 
-- Hasło: `PRZEJMIJ-RODO-2026-05-13` (jednorazowe, zużyte po wykonaniu zadań)
+- Hasło: `ZADANIE OD ROBOTA` (jednorazowe, zużyte po wykonaniu zadań)
 - Wzorzec: handoff plik + hasło — zapisać do pamięci jako `feedback` żeby kolejne sesje też tak robiły
 
 Dominika dziękuje, dobranoc 🌙
