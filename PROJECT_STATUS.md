@@ -47,8 +47,20 @@ Po pełnej sesji (~30 commits od 2026-05-11) Nicolas potwierdził: **"wszystko d
 | **Stripe Branding + Customer emails** | 🟢 GO | skonfigurowane przez Dominikę 2026-05-11 |
 | Google Search Console | 🟢 GO | property verified via TXT, sitemap submitted |
 | Legal docs (terms + privacy) | 🟢 GO | działalność nieewidencjonowana wstawiona |
+| **Vendor DPA — Stripe** | 🟢 GO | DPA 2025-11-18 archived w `legal-templates/dpa-signed/` (2026-05-13) |
+| **Vendor DPA — Vercel** | 🟠 **DECYZJA NICOLASA** | Hobby plan nie pokryty przez Vercel DPA → 4 opcje w [`DECISION_VERCEL_DPA.md`](DECISION_VERCEL_DPA.md) |
+| **Vendor DPA — Supabase** | ⏳ TODO | Dashboard → Settings → Compliance → Sign DPA |
+| **Vendor DPA — Resend** | ⏳ TODO | Dashboard → Settings → Legal/DPA |
 
-**Marketing-go:** 🚀 **READY** — wszystkie blokery rozwiązane 2026-05-11.
+**Marketing-go:** 🚀 **READY** — wszystkie blokery rozwiązane 2026-05-11. Vendor DPA to compliance follow-up, nie bloker marketing-go.
+
+---
+
+## 🟠 Decyzje oczekujące na Nicolasa
+
+| Temat | Plik | Wykryto | Pilność |
+|---|---|---|---|
+| Vercel plan vs RODO compliance (Hobby ≠ DPA) | [`DECISION_VERCEL_DPA.md`](DECISION_VERCEL_DPA.md) | 2026-05-13 | średnia — luka RODO otwarta do czasu decyzji |
 
 ---
 

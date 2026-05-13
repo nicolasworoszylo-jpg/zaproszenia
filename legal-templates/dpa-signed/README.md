@@ -1,20 +1,21 @@
 # Dowody akceptacji DPA (art. 28 RODO)
 
-> Zrzuty ekranu z paneli administracyjnych potwierdzające akceptację umowy
-> powierzenia przetwarzania danych (Data Processing Agreement) u procesorów.
+> Dwa rodzaje dowodów dla każdego procesora:
+> 1. **Screenshot** (PNG) z panelu administracyjnego — gdy procesor wymaga ręcznej akceptacji
+> 2. **PDF** pełnej treści DPA — gdy auto-binding przez umowę ramową (Stripe Services Agreement, Vercel ToS itp.) lub jako dokumentacja referencyjna obok screenshota
 
-## Pliki oczekiwane
+## Stan na 2026-05-13
 
-Po wykonaniu checklisty z `FIRST_CLIENT_CHECKLIST.md` powinny tu być:
-
-- `supabase-dpa-YYYY-MM-DD.png` — Supabase (hosting bazy danych)
-- `vercel-dpa-YYYY-MM-DD.png` — Vercel (hosting strony + analytics)
-- `stripe-dpa-YYYY-MM-DD.png` — Stripe (operator płatności)
-- `resend-dpa-YYYY-MM-DD.png` — Resend (wysyłka emaili transakcyjnych)
+| Procesor | Status | Plik | Mechanizm |
+|---|---|---|---|
+| **Stripe** | ✅ archived | `stripe-dpa-2025-11-18.pdf` | auto-binding przez Stripe Services Agreement (sekcja 13.10), brak osobnego przycisku |
+| **Supabase** | ⏳ TODO | (oczekiwany) `supabase-dpa-YYYY-MM-DD.png` | Dashboard → Settings → Compliance → Sign DPA |
+| **Vercel** | 🟠 **DECYZJA NICOLASA** | brak | **Hobby plan NIE jest pokryty** przez Vercel DPA (sekcja 1: tylko Pro/Enterprise). Patrz `/DECISION_VERCEL_DPA.md` |
+| **Resend** | ⏳ TODO | (oczekiwany) `resend-dpa-YYYY-MM-DD.png` lub `.pdf` | Resend Dashboard → Settings → Legal/DPA |
 
 ## Gotowe prompty Claude in Chrome
 
-Zobacz `CLAUDE_IN_CHROME_PROMPTS.md` w korzeniu repo — wklejasz prompt do extension i Claude klika za Ciebie.
+Zobacz `CLAUDE_IN_CHROME_PROMPTS.md` w korzeniu repo. **Uwaga 2026-05-13:** sekcja Vercel w tym promptcie była nieaktualna (zakładała przycisk "Accept DPA" który nie istnieje) — została zaktualizowana po manualnej weryfikacji.
 
 ## Po co to trzymamy
 

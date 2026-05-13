@@ -39,29 +39,19 @@ RODO art. 28. Supabase to procesor danych zgłoszeń (leads, rsvps) - region eu-
 
 ## 2️⃣ DPA Vercel
 
-**Otwórz w Chrome:** https://vercel.com/account/teams (zaloguj się jeśli nie jesteś)
+> ⚠️ **Zaktualizowane 2026-05-13** — wcześniejsza instrukcja "kliknij Accept w panelu" była błędna. Manualnie zweryfikowane: **taki przycisk nie istnieje**. Vercel DPA (sekcja 1 Introduction) stosuje się tylko do planów **Pro i Enterprise** — auto-binding przez akceptację Terms of Service, bez osobnego przycisku. Plan **Hobby** (na którym jest `zaproszenia-ddli`) **nie jest pokryty** przez Vercel DPA w ogóle.
+>
+> **Akcja w przeglądarce nie jest potrzebna.** Decyzja leży po stronie Nicolasa — patrz [`DECISION_VERCEL_DPA.md`](DECISION_VERCEL_DPA.md):
+> - Opcja A: upgrade do Pro ($20/mc) → DPA auto-active → pobierz PDF z `vercel.com/legal/dpa` → archive w `legal-templates/dpa-signed/vercel-dpa-[data].pdf`
+> - Opcje B/C/D — bez akcji DPA, inna ścieżka compliance
 
-**Prompt do Claude in Chrome:**
+**Jeśli Nicolas wybierze Pro i potrzebny będzie zapis PDF DPA:**
 
 ```
-Na tym dashboardzie Vercel:
-1. Wejdź w "Team Settings" (lewe menu) - lub jeśli nie ma teamu, w "Personal Account Settings"
-2. Znajdź zakładkę "Security & Privacy" lub "Legal" lub "Compliance"
-3. Powinien być przycisk "Data Processing Agreement" / "Accept DPA" / "Sign Standard Contractual Clauses"
-
-Twoje zadanie:
-- Zrób screenshot sekcji DPA (przed kliknięciem)
-- Pokaż mi co dokładnie akceptuję - link do dokumentu PDF lub treść umowy
-- NIE klikaj jeszcze "Accept"
-- Czekam na moje "OK"
-
-Po mojej akceptacji:
-- Kliknij "Accept" / "Sign"
-- Screenshot potwierdzenia (z datą i statusem "Signed")
-- Zapisz jako "vercel-dpa-2026-MM-DD.png"
-
-Kontekst: jestem Nicolas Woroszyło, projekt zaproszenia-ddli i zaproszenia, używam
-Vercel jako hosting + Web Analytics + Speed Insights. Vercel to procesor (art. 28 RODO).
+Otwórz https://vercel.com/legal/dpa w Chrome. Zadanie:
+1. Print → Save as PDF (Ctrl+P → Save as PDF → Destination)
+2. Zapisz do Downloads jako vercel-dpa-2025-11-18.pdf (data z dokumentu)
+3. Daj mi znać, przeniosę do legal-templates/dpa-signed/
 ```
 
 ---
@@ -92,6 +82,8 @@ Po akceptacji lub w przypadku auto-DPA:
 Kontekst: jestem Nicolas Woroszyło, użytkownik Stripe (account email zamowienia@zaproszeniaonline.com),
 korzystam ze Stripe Payment Links do zaproszeniaonline.com (699 zł / zamówienie).
 ```
+
+> ✅ **Status 2026-05-13:** Stripe DPA z 18 listopada 2025 zostało zarchiwizowane jako `legal-templates/dpa-signed/stripe-dpa-2025-11-18.pdf`. Auto-binding potwierdzone — żadnego przycisku w panelu nie ma, dokument działa od momentu założenia konta.
 
 ---
 

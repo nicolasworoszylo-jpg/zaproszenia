@@ -15,8 +15,8 @@ Bez DPA każde powierzenie danych = art. 28 RODO violation = ryzyko skargi PUODO
 | Procesor | Link | Co robisz | Dowód |
 |----------|------|-----------|-------|
 | Supabase | https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/settings/general | Tab Compliance → Sign DPA | Screenshot → `legal-templates/dpa-signed/supabase-YYYY-MM-DD.png` |
-| Vercel | https://vercel.com/account/teams → Team Settings → Security & Privacy | Klik "Accept DPA" | Screenshot → `legal-templates/dpa-signed/vercel-YYYY-MM-DD.png` |
-| Stripe | https://dashboard.stripe.com/settings/account | Sekcja "Data Processing Addendum" | Screenshot → `legal-templates/dpa-signed/stripe-YYYY-MM-DD.png` |
+| **Vercel** | — | **Brak akcji w panelu** — Hobby plan nie pokryty przez Vercel DPA (sekcja 1 = tylko Pro/Enterprise). Decyzja po stronie Nicolasa: [`DECISION_VERCEL_DPA.md`](DECISION_VERCEL_DPA.md) | zależne od opcji A/B/C/D |
+| **Stripe** | — | **Auto-binding** przez Stripe Services Agreement — brak przycisku w panelu, akceptacja przy zakładaniu konta | ✅ archived 2026-05-13: `legal-templates/dpa-signed/stripe-dpa-2025-11-18.pdf` |
 | Resend | https://resend.com/settings | Tab Legal/DPA | Screenshot → `legal-templates/dpa-signed/resend-YYYY-MM-DD.png` |
 
 Po wszystkich 4 screenshotach commit:
