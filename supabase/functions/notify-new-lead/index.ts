@@ -32,6 +32,35 @@ interface Lead {
   package?: string;
   message?: string;
   source?: string;
+  payment_status?: string;
+}
+
+// ─── Helper: wyciąg listy pól do uzupełnienia mailowo (taka sama logika jak w notify-payment-success) ───
+const FEATURE_LABELS_PL: Record<string, string> = {
+  timeline: "plan dnia (harmonogram)",
+  gifts: "lista prezentów / numery kont",
+  hotels: "lista hoteli dla gości",
+  transport: "informacja o transporcie / autokarze",
+  music: "muzyka w tle (link / plik)",
+  faq: "FAQ dla gości",
+};
+function extractPendingMail(message?: string): string[] {
+  if (!message) return [];
+  const items: string[] = [];
+  const re = /^- ([a-z_]+): KLIENT UZUPEŁNI MAILOWO/gim;
+  let m;
+  while ((m = re.exec(message)) !== null) {
+    const key = m[1];
+    items.push(FEATURE_LABELS_PL[key] || key);
+  }
+  if (/Nasza historia:\s*yes\s*\[KLIENT UZUPEŁNI MAILOWO\]/i.test(message)) {
+    items.push("treści sekcji „Nasza historia\" (pierwsze spotkanie, randka, kluczowy moment, zaręczyny)");
+  }
+  const photosMatch = message.match(/Galeria zdjęć: yes \(planowane: (\d+) zdjęć/);
+  if (photosMatch) {
+    items.push(`zdjęcia pary (do ${photosMatch[1]} ujęć - JPG/PNG/HEIC w pełnej rozdzielczości)`);
+  }
+  return items;
 }
 
 interface WebhookPayload {
@@ -215,12 +244,18 @@ Zaproszenia Online · zaproszeniaonline.com`;
 function customerEmailHTML(lead: Lead): string {
   const firstName = lead.name.split(/[ &]+/)[0] || "Państwo";
   const package_ = lead.package ? ` (paleta: ${escapeHtml(lead.package)})` : "";
+  const pendingMail = extractPendingMail(lead.message);
+  const pendingListHtml = pendingMail.length > 0
+    ? `<ul style="margin:8px 0 0;padding-left:22px;color:#0A0A0A;font-size:0.96rem;line-height:1.7;">
+         ${pendingMail.map(x => `<li>${escapeHtml(x)}</li>`).join("")}
+       </ul>`
+    : "";
 
   const bodyHtml = `
   <!-- HERO: forest gradient + monogramowy Z + powitanie -->
   <div class="hero" style="background:linear-gradient(135deg,#2C3E2D 0%,#243325 100%);color:#FAF6EF;padding:48px 36px 40px;text-align:center;">
     ${BRAND_MARK_SVG}
-    ${eyebrow("Zaproszenia Online")}
+    ${eyebrow("Zamówienie przyjęte")}
     <h1 class="h1" style="margin:14px 0 10px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:400;font-size:2.1rem;letter-spacing:-0.022em;line-height:1.12;color:#FAF6EF;">
       Cześć ${escapeHtml(firstName)} -<br/>mamy Wasz brief.
     </h1>
@@ -229,65 +264,45 @@ function customerEmailHTML(lead: Lead): string {
     </p>
   </div>
 
-  <!-- BODY: kroki + callout + signature -->
+  <!-- BODY: status wpłaty + co dosłać + zegar 48h -->
   <div class="body" style="padding:36px 36px 32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.98rem;line-height:1.65;color:#0A0A0A;">
 
     <p style="margin:0 0 20px;color:#0A0A0A;font-size:1rem;">
-      Otrzymaliśmy Wasze zamówienie i już zaczynamy przygotowywać projekt. Oto co dzieje się dalej:
+      Dziękujemy! Po zaksięgowaniu wpłaty 699 zł dostaniecie osobny e-mail z potwierdzeniem (rachunek + link do projektu). Pod spodem zebraliśmy całą logistykę realizacji - tak żeby nic nie zaskoczyło.
     </p>
 
-    <!-- 3 KROKI (jak how-it-works na stronie) -->
-    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin:24px 0;">
-      <tr><td class="step-row" style="padding:0 0 20px;">
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-          <tr>
-            <td valign="top" style="width:46px;padding-right:14px;">
-              <div class="num" style="width:36px;height:36px;border-radius:50%;background:#2C3E2D;color:#FAF6EF;text-align:center;line-height:36px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.98rem;">I</div>
-            </td>
-            <td valign="top" style="padding-top:5px;">
-              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">W ciągu 48 godzin</strong> od dostarczenia kompletu danych dostaniecie link do podglądu Waszej strony - z imionami, datą, wybraną paletą i wszystkimi sekcjami.
-            </td>
-          </tr>
-        </table>
-      </td></tr>
-
-      <tr><td class="step-row" style="padding:0 0 20px;">
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-          <tr>
-            <td valign="top" style="width:46px;padding-right:14px;">
-              <div class="num" style="width:36px;height:36px;border-radius:50%;background:#2C3E2D;color:#FAF6EF;text-align:center;line-height:36px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.98rem;">II</div>
-            </td>
-            <td valign="top" style="padding-top:5px;">
-              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">Dwie rundy poprawek w cenie</strong> - odpisujecie na tego maila z uwagami: kolory, teksty, układ, zdjęcia. Wszystko ustalamy mailowo, bez calls.
-            </td>
-          </tr>
-        </table>
-      </td></tr>
-
-      <tr><td class="step-row" style="padding:0;">
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-          <tr>
-            <td valign="top" style="width:46px;padding-right:14px;">
-              <div class="num" style="width:36px;height:36px;border-radius:50%;background:#2C3E2D;color:#FAF6EF;text-align:center;line-height:36px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.98rem;">III</div>
-            </td>
-            <td valign="top" style="padding-top:5px;">
-              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">Dostajecie własny URL i kod QR</strong> do druku. Wysyłacie linki gościom - potwierdzenia obecności trafiają od razu na Waszej skrzynce.
-            </td>
-          </tr>
-        </table>
-      </td></tr>
-    </table>
-
-    <!-- GOLD CALLOUT -->
-    <div style="margin:28px 0 24px;padding:20px 22px;background:rgba(201,169,110,0.08);border-left:3px solid #C9A96E;border-radius:8px;">
-      <p style="margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.74rem;letter-spacing:0.12em;text-transform:uppercase;color:#999999;font-weight:600;">
-        <span style="display:inline-block;width:5px;height:5px;background:#C9A96E;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>Co warto przygotować
+    <!-- KROK 1: na co czekamy ze strony klienta -->
+    <div style="margin:24px 0;padding:22px 24px;background:rgba(184,95,46,0.06);border-radius:12px;border-left:3px solid #B85F2E;">
+      <p style="margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.74rem;letter-spacing:0.12em;text-transform:uppercase;color:#B85F2E;font-weight:600;">
+        <span style="display:inline-block;width:5px;height:5px;background:#B85F2E;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>${pendingMail.length > 0 ? 'Czekamy od Was na te dane (48 h na dosłanie)' : 'Dane od Was'}
       </p>
+      ${pendingMail.length > 0 ? `
+      <p style="margin:0 0 6px;font-size:0.98rem;line-height:1.65;color:#0A0A0A;">
+        W formularzu zaznaczyliście, że poniższe dane prześlecie mailowo. Wyślijcie je na
+        <strong><a href="mailto:kontakt@zaproszeniaonline.com?subject=${encodeURIComponent('Dane do zamówienia ' + lead.id.slice(0,8))}" style="color:#2C3E2D;text-decoration:underline;text-underline-offset:2px;">kontakt@zaproszeniaonline.com</a></strong>
+        w ciągu <strong>48 godzin</strong> od otrzymania tego maila:
+      </p>
+      ${pendingListHtml}
+      <p style="margin:14px 0 0;font-size:0.88rem;line-height:1.6;color:#4A4A4A;">
+        Jeżeli w ciągu 48 godzin nie otrzymamy tych pól, przyjmiemy że rezygnujecie z ich uzupełnienia i przystąpimy do realizacji bez nich (sekcje pominięte lub uzupełnione treścią przykładową, zgodnie z § 5 ust. 2 <a href="https://zaproszeniaonline.com/terms" style="color:#4A4A4A;text-decoration:underline;">Regulaminu</a>).
+      </p>` : `
       <p style="margin:0;font-size:0.96rem;line-height:1.6;color:#0A0A0A;">
-        Jeśli zaznaczyliście „tak" przy zdjęciach pary lub sekcji „Nasza historia" - wyślijcie nam materiały na adres
-        <strong><a href="mailto:kontakt@zaproszeniaonline.com" style="color:#2C3E2D;text-decoration:underline;text-underline-offset:2px;">kontakt@zaproszeniaonline.com</a></strong>.
-        Zdjęcia w pełnej rozdzielczości (do 7 ujęć w cenie) + kilka zdań Waszej historii w wolnej formie. Reszta poczeka - odezwiemy się sami.
+        W formularzu uzupełniliście wszystkie potrzebne pola - <strong>nie czekamy na nic dodatkowego od Was</strong>. Po zaksięgowaniu wpłaty od razu zaczynamy projekt.
+      </p>`}
+    </div>
+
+    <!-- KROK 2: harmonogram realizacji -->
+    <div style="margin:24px 0;padding:22px 24px;background:rgba(44,62,45,0.04);border-radius:12px;border-left:3px solid #2C3E2D;">
+      <p style="margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.74rem;letter-spacing:0.12em;text-transform:uppercase;color:#2C3E2D;font-weight:600;">
+        <span style="display:inline-block;width:5px;height:5px;background:#C9A96E;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>Co dalej (jeden timeline)
       </p>
+      <ul style="margin:8px 0 0;padding-left:22px;color:#0A0A0A;font-size:0.96rem;line-height:1.75;">
+        <li><strong>Wpłata 699 zł</strong> (BLIK / karta przez Stripe) - po niej dostaniecie potwierdzenie + rachunek.</li>
+        <li><strong>${pendingMail.length > 0 ? 'Dosłanie kompletu danych w 48 h' : 'Dane już komplet'}</strong> - ${pendingMail.length > 0 ? 'lista wyżej. Po dostarczeniu (lub po upływie 48 h) zegar realizacji startuje.' : 'realizacja startuje od razu po wpłacie.'}</li>
+        <li><strong>Realizacja w 48 h od kompletu</strong> - dostaniecie link do podglądu Waszej strony (z imionami, datą, paletą, wszystkimi sekcjami).</li>
+        <li><strong>Dwie rundy poprawek w cenie</strong> - odpisujecie na maila z uwagami (kolory, teksty, układ, zdjęcia). Bez calls.</li>
+        <li><strong>Własny URL + kod QR</strong> do druku - wysyłacie linki gościom, potwierdzenia obecności lecą prosto na Waszą skrzynkę.</li>
+      </ul>
     </div>
 
     <!-- DEMO LINK CTA -->
@@ -330,25 +345,31 @@ function customerEmailHTML(lead: Lead): string {
   `;
 
   return emailShell({
-    preheader: `Cześć ${firstName} - mamy Wasz brief. Link do podglądu w 48 h od dostarczenia kompletu danych.`,
-    title: `Dziękujemy za zamówienie - Zaproszenia Online`,
+    preheader: pendingMail.length > 0
+      ? `Cześć ${firstName} - czekamy na ${pendingMail.length} ${pendingMail.length === 1 ? 'pole' : 'pól'} w 48 h. Po dostarczeniu kompletu - strona w 48 h.`
+      : `Cześć ${firstName} - macie komplet danych. Po wpłacie startujemy z projektem (48 h).`,
+    title: `Zamówienie przyjęte - Zaproszenia Online`,
     bodyHtml,
   });
 }
 
 function customerEmailText(lead: Lead): string {
   const firstName = lead.name.split(/[ &]+/)[0] || "Państwo";
+  const pendingMail = extractPendingMail(lead.message);
+  const pendingBlock = pendingMail.length > 0
+    ? `CZEKAMY OD WAS NA TE DANE (48 h NA DOSŁANIE):\nWyślijcie je na kontakt@zaproszeniaonline.com w ciągu 48 godzin od otrzymania tego maila:\n${pendingMail.map((x, i) => `  ${i+1}. ${x}`).join("\n")}\n\nJeżeli w ciągu 48 godzin nie otrzymamy tych pól, przyjmiemy że rezygnujecie z ich uzupełnienia i przystąpimy do realizacji bez nich (§ 5 ust. 2 Regulaminu).\n`
+    : `DANE OD WAS:\nW formularzu uzupełniliście wszystko - nie czekamy na nic dodatkowego.\n`;
   return `Cześć ${firstName} - mamy Wasz brief.
 
-Otrzymaliśmy Wasze zamówienie i już zaczynamy przygotowywać projekt strony.
+Dziękujemy! Po zaksięgowaniu wpłaty 699 zł dostaniecie osobny e-mail z potwierdzeniem (rachunek + link do projektu).
 
-Co dalej:
-I.   W ciągu 48 godzin od dostarczenia kompletu danych dostaniecie link do podglądu strony - z imionami, datą, wybraną paletą.
-II.  Dwie rundy poprawek w cenie - odpisujecie na tego maila z uwagami.
-III. Dostajecie własny URL i kod QR do druku. Wysyłacie linki gościom - potwierdzenia obecności trafiają na Waszej skrzynce.
-
-Co warto przygotować:
-Jeśli wybraliście zdjęcia pary lub sekcję „Nasza historia" - wyślijcie materiały na kontakt@zaproszeniaonline.com (zdjęcia w pełnej rozdzielczości + kilka zdań Waszej historii).
+${pendingBlock}
+CO DALEJ (JEDEN TIMELINE):
+1. Wpłata 699 zł (BLIK / karta przez Stripe) - po niej potwierdzenie + rachunek.
+2. ${pendingMail.length > 0 ? 'Dosłanie kompletu danych w 48 h - lista wyżej. Po dostarczeniu (lub po upływie 48 h) zegar realizacji startuje.' : 'Dane już komplet - realizacja startuje od razu po wpłacie.'}
+3. Realizacja w 48 h od kompletu - link do podglądu Waszej strony.
+4. Dwie rundy poprawek w cenie - mailowo, bez calls.
+5. Własny URL + kod QR do druku - wysyłacie gościom, potwierdzenia obecności lecą na Waszą skrzynkę.
 
 Zobacz przykład gotowej strony: https://zaproszeniaonline.com/demo
 
@@ -397,18 +418,25 @@ serve(async (req) => {
     errors.push(`operator: ${(err as Error).message}`);
   }
 
-  // 2. Customer auto-confirmation
-  try {
-    await sendEmail(
-      lead.email,
-      `Dziękujemy za zamówienie - mamy Wasz brief`,
-      customerEmailHTML(lead),
-      customerEmailText(lead),
-    );
-    console.log(`✓ Customer confirmation wysłana do ${lead.email}`);
-  } catch (err) {
-    console.error("Customer email failed:", err);
-    errors.push(`customer: ${(err as Error).message}`);
+  // 2. Customer welcome - TYLKO gdy lead jeszcze nie jest paid.
+  // Jeśli payment_status='paid' już w momencie INSERT (race: stripe-webhook wyprzedził Database Webhook),
+  // skip - notify-payment-success wyśle pełen mail z potwierdzeniem wpłaty + tą samą sekcją „Dosylka 48 h".
+  // Eliminuje duplikację dwóch maili pod rząd ze sprzeczną treścią.
+  if (lead.payment_status === 'paid') {
+    console.log(`⏭ Skip customer welcome - lead ${lead.id} już paid (notify-payment-success obsłuży)`);
+  } else {
+    try {
+      await sendEmail(
+        lead.email,
+        `Zamówienie przyjęte - co dalej i co dosłać`,
+        customerEmailHTML(lead),
+        customerEmailText(lead),
+      );
+      console.log(`✓ Customer welcome wysłana do ${lead.email}`);
+    } catch (err) {
+      console.error("Customer email failed:", err);
+      errors.push(`customer: ${(err as Error).message}`);
+    }
   }
 
   return new Response(JSON.stringify({

@@ -22,6 +22,16 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Fixed** (UX maili + onepager 2026-05-16 wieczór, runda 2):
+  - **Onepager (4 palety + 4 _templates)**: usunięty button „← wszystkie palety" wskazujący na `/onepager/galeria` (galeria zlikwidowana w poprzednim commicie - link prowadził do 308 redirectu i mylił). Pozostaje sam palette-switcher (4 linki: forest/navy-rose/bordo/terracotta).
+  - **notify-new-lead v12**: unified content z notify-payment-success.
+    - Helper `extractPendingMail()` taki sam wzorzec jak post-payment - dynamic lista pól oznaczonych „KLIENT UZUPEŁNI MAILOWO" + sekcja „Nasza historia" gdy mode=email + zdjęcia gdy `photos_gallery=yes`.
+    - Hero „Zamówienie przyjęte" (zamiast „mamy Wasz brief"), preheader uwzględnia liczbę dosylek.
+    - Callout pomarańczowy `#B85F2E` „Czekamy od Was na te dane (48h na dosłanie)" lub „Dane od Was - komplet" (jeśli pendingMail.length=0).
+    - Timeline 5-krokowy: wpłata 699 zł → dosłanie kompletu w 48h → realizacja w 48h od kompletu → 2 rundy poprawek → URL+QR.
+    - **Skip customer email gdy payment_status='paid'** już w momencie INSERT - race fix: jeśli stripe-webhook wyprzedził Database Webhook, notify-payment-success wyśle pełen mail z potwierdzeniem wpłaty + sekcją „Dosylka 48 h" - eliminuje duplikat dwóch maili pod rząd ze sprzeczną treścią. Logowanie `⏭ Skip customer welcome` dla debugu.
+    - Subject: „Zamówienie przyjęte - co dalej i co dosłać" (zamiast wcześniejszego „Dziękujemy za zamówienie - mamy Wasz brief").
+
 - **Fixed** (audyt SEO/AEO/GEO 2026-05-16 wieczór): spójność LLM facts + RODO regression na blogu + E-E-A-T schema.
   - **llms.txt + llms-full.txt** zsynchronizowane z landing po commicie `0fa2436`: czas realizacji 24h → 48h, rundy poprawek 3 → 2, galeria 5 obróbek → 7 ujęć. LLM-y (ChatGPT/Claude/Perplexity) preferencyjnie czytały llms.txt i cytowały nieprawdę - teraz jedna prawda we wszystkich źródłach.
   - **Self-host fonts na całym blogu** (8 plików HTML): wycofano `fonts.googleapis.com` + `fonts.gstatic.com` preconnect/stylesheet, zastąpiono `<link rel="stylesheet" href="/fonts/fonts.css">` z preload fraunces/inter. Zero transferu IP gościa do Google LLC, spójność z RODO audit 2026-05-13 i CSP w `vercel.json`.
