@@ -59,13 +59,23 @@ Test:
 # Sprawdź czy dotarł do skrzynki Nicolas/Dominika
 ```
 
-### 2b. (OPCJONALNE) Aliasy `legal@` i `rodo@` jako forwardery
+### 2b. Aliasy mailowe - status (zweryfikowane 2026-05-16)
 
-W aktualnej wersji regulaminu (po kompresji) wszędzie używamy `kontakt@`. Jeśli chcesz mieć dedykowane aliasy dla obsługi Notice & Takedown / RODO osobno - skonfiguruj w Cloudflare Email Routing / OVH:
-- `legal@zaproszeniaonline.com` → forward na `kontakt@`
-- `rodo@zaproszeniaonline.com` → forward na `kontakt@`
+Decyzja 2026-05-16: **publicznie pokazujemy tylko `kontakt@`**. Pozostałe 3 aliasy zostają w OVH jako legacy inbound (DMARC raporty + stare maile od klientów + Stripe account email).
 
-To NIE jest wymagane - obecny stan (wszystko na `kontakt@`) jest w pełni legalny i operacyjnie wystarczający.
+| Alias | Forward to | Publiczny w UI |
+|---|---|---|
+| `kontakt@zaproszeniaonline.com` | Nicolas + Dominika | ✅ tak (jedyny - obsługuje wszystkie sprawy: kontakt, RODO, faktury, N&T, reklamacje) |
+| `rodo@zaproszeniaonline.com` | Nicolas + Dominika | ❌ legacy (DMARC `rua=mailto:rodo@...` w DNS, raporty wpadają normalnie) |
+| `faktury@zaproszeniaonline.com` | Nicolas + Dominika | ❌ legacy (stare maile od klientów) |
+| `zamowienia@zaproszeniaonline.com` | Nicolas + Dominika | ❌ legacy (Stripe account email + stare maile) |
+
+DMARC w DNS NIE zmieniamy (zostaje `rua=mailto:rodo@...`) - rodo@ forwarder aktywny więc raporty nadal wpadają do Nicolas+Dominika.
+
+Sprawdzenie (test wysyłki ręcznej):
+```bash
+# Wyślij maila z innej skrzynki na kontakt@zaproszeniaonline.com - powinien dotrzeć do obu skrzynek (Nicolas + Dominika)
+```
 
 ---
 
@@ -161,7 +171,7 @@ Opcjonalne (można po pierwszym kliencie):
 
 - [ ] Photo verification log (Sheets)
 - [ ] Gmail auto-label dla N&T
-- [ ] Aliasy legal@/rodo@ jako forwardery
+- [x] ~~Aliasy mailowe~~ — kontakt@/rodo@/faktury@/zamowienia@ już skonfigurowane w OVH (memory 2026-05-13). Brakuje tylko opcjonalnego `legal@`, ale nie jest potrzebny - `kontakt@` pełni rolę głównego hubu w § 8d.
 - [ ] Cron auto-deletion
 - [ ] Migration `consent_version` w tabeli leads (jeśli nie istnieje)
 
@@ -172,6 +182,6 @@ Opcjonalne (można po pierwszym kliencie):
 **Kod:** ✅ gotowe w repo - wymaga `git push` + `supabase functions deploy notify-payment-success`
 **Email templates:** ✅ gotowe - manualne wysyłanie przez `email-templates/send-template.sh` lub kopiowanie do Gmail
 **SOP:** ✅ gotowe - wymaga wysłania Dominice
-**Skrzynki:** ⚠️ `kontakt@` musi działać. `legal@`/`rodo@` opcjonalne.
+**Skrzynki:** ✅ `kontakt@` + `rodo@` + `faktury@` + `zamowienia@` już skonfigurowane w OVH (forward na Nicolas + Dominika). `legal@` nie jest potrzebny.
 
 Po `git push` + deploy edge function + przekazaniu SOP Dominice = **wszystko tip-top**.
