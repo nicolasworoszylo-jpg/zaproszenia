@@ -22,6 +22,15 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Added** (2026-05-16 wieczor, test klienta Nicolas):
+  - `nicolas-test.html` + `vendor/nicolas-test-compiled.js` (51 KB minified) - drugi standalone klient w palecie **bordo** (analog `magda-tomek.html` w terracotta).
+  - Brief: para `Nicolas` (single-name handling), data `2026-07-16 18:40`, 81 gosci, RSVP do `17 maja 2026`, ceremonia kosciol + przyjecie palac, dress code kawowy, cytat "kawa kawa kawa", gifts "kawa 123", music URL `-` (klient mailowo).
+  - Wlasciwosci specyficzne: Hero/Footer single-name (warunkowy `hasGroom`), RSVP variants "Bedziesz ze mna?" / "Zyczenia dla Pana Mlodego" (zamiast "Pary").
+  - Sections: Hero (blurred photo bg), Countdown, Ceremony (2 cards), Timeline (5 wpisow z "super duper"), Details (dress + music tylko - brief nie podal transport/hotels/FAQ), RSVP (Supabase insert na `invitation_slug=nicolas-test`), **Wspomnienia** (5 zdjec z `/photos/nicolas-test/` w grid + lightbox, oznaczone jako "podglad sekcji opcjonalnej" - brief mowil galeria=no/story=no, sekcja preview na zyczenie Nicolasa), Gifts, Footer.
+  - `photos/nicolas-test/` - 5 sample photos przywroconych z commit `d448dcf` (Dominika, test-photos/gallery-samples/). OG image override -> `01-engagement-shoot.jpg`.
+  - `build.sh` - dodany trzeci pair `(nicolas-test.html, nicolas-test-compiled.js)`.
+  - URL: `https://zaproszeniaonline.com/nicolas-test` (path-based, jak `/magda-tomek`).
+  - `<meta robots="noindex,nofollow">` - test pre-launch, niewidoczny dla wyszukiwarek.
 - **Fixed** (UX maili + onepager 2026-05-16 wieczór, runda 2):
   - **Onepager (4 palety + 4 _templates)**: usunięty button „← wszystkie palety" wskazujący na `/onepager/galeria` (galeria zlikwidowana w poprzednim commicie - link prowadził do 308 redirectu i mylił). Pozostaje sam palette-switcher (4 linki: forest/navy-rose/bordo/terracotta).
   - **notify-new-lead v12**: unified content z notify-payment-success.
