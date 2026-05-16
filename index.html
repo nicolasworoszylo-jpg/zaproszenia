@@ -1178,13 +1178,19 @@
       user-select: none;
     }
     .lf-radio:hover { border-color: var(--accent); color: var(--ink); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(44,62,45,0.06); }
-    /* Native input ukryty (a11y zachowany - zostaje focusable) */
+    /* Native input ukryty sr-only pattern (a11y zachowany, eliminuje browser caret artifact "|") */
     .lf-radio input {
       position: absolute;
       opacity: 0;
-      width: 0; height: 0;
+      width: 1px; height: 1px;
+      margin: -1px; padding: 0; border: 0;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      overflow: hidden;
+      white-space: nowrap;
       pointer-events: none;
     }
+    .lf-radio { caret-color: transparent; }
     /* Custom dot przed labelem */
     .lf-radio::before {
       content: '';
@@ -2996,7 +3002,7 @@
             </div>
             <div class="lead-form-checkbox lead-form-checkbox--optional">
               <input type="checkbox" id="lf-consent-marketing" name="consent_marketing">
-              <label for="lf-consent-marketing"><em>Opcjonalnie:</em> chcę otrzymywać inspiracje, informacje o nowych funkcjach i rabaty dla powracających par (1-2 maile / miesiąc, można wypisać się jednym kliknięciem). Zgoda dobrowolna — brak nie blokuje zamówienia.</label>
+              <label for="lf-consent-marketing"><em>Opcjonalnie:</em> chcę otrzymywać inspiracje, informacje o nowych funkcjach i rabaty dla powracających par (1-2 maile / miesiąc, można wypisać się jednym kliknięciem). Zgoda dobrowolna - brak nie blokuje zamówienia.</label>
             </div>
           </div>
 
@@ -3491,44 +3497,47 @@
       });
     }
 
-    // ━━━ SEKCJA 05 v2: handler dla "Wpisz teraz / Uzupełnię mailowo" per feature ━━━
-    // Domyślny tryb: "email" (mniejszy opór przed zakupem).
-    // Klik na "Wpisz teraz" → pokazuje textarea. Klik na "Uzupełnię mailowo" → chowa.
+    // ━━━ Unified handler: "Wpisz teraz / Uzupełnię mailowo" toggle ━━━
+    // Obsługuje BOTH data-mode (sekcja 05 features) i data-story-mode (sekcja 04 story).
+    // Default: "email" (mniejszy opór przed zakupem). Klik → pokazuje textarea / fields.
     document.querySelectorAll('.lf-feat-options').forEach(opts => {
-      // Default mode = email (input ukryty, button "Uzupełnię mailowo" aktywny)
-      opts.dataset.mode = 'email';
-      opts.querySelectorAll('.lf-feat-mode-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const mode = btn.dataset.mode; // "now" lub "email"
-          opts.dataset.mode = mode;
+      if (!opts.dataset.mode) opts.dataset.mode = 'email';
+      const buttons = opts.querySelectorAll('.lf-feat-mode-btn');
+      const getMode = (btn) => btn.dataset.mode || btn.dataset.storyMode;
+
+      const apply = (mode) => {
+        opts.dataset.mode = mode;
+        buttons.forEach(b => b.classList.toggle('is-active', getMode(b) === mode));
+        // Story-specific: pokaż/ukryj <div id="lf-story-fields"> (kontrolowane przez JS, NIE CSS data-mode)
+        if (opts.id === 'lf-story-mode-wrap') {
+          const fields = document.getElementById('lf-story-fields');
+          if (fields) fields.style.display = mode === 'now' ? 'block' : 'none';
+        }
+      };
+
+      // Initial state
+      apply(opts.dataset.mode);
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const mode = getMode(btn);
+          if (mode) apply(mode);
         });
       });
     });
-    // Auto-szybka aktywacja: gdy user zacznie pisać w textarea, ustaw mode=now (bez konieczności klika w button)
+    // Auto-szybka aktywacja: gdy user zacznie pisać w textarea, ustaw mode=now
     document.querySelectorAll('.lf-feat-input').forEach(input => {
       input.addEventListener('focus', () => {
         const opts = input.closest('.lf-feat-options');
-        if (opts) opts.dataset.mode = 'now';
+        if (opts && opts.dataset.mode !== 'now') {
+          opts.dataset.mode = 'now';
+          opts.querySelectorAll('.lf-feat-mode-btn').forEach(b => {
+            b.classList.toggle('is-active', (b.dataset.mode || b.dataset.storyMode) === 'now');
+          });
+        }
       });
     });
-
-    // ━━━ Sekcja 04 (Nasza historia): toggle "wpisuję teraz / mailowo" ━━━
-    const storyModeWrap = document.getElementById('lf-story-mode-wrap');
-    const storyFields = document.getElementById('lf-story-fields');
-    if (storyModeWrap && storyFields) {
-      const setStoryMode = (mode) => {
-        storyModeWrap.dataset.mode = mode;
-        storyFields.style.display = mode === 'now' ? 'block' : 'none';
-        storyModeWrap.querySelectorAll('.lf-feat-mode-btn').forEach(b => {
-          b.classList.toggle('is-active', b.dataset.storyMode === mode);
-        });
-      };
-      // Default: email (mniejszy opór)
-      setStoryMode('email');
-      storyModeWrap.querySelectorAll('.lf-feat-mode-btn').forEach(btn => {
-        btn.addEventListener('click', () => setStoryMode(btn.dataset.storyMode));
-      });
-    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -3695,17 +3704,20 @@ ${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
           sb.rpc('register_discount_code_use', { p_code: affRaw }).catch((e) => console.warn(e));
         }
 
-        // Buduj Stripe URL z prefilled email + leadId i przekieruj OD RAZU
+        // Buduj Stripe URL z prefilled email + leadId i przekieruj OD RAZU.
+        // Jeśli kod ma dedykowany Stripe Payment Link (stripe_payment_link_url w validate_discount_code)
+        // - kierujemy bezpośrednio na ten link (discount juz zaaplikowany na poziomie Price).
+        // Fallback: domyslny Payment Link 699 zl + prefilled_promo_code (klient klika Apply w checkout).
         setSubmitLabel('Przekierowuję do płatności…');
-        const baseStripeUrl = 'https://buy.stripe.com/28E00i2UgfYsayo8XQgMw01';
+        const DEFAULT_STRIPE_URL = 'https://buy.stripe.com/28E00i2UgfYsayo8XQgMw01';
+        const dedicatedUrl = (affValidated && affValidated.valid && affValidated.stripe_payment_link_url) || null;
+        const baseStripeUrl = dedicatedUrl || DEFAULT_STRIPE_URL;
         const params = new URLSearchParams({
           prefilled_email: email,
           client_reference_id: leadRow.id,
         });
-        // Jeśli kod rabatowy zwalidowany, prefill go w Stripe Checkout
-        // Wymaga: utworzony Coupon + Promotion Code w Stripe Dashboard z identyczną nazwą
-        // + "Allow promotion codes" toggle ON na Payment Link
-        if (affValidated && affValidated.valid && affRaw) {
+        // Tylko gdy uzywamy default linka + kod zwalidowany - prefill promo do checkout (Apply manual)
+        if (!dedicatedUrl && affValidated && affValidated.valid && affRaw) {
           params.set('prefilled_promo_code', affRaw.toUpperCase());
         }
         // Krótkie opóźnienie żeby user zobaczył komunikat
@@ -3806,7 +3818,7 @@ ${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
 
   <!-- ─── COOKIE CONSENT BANNER (RODO + ePrivacy / PKE art. 173 + EDPB 03/2022) ─── -->
   <div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Zgoda na cookies i analitykę" hidden="">
-    <p class="cookie-text"><strong>Cookies i analityka.</strong> Strona działa w pełni anonimowo — nie używamy reklam ani trackerów reklamowych. Możemy uruchomić cookieless analitykę Vercel (mierzenie liczby wizyt, bez identyfikacji osób) tylko po Waszej zgodzie. <a href="/cookies" data-legal="cookies">Czytaj więcej</a>.</p>
+    <p class="cookie-text"><strong>Cookies i analityka.</strong> Strona działa w pełni anonimowo - nie używamy reklam ani trackerów reklamowych. Możemy uruchomić cookieless analitykę Vercel (mierzenie liczby wizyt, bez identyfikacji osób) tylko po Waszej zgodzie. <a href="/cookies" data-legal="cookies">Czytaj więcej</a>.</p>
     <div class="cookie-actions">
       <button type="button" class="cookie-btn cookie-btn-equal" id="cookie-reject" style="cursor:pointer">Odrzuć</button>
       <button type="button" class="cookie-btn cookie-btn-equal" id="cookie-essential" style="cursor:pointer">Tylko niezbędne</button>
@@ -4083,7 +4095,7 @@ ${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
     })();
   </script>
 
-  <!-- Vercel Web Analytics + Speed Insights — cookieless, ładowane DOPIERO po consent='all' (art. 173 PKE + EDPB 03/2022) -->
+  <!-- Vercel Web Analytics + Speed Insights - cookieless, ładowane DOPIERO po consent='all' (art. 173 PKE + EDPB 03/2022) -->
   <script>
     (function() {
       function loadAnalytics() {
