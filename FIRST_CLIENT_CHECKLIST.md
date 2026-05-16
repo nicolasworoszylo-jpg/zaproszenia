@@ -25,19 +25,18 @@ git add legal-templates/dpa-signed/
 git commit -m "legal: DPA signed - Supabase + Vercel + Stripe + Resend (YYYY-MM-DD)"
 ```
 
-### 2. ☐ Załóż 3 skrzynki email w OVH (~10 min)
+### 2. ✅ Skrzynki email w OVH (zweryfikowane 2026-05-16)
 
-Domena ma już OVH MX (`mx1/2/3.mail.ovh.net`), masz MX Plan w pakiecie domeny.
+OVH MX Plan ma 8 forwarderów (4 aliasy × 2 osoby Nicolas+Dominika). **Publicznie używamy tylko `kontakt@`** (decyzja 2026-05-16) - pozostałe (rodo@, faktury@, zamowienia@) zostają jako legacy inbound dla DMARC raportów i starych maili.
 
-1. https://www.ovh.com/manager → Web Cloud → Email → `zaproszeniaonline.com`
-2. Utwórz konta:
-   - `kontakt@zaproszeniaonline.com` (główny - klienci)
-   - `rodo@zaproszeniaonline.com` (wnioski art. 15-22 RODO)
-   - `faktury@zaproszeniaonline.com` (księgowość)
-3. Każda na **forward** do `nicolasworoszylo@gmail.com`
-4. Test: wyślij mail z prywatnego konta do każdego adresu → powinien wpaść do Gmaila Nicolas
+| Alias | Status | Użycie |
+|---|---|---|
+| `kontakt@zaproszeniaonline.com` | ✅ aktywny | jedyny publiczny adres - klienci, RODO, faktury, N&T, reklamacje |
+| `rodo@zaproszeniaonline.com` | ✅ legacy inbound | tylko DMARC raporty (rua=mailto:rodo@... w DNS) |
+| `faktury@zaproszeniaonline.com` | ✅ legacy inbound | stare maile od klientów (przed 2026-05-16) |
+| `zamowienia@zaproszeniaonline.com` | ✅ legacy inbound | stare maile (mail post-payment używał tego adresu) |
 
-Po teście: privacy.html linkuje `mailto:rodo@` i `mailto:kontakt@` — będzie działać.
+Test E2E: `bash` `dig MX zaproszeniaonline.com @1.1.1.1` zwraca live MX OVH. Test inboxu zweryfikowany przez Claude in Chrome (screenshot legal-templates/email-setup/).
 
 ### 3. ☐ Wpisz IBAN do `LEGAL_DATA.md` (~2 min)
 
@@ -116,7 +115,7 @@ Wzór: https://uodo.gov.pl/pl/138/3175
 
 Jeśli planujesz pokazać tę stronę na portfolio: zdobądź osobną zgodę (mailowo lub formalnym mailem). Wzór tekstu:
 
-> Wyrażam zgodę na publikację mojej strony ślubnej (URL: zaproszeniaonline.com/ana-michal) w portfolio Vidok Studio oraz w materiałach promocyjnych marki zaproszeniaonline.com, w tym w mediach społecznościowych (Instagram, Facebook, TikTok). Mogę wycofać zgodę w dowolnym momencie pisząc na rodo@zaproszeniaonline.com.
+> Wyrażam zgodę na publikację mojej strony ślubnej (URL: zaproszeniaonline.com/ana-michal) w portfolio Vidok Studio oraz w materiałach promocyjnych marki zaproszeniaonline.com, w tym w mediach społecznościowych (Instagram, Facebook, TikTok). Mogę wycofać zgodę w dowolnym momencie pisząc na kontakt@zaproszeniaonline.com.
 
 Klient odpowiada "Wyrażam zgodę" → zapisujesz mail jako PDF do `legal-templates/portfolio-consents/<imie-nazwisko>-YYYY-MM-DD.pdf`.
 

@@ -49,9 +49,8 @@ W praktyce: ~5 sprzedaży po 699 zł = 3 495 zł (mieści się). 6. sprzedaż w 
 - Adres do korespondencji: kontakt elektroniczny - kontakt@zaproszeniaonline.com
 - E-maile robocze:
   - Główny: `nicolasworoszylo@gmail.com`
-  - Marka: `kontakt@zaproszeniaonline.com` (forward)
-  - RODO: `rodo@zaproszeniaonline.com` (forward)
-  - Faktury / rozliczenia: `faktury@zaproszeniaonline.com` (forward)
+  - Marka (jedyny publiczny adres): `kontakt@zaproszeniaonline.com` (forward → Nicolas + Dominika) - obsługuje wszystkie sprawy: RODO, faktury, Notice & Takedown, reklamacje
+  - Legacy inbound (nie pokazywane w UI od 2026-05-16): `rodo@`, `faktury@`, `zamowienia@` - aktywne forwardery dla DMARC raportów i starych maili od klientów
 
 ### Dominika Kuś (osoba upoważniona, art. 29 RODO)
 

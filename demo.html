@@ -93,20 +93,12 @@
   #bg-audio-btn:hover{transform:scale(1.08)}
   #bg-audio-btn svg{display:block}
   #bg-audio-btn svg .audio-icon-shape{fill:var(--audio-gold);stroke:var(--audio-gold);transition:fill .4s ease, stroke .4s ease}
-  #bg-audio-label{
-    background:var(--audio-deep);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    border:1px solid var(--audio-gold-soft);border-radius:10px;padding:10px 16px;
-    white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.3);
-    font-size:11px;color:var(--audio-gold);letter-spacing:2px;text-transform:uppercase;margin:0;font-weight:500;
-    transition:background-color .4s ease, border-color .4s ease, color .4s ease;
-  }
   @keyframes bgAudioPulse{
     0%{box-shadow:0 0 0 0 var(--audio-gold-soft),0 6px 24px rgba(0,0,0,.35)}
     70%{box-shadow:0 0 0 18px rgba(0,0,0,0),0 6px 24px rgba(0,0,0,.35)}
     100%{box-shadow:0 0 0 0 rgba(0,0,0,0),0 6px 24px rgba(0,0,0,.35)}
   }
   #bg-audio-wrap.no-pulse #bg-audio-btn{animation:none}
-  #bg-audio-wrap.no-label #bg-audio-label{display:none}
 
   /* ━━━ PRINT FAB - link do one-pagera (palette-aware przez te same CSS vars) ━━━ */
   #print-fab{
@@ -150,7 +142,7 @@
 <div id="root"></div>
 
 <!-- ━━━ PRINT FAB - karta do druku z kodem QR (link do galerii one-pagerów) ━━━ -->
-<a id="print-fab" href="/onepager/galeria" target="_blank" rel="noopener" aria-label="Karta do druku z kodem QR - one-pager">
+<a id="print-fab" href="/onepager/forest" target="_blank" rel="noopener" aria-label="Karta do druku z kodem QR - one-pager">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M6 9V2h12v7"></path>
     <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
@@ -160,13 +152,13 @@
 </a>
 
 <!-- ━━━ AUDIO PLAYER (inline, niezalezny od React) z palette-aware colors ━━━ -->
+<!-- Sam przycisk - bez podpisu textowego (aria-label dla SR pozostaje) -->
 <div id="bg-audio-wrap" role="region" aria-label="Muzyka w tle">
   <audio id="bg-audio-el" src="/audio/demo.mp3" loop preload="none" playsinline crossorigin="anonymous"></audio>
   <button id="bg-audio-btn" type="button" aria-label="Włącz muzykę" title="Włącz muzykę">
     <svg id="bg-audio-icon-play" width="22" height="22" viewBox="0 0 24 24"><polygon class="audio-icon-shape" points="7,4 20,12 7,20" stroke-width="1.5"/></svg>
     <svg id="bg-audio-icon-pause" width="22" height="22" viewBox="0 0 24 24" style="display:none"><rect class="audio-icon-shape" x="6" y="4" width="4" height="16" rx="1" stroke-width="2" fill="none"/><rect class="audio-icon-shape" x="14" y="4" width="4" height="16" rx="1" stroke-width="2" fill="none"/></svg>
   </button>
-  <p id="bg-audio-label">Włącz muzykę</p>
 </div>
 <script>
 (function(){
@@ -175,7 +167,6 @@
   var iconPlay=document.getElementById('bg-audio-icon-play');
   var iconPause=document.getElementById('bg-audio-icon-pause');
   var wrap=document.getElementById('bg-audio-wrap');
-  var label=document.getElementById('bg-audio-label');
 
   // ━━━ AUDIO toggle ━━━
   btn.addEventListener('click',function(){
@@ -186,16 +177,14 @@
       if(p&&p.then) p.then(function(){
         iconPlay.style.display='none';iconPause.style.display='block';
         btn.setAttribute('aria-label','Wycisz muzykę');btn.setAttribute('title','Wycisz muzykę');
-        if(label) label.textContent='Muzyka instrumentalna';
       }).catch(function(e){console.warn('[audio] play blocked:',e)});
     } else {
       audio.pause();
       iconPlay.style.display='block';iconPause.style.display='none';
       btn.setAttribute('aria-label','Włącz muzykę');btn.setAttribute('title','Włącz muzykę');
-      if(label) label.textContent='Włącz muzykę';
     }
   });
-  setTimeout(function(){wrap.classList.add('no-pulse');wrap.classList.add('no-label');},8000);
+  setTimeout(function(){wrap.classList.add('no-pulse');},8000);
 
   // ━━━ PALETTE SYNC v4: celuj w aria-pressed="true" button palette switcher ━━━
   // React renderuje 4 buttony palety z onClick + aria-pressed.

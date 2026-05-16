@@ -29,6 +29,41 @@ interface Lead {
   payment_id?: string;
   event_date?: string;
   package?: string;
+  message?: string;
+}
+
+// ─── Helper: wyciąg listy funkcji do uzupełnienia mailowo z extendedSummary briefu ───
+// W formularzu zamówienia każda funkcja oznaczona "uzupełnię mailowo" trafia do pola message
+// jako linia "- <nazwa>: KLIENT UZUPEŁNI MAILOWO (po wpłacie wyślij prośbę)".
+// + sekcja 04 "Nasza historia" gdy mode=email i story-* puste: " [KLIENT UZUPEŁNI MAILOWO]"
+const FEATURE_LABELS_PL: Record<string, string> = {
+  timeline: "plan dnia (harmonogram)",
+  gifts: "lista prezentów / numery kont",
+  hotels: "lista hoteli dla gości",
+  transport: "informacja o transporcie / autokarze",
+  music: "muzyka w tle (link / plik)",
+  faq: "FAQ dla gości",
+};
+function extractPendingMail(message?: string): string[] {
+  if (!message) return [];
+  const items: string[] = [];
+  // 1. szczegóły funkcji - linie z "KLIENT UZUPEŁNI MAILOWO"
+  const re = /^- ([a-z_]+): KLIENT UZUPEŁNI MAILOWO/gim;
+  let m;
+  while ((m = re.exec(message)) !== null) {
+    const key = m[1];
+    items.push(FEATURE_LABELS_PL[key] || key);
+  }
+  // 2. nasza historia (oddzielny pattern w sekcji "Nasza historia:")
+  if (/Nasza historia:\s*yes\s*\[KLIENT UZUPEŁNI MAILOWO\]/i.test(message)) {
+    items.push("treści sekcji „Nasza historia\" (pierwsze spotkanie, randka, kluczowy moment, zaręczyny)");
+  }
+  // 3. zdjęcia pary - zawsze wysyłane mailowo gdy photos_gallery=yes
+  const photosMatch = message.match(/Galeria zdjęć: yes \(planowane: (\d+) zdjęć/);
+  if (photosMatch) {
+    items.push(`zdjęcia pary (do ${photosMatch[1]} ujęć - JPG/PNG/HEIC w pełnej rozdzielczości)`);
+  }
+  return items;
 }
 
 interface WebhookPayload {
@@ -98,7 +133,7 @@ function emailShell(opts: { preheader: string; title: string; bodyHtml: string }
       </td></tr>
       <tr><td style="padding:18px 24px 0;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.72rem;color:#999999;line-height:1.6;">
         <span style="font-family:Georgia,'Times New Roman',serif;font-style:italic;color:#2C3E2D;font-size:0.95rem;letter-spacing:-0.01em;">zaproszeniaonline.com</span><br/>
-        Cyfrowe zaproszenia ślubne premium · 699 zł, gotowe w 24 h<br/>
+        Cyfrowe zaproszenia ślubne premium · 699 zł, gotowe w 48 h<br/>
         <span style="color:#BBBBBB;">Sprzedaż w ramach działalności nieewidencjonowanej (art. 5 ust. 1 PrzedsU)</span>
       </td></tr>
     </table>
@@ -146,7 +181,7 @@ function operatorPaidHTML(lead: Lead): string {
     <div style="margin:0 0 22px;padding:14px 18px;background:rgba(44,62,45,0.05);border-left:3px solid #2C3E2D;border-radius:6px;">
       <p style="margin:0;font-size:0.95rem;line-height:1.55;color:#0A0A0A;">
         <strong>Akcja:</strong> Klient właśnie dostał potwierdzenie wpłaty + brief co dalej.
-        Wy macie 24 h na link do podglądu.
+        Wy macie 48 h na link do podglądu - liczone od dostarczenia przez Klienta wszystkich pól oznaczonych „uzupełnię mailowo" (lista w mailu klienta).
       </p>
     </div>
 
@@ -179,7 +214,7 @@ function operatorPaidHTML(lead: Lead): string {
   `;
 
   return emailShell({
-    preheader: `OPŁACONE ${amount} zł · ${lead.name} · Klient czeka 24 h na link do podglądu`,
+    preheader: `OPŁACONE ${amount} zł · ${lead.name} · zegar 48 h startuje po dostarczeniu kompletu`,
     title: `OPŁACONE ${amount} zł - Lead #${lead.id.slice(0,8)}`,
     bodyHtml,
   });
@@ -195,7 +230,7 @@ Data wydarzenia: ${lead.event_date || "-"}
 Pakiet: ${lead.package || "-"}
 Stripe payment_intent: ${lead.payment_id || "-"}
 
-AKCJA: Klient dostał potwierdzenie wpłaty + brief co dalej. Wy macie 24h na link do podglądu.
+AKCJA: Klient dostał potwierdzenie wpłaty + brief co dalej. Macie 48h na link do podglądu, licząc od dostarczenia przez Klienta wszystkich pól oznaczonych "uzupełnię mailowo" (lista w mailu klienta).
 
 Supabase: https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/editor
 Stripe:   https://dashboard.stripe.com/payments/${lead.payment_id || ""}
@@ -208,6 +243,15 @@ Zaproszenia Online · zaproszeniaonline.com`;
 function customerPaidHTML(lead: Lead): string {
   const firstName = lead.name.split(/[ &]+/)[0] || "Państwo";
   const amount = lead.payment_amount_pln ? (lead.payment_amount_pln / 100).toFixed(2) : "699.00";
+  const pendingMail = extractPendingMail(lead.message);
+  const pendingListHtml = pendingMail.length > 0
+    ? `<ul style="margin:8px 0 0;padding-left:22px;color:#0A0A0A;font-size:0.96rem;line-height:1.7;">
+         ${pendingMail.map(x => `<li>${escapeHtml(x)}</li>`).join("")}
+       </ul>`
+    : "";
+  const pendingListText = pendingMail.length > 0
+    ? pendingMail.map((x, i) => `  ${i+1}. ${x}`).join("\n")
+    : "";
 
   const bodyHtml = `
   <!-- HERO: forest gradient + animated check + amount -->
@@ -235,25 +279,41 @@ function customerPaidHTML(lead: Lead): string {
         <span style="display:inline-block;width:5px;height:5px;background:#C9A96E;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>Kolejny krok
       </p>
       <p style="margin:0;font-size:1rem;line-height:1.6;color:#0A0A0A;">
-        W ciągu <strong>24 godzin</strong> wyślę link do podglądu Waszej strony - z imionami, datą, wybraną paletą i wszystkimi sekcjami z briefu. Sprawdzicie i odpiszecie z uwagami (3 rundy poprawek w cenie).
+        W ciągu <strong>48 godzin</strong> od dostarczenia kompletu danych wyślemy link do podglądu Waszej strony - z imionami, datą, wybraną paletą i wszystkimi sekcjami z briefu. Sprawdzicie i odpiszecie z uwagami (2 rundy poprawek w cenie).
       </p>
     </div>
 
-    <!-- GOLD CALLOUT: zdjęcia + historia -->
+    ${pendingMail.length > 0 ? `
+    <!-- DOSŁKA 48 H (dynamic) -->
+    <div style="margin:24px 0;padding:22px 24px;background:rgba(184,95,46,0.06);border-radius:12px;border-left:3px solid #B85F2E;">
+      <p style="margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.74rem;letter-spacing:0.12em;text-transform:uppercase;color:#B85F2E;font-weight:600;">
+        <span style="display:inline-block;width:5px;height:5px;background:#B85F2E;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>Prosimy o dosłanie w ciągu 48 godzin
+      </p>
+      <p style="margin:0 0 6px;font-size:0.98rem;line-height:1.65;color:#0A0A0A;">
+        W formularzu zaznaczyliście, że poniższe dane prześlecie mailowo. Wyślijcie je na
+        <strong><a href="mailto:kontakt@zaproszeniaonline.com?subject=${encodeURIComponent('Dane do zamówienia ' + lead.id.slice(0,8))}" style="color:#2C3E2D;text-decoration:underline;text-underline-offset:2px;">kontakt@zaproszeniaonline.com</a></strong>
+        - prosimy o komplet w ciągu <strong>48 godzin od otrzymania tego maila</strong>:
+      </p>
+      ${pendingListHtml}
+      <p style="margin:14px 0 0;font-size:0.88rem;line-height:1.6;color:#4A4A4A;">
+        Zegar 48 h realizacji startuje od momentu otrzymania kompletu. Jeżeli w ciągu 48 godzin nie otrzymamy tych pól, przyjmiemy że rezygnujecie z ich uzupełnienia i przystąpimy do realizacji bez nich (sekcje pominięte lub uzupełnione treścią przykładową, zgodnie z § 5 ust. 2 <a href="https://zaproszeniaonline.com/terms" style="color:#4A4A4A;text-decoration:underline;">Regulaminu</a>).
+      </p>
+    </div>` : `
+    <!-- GOLD CALLOUT: zdjęcia + historia (gdy nic nie zaznaczono jako "mailowo") -->
     <div style="margin:24px 0;padding:20px 22px;background:rgba(201,169,110,0.08);border-left:3px solid #C9A96E;border-radius:8px;">
       <p style="margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.74rem;letter-spacing:0.12em;text-transform:uppercase;color:#999999;font-weight:600;">
         <span style="display:inline-block;width:5px;height:5px;background:#C9A96E;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>Jeśli wybraliście zdjęcia lub historię
       </p>
       <p style="margin:0;font-size:0.96rem;line-height:1.6;color:#0A0A0A;">
-        Wyślijcie 2-3 ulubione zdjęcia pary i kilka zdań Waszej historii na
-        <strong><a href="mailto:zamowienia@zaproszeniaonline.com" style="color:#2C3E2D;text-decoration:underline;text-underline-offset:2px;">zamowienia@zaproszeniaonline.com</a></strong>.
+        Wyślijcie zdjęcia pary i kilka zdań Waszej historii na
+        <strong><a href="mailto:kontakt@zaproszeniaonline.com" style="color:#2C3E2D;text-decoration:underline;text-underline-offset:2px;">kontakt@zaproszeniaonline.com</a></strong>.
         Im wcześniej, tym lepiej - ale możecie też dorzucić podczas poprawek.
       </p>
-    </div>
+    </div>`}
 
     <!-- INFO RACHUNEK -->
     <p style="margin:24px 0 0;color:#4A4A4A;font-size:0.93rem;line-height:1.6;">
-      Rachunek (działalność nieewidencjonowana - bez VAT) zostanie wysłany w osobnym mailu w ciągu 24 godzin. W razie pytań - odpiszcie na tego maila.
+      Rachunek (działalność nieewidencjonowana - bez VAT) zostanie wysłany w osobnym mailu w ciągu 48 godzin. W razie pytań - odpiszcie na tego maila.
     </p>
 
     <!-- SIGNATURE -->
@@ -282,16 +342,20 @@ function customerPaidHTML(lead: Lead): string {
     &nbsp;·&nbsp;
     <a href="https://zaproszeniaonline.com/terms" style="color:#999999;text-decoration:none;">Regulamin</a>
     &nbsp;·&nbsp;
+    <a href="https://zaproszeniaonline.com/privacy" style="color:#999999;text-decoration:none;">Polityka prywatności</a>
+    &nbsp;·&nbsp;
     <a href="https://zaproszeniaonline.com/returns" style="color:#999999;text-decoration:none;">Polityka zwrotów</a>
     <br/><br/>
     <span style="color:#BBBBBB;">Numer zamówienia: ${lead.id.slice(0,8)} · Stripe: ${escapeHtml((lead.payment_id || "").slice(0,16))}…</span>
     <br/><br/>
-    <span style="color:#BBBBBB;font-size:0.72rem;line-height:1.5;display:block;">Potwierdzamy rozpoczęcie świadczenia usługi. Zasady i gwarancje: <a href="https://zaproszeniaonline.com/terms#paragraf-10" style="color:#999999;text-decoration:underline;">§ 10 Regulaminu</a>.</span>
+
+    <!-- Potwierdzenie umowy - jednolinijkowe (art. 21 ust. 1 UoPK; e-mail z mocy ustawy stanowi trwały nośnik) -->
+    <span style="color:#BBBBBB;font-size:0.72rem;line-height:1.5;display:block;margin-top:8px;">Ten e-mail stanowi potwierdzenie zawarcia umowy (art. 21 ust. 1 UoPK). Treść umowy: <a href="https://zaproszeniaonline.com/terms" style="color:#999999;text-decoration:underline;">Regulamin</a>. Pytania, RODO, zgłoszenia: <a href="mailto:kontakt@zaproszeniaonline.com" style="color:#999999;text-decoration:underline;">kontakt@zaproszeniaonline.com</a>.</span>
   </div>
   `;
 
   return emailShell({
-    preheader: `Dziękujemy ${firstName}! Wpłata ${amount} zł potwierdzona. W 24h dostaniecie link do podglądu.`,
+    preheader: `Dziękujemy ${firstName}! Wpłata ${amount} zł potwierdzona. Link do podglądu w 48 h od dostarczenia kompletu.`,
     title: `Płatność potwierdzona - Zaproszenia Online`,
     bodyHtml,
   });
@@ -300,25 +364,26 @@ function customerPaidHTML(lead: Lead): string {
 function customerPaidText(lead: Lead): string {
   const firstName = lead.name.split(/[ &]+/)[0] || "Państwo";
   const amount = lead.payment_amount_pln ? (lead.payment_amount_pln / 100).toFixed(2) : "699.00";
+  const pendingMail = extractPendingMail(lead.message);
+  const pendingBlock = pendingMail.length > 0
+    ? `\nPROSIMY O DOSŁANIE W CIĄGU 48 GODZIN:\nW formularzu zaznaczyliście, że poniższe dane prześlecie mailowo. Wyślijcie je na kontakt@zaproszeniaonline.com w ciągu 48 godzin od otrzymania tego maila:\n${pendingMail.map((x, i) => `  ${i+1}. ${x}`).join("\n")}\n\nZegar 48 h realizacji startuje od momentu otrzymania kompletu. Jeżeli w ciągu 48 godzin nie otrzymamy tych pól, przyjmiemy że rezygnujecie z ich uzupełnienia i przystąpimy do realizacji bez nich (§ 5 ust. 2 Regulaminu).\n`
+    : `\nJEŚLI WYBRALIŚCIE ZDJĘCIA LUB HISTORIĘ:\nWyślijcie zdjęcia pary i kilka zdań Waszej historii na kontakt@zaproszeniaonline.com. Im wcześniej, tym lepiej - ale możecie też dorzucić podczas poprawek.\n`;
   return `Dziękujemy ${firstName}!
 
 Wpłata ${amount} zł potwierdzona. Mamy wszystko czego potrzeba żeby zacząć projekt Waszej strony ślubnej.
 
 KOLEJNY KROK:
-W ciągu 24 godzin wyślę link do podglądu Waszej strony - z imionami, datą, wybraną paletą i wszystkimi sekcjami z briefu. Sprawdzicie i odpiszecie z uwagami (3 rundy poprawek w cenie).
+W ciągu 48 godzin od dostarczenia kompletu danych wyślemy link do podglądu Waszej strony - z imionami, datą, wybraną paletą i wszystkimi sekcjami z briefu. Sprawdzicie i odpiszecie z uwagami (2 rundy poprawek w cenie).
+${pendingBlock}
+Rachunek (działalność nieewidencjonowana - bez VAT) zostanie wysłany w osobnym mailu w ciągu 48 godzin. W razie pytań - odpiszcie na tego maila.
 
-JEŚLI WYBRALIŚCIE ZDJĘCIA LUB HISTORIĘ:
-Wyślijcie 2-3 ulubione zdjęcia pary i kilka zdań Waszej historii na zamowienia@zaproszeniaonline.com. Im wcześniej, tym lepiej - ale możecie też dorzucić podczas poprawek.
-
-Rachunek (działalność nieewidencjonowana - bez VAT) zostanie wysłany w osobnym mailu w ciągu 24 godzin. W razie pytań - odpiszcie na tego maila.
-
-Do zobaczenia za ~24h,
+Do zobaczenia,
 Zespół Zaproszenia Online
 Zaproszenia Online · https://zaproszeniaonline.com/
 
 Numer zamówienia: ${lead.id.slice(0,8)}
 
-Potwierdzamy rozpoczęcie świadczenia usługi. Zasady i gwarancje: § 10 Regulaminu — zaproszeniaonline.com/terms#paragraf-10`;
+Ten e-mail stanowi potwierdzenie zawarcia umowy (art. 21 ust. 1 UoPK). Treść umowy: zaproszeniaonline.com/terms. Pytania, RODO, zgłoszenia: kontakt@zaproszeniaonline.com.`;
 }
 
 serve(async (req) => {

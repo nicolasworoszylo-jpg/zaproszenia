@@ -17,21 +17,14 @@
 <body>
 
 <div class="toolbar" role="toolbar" aria-label="Akcje one-pagera">
-  <h2>One-pager &middot; Granat + róż</h2>
-  <a class="back-link" href="/onepager/galeria">&larr; wszystkie palety</a>
-  <a class="back-link" href="/demo">&larr; demo</a>
+  <h2>One-pager &middot; Granat + róż</h2><a class="back-link" href="/demo">&larr; demo</a>
   <button onclick="window.print()" type="button">Drukuj / zapisz PDF</button>
-  <button class="secondary" onclick="document.getElementById('config-modal').showModal()" type="button">Edytuj dane</button>
   <nav class="palette-switch" aria-label="Wybierz paletę">
     <a href="/onepager/forest"     data-pal="forest" title="Leśna zieleń"></a>
     <a href="/onepager/navy-rose"  data-pal="navy"       class="active" title="Granat + róż"></a>
     <a href="/onepager/bordo"      data-pal="wine"       title="Bordo + kość"></a>
     <a href="/onepager/terracotta" data-pal="terracotta" title="Rdzawa terracotta"></a>
   </nav>
-</div>
-
-<div class="info-banner">
-  Edytuj dane przyciskiem <strong>Edytuj dane</strong> albo URL params: <code>?names=Anna+i+Michał&date=20+czerwca+2026&venue=Wrocław&url=https://zaproszeniaonline.com/anna-michal</code>
 </div>
 
 <article class="page" id="op-page">
@@ -97,7 +90,7 @@
 
       <p class="op-quote" id="op-quote">
         Z radością zapraszamy Was do udziału w najpiękniejszym dniu naszego życia.
-        Wszystkie szczegóły &mdash; plan dnia, mapy, potwierdzenie obecności &mdash; znajdziecie pod kodem QR.
+        Wszystkie szczegóły - plan dnia, mapy, potwierdzenie obecności - znajdziecie pod kodem QR.
       </p>
     </header>
 
@@ -113,43 +106,14 @@
           <img id="op-qr-img" src="/onepager/_assets/qr-home.svg" alt="Kod QR do strony zaproszenia">
         </div>
       </div>
-
-      <div class="op-url">
-        lub wpisz w przeglądarkę: <strong id="op-url-text">zaproszeniaonline.com</strong>
-      </div>
-    </section>
+</section>
 
     <footer class="op-footer">
       <div class="op-call-to-action">Potwierdźcie obecność do <span id="op-rsvp-date">16 maja 2026</span></div>
-      Pełny program, mapy do ceremonii i miejsca przyjęcia, plan dnia &mdash; wszystko na stronie.
+      Pełny program, mapy do ceremonii i miejsca przyjęcia, plan dnia - wszystko na stronie.
     </footer>
   </div>
 </article>
-
-<dialog id="config-modal">
-  <form method="dialog" id="config-form">
-    <h3>Konfiguruj one-pager</h3>
-    <label>Imiona pary
-      <input id="cfg-names" type="text" placeholder="np. Anna i Michał">
-    </label>
-    <label>Data ślubu (po polsku)
-      <input id="cfg-date" type="text" placeholder="np. 20 czerwca 2026">
-    </label>
-    <label>Miejsce / miasto
-      <input id="cfg-venue" type="text" placeholder="np. Wrocław">
-    </label>
-    <label>URL strony zaproszenia
-      <input id="cfg-url" type="url" placeholder="https://zaproszeniaonline.com/anna-michal">
-    </label>
-    <label>QR (URL do SVG/PNG)
-      <input id="cfg-qr" type="text" placeholder="/onepager/_assets/qr-home.svg">
-    </label>
-    <div class="modal-actions">
-      <button type="button" class="cancel" onclick="document.getElementById('config-modal').close()">Anuluj</button>
-      <button type="button" class="primary" onclick="applyConfig()">Zastosuj</button>
-    </div>
-  </form>
-</dialog>
 
 <script>
   function init() {
@@ -169,12 +133,6 @@
     document.getElementById('op-rsvp-date').textContent = rsvpDate;
 
     if (qr) renderQR(qr);
-
-    document.getElementById('cfg-names').value = names;
-    document.getElementById('cfg-date').value = date;
-    document.getElementById('cfg-venue').value = venue;
-    document.getElementById('cfg-url').value = url;
-    document.getElementById('cfg-qr').value = qr || '';
 
     document.querySelectorAll('.palette-switch a').forEach(a => {
       const params = location.search;
@@ -220,23 +178,6 @@
     wedding.setDate(wedding.getDate() - 35);
     const polishMonths = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
     return `${wedding.getDate()} ${polishMonths[wedding.getMonth()]} ${wedding.getFullYear()}`;
-  }
-
-  function applyConfig() {
-    const cfg = {
-      names: document.getElementById('cfg-names').value,
-      date: document.getElementById('cfg-date').value,
-      venue: document.getElementById('cfg-venue').value,
-      url: document.getElementById('cfg-url').value,
-      qr: document.getElementById('cfg-qr').value,
-    };
-    const params = new URLSearchParams();
-    if (cfg.names) params.set('names', cfg.names);
-    if (cfg.date) params.set('date', cfg.date);
-    if (cfg.venue) params.set('venue', cfg.venue);
-    if (cfg.url) params.set('url', cfg.url);
-    if (cfg.qr) params.set('qr', cfg.qr);
-    location.search = '?' + params.toString();
   }
 
   init();

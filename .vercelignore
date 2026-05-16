@@ -15,3 +15,6 @@ RCP_README.md
 
 # Build script (wewnętrzny)
 build_demo.py
+
+# Wewnętrzne template'y one-pagerów (workflow generowania per-klient — patrz onepager/_templates/README.md)
+onepager/_templates/

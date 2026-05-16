@@ -23,9 +23,12 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
   httpClient: Stripe.createFetchHttpClient(),
 });
 
+// Migracja 2026-05-16: sb_secret_... → SUPABASE_SECRET_KEY (nowe API), fallback legacy
+const SUPABASE_SECRET_KEY = Deno.env.get("SUPABASE_SECRET_KEY") || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+  SUPABASE_SECRET_KEY,
   { auth: { persistSession: false } }
 );
 
@@ -64,19 +67,40 @@ serve(async (req) => {
         const customerEmail = session.customer_details?.email || session.customer_email;
         const amount = session.amount_total; // w groszach
         const paymentIntentId = session.payment_intent as string;
+        // client_reference_id = UUID v4 wygenerowany frontend-side w index.html podczas insertu leada.
+        // To DOKLADNY match (unique UUID per submit), nie najnowszy-z-email guess.
+        const clientRefId: string | null = session.client_reference_id || null;
 
-        // Match po e-mailu - najnowszy lead z tym e-mailem
-        const { data: lead, error: findErr } = await supabase
-          .from("leads")
-          .select("id")
-          .eq("email", customerEmail)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .single();
+        let lead: { id: string } | null = null;
+        if (clientRefId) {
+          const { data, error } = await supabase
+            .from("leads")
+            .select("id")
+            .eq("id", clientRefId)
+            .maybeSingle();
+          if (error) console.warn("Match po client_reference_id failed:", error.message);
+          else if (data) lead = data;
+        }
 
-        if (findErr || !lead) {
-          console.warn(`⚠ Brak leada dla email: ${customerEmail}. Tworzę orphan record.`);
-          // Tworzymy orphan record żeby śledzić płatność bez leada
+        // Fallback: gdy brak client_reference_id (np. payment direct z Stripe link bez form) - szukaj po email.
+        // Bierzemy NAJSTARSZY niezapłacony, żeby idempotentnie obsłużyć 2+ leady na ten sam email.
+        if (!lead && customerEmail) {
+          const { data: emailLead } = await supabase
+            .from("leads")
+            .select("id")
+            .eq("email", customerEmail)
+            .neq("payment_status", "paid")
+            .order("created_at", { ascending: true })
+            .limit(1)
+            .maybeSingle();
+          if (emailLead) {
+            lead = emailLead;
+            console.log(`Match po email fallback (brak client_reference_id): lead ${lead.id}`);
+          }
+        }
+
+        if (!lead) {
+          console.warn(`⚠ Brak leada dla email=${customerEmail} ref=${clientRefId}. Tworzę orphan record.`);
           await supabase.from("leads").insert({
             name: session.customer_details?.name || "Klient Stripe",
             email: customerEmail,
@@ -85,7 +109,7 @@ serve(async (req) => {
             payment_provider: "stripe",
             payment_id: paymentIntentId,
             payment_amount_pln: amount,
-            message: "Płatność przyszła bezpośrednio przez Stripe Payment Link bez wcześniejszego leada.",
+            message: `Płatność przyszła bezpośrednio przez Stripe Payment Link bez wcześniejszego leada. (ref=${clientRefId || "brak"})`,
           });
           break;
         }
@@ -97,11 +121,12 @@ serve(async (req) => {
             payment_provider: "stripe",
             payment_id: paymentIntentId,
             payment_amount_pln: amount,
+            paid_at: new Date().toISOString(),
           })
           .eq("id", lead.id);
 
         if (updErr) console.error("Update failed:", updErr);
-        else console.log(`✓ Lead ${lead.id} oznaczony jako paid (${amount/100} PLN)`);
+        else console.log(`✓ Lead ${lead.id} oznaczony jako paid (${amount/100} PLN, match=${clientRefId ? "client_reference_id" : "email-fallback"})`);
         break;
       }
 

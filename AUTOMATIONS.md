@@ -22,6 +22,16 @@ Lista wszystkich automatyzacji w projekcie. Triggers, schedules, hooks.
 - **Source:** same migration as above
 - **Status:** ✅ active
 
+### `reviews_notify_submitted`
+- **Tabela:** `public.reviews`
+- **Event:** `AFTER INSERT FOR EACH ROW`
+- **Action:** HTTP POST do `notify-review-submitted` Edge Function
+- **Payload:** `{ type: "INSERT", table: "reviews", schema: "public", record: {...} }`
+- **Source:** [`supabase/migrations/20260513150407_review_pipeline.sql`](./supabase/migrations/20260513150407_review_pipeline.sql)
+- **Status:** ✅ active (od 2026-05-13)
+- **Effect:** wysyła 2 maile (operator + klient dziękujemy z conditional copy: 5★ vs 1-3★, consent vs no-consent)
+- **Skip:** jeśli `record.honeypot_triggered=true` (bot)
+
 ---
 
 ## 2. Stripe Webhooks (external → us)
@@ -80,6 +90,26 @@ Vercel webhook → build (zero build dla static, instant) → atomic swap → CD
 - Action: verify signature → UPDATE leads (kaskada triggerów notify-payment-success)
 - Status: ✅ v3 active, ale `STRIPE_WEBHOOK_SECRET` nadal pusty (placeholder)
 
+### `send-review-request` (manual or batch trigger - Nicolas's signal)
+- Trigger: manual via `scripts/review-ops/send-review.sh` (curl POST z service_role auth)
+- Modes: single po `lead_id` lub `lead_email`, batch (do 200 leadów z `v_review_candidates`), `force=true` re-send
+- Action: generuje token (UUID v4) → UPDATE leads → Resend mail "Macie 2 minuty?"
+- Wymaga: `Authorization: Bearer <service_role_key>` w nagłówku
+- Status: ✅ active (od 2026-05-13)
+
+### `submit-review` (public, no auth - z formularza /opinia?t=<token>)
+- Trigger: POST z `/opinia` po wypełnieniu formularza
+- CORS: zaproszeniaonline.com + *.vercel.app + localhost
+- Anti-spam: UUID token validation + honeypot field + unique constraint + IP hash SHA256+salt
+- Action: INSERT reviews → UPDATE leads.review_submitted_at → DB trigger fire
+- Status: ✅ active (od 2026-05-13)
+
+### `notify-review-submitted` (auto-triggered by DB)
+- Trigger: Postgres `reviews_notify_submitted` AFTER INSERT
+- Action: 2 maile (operator + klient) z conditional copy (5★+consent → POLEC50, 5★+no-consent → "każde słowo", ≤3★ → "odezwę się 24h")
+- Skip: jeśli `honeypot_triggered=true` (bot)
+- Status: ✅ active (od 2026-05-13)
+
 ---
 
 ## 5. SEO indexing
@@ -108,25 +138,28 @@ Vercel webhook → build (zero build dla static, instant) → atomic swap → CD
 
 ## 6. Email forwarding (OVH)
 
-### Aktywne aliasy (8/1000 limit)
-| Alias | Forward to |
-|---|---|
-| `kontakt@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com |
-| `zamowienia@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com |
-| `faktury@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com |
-| `rodo@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com |
+### Aktywne aliasy (8/1000 limit, OVH inbound)
 
-### DNS records (zweryfikowane)
+Publicznie używamy **tylko `kontakt@`** (2026-05-16). Pozostałe 3 aliasy zostają jako legacy inbound (DMARC raporty, stare maile od klientów) - nie pokazujemy ich w UI.
+
+| Alias | Forward to | Publiczny w UI |
+|---|---|---|
+| `kontakt@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com | ✅ tak (jedyny) |
+| `rodo@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com | ❌ legacy (DMARC inbound) |
+| `faktury@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com | ❌ legacy |
+| `zamowienia@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com | ❌ legacy |
+
+### DNS records (zweryfikowane 2026-05-16)
 - `MX root` → mx1/2/3.mail.ovh.net (priorities 1/5/100) - OVH forwarding (inbound)
 - `SPF root` → `v=spf1 include:mx.ovh.com -all` - hardfail (wszystko spoza OVH = spam)
-- `DMARC` → `v=DMARC1; p=none; rua=mailto:rodo@...` - monitoring tylko (na razie)
+- `DMARC` → `v=DMARC1; p=none; rua=mailto:rodo@...` - monitoring tylko (rodo@ legacy zostaje dla DMARC raportów)
 - `DKIM resend._domainkey` → Resend public key (outbound)
 - `MX send.zaproszeniaonline.com` → feedback-smtp.eu-west-1.amazonses.com (Resend bounce)
 - `SPF send.zaproszeniaonline.com` → `v=spf1 include:amazonses.com ~all` (Resend)
 
 ### Privacy
 - "Nie zachowuj kopii" tryb w OVH → privacy-clean (maile nie zostają na OVH serverach)
-- DMARC reports `rua` → trafiają na `rodo@` (forwardowane do Gmail)
+- DMARC reports `rua` → trafiają na `rodo@` (legacy, forwardowane do Gmail) - nie zmieniamy DMARC w DNS żeby nie tracić raportów
 
 ---
 
