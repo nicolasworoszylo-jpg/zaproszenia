@@ -18,6 +18,7 @@ import { Resend } from 'resend';
 const ROOT = resolve(fileURLToPath(import.meta.url), '..', '..');
 const DRAFTS = join(ROOT, 'photos', 'drafts');
 const SENT = join(ROOT, 'photos', 'sent');
+const REPORTS = join(ROOT, 'photos', 'reports');
 const EMAIL_PLACEHOLDER = '<EMAIL_KLIENTA>';
 
 function openInEditor(filePath) {
@@ -79,14 +80,32 @@ async function logSent(orderId, draft, resendResult) {
     .replace(/\.[^.]+$/, '')
     .replace(/[^a-zA-Z0-9_-]/g, '_');
   const logPath = join(sentDir, `mail-${safeFilenameSegment}.json`);
+  const sentAt = new Date().toISOString();
+  const messageId = resendResult?.id || null;
   const logEntry = {
     ...draft,
     status: 'sent',
-    sent_at: new Date().toISOString(),
-    resend_message_id: resendResult?.id || null,
+    sent_at: sentAt,
+    resend_message_id: messageId,
   };
   await writeFile(logPath, JSON.stringify(logEntry, null, 2), 'utf8');
-  return logPath;
+  return { logPath, sentAt, messageId };
+}
+
+async function updateReportMailState(orderId, filename, mailState) {
+  const reportPath = join(REPORTS, `${orderId}.json`);
+  try {
+    const raw = await readFile(reportPath, 'utf8');
+    const report = JSON.parse(raw);
+    const file = report.files?.find((f) => f.filename_in === filename);
+    if (!file) return false;
+    file.mail_state = mailState;
+    await writeFile(reportPath, JSON.stringify(report, null, 2), 'utf8');
+    return true;
+  } catch (err) {
+    console.warn(`⚠ Nie udało się zaktualizować raportu ${reportPath}: ${err.message}`);
+    return false;
+  }
 }
 
 async function main() {
@@ -200,8 +219,15 @@ async function main() {
 
     try {
       const resendResult = await sendViaResend(resend, draft);
-      const logPath = await logSent(orderId, draft, resendResult);
-      console.log(`✅ Wysłano. Resend message ID: ${resendResult?.id || '(brak)'}`);
+      const { logPath, sentAt, messageId } = await logSent(orderId, draft, resendResult);
+      await updateReportMailState(orderId, draft.filename_flagged, {
+        sent_at: sentAt,
+        resend_message_id: messageId,
+        draft_path: draftPath,
+        log_path: logPath,
+        to: draft.to,
+      });
+      console.log(`✅ Wysłano. Resend message ID: ${messageId || '(brak)'}`);
       console.log(`   Log: ${logPath}`);
       sentCount++;
     } catch (err) {

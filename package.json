@@ -17,6 +17,7 @@
         "guardian:status": "bash scripts/setup-branch-protection.sh --check",
         "photos:scan": "node scripts/photos-scan.mjs",
         "photos:send": "node scripts/photos-send.mjs",
+        "photos:publish": "node scripts/photos-publish.mjs",
         "test": "echo \"no automated tests yet — static site\" && exit 0"
     },
     "engines": {

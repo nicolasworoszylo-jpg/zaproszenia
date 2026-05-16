@@ -339,6 +339,14 @@ async function scanFile(inboxPath, processedPath) {
       _parseError: exif._parseError || null,
     },
     flags,
+    // Publikacja: każdy plik wymaga explicit approve w `photos:publish` przed
+    // wysłaniem do Supabase Storage. Nawet `clean` (bez flag EXIF) — bo trzeba
+    // sprawdzić okiem znaki wodne, osoby na zdjęciu, dokumenty (SOP kroki 1/4/5).
+    publication_status: 'pending_review',
+    publication_notes: null,
+    publication_decided_at: null,
+    mail_state: null,
+    upload_state: null,
   };
 }
 
