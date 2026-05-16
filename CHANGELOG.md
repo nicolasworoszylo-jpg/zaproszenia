@@ -22,6 +22,13 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Fixed** (audyt SEO/AEO/GEO 2026-05-16 wieczór): spójność LLM facts + RODO regression na blogu + E-E-A-T schema.
+  - **llms.txt + llms-full.txt** zsynchronizowane z landing po commicie `0fa2436`: czas realizacji 24h → 48h, rundy poprawek 3 → 2, galeria 5 obróbek → 7 ujęć. LLM-y (ChatGPT/Claude/Perplexity) preferencyjnie czytały llms.txt i cytowały nieprawdę - teraz jedna prawda we wszystkich źródłach.
+  - **Self-host fonts na całym blogu** (8 plików HTML): wycofano `fonts.googleapis.com` + `fonts.gstatic.com` preconnect/stylesheet, zastąpiono `<link rel="stylesheet" href="/fonts/fonts.css">` z preload fraunces/inter. Zero transferu IP gościa do Google LLC, spójność z RODO audit 2026-05-13 i CSP w `vercel.json`.
+  - **Literówka `Nń` → `ń`** w 5 plikach (llms.txt, llms-full.txt, blog/cyfrowe-vs-papierowe, blog/ile-kosztuje): historyczna korupcja normalizacji Unicode (zaproszeNń, zieleNń, potwierdzeNń) - LLM-y cytowały z literówką.
+  - **`index.html` Organization JSON-LD**: dodano pole `founder` (Nicolas Woroszyło + Dominika Kuś z `@type:Person` i `jobTitle`) dla sygnału E-E-A-T i entity disambiguation w Google Knowledge Graph + LLM source attribution.
+  - **`magda-tomek.html`**: `noindex, nofollow` → `noindex, follow` (link equity passthrough do `/` i `/#cennik`, spójność z `demo.html`).
+
 - **Changed** (wielka weryfikacja, sesja popołudniowa 2026-05-16): pakiet poprawek przed pierwszymi klientami.
   - **Czas realizacji 24h → 48h** w 30+ miejscach: `index.html` (meta description, og/twitter, schema.org Organization+Service+Product+HowTo+LocalBusiness z `PT48H` i `deliveryLeadTime.value=48`, FAQ, hero meta, sticky CTA, hero-sub z `&nbsp;`, sekcja jak-działa step II), `terms.html` § 5 ust. 1, `returns.html`, `dziekujemy.html`, edge functions `notify-new-lead` + `notify-payment-success` (preheader, body HTML+text, kroki I-III, footer), blog 6 plików (`index`, `ile-kosztuje`, `cyfrowe-vs-papierowe`, `zaproszenia-online-jak-dziala`, `zaproszenia-slubne-bez-drukowania`, `zaproszenie-slubne-qr-kod`). Zachowane: 72h DSA takedown (§ 11), 24h RODO breach (§ 12a), 24-72h aktywacji konkurencji w tabelach.
   - **Liczba rund poprawek 3 → 2** w 12+ miejscach: terms.html § 3+§ 10a (wycięty komentarz "powyżej rynkowego 1-2 rund"), returns.html § 3+§ 4, dziekujemy.html, index.html FAQ+hero+lista+schema, edge function `notify-new-lead` HTML+text "Dwie rundy poprawek", blog `ile-kosztuje`.
