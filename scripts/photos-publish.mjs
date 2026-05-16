@@ -67,12 +67,6 @@ function printFileBlock(file) {
     console.log(`   Flagi: brak (EXIF czysty — ale sprawdź okiem znaki wodne / osoby / dokumenty)`);
   }
 
-  if (file.mail_state) {
-    console.log(`   📧 Mail wysłany: ${file.mail_state.sent_at}`);
-    console.log(`      Do: ${file.mail_state.to}`);
-    console.log(`      Resend ID: ${file.mail_state.resend_message_id || '(brak)'}`);
-  }
-
   if (file.publication_notes) {
     console.log(`   📝 Notatka: ${file.publication_notes}`);
   }
@@ -164,11 +158,9 @@ async function reviewFile(rl, file, reportPath, report) {
   printFileBlock(file);
 
   if (file.flags?.some((f) => ['PRO_CAMERA_NO_ARTIST', 'COPYRIGHT_PRESENT', 'LARGE_FILE'].includes(f.code))) {
-    if (!file.mail_state) {
-      console.log(`   ⚠ Ten plik ma flagę licencyjną, ale mail do klienta NIE został wysłany.`);
-      console.log(`     Odpal najpierw: npm run photos:send -- ${report.order_id}`);
-      console.log(`     Albo zaznacz "rejected" jeśli świadomie pomijasz ten plik.`);
-    }
+    console.log(`   ⚠ Ten plik ma flagę licencyjną. Upewnij się że wysłałaś draft maila`);
+    console.log(`     do klienta (treść w photos/drafts/${report.order_id}/mail-*.txt) i klient`);
+    console.log(`     odpisał potwierdzając licencję. Albo zaznacz "rejected" jeśli pomijasz plik.`);
   }
 
   while (true) {

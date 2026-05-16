@@ -5,9 +5,10 @@
 // and a JSON audit report to photos/reports/[ORDER_ID].json.
 //
 // Dla flag wymagających kontaktu z klientem (PRO_CAMERA_NO_ARTIST,
-// COPYRIGHT_PRESENT, LARGE_FILE) generuje draft maila do
-// photos/drafts/[ORDER_ID]/mail-[plik].json. Wysyłka osobno przez
-// `npm run photos:send` (Resend).
+// COPYRIGHT_PRESENT, LARGE_FILE) generuje treść proponowanego maila do
+// photos/drafts/[ORDER_ID]/mail-[plik].txt I wypisuje ją w terminalu.
+// Nic nie jest wysyłane — Dominika kopiuje treść i wysyła ręcznie z własnej
+// skrzynki, jeśli uzna za stosowne.
 //
 // Wariant (a) manual z PHOTO_PIPELINE_PLAN.md. Pełni rolę warstwy 3
 // (technicznej) z PHOTO_LIABILITY_SAFEGUARDS.md.
@@ -189,14 +190,14 @@ function flagObservationSentence(flags) {
   const fragments = [];
   const byCode = Object.fromEntries(flags.map((f) => [f.code, f]));
 
-  if (byCode.PRO_CAMERA_NO_ARTIST) {
-    fragments.push(
-      `ślady profesjonalnego aparatu (${byCode.PRO_CAMERA_NO_ARTIST.detail}) bez wskazania autora`
-    );
-  }
   if (byCode.COPYRIGHT_PRESENT) {
     fragments.push(
-      `wypełnione pole właściciela praw autorskich (${byCode.COPYRIGHT_PRESENT.detail})`
+      `wpis w polu „Copyright": „${byCode.COPYRIGHT_PRESENT.detail}"`
+    );
+  }
+  if (byCode.PRO_CAMERA_NO_ARTIST) {
+    fragments.push(
+      `oznaczenia profesjonalnego aparatu (${byCode.PRO_CAMERA_NO_ARTIST.detail}) bez wpisanego autora`
     );
   }
   if (byCode.LARGE_FILE) {
@@ -212,25 +213,20 @@ function flagObservationSentence(flags) {
 function generateMailBody({ orderId, filename, observation, deadlineFormatted }) {
   return `Dzień dobry,
 
-Dziękujemy za przesłane zdjęcia do Państwa zaproszenia (zamówienie ${orderId}).
+Dziękujemy za przesłane zdjęcia. Wszystko prawie gotowe do publikacji — zostaje nam jedna drobna formalność.
 
-Przy weryfikacji jednego z plików — ${filename} — widzimy w informacjach zapisanych w pliku ${observation}. To wygląda na zdjęcie od fotografa zawodowego.
-
-Żebyśmy mogli to konkretne zdjęcie umieścić w Państwa zaproszeniu, potrzebujemy potwierdzenia, że Państwa umowa z fotografem obejmuje publikację na stronie internetowej (§ 8c Regulaminu).
+Przy weryfikacji zdjęcia ${filename} widzimy w jego metadanych (EXIF) ${observation}. To często zdarza się, gdy fotograf udzielił pełnej licencji, ale po prostu nie wyczyścił metadanych — najczęściej nie oznacza żadnego problemu. Żebyśmy mogli spokojnie umieścić to zdjęcie na Państwa stronie, potrzebujemy krótkiego potwierdzenia, jak wygląda sytuacja z prawami.
 
 Wystarczy odpowiedź jednym zdaniem, np.:
-  • "Tak, umowa obejmuje publikację online"
-  • albo skan / zdjęcie fragmentu umowy z fotografem
-  • albo email od fotografa z potwierdzeniem licencji
+  • "Mam licencję od fotografa na publikację online"
+  • "Jestem autorem zdjęcia — fotograf nie wyczyścił EXIF"
+  • "Można pominąć to zdjęcie"
 
-Co się dzieje z Państwa zaproszeniem w międzyczasie:
-Standardowy czas realizacji to 24 godziny od otrzymania kompletu danych. Brakująca licencja zatrzymuje ten zegar tylko dla tego jednego pliku — pozostałe zdjęcia oraz cała reszta projektu (plan dnia, RSVP, mapa, treści) idą do realizacji normalnie.
+Odpowiedź zarchiwizujemy w naszej dokumentacji i ruszamy z publikacją. Pozostałe zdjęcia oraz cała reszta projektu (plan dnia, RSVP, mapa, treści) idą do realizacji normalnie.
 
-Termin Państwa odpowiedzi: 72 godziny od tego maila (do ${deadlineFormatted}).
+Jeśli odpowiedź dotrze do nas w ciągu 72 godzin (do ${deadlineFormatted}), opublikujemy zdjęcie razem z całością. Gdyby zajęło dłużej — bez problemu, wstawimy je w jednej z 2 rund poprawek bez dodatkowej opłaty.
 
-Jeśli odpowiedź nie dotrze w tym czasie, zrealizujemy zaproszenie bez tego konkretnego zdjęcia. Gdyby przesłali Państwo potwierdzenie później — dodamy je w jednej z 2 rund poprawek bez dodatkowej opłaty.
-
-Dziękujemy,
+Z pozdrowieniami,
 Zespół zaproszeniaonline.com
 kontakt@zaproszeniaonline.com
 `;
@@ -248,34 +244,28 @@ async function generateDraftIfNeeded({ orderId, fileResult, clientData, draftsDi
   const filename = fileResult.filename_in;
   const body = generateMailBody({ orderId, filename, observation, deadlineFormatted });
 
-  const fromAddress = process.env.RESEND_FROM || 'kontakt@zaproszeniaonline.com';
-  const replyTo = process.env.RESEND_REPLY_TO || fromAddress;
+  const fromAddress = 'kontakt@zaproszeniaonline.com';
   const toAddress = clientData?.email || EMAIL_PLACEHOLDER;
+  const subject = `[${orderId}] Drobne potwierdzenie do zdjęcia ${filename}`;
+  const flagCodes = licenseFlags.map((f) => f.code).join(', ');
 
-  const draft = {
-    draft_id: `${orderId}-${filename.replace(/\.[^.]+$/, '')}-${now.getTime()}`,
-    order_id: orderId,
-    filename_flagged: filename,
-    flags: licenseFlags,
-    generated_at: now.toISOString(),
-    deadline_at: deadline.toISOString(),
-    deadline_formatted_pl: deadlineFormatted,
-    client_email_source: clientData?.source || 'unknown',
-    client_name: clientData?.name || null,
-    to: toAddress,
-    from: fromAddress,
-    reply_to: replyTo,
-    bcc: replyTo,
-    subject: `[${orderId}] Pytanie o licencję — zdjęcie ${filename}`,
-    body,
-    status: 'draft',
-  };
+  const headerSep = '─'.repeat(70);
+  const toLabel = toAddress === EMAIL_PLACEHOLDER ? `${toAddress}  ⚠ uzupełnij ręcznie przed wysłaniem` : toAddress;
+  const draftText =
+    `DO:       ${toLabel}\n` +
+    `OD:       ${fromAddress}\n` +
+    `TEMAT:    ${subject}\n` +
+    `DEADLINE: ${deadlineFormatted}\n` +
+    `FLAGI:    ${flagCodes}\n` +
+    `${headerSep}\n` +
+    `\n` +
+    body;
 
   const safeFilenameSegment = filename.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_');
-  const draftPath = join(draftsDir, `mail-${safeFilenameSegment}.json`);
+  const draftPath = join(draftsDir, `mail-${safeFilenameSegment}.txt`);
   await mkdir(draftsDir, { recursive: true });
-  await writeFile(draftPath, JSON.stringify(draft, null, 2), 'utf8');
-  return { draftPath, draft };
+  await writeFile(draftPath, draftText, 'utf8');
+  return { draftPath, draftText, toAddress };
 }
 
 async function scanFile(inboxPath, processedPath) {
@@ -345,7 +335,6 @@ async function scanFile(inboxPath, processedPath) {
     publication_status: 'pending_review',
     publication_notes: null,
     publication_decided_at: null,
-    mail_state: null,
     upload_state: null,
   };
 }
@@ -472,21 +461,27 @@ async function main() {
     }
 
     if (draftsCreated.length > 0) {
-      console.log(`\n📧 ${draftsCreated.length} ${draftsCreated.length === 1 ? 'draft maila wygenerowany' : 'drafty maila wygenerowane'}:`);
-      for (const { draftPath, draft } of draftsCreated) {
-        const toStr = draft.to === EMAIL_PLACEHOLDER ? `${draft.to} (uzupełnij ręcznie)` : draft.to;
-        console.log(`   - ${basename(draftPath)} → do: ${toStr}`);
+      const label = draftsCreated.length === 1 ? 'propozycja maila do klienta' : 'propozycje maila do klienta';
+      console.log(`\n📧 ${draftsCreated.length} ${label}:`);
+      console.log(`   (zapisane jako .txt w ${draftsDir} — do skopiowania i wysłania ręcznie z Twojej skrzynki)\n`);
+
+      const sep = '═'.repeat(70);
+      for (const { draftPath, draftText } of draftsCreated) {
+        console.log(sep);
+        console.log(`📄 ${basename(draftPath)}`);
+        console.log(sep);
+        console.log(draftText);
+        console.log('');
       }
-      console.log(`\n   Wyślij komendą: npm run photos:send -- ${orderId}`);
 
       if (clientData?.source === 'env_missing') {
-        console.log(`\n   ⚠ Brak SUPABASE_URL/SERVICE_ROLE_KEY w .env — adres "To" jako placeholder.`);
-        console.log(`     Wpisz email ręcznie w draftach przed wysłaniem, albo uzupełnij .env.`);
+        console.log(`   ⚠ Brak SUPABASE_URL/SERVICE_ROLE_KEY w .env — adres "DO:" jako placeholder.`);
+        console.log(`     Wpisz email klienta ręcznie zanim wyślesz, albo uzupełnij .env.`);
       } else if (clientData?.source === 'no_match') {
-        console.log(`\n   ⚠ Supabase: brak leada z order_id="${orderId}".`);
-        console.log(`     Sprawdź ORDER_ID albo wpisz email ręcznie w draftach.`);
+        console.log(`   ⚠ Supabase: brak leada z order_id="${orderId}".`);
+        console.log(`     Sprawdź ORDER_ID albo wpisz email klienta ręcznie zanim wyślesz.`);
       } else if (clientData?.source === 'http_error' || clientData?.source === 'fetch_error') {
-        console.log(`\n   ⚠ Supabase: problem z fetch (${clientData.source}). Adres jako placeholder.`);
+        console.log(`   ⚠ Supabase: problem z fetch (${clientData.source}). Adres jako placeholder.`);
       }
     }
   }

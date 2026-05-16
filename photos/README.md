@@ -18,36 +18,32 @@ photos/
 │       └── ...
 ├── reports/            ← Robot zapisuje tutaj raport po każdym skanie
 │   └── KOW-MAZ-A1B2.json
-├── drafts/             ← Drafty maili do klienta (gdy flagi licencyjne)
-│   └── KOW-MAZ-A1B2/
-│       └── mail-03-greek-vacation.json
-└── sent/               ← Log wysłanych maili (audit + dowód)
+└── drafts/             ← Treść proponowanych maili do klienta (gdy flagi licencyjne)
     └── KOW-MAZ-A1B2/
-        └── mail-03-greek-vacation.json
+        └── mail-03-greek-vacation.txt
 ```
 
-`inbox/`, `processed/`, `reports/`, `drafts/`, `sent/` są w `.gitignore` —
+`inbox/`, `processed/`, `reports/`, `drafts/` są w `.gitignore` —
 zdjęcia klientów ani treści mailowe **nigdy** nie idą do gita.
 W repo żyje tylko ten README + struktura folderów.
 
-## Workflow (4 etapy: scan → send → publish → handoff)
+## Workflow (3 etapy: scan → wyślij ręcznie → publish → handoff)
 
-### A. Scan i drafty mailowe
+### A. Scan + propozycje maila
 1. Klient wysyła zdjęcia na maila z tematem `ZDJĘCIA [KOW-MAZ-A1B2]`
 2. Otwierasz Gmail → Save attachments → folder `photos/inbox/KOW-MAZ-A1B2/`
 3. Odpalasz `npm run photos:scan -- KOW-MAZ-A1B2`
 4. Wynik:
    - Wszystkie pliki dostają status `pending_review` (nawet czyste — bo trzeba sprawdzić okiem znaki wodne, osoby, dokumenty)
-   - Flagi 🟠 typu `PRO_CAMERA_NO_ARTIST` / `COPYRIGHT_PRESENT` / `LARGE_FILE` → robot automatycznie generuje draft maila do `photos/drafts/[ORDER_ID]/mail-[plik].json`
+   - Flagi 🟠 typu `PRO_CAMERA_NO_ARTIST` / `COPYRIGHT_PRESENT` / `LARGE_FILE` → robot generuje treść proponowanego maila do `photos/drafts/[ORDER_ID]/mail-[plik].txt` **i wypisuje ją w terminalu** (gotowe do `Ctrl+C`)
    - Pozostałe flagi (`GPS_PRESENT`, `AI_SOFTWARE`) → tylko informacyjne, bez maila
 
-### B. Wysyłka maili do klienta (jeśli są drafty)
-`npm run photos:send -- KOW-MAZ-A1B2` — interactive `[y]es / [n]o / [e]dit / [q]uit` per draft. `y` → mail leci przez **Resend** z `kontakt@zaproszeniaonline.com` (BCC + Reply-To do `kontakt@`). Log w `photos/sent/[ORDER_ID]/` + raport `reports/[ORDER_ID].json` ma teraz `mail_state` z `sent_at` i `resend_message_id`.
+**Robot NIE wysyła nic sam.** Treść drafta służy tylko do skopiowania.
 
-### C. Czekasz na odpowiedź klienta (do 72h)
-Klient odpisuje → mail wpada do Twojej skrzynki (bo `kontakt@` forwarduje). Notujesz **mentalnie** decyzję dla każdego pliku — wykorzystasz w kroku D.
+### B. Wyślij draft ręcznie i czekaj na odpowiedź klienta (do 72h)
+Jeśli chcesz wysłać draft do klienta — kopiujesz treść z terminala (albo otwierasz `photos/drafts/[ORDER_ID]/mail-*.txt`) i wysyłasz z własnej skrzynki. Klient odpisuje na Twój email → notujesz mentalnie decyzję dla każdego pliku — wykorzystasz w kroku C.
 
-### D. Publikacja (interactive review + upload do Supabase)
+### C. Publikacja (interactive review + upload do Supabase)
 `npm run photos:publish -- KOW-MAZ-A1B2` — robot iteruje po wszystkich plikach:
 - Pokazuje status, flagi, info o mailu (jeśli wysłany)
 - Pyta `[a]pproved / [r]ejected / [w]ait`
@@ -62,7 +58,7 @@ Po wszystkich rozstrzygniętych: finalne pytanie *„Upload N plików do Supabas
 
 Re-run komendy jest bezpieczny (idempotent — pomija pliki już approved / rejected / published).
 
-### E. Handoff do Nicolasa
+### D. Handoff do Nicolasa
 Nicolas loguje się do Supabase Studio, przy leadzie (`order_id=KOW-MAZ-A1B2`) widzi:
 - Notatkę w `notes` ze statusem zdjęć
 - Pliki w bucket `lead-attachments/processed/KOW-MAZ-A1B2/` (download przez Studio UI)
@@ -75,8 +71,7 @@ Robot potrzebuje `.env` z kluczami — patrz `.env.example` w katalogu projektu:
 
 | Klucz | Po co | Bez klucza |
 |---|---|---|
-| `RESEND_API_KEY` | wysyłka maili przez `photos:send` | `photos:send` pada z czytelnym komunikatem |
-| `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` | auto-fetch emaila klienta (scan), upload do Storage + notatka w `leads.notes` (publish) | `photos:scan` wstawi placeholder `<EMAIL_KLIENTA>`, `photos:send` odmówi wysłać draft z placeholderem, `photos:publish` przejdzie przez review ale pada na uploadzie |
+| `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` | auto-fetch emaila klienta po ORDER_ID (scan, żeby wypełnić nagłówek `DO:` w drafcie), upload do Storage + notatka w `leads.notes` (publish) | `photos:scan` wstawi placeholder `<EMAIL_KLIENTA>` w drafcie (wpisujesz email ręcznie kiedy będziesz wysyłać), `photos:publish` przejdzie przez review ale pada na uploadzie |
 
 ## Co robot sprawdza (EXIF flagi)
 

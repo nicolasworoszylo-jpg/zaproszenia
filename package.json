@@ -16,7 +16,6 @@
         "guardian:protect": "bash scripts/setup-branch-protection.sh",
         "guardian:status": "bash scripts/setup-branch-protection.sh --check",
         "photos:scan": "node scripts/photos-scan.mjs",
-        "photos:send": "node scripts/photos-send.mjs",
         "photos:publish": "node scripts/photos-publish.mjs",
         "test": "echo \"no automated tests yet — static site\" && exit 0"
     },
@@ -27,7 +26,6 @@
     "dependencies": {
         "dotenv": "^17.4.2",
         "exifr": "^7.1.3",
-        "resend": "^6.12.3",
         "sharp": "^0.34.5"
     }
 }
