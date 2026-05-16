@@ -168,16 +168,17 @@ Dziś pomijam (nie używasz cookies). Gdy będziesz wdrażał Plausible/Umami - 
 
 ---
 
-### 13. Pakiet „zdjęcia + Notice & Takedown" (16 maja 2026)
+### 13. Pakiet „zdjęcia + Notice & Takedown" (16 maja 2026) — ✅ DONE
 
 **Co dodane:** §8c (zdjęcia/wizerunek), §8d (N&T procedura), §12a (DPA inline), §4 ust. 4 (incorporation by reference), §11 ust. 3-5 (safe harbor UŚUDE/DSA) + privacy §2.9 + SOP odbioru zdjęć + 3 email templates (11-13) + jednolinijkowe potwierdzenie trwałego nośnika w `notify-payment-success`.
 
-**Co musisz zrobić ręcznie:** pełna lista w [legal-templates/DEPLOYMENT_CHECKLIST_ZDJECIA.md](legal-templates/DEPLOYMENT_CHECKLIST_ZDJECIA.md). Skrót:
+**Zrealizowane manualne kroki (16 maja 2026):**
 
-1. `git push` + deploy edge function (`supabase functions deploy notify-payment-success`)
-2. Sprawdź że `kontakt@zaproszeniaonline.com` działa dwukierunkowo
-3. Wyślij Dominice plik `legal-templates/sop-przyjmowanie-zdjec.md` i upewnij się że potwierdziła
-4. (opcjonalne) photo verification log w Sheets, Gmail auto-label, aliasy legal@/rodo@, cron auto-deletion
+- [x] `git push` + deploy `notify-payment-success` v10 — PR #15 merged, edge fn ACTIVE
+- [x] Forwardery OVH: `kontakt@`/`rodo@`/`legal@`/`faktury@`/`zamowienia@` → Nicolas + Dominika (5/5 zweryfikowane E2E przez test 5 maili z `n.woroszylo@wisepeople.pl`, oba inboxy potwierdzone)
+- [x] SOP `legal-templates/sop-przyjmowanie-zdjec.md` wysłany Dominice (potwierdzone "dominika ok")
+- [x] Aliasy `legal@` + `rodo@` — założone w OVH (zamiast tylko forwardery), 10 forwardów łącznie
+- [ ] (opcjonalne, niskie priorytety) photo verification log w Sheets, Gmail auto-label, cron auto-deletion zdjęć po 12mc+30d
 
 **Dlaczego ten pakiet ważny:** chroni przed roszczeniami fotografów (klient publikuje cudze zdjęcia), gości weselnych (wizerunek), PUODO (RODO procesor). Akceptacja regulaminu przez jeden checkbox `rodo` automatycznie obejmuje wszystkie nowe klauzule (art. 384 § 1 KC + §4 ust. 4 regulaminu) - klient nie musi nic dodatkowo akceptować.
 
