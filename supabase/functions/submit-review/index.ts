@@ -14,10 +14,15 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+// Migracja 2026-05-16: nowy sb_secret_... (publishable/secret keys API)
+// Fallback na legacy SUPABASE_SERVICE_ROLE_KEY (JWT-based, deprecated w Supabase Dashboard).
+// Po utworzeniu sb_secret w Supabase i dodaniu SUPABASE_SECRET_KEY env var,
+// kod automatycznie zacznie używać nowego klucza bez deploy. Legacy fallback do usunięcia
+// kiedy Supabase ogłosi sunset date dla service_role.
+const SUPABASE_SECRET_KEY = Deno.env.get("SUPABASE_SECRET_KEY") || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const IP_SALT = Deno.env.get("IP_SALT") || "zaproszenia-ip-salt-v1-2026";
 
-const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+const sb = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
 
