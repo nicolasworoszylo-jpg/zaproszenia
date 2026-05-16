@@ -24,3 +24,8 @@ npm-debug.log*
 # Build artifacts
 dist/
 build/
+
+# Photo pipeline — client photos NEVER enter git (only photos/README.md does)
+photos/inbox/
+photos/processed/
+photos/reports/
