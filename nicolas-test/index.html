@@ -39,7 +39,7 @@
 </style>
 <script defer crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
 <script defer crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
-<script defer src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script defer src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script defer src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
 </head>
 <body>
@@ -91,12 +91,12 @@ const CONFIG = {
   //   ourStoryHeartPhoto -> centerpiece heart-shape (zamiast PhotoPlaceholder shape="heart")
   //   ourStoryPhotos[0..2] -> lewa kolumna 3 placeholders
   //   ourStoryPhotos[3..5] -> prawa kolumna (mamy 4, ostatni slot pusty / placeholder)
-  ourStoryHeartPhoto: "/photos/01-engagement-shoot.jpg",
+  ourStoryHeartPhoto: "photos/01-engagement-shoot.jpg",
   ourStoryPhotos: [
-    "/photos/02-restaurant-selfie.jpg",
-    "/photos/03-greek-vacation.jpg",
-    "/photos/04-sunday-couch.jpg",
-    "/photos/05-christmas-family.jpg",
+    "photos/02-restaurant-selfie.jpg",
+    "photos/03-greek-vacation.jpg",
+    "photos/04-sunday-couch.jpg",
+    "photos/05-christmas-family.jpg",
   ],
   dressCode: { main: "Kawowy - kawa late, mocca, espresso, karmel.", note: "Prosimy o unikanie bieli - ten kolor zarezerwowany dla Pary Mlodej.", colors: ["#3E2723","#5D4037","#795548","#A1887F","#D7CCC8"] },
   transport: { departure: "Autokar - szczegoly uzupelni klient.", ret: "Powrot - szczegoly uzupelni klient." },
@@ -255,7 +255,7 @@ function OurStory(){
     <div style={{position:"absolute",top:20,left:20,opacity:.05,pointerEvents:"none"}}><svg width="160" height="160" viewBox="0 0 160 160" fill="none"><path d="M10 10C30 30 50 60 80 80C50 100 30 130 10 150" stroke={C.gold} strokeWidth=".8"/><path d="M10 10C40 20 70 40 80 80C70 120 40 140 10 150" stroke={C.gold} strokeWidth=".5"/>{[30,60,90,120].map((y,i)=>(<circle key={i} cx={10+i*5} cy={y} r={2} fill="none" stroke={C.gold} strokeWidth=".3"/>))}</svg></div>
     <div style={{position:"relative"}}><Reveal><Label>O nas</Label></Reveal><Reveal delay={.08}><Title>Nasza historia</Title></Reveal><Reveal delay={.12}><Branch w={120}/></Reveal></div>
     <Reveal delay={.15}><div className="heart-ph" style={{margin:"24px auto 8px"}}>{hasHeartPhoto
-      ? <div style={{width:"100%",maxWidth:280,height:0,paddingBottom:"100%",maxHeight:280,margin:"0 auto",borderRadius:"50%",overflow:"hidden",border:`2px solid ${C.gold}30`,position:"relative"}}><img src={CONFIG.ourStoryHeartPhoto} alt="" style={{position:"absolute",width:"100%",height:"100%",objectFit:"cover"}}/></div>
+      ? <div style={{width:"100%",maxWidth:280,aspectRatio:"1/1",margin:"0 auto",borderRadius:"50%",overflow:"hidden",border:`2px solid ${C.gold}30`,position:"relative"}}><img src={CONFIG.ourStoryHeartPhoto} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/></div>
       : <PhotoPlaceholder shape="heart" w={280} label="miejsce na zdjęcie"/>
     }</div></Reveal>
     <div className="story-wrap" style={{display:"flex",gap:32,maxWidth:780,margin:"32px auto 0",justifyContent:"center",flexWrap:"wrap"}}>

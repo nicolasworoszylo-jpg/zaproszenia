@@ -22,6 +22,11 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Fixed** (2026-05-16 v2.1, nicolas-test podgladowe poprawki post-deploy):
+  - Heart photo (OurStory `ourStoryHeartPhoto`): demo's `padding-bottom:100%` aspect hack failowal gdy mobile CSS `.heart-ph{width:200px!important}` zmuszal 200x200 wrapper. Image `width:100%/height:100%` z `height:0` content area dawal computed `left:98px`. Fix: nowoczesny `aspect-ratio:1/1` + `inset:0` na img.
+  - Supabase CDN: `unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js` 404 (path zmieniony) -> `dist/umd/supabase.js`.
+  - Photo paths: `/photos/...` (absolutne) -> `photos/...` (relatywne). Dziala na subdomenie (rewrite -> /nicolas-test/photos/) i na path-based (`/nicolas-test/photos/`).
+
 - **Changed** (2026-05-16 wieczor v2, test klienta Nicolas - REBUILD na zyczenie):
   - Wycofany pierwsza proba (path-based `nicolas-test.html` w roocie + `vendor/nicolas-test-compiled.js` + `photos/nicolas-test/`). Powod: Nicolas wymagal niezaleznej subdomeny BEZ wspolnej architektury i 1:1 wzorca demo.
   - Nowa struktura: `nicolas-test/` katalog SELF-CONTAINED + subdomena `nicolas-test.zaproszeniaonline.com`:
