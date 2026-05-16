@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <title>Dziękujemy za opinię | zaproszeniaonline.com</title>
+  <meta name="description" content="Wasza opinia została zapisana. Dziękujemy za czas.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://zaproszeniaonline.com/dziekujemy-za-opinie">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/fonts/fonts.css">
+
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #FFFFFF; --ink: #0A0A0A; --ink-soft: #4A4A4A; --ink-mute: #999999;
+      --line: #EBEBEB; --accent: #2C3E2D; --accent-h: #1E2B1F;
+      --gold: #C9A96E; --cream: #FAF6EF;
+      --serif: 'Fraunces', Georgia, serif;
+      --sans: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100dvh;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center;
+      padding: 2rem 1.5rem;
+      background: linear-gradient(170deg, #FFFFFF 0%, #FAFAF8 100%);
+      color: var(--ink);
+      font-family: var(--sans);
+      position: relative;
+      overflow: hidden;
+    }
+    body::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 50% at 30% 30%, rgba(44,62,45,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 70% 70%, rgba(201,169,110,0.10) 0%, transparent 60%);
+    }
+    .content { position: relative; max-width: 580px; }
+
+    .stars-anim {
+      font-family: var(--serif); font-size: 3rem; letter-spacing: 0.15em;
+      color: var(--gold); margin-bottom: 1.75rem; line-height: 1;
+      display: inline-flex; gap: 0.05em;
+    }
+    .stars-anim span {
+      display: inline-block;
+      animation: starPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+      transform-origin: center;
+    }
+    .stars-anim span:nth-child(1) { animation-delay: 0.0s; }
+    .stars-anim span:nth-child(2) { animation-delay: 0.1s; }
+    .stars-anim span:nth-child(3) { animation-delay: 0.2s; }
+    .stars-anim span:nth-child(4) { animation-delay: 0.3s; }
+    .stars-anim span:nth-child(5) { animation-delay: 0.4s; }
+    @keyframes starPop {
+      0% { transform: scale(0) rotate(-30deg); opacity: 0; }
+      60% { transform: scale(1.2) rotate(5deg); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
+    .eyebrow {
+      font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1rem; font-weight: 500;
+      animation: fadeIn 0.7s 0.6s backwards;
+    }
+
+    h1 {
+      font-family: var(--serif); font-style: italic; font-weight: 400;
+      font-size: clamp(2.2rem, 5.5vw, 3.4rem); line-height: 1.1; letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      animation: fadeIn 0.7s 0.7s backwards;
+    }
+    h1 em { font-style: italic; color: var(--accent); }
+    p {
+      font-size: clamp(1rem, 2vw, 1.13rem); line-height: 1.65; color: var(--ink-soft);
+      margin-bottom: 1rem; max-width: 500px; margin-left: auto; margin-right: auto;
+      animation: fadeIn 0.7s 0.85s backwards;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .what-next {
+      background: rgba(201,169,110,0.06); border: 1px solid rgba(201,169,110,0.25);
+      border-radius: 14px; padding: 1.5rem 1.5rem; margin: 2rem 0;
+      text-align: left;
+      animation: fadeIn 0.7s 1s backwards;
+    }
+    .what-next p {
+      font-size: 0.96rem; color: var(--ink); margin: 0; text-align: center;
+      animation: none;
+    }
+    .what-next strong { color: var(--accent); }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px;
+      background: var(--ink); color: var(--bg);
+      border-radius: 100px; text-decoration: none;
+      font-size: 0.95rem; font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      margin-top: 1.25rem;
+      animation: fadeIn 0.7s 1.15s backwards;
+    }
+    .btn:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(44,62,45,0.18); }
+
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+    @media (prefers-reduced-motion: reduce) {
+      .stars-anim span, .eyebrow, h1, p, .btn, .what-next { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <div class="stars-anim" aria-label="Pięć gwiazdek">
+      <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+    </div>
+    <p class="eyebrow">Opinia zapisana</p>
+    <h1>Dziękujemy. <em>Naprawdę.</em></h1>
+    <p>Każda opinia trafia do mnie osobiście - przeczytam ją z uwagą. Mailem dostaniecie potwierdzenie w ciągu paru minut.</p>
+
+    <div class="what-next">
+      <p>Jeśli zaznaczyliście zgodę na publikację, w mailu będzie też <strong>kod rabatowy POLEC50 (-50 zł)</strong> dla znajomych pary. Sama opinia trafi na stronę w ciągu 7 dni - dam znać, gdy będzie live.</p>
+    </div>
+
+    <p style="font-size: 0.9rem; color: var(--ink-mute);">
+      Pytania? <a href="mailto:kontakt@zaproszeniaonline.com" style="color: var(--accent); text-decoration: underline;">kontakt@zaproszeniaonline.com</a>
+    </p>
+
+    <a href="/" class="btn">
+      Wróć na stronę główną
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</body>
+</html>

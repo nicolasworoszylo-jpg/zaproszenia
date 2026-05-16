@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <title>Zostaw opinię | zaproszeniaonline.com</title>
+  <meta name="description" content="Podziel się opinią o naszej współpracy. Wasza opinia pomoże kolejnym parom zdecydować.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://zaproszeniaonline.com/opinia">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/fonts/fonts.css">
+
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #FFFFFF;
+      --bg-soft: #FAFAF8;
+      --cream: #FAF6EF;
+      --ink: #0A0A0A; --ink-soft: #4A4A4A; --ink-mute: #999999;
+      --line: #EBEBEB;
+      --accent: #2C3E2D; --accent-h: #1E2B1F;
+      --gold: #C9A96E; --gold-h: #B8985D;
+      --error: #B91C1C;
+      --serif: 'Fraunces', Georgia, serif;
+      --sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --shadow-1: 0 1px 2px rgba(44,62,45,0.04), 0 8px 24px rgba(44,62,45,0.06);
+      --shadow-2: 0 1px 2px rgba(44,62,45,0.04), 0 8px 24px rgba(44,62,45,0.06), 0 32px 64px rgba(44,62,45,0.08);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100dvh;
+      padding: 2rem 1rem 4rem;
+      background: linear-gradient(170deg, #FFFFFF 0%, #FAFAF8 100%);
+      color: var(--ink);
+      font-family: var(--sans);
+      position: relative;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    body::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 10%, rgba(44,62,45,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 90%, rgba(201,169,110,0.07) 0%, transparent 60%);
+    }
+    .wrap { position: relative; z-index: 1; max-width: 620px; margin: 0 auto; }
+    .brand { text-align: center; margin-bottom: 2rem; }
+    .brand a { color: var(--accent); font-family: var(--serif); font-style: italic; font-size: 1.1rem; letter-spacing: -0.01em; text-decoration: none; }
+    .card {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: var(--shadow-2);
+    }
+    .hero {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-h) 100%);
+      color: var(--cream);
+      padding: 2.5rem 2rem 2.25rem;
+      text-align: center;
+    }
+    .hero .stars-static {
+      font-family: var(--serif); font-size: 2.2rem; letter-spacing: 0.12em;
+      color: var(--gold); margin-bottom: 1rem; line-height: 1;
+    }
+    .hero .eyebrow {
+      font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(250,246,239,0.85); margin-bottom: 0.5rem; font-weight: 500;
+    }
+    .hero h1 {
+      font-family: var(--serif); font-style: italic; font-weight: 400;
+      font-size: clamp(1.85rem, 4.5vw, 2.4rem); line-height: 1.15; letter-spacing: -0.022em;
+      margin-bottom: 0.5rem;
+    }
+    .hero .lead { font-size: 1rem; color: rgba(250,246,239,0.82); max-width: 460px; margin: 0 auto; }
+    .body { padding: 2.25rem 2rem; }
+    .greeting { font-size: 1.02rem; color: var(--ink-soft); margin-bottom: 1.75rem; }
+    .greeting strong { color: var(--ink); font-weight: 500; }
+
+    /* Rating stars */
+    .field { margin-bottom: 1.75rem; }
+    .field-label {
+      display: block;
+      font-size: 0.76rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.65rem; font-weight: 600;
+    }
+    .field-hint { font-size: 0.86rem; color: var(--ink-mute); margin-top: 0.4rem; }
+
+    .stars {
+      display: flex; gap: 0.4rem; justify-content: flex-start;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .star-btn {
+      background: transparent; border: none;
+      font-size: 2.4rem; line-height: 1;
+      color: #E0DDD3; cursor: pointer;
+      padding: 0.2rem 0.3rem;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: var(--serif);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .star-btn:hover, .star-btn:focus-visible { transform: scale(1.1); outline: none; }
+    .star-btn.active { color: var(--gold); }
+    .star-btn.preview { color: var(--gold-h); opacity: 0.7; }
+    .rating-label {
+      margin-left: 0.5rem; font-size: 0.92rem; color: var(--ink-soft);
+      font-family: var(--serif); font-style: italic;
+      min-height: 1.4rem;
+    }
+
+    /* Inputs */
+    input[type="text"], textarea {
+      width: 100%;
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      font-family: var(--sans); font-size: 0.98rem; color: var(--ink);
+      transition: border-color 0.2s, background 0.2s;
+      resize: vertical;
+    }
+    input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--bg);
+      box-shadow: 0 0 0 3px rgba(44,62,45,0.08);
+    }
+    textarea { min-height: 110px; line-height: 1.55; }
+
+    /* Honeypot - visually hidden */
+    .honeypot {
+      position: absolute !important; width: 1px !important; height: 1px !important;
+      padding: 0 !important; margin: -1px !important; overflow: hidden !important;
+      clip: rect(0,0,0,0) !important; white-space: nowrap !important; border: 0 !important;
+      left: -9999px;
+    }
+
+    /* Recommend toggle */
+    .toggle-group { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .toggle-btn {
+      flex: 1; min-width: 90px;
+      background: var(--bg-soft); border: 1px solid var(--line); border-radius: 100px;
+      padding: 0.7rem 1rem; cursor: pointer;
+      font-family: var(--sans); font-size: 0.94rem; color: var(--ink-soft);
+      transition: all 0.2s;
+    }
+    .toggle-btn:hover { border-color: var(--accent); color: var(--ink); }
+    .toggle-btn.active { background: var(--accent); border-color: var(--accent); color: var(--cream); }
+    .toggle-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* Checkbox */
+    .checkbox-row {
+      display: flex; align-items: flex-start; gap: 0.7rem;
+      padding: 1rem 1.1rem;
+      background: rgba(201,169,110,0.06);
+      border-left: 3px solid var(--gold);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .checkbox-row input { margin-top: 0.2rem; flex-shrink: 0; cursor: pointer; accent-color: var(--accent); width: 18px; height: 18px; }
+    .checkbox-row .cb-label { font-size: 0.96rem; line-height: 1.5; color: var(--ink); }
+    .checkbox-row .cb-label small { display: block; color: var(--ink-mute); font-size: 0.84rem; margin-top: 0.2rem; }
+
+    /* Submit */
+    .submit-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 16px 32px;
+      background: var(--ink); color: var(--bg);
+      border: none; border-radius: 100px;
+      font-family: var(--sans); font-size: 1rem; font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      width: 100%; justify-content: center;
+      margin-top: 0.5rem;
+    }
+    .submit-btn:hover:not(:disabled) {
+      background: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(44,62,45,0.22);
+    }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .submit-btn .spinner {
+      display: none;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .submit-btn.loading .spinner { display: inline-block; }
+    .submit-btn.loading .arrow { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Footer */
+    .footer { text-align: center; padding: 1.5rem 2rem; background: var(--bg-soft); border-top: 1px solid var(--line); font-size: 0.84rem; color: var(--ink-mute); }
+    .footer a { color: var(--accent); text-decoration: none; }
+
+    /* States */
+    .state-msg {
+      padding: 2.5rem 2rem; text-align: center;
+    }
+    .state-msg h2 { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.8rem; color: var(--ink); margin-bottom: 0.8rem; }
+    .state-msg p { color: var(--ink-soft); max-width: 440px; margin: 0 auto 1rem; }
+    .state-msg .btn-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 24px; margin-top: 1rem;
+      background: var(--accent); color: var(--cream);
+      border-radius: 100px; text-decoration: none; font-size: 0.94rem; font-weight: 500;
+    }
+    .state-msg .btn-back:hover { background: var(--accent-h); }
+
+    .error-banner {
+      padding: 0.9rem 1.1rem; margin-bottom: 1.25rem;
+      background: rgba(185,28,28,0.06); border: 1px solid rgba(185,28,28,0.2);
+      border-left: 3px solid var(--error); border-radius: 10px;
+      color: var(--error); font-size: 0.93rem;
+      display: none;
+    }
+    .error-banner.show { display: block; }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 540px) {
+      .hero { padding: 2rem 1.25rem 1.75rem; }
+      .body { padding: 1.75rem 1.25rem; }
+      .star-btn { font-size: 2.1rem; padding: 0.15rem 0.2rem; }
+      .toggle-btn { padding: 0.65rem 0.8rem; font-size: 0.9rem; }
+    }
+
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand"><a href="/">zaproszeniaonline.com</a></div>
+    <div class="card">
+
+      <!-- STATE: Form (default) -->
+      <div id="state-form">
+        <div class="hero">
+          <div class="stars-static">★ ★ ★ ★ ★</div>
+          <p class="eyebrow">Wasza opinia ma znaczenie</p>
+          <h1>Macie 2 minuty?</h1>
+          <p class="lead">Krótki feedback o naszej współpracy. Bez logowania, bez konta. Po prostu szczerze.</p>
+        </div>
+        <div class="body">
+          <div id="error-banner" class="error-banner"></div>
+
+          <form id="review-form" novalidate>
+            <!-- Honeypot - bot fill, human ignore -->
+            <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+            <div class="field">
+              <label class="field-label" for="rating">Ogólna ocena <span style="color:var(--error)">*</span></label>
+              <div class="stars" id="rating" role="radiogroup" aria-label="Ocena 1-5 gwiazdek">
+                <button type="button" class="star-btn" data-value="1" aria-label="1 gwiazdka">★</button>
+                <button type="button" class="star-btn" data-value="2" aria-label="2 gwiazdki">★</button>
+                <button type="button" class="star-btn" data-value="3" aria-label="3 gwiazdki">★</button>
+                <button type="button" class="star-btn" data-value="4" aria-label="4 gwiazdki">★</button>
+                <button type="button" class="star-btn" data-value="5" aria-label="5 gwiazdek">★</button>
+                <span class="rating-label" id="rating-label"></span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="best_part">Co najbardziej zaskoczyło lub się spodobało?</label>
+              <input type="text" id="best_part" name="best_part" maxlength="500" placeholder="np. szybkość, design, opieka...">
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="comment">Komentarz</label>
+              <textarea id="comment" name="comment" maxlength="2000" placeholder="Kilka zdań - co Wam się podobało, co byście dodali, czy poleciliście znajomym..."></textarea>
+              <p class="field-hint">Im więcej szczegółów, tym bardziej pomożecie innym parom (i mi w doskonaleniu strony).</p>
+            </div>
+
+            <div class="field">
+              <label class="field-label">Poleciłbyś nas znajomym?</label>
+              <div class="toggle-group" role="radiogroup">
+                <button type="button" class="toggle-btn" data-recommend="true">Tak</button>
+                <button type="button" class="toggle-btn" data-recommend="false">Nie</button>
+                <button type="button" class="toggle-btn active" data-recommend="null">Pominę</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="display_name">Jak Was podpisać?</label>
+              <input type="text" id="display_name" name="display_name" maxlength="80" placeholder="np. Anna i Michał (pominięte = pierwsze imię z zamówienia)">
+            </div>
+
+            <div class="field">
+              <label class="checkbox-row" for="consent_publish">
+                <input type="checkbox" id="consent_publish" name="consent_publish">
+                <span class="cb-label">
+                  Możecie opublikować moją opinię w sekcji „Co mówią pary" na stronie głównej.
+                  <small>Jeśli zaznaczone - dostaniecie kod rabatowy POLEC50 (-50 zł) dla znajomych pary.</small>
+                </span>
+              </label>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submit-btn">
+              <span class="arrow">Wyślij opinię →</span>
+              <span class="spinner" aria-hidden="true"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- STATE: Already submitted -->
+      <div id="state-submitted" class="hidden">
+        <div class="state-msg">
+          <h2>Opinia już wysłana</h2>
+          <p>Dziękujemy - widzimy że już zostawiliście opinię. Każdy klient może wysłać tylko jedną. Jeśli chcielibyście coś dodać lub poprawić, napiszcie mailem.</p>
+          <a href="mailto:kontakt@zaproszeniaonline.com" class="btn-back">Napisz do nas</a>
+        </div>
+      </div>
+
+      <!-- STATE: Invalid token -->
+      <div id="state-invalid" class="hidden">
+        <div class="state-msg">
+          <h2>Link jest nieaktywny</h2>
+          <p>Wygląda na to, że ten link wygasł lub został już wykorzystany. Jeśli chcielibyście zostawić opinię, odpiszcie po prostu na maila, w którym dostaliście link - prześlę nowy.</p>
+          <a href="mailto:kontakt@zaproszeniaonline.com" class="btn-back">Napisz do nas</a>
+        </div>
+      </div>
+
+      <!-- STATE: Missing token -->
+      <div id="state-no-token" class="hidden">
+        <div class="state-msg">
+          <h2>Brakuje linku</h2>
+          <p>Ten formularz wymaga indywidualnego linku z maila. Sprawdźcie swoją skrzynkę - wysłaliśmy go na adres podany przy zamówieniu.</p>
+          <a href="/" class="btn-back">Wróć na stronę główną</a>
+        </div>
+      </div>
+
+      <div class="footer">
+        Twoje dane są bezpieczne - <a href="/privacy">polityka prywatności</a> · <a href="/">zaproszeniaonline.com</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      const SUPABASE_FN = 'https://kuyniyyieejvambyjnxy.supabase.co/functions/v1/submit-review';
+
+      const params = new URLSearchParams(window.location.search);
+      const token = (params.get('t') || '').trim();
+      const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+      function show(stateId) {
+        ['state-form', 'state-submitted', 'state-invalid', 'state-no-token']
+          .forEach(id => document.getElementById(id).classList.add('hidden'));
+        document.getElementById(stateId).classList.remove('hidden');
+      }
+
+      if (!token) { show('state-no-token'); return; }
+      if (!UUID_RE.test(token)) { show('state-invalid'); return; }
+
+      // Rating star handler
+      let rating = 0;
+      const RATING_LABELS = {
+        1: 'Niezadowoleni',
+        2: 'Mogło być lepiej',
+        3: 'OK',
+        4: 'Bardzo dobrze',
+        5: 'Idealnie',
+      };
+      const stars = document.querySelectorAll('.star-btn');
+      const ratingLabel = document.getElementById('rating-label');
+
+      function paintStars(value, preview) {
+        stars.forEach(s => {
+          const v = Number(s.dataset.value);
+          s.classList.toggle('active', !preview && v <= value);
+          s.classList.toggle('preview', preview && v <= value);
+        });
+      }
+
+      stars.forEach(star => {
+        star.addEventListener('click', () => {
+          rating = Number(star.dataset.value);
+          paintStars(rating, false);
+          ratingLabel.textContent = RATING_LABELS[rating];
+        });
+        star.addEventListener('mouseenter', () => {
+          paintStars(Number(star.dataset.value), true);
+          ratingLabel.textContent = RATING_LABELS[Number(star.dataset.value)];
+        });
+        star.addEventListener('mouseleave', () => {
+          paintStars(rating, false);
+          ratingLabel.textContent = rating ? RATING_LABELS[rating] : '';
+        });
+      });
+
+      // Recommend toggle
+      let recommend = null;
+      const toggles = document.querySelectorAll('.toggle-btn');
+      toggles.forEach(btn => {
+        btn.addEventListener('click', () => {
+          toggles.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const v = btn.dataset.recommend;
+          recommend = v === 'true' ? true : v === 'false' ? false : null;
+        });
+      });
+
+      // Form submission
+      const form = document.getElementById('review-form');
+      const submitBtn = document.getElementById('submit-btn');
+      const errBanner = document.getElementById('error-banner');
+
+      function showError(msg) {
+        errBanner.textContent = msg;
+        errBanner.classList.add('show');
+        errBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errBanner.classList.remove('show');
+
+        if (!rating) {
+          showError('Proszę zaznaczyć ocenę (1-5 gwiazdek).');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.classList.add('loading');
+
+        const fd = new FormData(form);
+        const payload = {
+          token,
+          rating,
+          comment: (fd.get('comment') || '').toString().trim(),
+          best_part: (fd.get('best_part') || '').toString().trim(),
+          display_name: (fd.get('display_name') || '').toString().trim() || null,
+          consent_publish: fd.get('consent_publish') === 'on',
+          recommend_to_others: recommend,
+          website: (fd.get('website') || '').toString(),  // honeypot
+        };
+
+        try {
+          const res = await fetch(SUPABASE_FN, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json().catch(() => ({}));
+
+          if (res.ok && data.ok) {
+            window.location.href = '/dziekujemy-za-opinie';
+            return;
+          }
+
+          if (res.status === 409 || data.error === 'already_submitted') {
+            show('state-submitted');
+            return;
+          }
+          if (res.status === 404 || data.error === 'token_not_found' || data.error === 'invalid_token') {
+            show('state-invalid');
+            return;
+          }
+
+          showError('Nie udało się wysłać. Spróbujcie odświeżyć stronę albo odpiszcie na maila - obsłużę ręcznie.');
+        } catch (err) {
+          showError('Brak połączenia. Sprawdźcie internet i spróbujcie ponownie.');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('loading');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
