@@ -246,7 +246,7 @@ function customerPaidHTML(lead: Lead): string {
       </p>
       <p style="margin:0;font-size:0.96rem;line-height:1.6;color:#0A0A0A;">
         Wyślijcie 2-3 ulubione zdjęcia pary i kilka zdań Waszej historii na
-        <strong><a href="mailto:zamowienia@zaproszeniaonline.com" style="color:#2C3E2D;text-decoration:underline;text-underline-offset:2px;">zamowienia@zaproszeniaonline.com</a></strong>.
+        <strong><a href="mailto:kontakt@zaproszeniaonline.com" style="color:#2C3E2D;text-decoration:underline;text-underline-offset:2px;">kontakt@zaproszeniaonline.com</a></strong>.
         Im wcześniej, tym lepiej - ale możecie też dorzucić podczas poprawek.
       </p>
     </div>
@@ -289,17 +289,8 @@ function customerPaidHTML(lead: Lead): string {
     <span style="color:#BBBBBB;">Numer zamówienia: ${lead.id.slice(0,8)} · Stripe: ${escapeHtml((lead.payment_id || "").slice(0,16))}…</span>
     <br/><br/>
 
-    <!-- TRWAŁY NOŚNIK - art. 21 ust. 1 ustawy o prawach konsumenta -->
-    <div style="margin-top:14px;padding-top:14px;border-top:1px dashed #DDDDDD;text-align:left;color:#888888;font-size:0.72rem;line-height:1.55;">
-      <strong style="color:#666666;display:block;margin-bottom:6px;">Potwierdzenie zawarcia umowy na trwałym nośniku</strong>
-      Niniejszy e-mail stanowi potwierdzenie zawarcia umowy na odległość (art. 21 ust. 1 ustawy z dnia 30 maja 2014 r. o prawach konsumenta). Prosimy o zachowanie go do akt. Z chwilą zaksięgowania wpłaty zaakceptowali Państwo:
-      <ul style="margin:6px 0 6px 18px;padding:0;color:#888888;">
-        <li><a href="https://zaproszeniaonline.com/terms" style="color:#777777;text-decoration:underline;">Regulamin</a> (paragrafy 4, 8b, 8c, 10, 11, 12a) - wraz z wyraźną zgodą na rozpoczęcie świadczenia przed upływem 14-dniowego terminu odstąpienia i przyjęciem do wiadomości utraty prawa odstąpienia po wykonaniu Usługi (art. 38 ust. 1 pkt 1 i art. 38 pkt 3 UoPK);</li>
-        <li><a href="https://zaproszeniaonline.com/privacy" style="color:#777777;text-decoration:underline;">Politykę prywatności</a> - w tym sekcję 2.9 dotyczącą wizerunków osób na zdjęciach;</li>
-        <li>umowę powierzenia przetwarzania danych osobowych - dla danych, dla których Państwo są administratorem (wizerunki gości, dane RSVP) - treść w paragrafie 12a Regulaminu.</li>
-      </ul>
-      Zdjęcia przesłane do Zaproszenia są przechowywane przez 12 miesięcy hostingu + 30 dni, potem trwale usuwane (paragraf 8c ust. 7 Regulaminu). Procedura usunięcia treści na żądanie (Notice &amp; Takedown): <a href="https://zaproszeniaonline.com/terms#paragraf-8d" style="color:#777777;text-decoration:underline;">paragraf 8d</a>, adres: <a href="mailto:legal@zaproszeniaonline.com" style="color:#777777;text-decoration:underline;">legal@zaproszeniaonline.com</a>. Sprawy RODO: <a href="mailto:rodo@zaproszeniaonline.com" style="color:#777777;text-decoration:underline;">rodo@zaproszeniaonline.com</a>.
-    </div>
+    <!-- Potwierdzenie umowy - jednolinijkowe (art. 21 ust. 1 UoPK; e-mail z mocy ustawy stanowi trwały nośnik) -->
+    <span style="color:#BBBBBB;font-size:0.72rem;line-height:1.5;display:block;margin-top:8px;">Ten e-mail stanowi potwierdzenie zawarcia umowy (art. 21 ust. 1 UoPK). Treść umowy: <a href="https://zaproszeniaonline.com/terms" style="color:#999999;text-decoration:underline;">Regulamin</a>. Pytania, RODO, zgłoszenia: <a href="mailto:kontakt@zaproszeniaonline.com" style="color:#999999;text-decoration:underline;">kontakt@zaproszeniaonline.com</a>.</span>
   </div>
   `;
 
@@ -321,7 +312,7 @@ KOLEJNY KROK:
 W ciągu 24 godzin wyślę link do podglądu Waszej strony - z imionami, datą, wybraną paletą i wszystkimi sekcjami z briefu. Sprawdzicie i odpiszecie z uwagami (3 rundy poprawek w cenie).
 
 JEŚLI WYBRALIŚCIE ZDJĘCIA LUB HISTORIĘ:
-Wyślijcie 2-3 ulubione zdjęcia pary i kilka zdań Waszej historii na zamowienia@zaproszeniaonline.com. Im wcześniej, tym lepiej - ale możecie też dorzucić podczas poprawek.
+Wyślijcie 2-3 ulubione zdjęcia pary i kilka zdań Waszej historii na kontakt@zaproszeniaonline.com. Im wcześniej, tym lepiej - ale możecie też dorzucić podczas poprawek.
 
 Rachunek (działalność nieewidencjonowana - bez VAT) zostanie wysłany w osobnym mailu w ciągu 24 godzin. W razie pytań - odpiszcie na tego maila.
 
@@ -331,21 +322,7 @@ Zaproszenia Online · https://zaproszeniaonline.com/
 
 Numer zamówienia: ${lead.id.slice(0,8)}
 
-----------------------------------------
-POTWIERDZENIE NA TRWAŁYM NOŚNIKU (art. 21 ust. 1 UoPK)
-----------------------------------------
-
-Niniejszy e-mail stanowi potwierdzenie zawarcia umowy na odległość. Prosimy o zachowanie go do akt. Z chwilą zaksięgowania wpłaty zaakceptowali Państwo:
-
-- Regulamin (zaproszeniaonline.com/terms) - paragrafy 4, 8b, 8c, 10, 11, 12a - wraz z wyraźną zgodą na rozpoczęcie świadczenia przed 14-dniowym terminem odstąpienia i utratą prawa odstąpienia po wykonaniu (art. 38 ust. 1 pkt 1 i art. 38 pkt 3 UoPK);
-- Politykę prywatności (zaproszeniaonline.com/privacy) - w tym sekcję 2.9 o wizerunkach osób na zdjęciach;
-- umowę powierzenia przetwarzania danych osobowych - dla danych, dla których jesteście Państwo administratorem (wizerunki gości, dane RSVP) - paragraf 12a Regulaminu.
-
-Zdjęcia przesłane do Zaproszenia: hosting 12 miesięcy + 30 dni, potem trwałe usunięcie (paragraf 8c ust. 7).
-Notice & Takedown: paragraf 8d, e-mail legal@zaproszeniaonline.com.
-Sprawy RODO: rodo@zaproszeniaonline.com.
-
-Zasady i gwarancje: paragraf 10 Regulaminu - zaproszeniaonline.com/terms#paragraf-10`;
+Ten e-mail stanowi potwierdzenie zawarcia umowy (art. 21 ust. 1 UoPK). Treść umowy: zaproszeniaonline.com/terms. Pytania, RODO, zgłoszenia: kontakt@zaproszeniaonline.com.`;
 }
 
 serve(async (req) => {

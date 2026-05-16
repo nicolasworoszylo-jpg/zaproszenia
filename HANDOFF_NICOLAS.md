@@ -82,7 +82,7 @@ Skopiuj prompt z pliku `CLAUDE_IN_CHROME_DMARC.md` do Claude in Chrome - sam zal
 Edytuj `/tmp/zaproszenia/LEGAL_DATA.md` - uzupełnij:
 - NIP / REGON dla Nicolas + Dominika (lub współnej działalności)
 - Adres do korespondencji (do regulaminu, polityki prywatności, faktur)
-- Email do RODO requests (`rodo@zaproszeniaonline.com` jest gotowy w OVH)
+- Email do RODO requests (`kontakt@zaproszeniaonline.com` - jedyny publiczny adres od 2026-05-16, obsługuje wszystkie sprawy)
 
 Po uzupełnieniu - przeszukaj `git grep -r "PLACEHOLDER\|XXX-XXX-XX-XX\|<NIP>"` w repo i podmień ręcznie wszystkie miejsca.
 

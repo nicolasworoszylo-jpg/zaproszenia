@@ -138,25 +138,28 @@ Vercel webhook → build (zero build dla static, instant) → atomic swap → CD
 
 ## 6. Email forwarding (OVH)
 
-### Aktywne aliasy (8/1000 limit)
-| Alias | Forward to |
-|---|---|
-| `kontakt@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com |
-| `zamowienia@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com |
-| `faktury@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com |
-| `rodo@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com |
+### Aktywne aliasy (8/1000 limit, OVH inbound)
 
-### DNS records (zweryfikowane)
+Publicznie używamy **tylko `kontakt@`** (2026-05-16). Pozostałe 3 aliasy zostają jako legacy inbound (DMARC raporty, stare maile od klientów) - nie pokazujemy ich w UI.
+
+| Alias | Forward to | Publiczny w UI |
+|---|---|---|
+| `kontakt@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com | ✅ tak (jedyny) |
+| `rodo@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com | ❌ legacy (DMARC inbound) |
+| `faktury@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com | ❌ legacy |
+| `zamowienia@zaproszeniaonline.com` | nicolasworoszylo@gmail.com, dominikakus333@gmail.com | ❌ legacy |
+
+### DNS records (zweryfikowane 2026-05-16)
 - `MX root` → mx1/2/3.mail.ovh.net (priorities 1/5/100) - OVH forwarding (inbound)
 - `SPF root` → `v=spf1 include:mx.ovh.com -all` - hardfail (wszystko spoza OVH = spam)
-- `DMARC` → `v=DMARC1; p=none; rua=mailto:rodo@...` - monitoring tylko (na razie)
+- `DMARC` → `v=DMARC1; p=none; rua=mailto:rodo@...` - monitoring tylko (rodo@ legacy zostaje dla DMARC raportów)
 - `DKIM resend._domainkey` → Resend public key (outbound)
 - `MX send.zaproszeniaonline.com` → feedback-smtp.eu-west-1.amazonses.com (Resend bounce)
 - `SPF send.zaproszeniaonline.com` → `v=spf1 include:amazonses.com ~all` (Resend)
 
 ### Privacy
 - "Nie zachowuj kopii" tryb w OVH → privacy-clean (maile nie zostają na OVH serverach)
-- DMARC reports `rua` → trafiają na `rodo@` (forwardowane do Gmail)
+- DMARC reports `rua` → trafiają na `rodo@` (legacy, forwardowane do Gmail) - nie zmieniamy DMARC w DNS żeby nie tracić raportów
 
 ---
 

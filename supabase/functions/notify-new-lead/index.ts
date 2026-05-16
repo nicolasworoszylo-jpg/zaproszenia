@@ -285,7 +285,7 @@ function customerEmailHTML(lead: Lead): string {
       </p>
       <p style="margin:0;font-size:0.96rem;line-height:1.6;color:#0A0A0A;">
         Jeśli zaznaczyliście „tak" przy zdjęciach pary lub sekcji „Nasza historia" - wyślijcie nam materiały na adres
-        <strong><a href="mailto:zamowienia@zaproszeniaonline.com" style="color:#2C3E2D;text-decoration:underline;text-underline-offset:2px;">zamowienia@zaproszeniaonline.com</a></strong>.
+        <strong><a href="mailto:kontakt@zaproszeniaonline.com" style="color:#2C3E2D;text-decoration:underline;text-underline-offset:2px;">kontakt@zaproszeniaonline.com</a></strong>.
         Dwa-trzy ulubione zdjęcia + kilka zdań Waszej historii w wolnej formie. Reszta poczeka - odezwiemy się sami.
       </p>
     </div>
@@ -348,7 +348,7 @@ II.  Trzy rundy poprawek w cenie - odpisujecie na tego maila z uwagami.
 III. Dostajecie własny URL i kod QR do druku. Wysyłacie linki gościom - potwierdzenia obecności trafiają na Waszej skrzynce.
 
 Co warto przygotować:
-Jeśli wybraliście zdjęcia pary lub sekcję „Nasza historia" - wyślijcie materiały na zamowienia@zaproszeniaonline.com (2-3 zdjęcia + kilka zdań Waszej historii).
+Jeśli wybraliście zdjęcia pary lub sekcję „Nasza historia" - wyślijcie materiały na kontakt@zaproszeniaonline.com (2-3 zdjęcia + kilka zdań Waszej historii).
 
 Zobacz przykład gotowej strony: https://zaproszeniaonline.com/demo
 

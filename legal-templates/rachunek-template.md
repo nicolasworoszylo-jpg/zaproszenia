@@ -13,7 +13,7 @@
    (NNN = numer kolejny w roku: 001, 002, ...)
 2. Wypełnij `<<placeholder>>` danymi klienta
 3. Eksport do PDF: `pandoc R-2026-NNN.md -o R-2026-NNN.pdf` lub Google Docs → Export PDF
-4. Wyślij klientowi mailem (`faktury@zaproszeniaonline.com` → klient)
+4. Wyślij klientowi mailem (`kontakt@zaproszeniaonline.com` → klient)
 5. Zachowaj PDF w `sprzedaz/2026-MM/`
 6. Update `sprzedaz/2026-MM/.miesiac-suma.txt` (kontrola limitu 3 499,50 zł/mc)
 
