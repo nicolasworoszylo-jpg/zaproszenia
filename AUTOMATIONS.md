@@ -22,6 +22,16 @@ Lista wszystkich automatyzacji w projekcie. Triggers, schedules, hooks.
 - **Source:** same migration as above
 - **Status:** ✅ active
 
+### `reviews_notify_submitted`
+- **Tabela:** `public.reviews`
+- **Event:** `AFTER INSERT FOR EACH ROW`
+- **Action:** HTTP POST do `notify-review-submitted` Edge Function
+- **Payload:** `{ type: "INSERT", table: "reviews", schema: "public", record: {...} }`
+- **Source:** [`supabase/migrations/20260513150407_review_pipeline.sql`](./supabase/migrations/20260513150407_review_pipeline.sql)
+- **Status:** ✅ active (od 2026-05-13)
+- **Effect:** wysyła 2 maile (operator + klient dziękujemy z conditional copy: 5★ vs 1-3★, consent vs no-consent)
+- **Skip:** jeśli `record.honeypot_triggered=true` (bot)
+
 ---
 
 ## 2. Stripe Webhooks (external → us)
@@ -79,6 +89,26 @@ Vercel webhook → build (zero build dla static, instant) → atomic swap → CD
 - Trigger: Stripe sends POST (po wpłacie / refund / fail)
 - Action: verify signature → UPDATE leads (kaskada triggerów notify-payment-success)
 - Status: ✅ v3 active, ale `STRIPE_WEBHOOK_SECRET` nadal pusty (placeholder)
+
+### `send-review-request` (manual or batch trigger - Nicolas's signal)
+- Trigger: manual via `scripts/review-ops/send-review.sh` (curl POST z service_role auth)
+- Modes: single po `lead_id` lub `lead_email`, batch (do 200 leadów z `v_review_candidates`), `force=true` re-send
+- Action: generuje token (UUID v4) → UPDATE leads → Resend mail "Macie 2 minuty?"
+- Wymaga: `Authorization: Bearer <service_role_key>` w nagłówku
+- Status: ✅ active (od 2026-05-13)
+
+### `submit-review` (public, no auth - z formularza /opinia?t=<token>)
+- Trigger: POST z `/opinia` po wypełnieniu formularza
+- CORS: zaproszeniaonline.com + *.vercel.app + localhost
+- Anti-spam: UUID token validation + honeypot field + unique constraint + IP hash SHA256+salt
+- Action: INSERT reviews → UPDATE leads.review_submitted_at → DB trigger fire
+- Status: ✅ active (od 2026-05-13)
+
+### `notify-review-submitted` (auto-triggered by DB)
+- Trigger: Postgres `reviews_notify_submitted` AFTER INSERT
+- Action: 2 maile (operator + klient) z conditional copy (5★+consent → POLEC50, 5★+no-consent → "każde słowo", ≤3★ → "odezwę się 24h")
+- Skip: jeśli `honeypot_triggered=true` (bot)
+- Status: ✅ active (od 2026-05-13)
 
 ---
 

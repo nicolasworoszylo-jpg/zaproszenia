@@ -37,6 +37,52 @@
   }
   .container { max-width: 1240px; margin: 0 auto; }
 
+  .head {
+    text-align: center;
+    margin-bottom: 44px;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .eyebrow::before, .eyebrow::after {
+    content: '';
+    width: 36px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+  h1 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 14px;
+    color: var(--ink);
+    font-variation-settings: "opsz" 60;
+  }
+  .lead {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.65;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -215,6 +261,28 @@
     --card-cream: #FAF1E0;
   }
 
+  .info {
+    background: rgba(0,0,0,0.30);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--gold);
+    border-radius: 8px;
+    padding: 18px 22px;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .info strong { color: var(--ink); font-weight: 500; }
+  .info code {
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 0.82rem;
+    background: rgba(201,169,110,0.10);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--gold-soft);
+  }
+
   @media (max-width: 720px) {
     body { padding: 32px 14px 56px; }
     .grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
@@ -231,6 +299,15 @@
 </head>
 <body>
 <div class="container">
+
+  <div class="head">
+    <div class="eyebrow">Zaproszenie ślubne &middot; karta A4 do druku</div>
+    <h1>Cztery palety jednego one-pagera</h1>
+    <p class="lead">
+      Wybierz paletę dopasowaną do tła głównej strony zaproszenia.
+      Każda karta jest gotowa do druku A4 z kodem QR prowadzącym do strony pary.
+    </p>
+  </div>
 
   <div class="grid">
     <a class="card forest" href="/onepager/forest">
@@ -294,9 +371,16 @@
     </a>
   </div>
 
+  <div class="info">
+    <strong>Personalizacja przez URL params</strong>: na każdej palecie dodaj dane pary, np.
+    <code>/onepager/forest?names=Anna+i+Michał&date=20+czerwca+2026&venue=Wrocław&url=https://zaproszeniaonline.com/anna-michal</code>.
+    Wbudowany generator (przycisk <strong>Edytuj dane</strong>) prowadzi przez wszystkie pola bez ręcznego sklejania URL-a. Każda strona jest gotowa do druku (Cmd/Ctrl+P → A4 portrait).
+  </div>
+
   <nav class="exits" aria-label="Powrót" style="margin-top:36px;padding-top:24px;border-top:1px solid var(--line);text-align:center;font-family:var(--sans);font-size:0.84rem;color:var(--ink-soft);letter-spacing:0.04em">
     <a href="/demo" style="color:var(--gold);text-decoration:none;border-bottom:1px dashed rgba(201,169,110,0.4);padding-bottom:2px;margin:0 14px;transition:color .2s ease,border-color .2s ease">&larr; Wróć do demo</a>
     <a href="/" style="color:var(--ink-soft);text-decoration:none;border-bottom:1px dashed var(--line);padding-bottom:2px;margin:0 14px;transition:color .2s ease,border-color .2s ease">Strona główna</a>
+    <a href="https://github.com/nicolasworoszylo-jpg/zaproszenia/blob/main/ONE_PAGER_GUIDE.md" target="_blank" rel="noopener" style="color:var(--ink-soft);text-decoration:none;border-bottom:1px dashed var(--line);padding-bottom:2px;margin:0 14px;transition:color .2s ease,border-color .2s ease">Workflow (GitHub)</a>
   </nav>
 
 </div>
