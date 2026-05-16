@@ -2,6 +2,18 @@
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "cleanUrls": true,
     "trailingSlash": false,
+    "redirects": [
+        {
+            "source": "/onepager/galeria",
+            "destination": "/onepager/forest",
+            "permanent": true
+        },
+        {
+            "source": "/onepager/galeria.html",
+            "destination": "/onepager/forest",
+            "permanent": true
+        }
+    ],
     "headers": [
         {
             "source": "/(.*)",

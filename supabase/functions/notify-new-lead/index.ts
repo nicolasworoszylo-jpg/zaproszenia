@@ -104,7 +104,7 @@ function emailShell(opts: { preheader: string; title: string; bodyHtml: string }
       </td></tr>
       <tr><td style="padding:18px 24px 0;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.72rem;color:#999999;line-height:1.6;">
         <span style="font-family:Georgia,'Times New Roman',serif;font-style:italic;color:#2C3E2D;font-size:0.95rem;letter-spacing:-0.01em;">zaproszeniaonline.com</span><br/>
-        Cyfrowe zaproszenia ślubne premium · 699 zł, gotowe w 24 h<br/>
+        Cyfrowe zaproszenia ślubne premium · 699 zł, gotowe w 48 h<br/>
         <span style="color:#BBBBBB;">Sprzedaż w ramach działalności nieewidencjonowanej (art. 5 ust. 1 PrzedsU)</span>
       </td></tr>
     </table>
@@ -245,7 +245,7 @@ function customerEmailHTML(lead: Lead): string {
               <div class="num" style="width:36px;height:36px;border-radius:50%;background:#2C3E2D;color:#FAF6EF;text-align:center;line-height:36px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.98rem;">I</div>
             </td>
             <td valign="top" style="padding-top:5px;">
-              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">W ciągu 24 godzin</strong> dostaniecie link do podglądu Waszej strony - z imionami, datą, wybraną paletą i wszystkimi sekcjami.
+              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">W ciągu 48 godzin</strong> od dostarczenia kompletu danych dostaniecie link do podglądu Waszej strony - z imionami, datą, wybraną paletą i wszystkimi sekcjami.
             </td>
           </tr>
         </table>
@@ -258,7 +258,7 @@ function customerEmailHTML(lead: Lead): string {
               <div class="num" style="width:36px;height:36px;border-radius:50%;background:#2C3E2D;color:#FAF6EF;text-align:center;line-height:36px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.98rem;">II</div>
             </td>
             <td valign="top" style="padding-top:5px;">
-              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">Trzy rundy poprawek w cenie</strong> - odpisujecie na tego maila z uwagami: kolory, teksty, układ, zdjęcia. Wszystko ustalamy mailowo, bez calls.
+              <strong style="color:#0A0A0A;font-weight:600;font-size:0.98rem;">Dwie rundy poprawek w cenie</strong> - odpisujecie na tego maila z uwagami: kolory, teksty, układ, zdjęcia. Wszystko ustalamy mailowo, bez calls.
             </td>
           </tr>
         </table>
@@ -286,7 +286,7 @@ function customerEmailHTML(lead: Lead): string {
       <p style="margin:0;font-size:0.96rem;line-height:1.6;color:#0A0A0A;">
         Jeśli zaznaczyliście „tak" przy zdjęciach pary lub sekcji „Nasza historia" - wyślijcie nam materiały na adres
         <strong><a href="mailto:kontakt@zaproszeniaonline.com" style="color:#2C3E2D;text-decoration:underline;text-underline-offset:2px;">kontakt@zaproszeniaonline.com</a></strong>.
-        Dwa-trzy ulubione zdjęcia + kilka zdań Waszej historii w wolnej formie. Reszta poczeka - odezwiemy się sami.
+        Zdjęcia w pełnej rozdzielczości (do 7 ujęć w cenie) + kilka zdań Waszej historii w wolnej formie. Reszta poczeka - odezwiemy się sami.
       </p>
     </div>
 
@@ -330,7 +330,7 @@ function customerEmailHTML(lead: Lead): string {
   `;
 
   return emailShell({
-    preheader: `Cześć ${firstName} - mamy Wasz brief. W 24h dostaniecie link do podglądu strony.`,
+    preheader: `Cześć ${firstName} - mamy Wasz brief. Link do podglądu w 48 h od dostarczenia kompletu danych.`,
     title: `Dziękujemy za zamówienie - Zaproszenia Online`,
     bodyHtml,
   });
@@ -343,12 +343,12 @@ function customerEmailText(lead: Lead): string {
 Otrzymaliśmy Wasze zamówienie i już zaczynamy przygotowywać projekt strony.
 
 Co dalej:
-I.   W ciągu 24 godzin dostaniecie link do podglądu strony - z imionami, datą, wybraną paletą.
-II.  Trzy rundy poprawek w cenie - odpisujecie na tego maila z uwagami.
+I.   W ciągu 48 godzin od dostarczenia kompletu danych dostaniecie link do podglądu strony - z imionami, datą, wybraną paletą.
+II.  Dwie rundy poprawek w cenie - odpisujecie na tego maila z uwagami.
 III. Dostajecie własny URL i kod QR do druku. Wysyłacie linki gościom - potwierdzenia obecności trafiają na Waszej skrzynce.
 
 Co warto przygotować:
-Jeśli wybraliście zdjęcia pary lub sekcję „Nasza historia" - wyślijcie materiały na kontakt@zaproszeniaonline.com (2-3 zdjęcia + kilka zdań Waszej historii).
+Jeśli wybraliście zdjęcia pary lub sekcję „Nasza historia" - wyślijcie materiały na kontakt@zaproszeniaonline.com (zdjęcia w pełnej rozdzielczości + kilka zdań Waszej historii).
 
 Zobacz przykład gotowej strony: https://zaproszeniaonline.com/demo
 
