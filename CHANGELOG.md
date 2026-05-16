@@ -22,15 +22,20 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
-- **Added** (2026-05-16 wieczor, test klienta Nicolas):
-  - `nicolas-test.html` + `vendor/nicolas-test-compiled.js` (51 KB minified) - drugi standalone klient w palecie **bordo** (analog `magda-tomek.html` w terracotta).
-  - Brief: para `Nicolas` (single-name handling), data `2026-07-16 18:40`, 81 gosci, RSVP do `17 maja 2026`, ceremonia kosciol + przyjecie palac, dress code kawowy, cytat "kawa kawa kawa", gifts "kawa 123", music URL `-` (klient mailowo).
-  - Wlasciwosci specyficzne: Hero/Footer single-name (warunkowy `hasGroom`), RSVP variants "Bedziesz ze mna?" / "Zyczenia dla Pana Mlodego" (zamiast "Pary").
-  - Sections: Hero (blurred photo bg), Countdown, Ceremony (2 cards), Timeline (5 wpisow z "super duper"), Details (dress + music tylko - brief nie podal transport/hotels/FAQ), RSVP (Supabase insert na `invitation_slug=nicolas-test`), **Wspomnienia** (5 zdjec z `/photos/nicolas-test/` w grid + lightbox, oznaczone jako "podglad sekcji opcjonalnej" - brief mowil galeria=no/story=no, sekcja preview na zyczenie Nicolasa), Gifts, Footer.
-  - `photos/nicolas-test/` - 5 sample photos przywroconych z commit `d448dcf` (Dominika, test-photos/gallery-samples/). OG image override -> `01-engagement-shoot.jpg`.
-  - `build.sh` - dodany trzeci pair `(nicolas-test.html, nicolas-test-compiled.js)`.
-  - URL: `https://zaproszeniaonline.com/nicolas-test` (path-based, jak `/magda-tomek`).
-  - `<meta robots="noindex,nofollow">` - test pre-launch, niewidoczny dla wyszukiwarek.
+- **Changed** (2026-05-16 wieczor v2, test klienta Nicolas - REBUILD na zyczenie):
+  - Wycofany pierwsza proba (path-based `nicolas-test.html` w roocie + `vendor/nicolas-test-compiled.js` + `photos/nicolas-test/`). Powod: Nicolas wymagal niezaleznej subdomeny BEZ wspolnej architektury i 1:1 wzorca demo.
+  - Nowa struktura: `nicolas-test/` katalog SELF-CONTAINED + subdomena `nicolas-test.zaproszeniaonline.com`:
+    - `nicolas-test/index.html` (492 linii) - skopiowane 1:1 z `demo.html` commit `b959a334` (przed Babel pre-compile), zmienione tylko dane personalne, zdjecia + paleta. CDN deps: react@18.3.1 + react-dom@18.3.1 + supabase-js@2.45.4 + @babel/standalone@7.25.6 (unpkg.com). Fonty: Google Fonts (Playfair + Cormorant + DM Mono).
+    - `nicolas-test/photos/` - 5 zdjec Dominiki z commit `d448dcf` (engagement, restaurant, greek, sunday, christmas).
+    - ZERO wspolnej architektury z glownym site: brak `/vendor`, brak `/fonts`, brak `/favicon.*` (data URI inline), brak linkow `/privacy /cookies /terms /Strona glowna` w footer, brak `ReturnToHome`, brak `PaletteSwitcher` (paleta lock = bordo).
+  - Dane wstawione w **konkretnie oznaczone miejsca demo**:
+    - `ourStoryHeartPhoto` <- `01-engagement-shoot.jpg` (heart-shape centerpiece, zamiast `<PhotoPlaceholder shape="heart" label="miejsce na zdjęcie">`)
+    - `ourStoryPhotos[0..3]` <- `02..05.jpg` (4 zdjecia w lewej/prawej kolumnie OurStory, zamiast `<PhotoPlaceholder w={110} h={140} label="miejsce na zdjęcie">`)
+  - Brief: para `Nicolas` (single-name conditional render), data `2026-07-16 18:40`, 81 gosci, RSVP do `17 maja 2026`, ceremonia kosciol + przyjecie palac, paleta `PALETTES[2]` (bordo `#4A1C2B` + gold `#C8A87C`), cytat "kawa kawa kawa", dress code kawowy (5 kolorow espresso->cream), gifts "kawa 123", music URL `-` (AudioPlayer ukryty, modal song-request aktywny -> insert do `song_requests` z `invitation_slug=nicolas-test`).
+  - `vercel.json`: dodany **host-based rewrite** `nicolas-test.zaproszeniaonline.com/:path*` -> `/nicolas-test/:path*`.
+  - Vercel project `zaproszenia-ddli`: dodana domena `nicolas-test.zaproszeniaonline.com` (via `vercel domains add`).
+  - **DNS TODO (Nicolas dziala w OVH Manager)**: dodaj rekord `A nicolas-test 76.76.21.21` (Vercel). Bez DNS subdomena nie odpowie; do tego momentu URL dziala path-based: `https://zaproszeniaonline.com/nicolas-test/`.
+  - `<meta robots="noindex,nofollow">` + canonical na `https://nicolas-test.zaproszeniaonline.com/` - test pre-launch.
 - **Fixed** (UX maili + onepager 2026-05-16 wieczór, runda 2):
   - **Onepager (4 palety + 4 _templates)**: usunięty button „← wszystkie palety" wskazujący na `/onepager/galeria` (galeria zlikwidowana w poprzednim commicie - link prowadził do 308 redirectu i mylił). Pozostaje sam palette-switcher (4 linki: forest/navy-rose/bordo/terracotta).
   - **notify-new-lead v12**: unified content z notify-payment-success.

@@ -2,6 +2,18 @@
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "cleanUrls": true,
     "trailingSlash": false,
+    "rewrites": [
+        {
+            "source": "/:path*",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "nicolas-test.zaproszeniaonline.com"
+                }
+            ],
+            "destination": "/nicolas-test/:path*"
+        }
+    ],
     "redirects": [
         {
             "source": "/onepager/galeria",

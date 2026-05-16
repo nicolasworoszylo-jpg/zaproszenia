@@ -24,7 +24,6 @@ VENDOR = ROOT / "vendor"
 PAIRS = [
     ("demo.html", "demo-compiled.js"),
     ("magda-tomek.html", "magda-compiled.js"),
-    ("nicolas-test.html", "nicolas-test-compiled.js"),
 ]
 
 def extract_jsx(html):
