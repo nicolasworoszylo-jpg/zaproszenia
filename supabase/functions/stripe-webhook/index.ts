@@ -23,9 +23,12 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
   httpClient: Stripe.createFetchHttpClient(),
 });
 
+// Migracja 2026-05-16: sb_secret_... → SUPABASE_SECRET_KEY (nowe API), fallback legacy
+const SUPABASE_SECRET_KEY = Deno.env.get("SUPABASE_SECRET_KEY") || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+  SUPABASE_SECRET_KEY,
   { auth: { persistSession: false } }
 );
 

@@ -16,7 +16,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+// Migracja 2026-05-16: sb_secret_... → SUPABASE_SECRET_KEY (nowe API), fallback legacy
+const SUPABASE_SECRET_KEY = Deno.env.get("SUPABASE_SECRET_KEY") || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 const FROM_EMAIL = "Zaproszenia Online <kontakt@zaproszeniaonline.com>";
 const REPLY_TO = "kontakt@zaproszeniaonline.com";
@@ -24,7 +25,7 @@ const SITE_URL = "https://zaproszeniaonline.com";
 const SUPABASE_DASHBOARD = "https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/editor";
 const OPERATOR_EMAILS = ["nicolasworoszylo@gmail.com", "dominikakus333@gmail.com"];
 
-const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+const sb = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
 

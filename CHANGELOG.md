@@ -22,6 +22,8 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Changed**: Migracja Supabase keys w 4 edge functions (`submit-review`, `send-review-request`, `notify-review-submitted`, `stripe-webhook`) — `Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")` → `Deno.env.get("SUPABASE_SECRET_KEY") || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")`. Backward-compatible fallback: nadal działa z legacy JWT-based service_role (deprecated w Dashboard) ALE od momentu gdy user utworzy `sb_secret_...` w Supabase Settings → API Keys i doda env var `SUPABASE_SECRET_KEY` w Functions → Secrets, kod automatycznie zacznie używać nowego opaque secret keys (rekomendacja Supabase 2025+). Auth check w `send-review-request` weryfikuje OBA klucze (Bearer header). Bez breaking change. _(2026-05-16)_
+
 - **Changed**: `LEGAL_TODO.md` § 13 (pakiet zdjęcia + Notice & Takedown) oznaczony jako **DONE 2026-05-16**. 4 manualne kroki zrealizowane: deploy notify-payment-success v10, forwardery OVH 5/5 zweryfikowane E2E (kontakt@/rodo@/legal@/faktury@/zamowienia@ × Nicolas+Dominika, test 5 maili z `n.woroszylo@wisepeople.pl` potwierdzony w obu inboxach), SOP wysłany Dominice ("dominika ok"), aliasy legal@/rodo@ utworzone (10 forwardów w OVH łącznie). 4 opcjonalne nice-to-have (Sheets log, Gmail label, cron auto-deletion zdjęć) parkowane na "kiedy będzie wolniej". _(2026-05-16)_
 - **Removed**: `CLAUDE_IN_CHROME_OVH_REMAINING.md` (169 linii) — instrukcja CIC dla OVH skrzynek/DMARC obsolete po zrealizowaniu forwarderów; parking lot SPF/DKIM/DMARC ramp-up zapisany w LEGAL_TODO § 2b. _(2026-05-16)_
 

@@ -21,7 +21,10 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+// Migracja 2026-05-16: sb_secret_... → SUPABASE_SECRET_KEY (nowe API), fallback legacy
+const SUPABASE_SECRET_KEY = Deno.env.get("SUPABASE_SECRET_KEY") || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+// Auth check używa OBU - klient (Nicolas) wkleja jeden z dwóch w Bearer header
+const LEGACY_SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 
 const FROM_EMAIL = "Zaproszenia Online <kontakt@zaproszeniaonline.com>";
 const REPLY_TO = "kontakt@zaproszeniaonline.com";
@@ -41,7 +44,7 @@ interface Lead {
   review_submitted_at?: string | null;
 }
 
-const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+const sb = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
 
@@ -288,7 +291,7 @@ async function processLead(lead: Lead, force: boolean): Promise<{ sent: boolean;
 function verifyAuth(req: Request): boolean {
   const auth = req.headers.get("authorization") || "";
   const token = auth.replace(/^Bearer\s+/i, "");
-  return token === SUPABASE_SERVICE_ROLE_KEY;
+  return token === SUPABASE_SECRET_KEY || (!!LEGACY_SERVICE_ROLE && token === LEGACY_SERVICE_ROLE);
 }
 
 serve(async (req) => {
