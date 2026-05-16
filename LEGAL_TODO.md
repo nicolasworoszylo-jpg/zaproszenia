@@ -22,11 +22,30 @@ W obu plikach są placeholdery `[DO UZUPEŁNIENIA]`:
 
 ---
 
-### 2. Załóż skrzynkę `kontakt@zaproszeniaonline.com`
+### 2. ✅ Forwarder `kontakt@zaproszeniaonline.com` aktywny (zweryfikowany 2026-05-16)
 
-Dziś ten adres widnieje w Privacy Policy jako jedyny kanał realizacji praw RODO (art. 15-22). Bez działającej skrzynki **nie jesteś w stanie odpowiadać na żądania w terminie 30 dni** (art. 12 ust. 3 RODO) → naruszenie obowiązku.
+Stan: OVH MX Plan w trybie redirect-only ma 8 forwarderów (4 publiczne adresy × 2 osoby Nicolas+Dominika). Adres `kontakt@` to jedyny publiczny hub (Privacy + Terms + edge functions notify-* po unifikacji z 2026-05-16). Forwarduje na `nicolasworoszylo@gmail.com` + `dominikakus333@gmail.com` (Dominika jako partnerka biznesowa, współwłaścicielka).
 
-**Sposób:** Google Workspace (29 zł/m-c), Cloudflare Email Routing (darmowy alias), albo skrzynka u rejestratora domeny. Dowolne.
+Adresy `rodo@`, `faktury@`, `zamowienia@` zostają jako legacy inbound (DMARC raporty + stare maile + Stripe account email) - niepokazywane w UI.
+
+DNS Audit kompletny w `legal-templates/email-setup/01a-dns-audit-page1-2026-05-16.png` + `01b-page2`. Lista forwarderów w `02-forwards-list-8-entries.png`.
+
+---
+
+### 2b. Follow-up (parking lot do osobnej sesji)
+
+3 rozjazdy DNS znalezione w audicie 2026-05-16, każdy do osobnej decyzji:
+
+1. **SPF rozjazd dokumentacja vs LIVE**: niektóre brand specs mówiły `include:mxa.mailcluster.pl include:_spf.resend.com -all` ale LIVE jest `include:mx.ovh.com -all`. Resend wysyła Z `kontakt@zaproszeniaonline.com` - SPF root nie autoryzuje Resend (alignment przez DKIM przechodzi, ale SPF będzie czerwony w raportach DMARC). Akcja: sprawdzić raporty DMARC za ostatnie 14 dni → ewentualnie zaktualizować SPF do `v=spf1 include:mx.ovh.com include:_spf.resend.com -all`.
+
+2. **DKIM Resend - CNAME vs TXT**: brief Resend mówi CNAME (recommended), LIVE jest TXT z full RSA public key. Resend obsługuje oba - jeśli zielono w raportach, zostawić TXT (zero akcji).
+
+3. **DMARC ramp-up plan** (po 14 dniach czystych raportów):
+   - 2026-05-30: `p=none` → `p=quarantine; pct=10` (jeśli ostatnie 14d raportów zielonych dla SPF+DKIM)
+   - 2026-06-13: `pct=10` → `pct=50`
+   - 2026-06-27: `pct=50` → `pct=100`, nadal `p=quarantine`
+   - 2026-07-11: `p=quarantine` → `p=reject` (final)
+   Każdy krok = edit TXT `_dmarc.zaproszeniaonline.com` w OVH DNS Zone (NIE ruszać rua/ruf).
 
 ---
 
@@ -183,7 +202,7 @@ Dziś pomijam (nie używasz cookies). Gdy będziesz wdrażał Plausible/Umami - 
 
 ```
 PN  Wpisz NIP/REGON/adres do privacy.html i terms.html        [pkt 1]
-PN  Załóż kontakt@zaproszeniaonline.com                       [pkt 2]
+PN  ✅ kontakt@zaproszeniaonline.com (forwarder LIVE)         [pkt 2]
 WT  Sign DPA Supabase + Vercel (10 minut UI)                  [pkt 3]
 ŚR  Stwórz prosty RCP w Excel (wzór PUODO + lista 7 procesów) [pkt 5]
 CZ  Pierwszy zewnętrzny test: ktoś znajomy klika landing,

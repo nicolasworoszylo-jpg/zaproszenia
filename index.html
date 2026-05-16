@@ -3649,7 +3649,7 @@
           referrer: payload.referrer,
           affiliate_code: payload.affiliate_code,
           affiliate_discount_pct: payload.affiliate_discount_pct,
-          // RODO art. 7 - rejestr zgód (wymaga kolumn w Supabase, patrz supabase/migrations/2026-05-13_consent_log.sql)
+          // RODO art. 7 - rejestr zgód (kolumny w Supabase, migracja: supabase/migrations/20260513120000_consent_log_rodo.sql)
           consent_marketing:    payload.consent_marketing,
           consent_rodo_at:      payload.consent_rodo_at,
           consent_immediate_at: payload.consent_immediate_at,
