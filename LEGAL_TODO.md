@@ -149,6 +149,21 @@ Dziś pomijam (nie używasz cookies). Gdy będziesz wdrażał Plausible/Umami - 
 
 ---
 
+### 13. Pakiet „zdjęcia + Notice & Takedown" (16 maja 2026)
+
+**Co dodane:** §8c (zdjęcia/wizerunek), §8d (N&T procedura), §12a (DPA inline), §4 ust. 4 (incorporation by reference), §11 ust. 3-5 (safe harbor UŚUDE/DSA) + privacy §2.9 + SOP odbioru zdjęć + 3 email templates (11-13) + jednolinijkowe potwierdzenie trwałego nośnika w `notify-payment-success`.
+
+**Co musisz zrobić ręcznie:** pełna lista w [legal-templates/DEPLOYMENT_CHECKLIST_ZDJECIA.md](legal-templates/DEPLOYMENT_CHECKLIST_ZDJECIA.md). Skrót:
+
+1. `git push` + deploy edge function (`supabase functions deploy notify-payment-success`)
+2. Sprawdź że `kontakt@zaproszeniaonline.com` działa dwukierunkowo
+3. Wyślij Dominice plik `legal-templates/sop-przyjmowanie-zdjec.md` i upewnij się że potwierdziła
+4. (opcjonalne) photo verification log w Sheets, Gmail auto-label, aliasy legal@/rodo@, cron auto-deletion
+
+**Dlaczego ten pakiet ważny:** chroni przed roszczeniami fotografów (klient publikuje cudze zdjęcia), gości weselnych (wizerunek), PUODO (RODO procesor). Akceptacja regulaminu przez jeden checkbox `rodo` automatycznie obejmuje wszystkie nowe klauzule (art. 384 § 1 KC + §4 ust. 4 regulaminu) - klient nie musi nic dodatkowo akceptować.
+
+---
+
 ## ✅ Zrobione automatycznie (już w produkcji)
 
 - Polityka prywatności (`/privacy`) - pełen RODO compliance, 10 sekcji + 2 nowe (kody, demo)
