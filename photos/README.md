@@ -16,21 +16,34 @@ photos/
 │   └── KOW-MAZ-A1B2/
 │       ├── 01.jpg      ← EXIF stripped, max 2000px, JPEG q85
 │       └── ...
-└── reports/            ← Robot zapisuje tutaj raport po każdym skanie
-    └── KOW-MAZ-A1B2.json
+├── reports/            ← Robot zapisuje tutaj raport po każdym skanie
+│   └── KOW-MAZ-A1B2.json
+├── drafts/             ← Drafty maili do klienta (gdy flagi licencyjne)
+│   └── KOW-MAZ-A1B2/
+│       └── mail-03-greek-vacation.json
+└── sent/               ← Log wysłanych maili (audit + dowód)
+    └── KOW-MAZ-A1B2/
+        └── mail-03-greek-vacation.json
 ```
 
-`inbox/`, `processed/`, `reports/` są w `.gitignore` — zdjęcia klientów **nigdy** nie idą do gita.
+`inbox/`, `processed/`, `reports/`, `drafts/`, `sent/` są w `.gitignore` —
+zdjęcia klientów ani treści mailowe **nigdy** nie idą do gita.
 W repo żyje tylko ten README + struktura folderów.
 
 ## Workflow
 
 1. Klient wysyła zdjęcia na maila z tematem `ZDJĘCIA [KOW-MAZ-A1B2]`
 2. Otwierasz Gmail → Save attachments → folder `photos/inbox/KOW-MAZ-A1B2/`
-3. Odpalasz `npm run photos:scan KOW-MAZ-A1B2`
+3. Odpalasz `npm run photos:scan -- KOW-MAZ-A1B2`
 4. Czytasz console summary + raport JSON
-   - Flagi 🟠/🔴 → manualne podejście (kontakt z klientem, odrzucenie, dodatkowa weryfikacja)
-   - Wszystko czyste → bierzesz pliki z `processed/KOW-MAZ-A1B2/` i wkładasz do strony klienta (tak jak teraz z `magda-tomek.html`)
+   - Flagi 🟠 typu `PRO_CAMERA_NO_ARTIST` / `COPYRIGHT_PRESENT` / `LARGE_FILE` → robot **automatycznie generuje draft maila** do `photos/drafts/[ORDER_ID]/mail-[plik].json`. Wysyłka osobnym krokiem (patrz niżej).
+   - Pozostałe flagi → tylko informacyjne, nie generują maila
+   - Wszystko czyste → bierzesz pliki z `processed/KOW-MAZ-A1B2/` i wkładasz do strony klienta
+5. **Jeśli są drafty:** odpalasz `npm run photos:send -- KOW-MAZ-A1B2`. Robot pokazuje każdy draft w terminalu, pyta `[y]es / [n]o / [e]dit / [q]uit`. Po `y` mail leci przez **Resend** z `kontakt@zaproszeniaonline.com` (z BCC i Reply-To do `kontakt@`). Log wysłanego maila zapisuje się w `photos/sent/[ORDER_ID]/`.
+
+### Wymagane klucze w `.env`
+
+Robot `photos:send` (i opcjonalnie `photos:scan` dla auto-fetch emaila klienta) potrzebuje `.env` z kluczami — patrz `.env.example` w katalogu projektu. Bez `RESEND_API_KEY` `photos:send` padnie z czytelnym komunikatem; bez `SUPABASE_URL`/`SERVICE_ROLE_KEY` `photos:scan` wstawi placeholder `<EMAIL_KLIENTA>` zamiast adresu klienta — `photos:send` odmówi wysłać draft z placeholderem.
 
 ## Co robot sprawdza (EXIF flagi)
 

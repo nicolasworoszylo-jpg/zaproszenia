@@ -4,9 +4,15 @@
 // copyright / large file), writes clean files to photos/processed/[ORDER_ID]/
 // and a JSON audit report to photos/reports/[ORDER_ID].json.
 //
+// Dla flag wymagających kontaktu z klientem (PRO_CAMERA_NO_ARTIST,
+// COPYRIGHT_PRESENT, LARGE_FILE) generuje draft maila do
+// photos/drafts/[ORDER_ID]/mail-[plik].json. Wysyłka osobno przez
+// `npm run photos:send` (Resend).
+//
 // Wariant (a) manual z PHOTO_PIPELINE_PLAN.md. Pełni rolę warstwy 3
 // (technicznej) z PHOTO_LIABILITY_SAFEGUARDS.md.
 
+import 'dotenv/config';
 import { readdir, readFile, mkdir, writeFile, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { join, resolve, extname, basename } from 'node:path';
@@ -18,6 +24,15 @@ const ROOT = resolve(fileURLToPath(import.meta.url), '..', '..');
 const INBOX = join(ROOT, 'photos', 'inbox');
 const PROCESSED = join(ROOT, 'photos', 'processed');
 const REPORTS = join(ROOT, 'photos', 'reports');
+const DRAFTS = join(ROOT, 'photos', 'drafts');
+
+const EMAIL_PLACEHOLDER = '<EMAIL_KLIENTA>';
+const DEADLINE_HOURS = 72;
+const FLAGS_REQUIRING_LICENSE_MAIL = new Set([
+  'PRO_CAMERA_NO_ARTIST',
+  'COPYRIGHT_PRESENT',
+  'LARGE_FILE',
+]);
 
 const SUPPORTED_EXTS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif']);
 const MAX_DIMENSION = 2000;
@@ -129,6 +144,138 @@ function severityIcon(severity) {
   if (severity === 'red') return '🔴';
   if (severity === 'orange') return '🟠';
   return '🟡';
+}
+
+function formatDeadlinePL(date) {
+  const formatter = new Intl.DateTimeFormat('pl-PL', {
+    weekday: 'long',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Europe/Warsaw',
+  });
+  const parts = formatter.formatToParts(date);
+  const get = (type) => parts.find((p) => p.type === type)?.value;
+  return `${get('weekday')}, ${get('year')}-${get('month')}-${get('day')}, ${get('hour')}:${get('minute')}`;
+}
+
+async function fetchClientFromSupabase(orderId) {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return { source: 'env_missing', email: null, name: null };
+
+  try {
+    const response = await fetch(
+      `${url}/rest/v1/leads?order_id=eq.${encodeURIComponent(orderId)}&select=email,name`,
+      { headers: { apikey: key, Authorization: `Bearer ${key}` } }
+    );
+    if (!response.ok) {
+      return { source: 'http_error', email: null, name: null, http_status: response.status };
+    }
+    const rows = await response.json();
+    if (!Array.isArray(rows) || rows.length === 0) {
+      return { source: 'no_match', email: null, name: null };
+    }
+    return { source: 'supabase', email: rows[0].email || null, name: rows[0].name || null };
+  } catch (err) {
+    return { source: 'fetch_error', email: null, name: null, error: err.message };
+  }
+}
+
+function flagObservationSentence(flags) {
+  const fragments = [];
+  const byCode = Object.fromEntries(flags.map((f) => [f.code, f]));
+
+  if (byCode.PRO_CAMERA_NO_ARTIST) {
+    fragments.push(
+      `ślady profesjonalnego aparatu (${byCode.PRO_CAMERA_NO_ARTIST.detail}) bez wskazania autora`
+    );
+  }
+  if (byCode.COPYRIGHT_PRESENT) {
+    fragments.push(
+      `wypełnione pole właściciela praw autorskich (${byCode.COPYRIGHT_PRESENT.detail})`
+    );
+  }
+  if (byCode.LARGE_FILE) {
+    fragments.push(`bardzo dużą rozdzielczość pliku (${byCode.LARGE_FILE.detail})`);
+  }
+
+  if (fragments.length === 0) return null;
+  if (fragments.length === 1) return fragments[0];
+  if (fragments.length === 2) return `${fragments[0]} oraz ${fragments[1]}`;
+  return `${fragments.slice(0, -1).join(', ')} oraz ${fragments[fragments.length - 1]}`;
+}
+
+function generateMailBody({ orderId, filename, observation, deadlineFormatted }) {
+  return `Dzień dobry,
+
+Dziękujemy za przesłane zdjęcia do Państwa zaproszenia (zamówienie ${orderId}).
+
+Przy weryfikacji jednego z plików — ${filename} — widzimy w informacjach zapisanych w pliku ${observation}. To wygląda na zdjęcie od fotografa zawodowego.
+
+Żebyśmy mogli to konkretne zdjęcie umieścić w Państwa zaproszeniu, potrzebujemy potwierdzenia, że Państwa umowa z fotografem obejmuje publikację na stronie internetowej (§ 8c Regulaminu).
+
+Wystarczy odpowiedź jednym zdaniem, np.:
+  • "Tak, umowa obejmuje publikację online"
+  • albo skan / zdjęcie fragmentu umowy z fotografem
+  • albo email od fotografa z potwierdzeniem licencji
+
+Co się dzieje z Państwa zaproszeniem w międzyczasie:
+Standardowy czas realizacji to 24 godziny od otrzymania kompletu danych. Brakująca licencja zatrzymuje ten zegar tylko dla tego jednego pliku — pozostałe zdjęcia oraz cała reszta projektu (plan dnia, RSVP, mapa, treści) idą do realizacji normalnie.
+
+Termin Państwa odpowiedzi: 72 godziny od tego maila (do ${deadlineFormatted}).
+
+Jeśli odpowiedź nie dotrze w tym czasie, zrealizujemy zaproszenie bez tego konkretnego zdjęcia. Gdyby przesłali Państwo potwierdzenie później — dodamy je w jednej z 2 rund poprawek bez dodatkowej opłaty.
+
+Dziękujemy,
+Zespół zaproszeniaonline.com
+kontakt@zaproszeniaonline.com
+`;
+}
+
+async function generateDraftIfNeeded({ orderId, fileResult, clientData, draftsDir, now }) {
+  const licenseFlags = fileResult.flags.filter((f) => FLAGS_REQUIRING_LICENSE_MAIL.has(f.code));
+  if (licenseFlags.length === 0) return null;
+
+  const observation = flagObservationSentence(licenseFlags);
+  if (!observation) return null;
+
+  const deadline = new Date(now.getTime() + DEADLINE_HOURS * 60 * 60 * 1000);
+  const deadlineFormatted = formatDeadlinePL(deadline);
+  const filename = fileResult.filename_in;
+  const body = generateMailBody({ orderId, filename, observation, deadlineFormatted });
+
+  const fromAddress = process.env.RESEND_FROM || 'kontakt@zaproszeniaonline.com';
+  const replyTo = process.env.RESEND_REPLY_TO || fromAddress;
+  const toAddress = clientData?.email || EMAIL_PLACEHOLDER;
+
+  const draft = {
+    draft_id: `${orderId}-${filename.replace(/\.[^.]+$/, '')}-${now.getTime()}`,
+    order_id: orderId,
+    filename_flagged: filename,
+    flags: licenseFlags,
+    generated_at: now.toISOString(),
+    deadline_at: deadline.toISOString(),
+    deadline_formatted_pl: deadlineFormatted,
+    client_email_source: clientData?.source || 'unknown',
+    client_name: clientData?.name || null,
+    to: toAddress,
+    from: fromAddress,
+    reply_to: replyTo,
+    bcc: replyTo,
+    subject: `[${orderId}] Pytanie o licencję — zdjęcie ${filename}`,
+    body,
+    status: 'draft',
+  };
+
+  const safeFilenameSegment = filename.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_');
+  const draftPath = join(draftsDir, `mail-${safeFilenameSegment}.json`);
+  await mkdir(draftsDir, { recursive: true });
+  await writeFile(draftPath, JSON.stringify(draft, null, 2), 'utf8');
+  return { draftPath, draft };
 }
 
 async function scanFile(inboxPath, processedPath) {
@@ -294,15 +441,60 @@ async function main() {
     for (const e of errors) console.log(`   - ${e.filename}: ${e.error}`);
   }
 
+  // Generowanie draftów mailowych dla plików flagowanych licencyjnie
+  const draftsDir = join(DRAFTS, orderId);
+  const filesNeedingMail = results.filter((r) =>
+    r.flags.some((f) => FLAGS_REQUIRING_LICENSE_MAIL.has(f.code))
+  );
+
+  let clientData = null;
+  let draftsCreated = [];
+  if (filesNeedingMail.length > 0) {
+    clientData = await fetchClientFromSupabase(orderId);
+    const now = new Date();
+    for (const fileResult of filesNeedingMail) {
+      const created = await generateDraftIfNeeded({
+        orderId,
+        fileResult,
+        clientData,
+        draftsDir,
+        now,
+      });
+      if (created) draftsCreated.push(created);
+    }
+
+    if (draftsCreated.length > 0) {
+      console.log(`\n📧 ${draftsCreated.length} ${draftsCreated.length === 1 ? 'draft maila wygenerowany' : 'drafty maila wygenerowane'}:`);
+      for (const { draftPath, draft } of draftsCreated) {
+        const toStr = draft.to === EMAIL_PLACEHOLDER ? `${draft.to} (uzupełnij ręcznie)` : draft.to;
+        console.log(`   - ${basename(draftPath)} → do: ${toStr}`);
+      }
+      console.log(`\n   Wyślij komendą: npm run photos:send -- ${orderId}`);
+
+      if (clientData?.source === 'env_missing') {
+        console.log(`\n   ⚠ Brak SUPABASE_URL/SERVICE_ROLE_KEY w .env — adres "To" jako placeholder.`);
+        console.log(`     Wpisz email ręcznie w draftach przed wysłaniem, albo uzupełnij .env.`);
+      } else if (clientData?.source === 'no_match') {
+        console.log(`\n   ⚠ Supabase: brak leada z order_id="${orderId}".`);
+        console.log(`     Sprawdź ORDER_ID albo wpisz email ręcznie w draftach.`);
+      } else if (clientData?.source === 'http_error' || clientData?.source === 'fetch_error') {
+        console.log(`\n   ⚠ Supabase: problem z fetch (${clientData.source}). Adres jako placeholder.`);
+      }
+    }
+  }
+
   const report = {
     order_id: orderId,
     scanned_at: new Date().toISOString(),
     inbox_dir: inboxDir,
     processed_dir: processedDir,
+    drafts_dir: draftsCreated.length > 0 ? draftsDir : null,
     file_count: results.length,
     total_size_in: totalIn,
     total_size_out: totalOut,
     flag_count: flaggedFiles.reduce((sum, r) => sum + r.flags.length, 0),
+    drafts_created: draftsCreated.length,
+    client_email_source: clientData?.source || null,
     files: results,
     errors,
   };

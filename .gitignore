@@ -13,6 +13,8 @@
 *.env
 *.env.local
 *.env.production
+# Exception: .env.example is a template with placeholders, safe to commit
+!.env.example
 
 # Common junk
 .DS_Store
@@ -25,7 +27,10 @@ npm-debug.log*
 dist/
 build/
 
-# Photo pipeline — client photos NEVER enter git (only photos/README.md does)
+# Photo pipeline — client photos and mail correspondence NEVER enter git
+# (only photos/README.md does)
 photos/inbox/
 photos/processed/
 photos/reports/
+photos/drafts/
+photos/sent/
