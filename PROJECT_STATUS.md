@@ -61,6 +61,7 @@ Po pełnej sesji (~30 commits od 2026-05-11) Nicolas potwierdził: **"wszystko d
 | Temat | Plik | Wykryto | Pilność |
 |---|---|---|---|
 | Vercel plan vs RODO compliance (Hobby ≠ DPA) | [`DECISION_VERCEL_DPA.md`](DECISION_VERCEL_DPA.md) | 2026-05-13 | średnia — luka RODO otwarta do czasu decyzji |
+| Pipeline obróbki zdjęć klientów (Gmail→Drive→AI→Supabase) | [`PHOTO_PIPELINE_PLAN.md`](PHOTO_PIPELINE_PLAN.md) | 2026-05-14 | niska — pipeline ręczny działa, automatyzacja nie blokuje marketing-go |
 
 ---
 

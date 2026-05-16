@@ -46,7 +46,7 @@
 | Czas realizacji | 24 godziny od briefu |
 | Palety | 4: leśna zieleń, granat z różem, bordo, terracotta |
 | Hosting | 12 miesięcy po ślubie w cenie |
-| Poprawki | 2 rundy w cenie + edycje do dnia ślubu |
+| Poprawki | 3 rundy w cenie + edycje do dnia ślubu |
 | RSVP pola | menu (4 opcje), alergie, autobus tak/nie, liczba osób, życzenia |
 | Dodatki | propozycje piosenek, kod QR do druku, eksport CSV gości |
 | Hosting | Polski w UE, RODO |
@@ -72,7 +72,7 @@ Każda zmiana poniższych wymaga manualnej aktualizacji w panelu Janachowska:
 2. **Czas 24h** → zmieniony w opisie + Q&A 1, 2, 3
 3. **Liczba palet (4)** → opis + Q&A 4
 4. **Hosting 12 miesięcy** → opis + Q&A 3, 5
-5. **2 rundy poprawek** → opis + Q&A 2, 5
+5. **3 rundy poprawek** → opis + Q&A 2, 5
 6. **Lista features w cenie** → Q&A 3, 5
 7. **Voice / formuły językowe** (jeśli zmienimy "stała cena" → coś innego) → opis + Q&A
 8. **Nowe segmenty** (np. dodanie eventów firmowych do publicznej komunikacji) → opis + Q&A 5
