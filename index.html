@@ -3697,11 +3697,25 @@ ${Object.entries(featuresDetails).map(([k, v]) => {
 ${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
         corePayload.message = extendedSummary;
 
-        const { data: leadRow, error } = await sb.from('leads').insert(corePayload).select('id').single();
+        // Generujemy UUID frontend-side - column leads.id ma DEFAULT gen_random_uuid() i akceptuje
+        // explicit value. Powod: globalny Prefer: return=minimal w klientcie (RLS minimalisation - anon
+        // nie ma SELECT na leads) sprawia ze .select('id').single() po insert zwraca data=null
+        // i wywala TypeError "Cannot read properties of null (reading 'id')". UUID idzie do bazy + Stripe.
+        const leadId = (window.crypto && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+              const r = Math.random() * 16 | 0;
+              return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+        corePayload.id = leadId;
+
+        const { error } = await sb.from('leads').insert(corePayload);
         if (error) throw error;
 
         if (affValidated && affValidated.valid && affRaw) {
-          sb.rpc('register_discount_code_use', { p_code: affRaw }).catch((e) => console.warn(e));
+          // Supabase JS 2.45 PostgrestBuilder ma .then ale nie .catch (lazy promise-like).
+          // .catch alone wywala "sb.rpc(...).catch is not a function" - uzywamy .then(_, err).
+          sb.rpc('register_discount_code_use', { p_code: affRaw }).then(undefined, (e) => console.warn('register_discount_code_use:', e));
         }
 
         // Buduj Stripe URL z prefilled email + leadId i przekieruj OD RAZU.
@@ -3714,7 +3728,7 @@ ${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
         const baseStripeUrl = dedicatedUrl || DEFAULT_STRIPE_URL;
         const params = new URLSearchParams({
           prefilled_email: email,
-          client_reference_id: leadRow.id,
+          client_reference_id: leadId,
         });
         // Tylko gdy uzywamy default linka + kod zwalidowany - prefill promo do checkout (Apply manual)
         if (!dedicatedUrl && affValidated && affValidated.valid && affRaw) {
