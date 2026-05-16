@@ -8,9 +8,8 @@
 - Podstawa prawna działalności: art. 5 ust. 1 ustawy z dnia 6 marca 2018 r. - Prawo przedsiębiorców (Dz.U. 2018 poz. 646)
 - Status: bez NIP, bez REGON, bez wpisu CEIDG (sprzedawca nie jest podatnikiem VAT)
 - Adres do korespondencji elektronicznej (RODO art. 12 ust. 1):
-  - Główny: **kontakt@zaproszeniaonline.com**
-  - Wnioski RODO (art. 15-22): **rodo@zaproszeniaonline.com**
-  - Faktury / rozliczenia: **faktury@zaproszeniaonline.com**
+  - Jedyny publiczny adres (od 2026-05-16): **kontakt@zaproszeniaonline.com** - obsługuje wszystkie sprawy (RODO art. 15-22, faktury, reklamacje, Notice & Takedown)
+  - Legacy inbound (nie używane w UI): `rodo@`, `faktury@`, `zamowienia@` - forwardery aktywne dla DMARC raportów i starych maili
 - Adres do doręczeń pisemnych: udostępniany na żądanie (działalność nieewidencjonowana nie ma adresu rejestrowego)
 
 ## Osoby upoważnione do przetwarzania (art. 29 RODO)

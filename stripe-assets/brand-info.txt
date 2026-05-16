@@ -49,10 +49,12 @@ Returns:                     https://zaproszeniaonline.com/returns
 
 E-MAILE:
 ─────────────────────────────
-Główny kontakt:              kontakt@zaproszeniaonline.com   (forward → 2 osoby)
-Zamówienia:                  zamowienia@zaproszeniaonline.com (forward → 2 osoby)
-Faktury / rozliczenia:       faktury@zaproszeniaonline.com   (forward → 2 osoby)
-RODO / prawne:               rodo@zaproszeniaonline.com      (forward → 2 osoby)
+Jedyny publiczny adres (od 2026-05-16):
+  kontakt@zaproszeniaonline.com   (forward → 2 osoby)
+  obsługuje wszystko: kontakt klientów, zamówienia, faktury, RODO, prawne, N&T
+
+Legacy inbound (aktywne, nie pokazywane w UI):
+  rodo@, faktury@, zamowienia@    (forwardery dla DMARC raportów i starych maili)
 
 STRIPE:
 ─────────────────────────────
