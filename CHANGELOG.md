@@ -22,6 +22,17 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Added** (2026-05-17, OPTYMALIZACJA dla nowych klientow):
+  - `_template_klient/` - bazowy folder z czystym `index.html` (kopia nicolas-test) + `brief.example.json` + `README.md`.
+  - `scripts/new-client.py` - generator klienta (252 linie Python): czyta brief JSON, kopiuje template, sed-replace CONFIG/paleta/meta/INVITATION_SLUG, kopiuje zdjecia, updateuje vercel.json (host-based rewrite), commit+push.
+  - 4 palety lock przez brief: `forest`/`navy`/`bordo`/`terracotta`.
+  - Workflow nowego klienta: ~2 min od briefu do live URL (przed = ~30 min recznych edycji).
+  - `_template_klient/` w `.vercelignore` - nie serwowane publicznie.
+  - **DNS strategia (3 opcje)** udokumentowane w `_template_klient/README.md`:
+    1. **Wildcard** `*.zaproszeniaonline.com` (RAZ NA ZAWSZE) - OVH CNAME + Vercel CLI, dziala dla wszystkich przyszlych klientow.
+    2. **Per-klient** A record - kazdy klient wymaga edycji OVH.
+    3. **Path-based** `zaproszeniaonline.com/<slug>/` - dziala natychmiast bez DNS (fallback).
+
 - **Fixed** (2026-05-17 v2.2, nicolas-test - wyciecie Gallery + NAV cleanup):
   - Wyciety `<Gallery/>` z `App` render (brief: galeria=no, puste `guestPhotosUrl`/`photographerGalleryUrl` dawaly UX bug - przyciski "Dodaj zdjecia"/"Zobacz galerie" linkowaly do "").
   - `NAV` array: usuniete `{label:"Galeria",id:"galeria"}` (6 itemow zamiast 7).
