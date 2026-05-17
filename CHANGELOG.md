@@ -22,6 +22,12 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Fixed** (2026-05-17 v2.2, nicolas-test - wyciecie Gallery + NAV cleanup):
+  - Wyciety `<Gallery/>` z `App` render (brief: galeria=no, puste `guestPhotosUrl`/`photographerGalleryUrl` dawaly UX bug - przyciski "Dodaj zdjecia"/"Zobacz galerie" linkowaly do "").
+  - `NAV` array: usuniete `{label:"Galeria",id:"galeria"}` (6 itemow zamiast 7).
+  - `og:description`: usuniete "galeria zdjec" (zgodnosc z brief).
+  - Funkcja `Gallery()` zostawiona w kodzie (martwy kod, nieuzywany w render) - nie usuwamy bo to kopia 1:1 demo.
+
 - **Fixed** (2026-05-16 v2.1, nicolas-test podgladowe poprawki post-deploy):
   - Heart photo (OurStory `ourStoryHeartPhoto`): demo's `padding-bottom:100%` aspect hack failowal gdy mobile CSS `.heart-ph{width:200px!important}` zmuszal 200x200 wrapper. Image `width:100%/height:100%` z `height:0` content area dawal computed `left:98px`. Fix: nowoczesny `aspect-ratio:1/1` + `inset:0` na img.
   - Supabase CDN: `unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js` 404 (path zmieniony) -> `dist/umd/supabase.js`.
