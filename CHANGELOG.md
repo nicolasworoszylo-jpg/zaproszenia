@@ -22,6 +22,8 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Fixed** (2026-05-18, subdomena rewrite): vercel.json `rewrites` z `source:/:path*` nie obslugiwal poprawnie root URL `/` (path* mialo problem z empty match - dawalo strone glowna zamiast `/nicolas-test/index.html`). Rozbito na 2 reguly: `source:/` dla root + `source:/:path+` dla reszty (min 1 segment).
+
 - **Fixed CRITICAL** (2026-05-18, nicolas-test stuck "ladowanie..." - DRUGI bug niezalezny od CSP):
   - Root cause: URL `https://zaproszeniaonline.com/nicolas-test` (bez trailing slash) powodowal ze browser interpretowal base URL jako root domeny `https://zaproszeniaonline.com/`. Relatywne `src="vendor/react.min.js"` rozwijaly sie do `https://zaproszeniaonline.com/vendor/react.min.js` (GLOWNY /vendor/, nie `/nicolas-test/vendor/`). Pliki react/react-dom/supabase byly tam (200), ale `vendor/app.js` w glownym /vendor/ NIE istnieje (jest tylko demo-compiled.js i magda-compiled.js) -> 404 -> React nigdy nie mountuje -> kurtyna `#demo-loading` stuck.
   - Why nie zauwazone wczesniej: curl `https://zaproszeniaonline.com/nicolas-test` zwracal poprawny HTML i WSZYSTKIE assety 200 (bo curl nie podaza za relative paths w response, sprawdzal absolute URLe). Symptom widoczny tylko w real browser ktory wykonuje JS i rozwija relative paths.
