@@ -30,26 +30,37 @@ supabase db push  # apply migration 20260518180000_briefs_self_service.sql
 
 **Verify:** w Table Editor powinna pojawić się tabela `briefs`.
 
-### Step 2 - Storage bucket `client-photos` (3 min)
+### Step 2 - Storage bucket `invitation-photos` (JUŻ ISTNIEJE - Dominika setup)
 
-Vinegar w UI:
-1. https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/storage/buckets
-2. Click "New bucket"
-3. Name: `client-photos`
-4. Public: **YES** (zdjęcia są publicznie widoczne)
-5. File size limit: **5 MB**
-6. Allowed MIME types: `image/jpeg, image/jpg, image/png, image/webp`
-7. RUN SQL to add policy:
+**UWAGA: BUCKET JUŻ JEST UTWORZONY przez Dominikę w OPCJA B pipeline.**
+- Nazwa: `invitation-photos`
+- Path convention: `processed/<slug>/`
+- Public: YES, 10 MB limit
+- MIME: jpeg/png/webp/avif
+
+**Verify że istnieje:**
+```bash
+cd ~/Projekty/zaproszeniaonline.com
+node scripts/_supabase-check.mjs
+# Powinien pokazać "Bucket invitation-photos: ✓ istnieje"
+```
+
+**Jeśli nie istnieje** (mało prawdopodobne, ale dla pewności): tworzy się to przez `scripts/_supabase-check.mjs` lub manual w Dashboard. Spytaj Dominikę o `npm run photos:scan` jeśli problem.
+
+**Storage RLS policy** - powinno już być (Dominika), ale dla pewności sprawdź w SQL Editor:
 ```sql
--- Allow service_role full access (Edge Function)
-create policy "service_role full access"
-  on storage.objects for all to service_role
-  using (bucket_id = 'client-photos');
+-- Verify czy istnieje policy "service_role full access" dla bucket invitation-photos
+select policyname, definition from pg_policies
+where schemaname='storage' and tablename='objects' and definition like '%invitation-photos%';
 
--- Allow public read (zdjęcia w produkcji)
-create policy "anon read client-photos"
+-- Jeśli pusty wynik:
+create policy "service_role insert invitation-photos"
+  on storage.objects for insert to service_role
+  with check (bucket_id = 'invitation-photos');
+
+create policy "anon read invitation-photos"
   on storage.objects for select to anon, authenticated
-  using (bucket_id = 'client-photos');
+  using (bucket_id = 'invitation-photos');
 ```
 
 ### Step 3 - GitHub Secrets (5 min)

@@ -22,6 +22,12 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Changed** (2026-05-18, LUZAK integration z OPCJA B Dominiki): merge dwoch pipeline (klient self-service B2C + Dominika manual). Konsolidacja bucketu Storage na `invitation-photos` (NIE `client-photos` - mialo byc Dominika setup).
+  - `generate-from-form/index.ts`: bucket `client-photos` -> `invitation-photos`, path `<slug>/` -> `processed/<slug>/` (zgodnie z `photos-publish.mjs` Dominiki).
+  - `klient-start/index.html`: client-side EXIF strip + resize do max 2000px przez Canvas re-encode (toDataURL JPEG q0.85). Privacy: usuwa GPS, datę, model aparatu. Bandwidth: zdjęcia ~70% mniejsze.
+  - `docs/LUZAK_DEPLOY.md` Step 2: bucket `invitation-photos` JUZ ISTNIEJE (Dominika), update instrukcji.
+  - Dwa równolegle workflows: (A) klient B2C - wizard z auto-upload do bucket (B) Dominika manual - `npm run photos:scan + publish` -> URL do brief.json + Nicolas `python3 scripts/new-client.py`. Oba korzystaja z bucket invitation-photos.
+
 - **Added** (2026-05-18, FULL LUZAK pipeline build): klient self-service end-to-end od Stripe payment do live URL bez Nicolas dotyku.
   - Migration `supabase/migrations/20260518180000_briefs_self_service.sql` - tabela `briefs` z UUID token + RLS service-role-only + view `briefs_active`.
   - Edge Function `generate-from-form` - validate token + slug generation + base64 photos upload do Supabase Storage + workflow_dispatch GitHub Action.

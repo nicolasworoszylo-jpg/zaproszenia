@@ -135,17 +135,19 @@ function defaultDressCode(palette: string) {
 
 async function uploadPhoto(slug: string, idx: number, dataUrl: string): Promise<string> {
   // dataUrl: "data:image/jpeg;base64,..."
+  // Upload do `invitation-photos/processed/<slug>/` - bucket Dominiki (OPCJA B).
+  // EXIF metadata juz strippped client-side przez Canvas re-encode w klient-start/.
   const m = dataUrl.match(/^data:image\/(\w+);base64,(.+)$/);
   if (!m) throw new Error(`Invalid dataURL at idx ${idx}`);
   const ext = m[1] === "jpeg" ? "jpg" : m[1];
   const bytes = Uint8Array.from(atob(m[2]), c => c.charCodeAt(0));
-  const path = `${slug}/photo-${String(idx + 1).padStart(2, "0")}.${ext}`;
-  const { error } = await sb.storage.from("client-photos").upload(path, bytes, {
+  const path = `processed/${slug}/photo-${String(idx + 1).padStart(2, "0")}.${ext}`;
+  const { error } = await sb.storage.from("invitation-photos").upload(path, bytes, {
     contentType: `image/${m[1]}`,
     upsert: true,
   });
   if (error) throw new Error(`Storage upload failed: ${error.message}`);
-  const { data } = sb.storage.from("client-photos").getPublicUrl(path);
+  const { data } = sb.storage.from("invitation-photos").getPublicUrl(path);
   return data.publicUrl;
 }
 
