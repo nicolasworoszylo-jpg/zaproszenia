@@ -49,14 +49,18 @@ DNS Audit kompletny w `legal-templates/email-setup/01a-dns-audit-page1-2026-05-1
 
 ---
 
-### 3. Zaakceptuj DPA z Supabase i Vercel
+### 3. DPA z dostawcami (Stripe / Supabase / Vercel / Resend)
 
-**Co to:** Umowa powierzenia przetwarzania danych (Data Processing Agreement, art. 28 RODO). Bez podpisanego DPA każda operacja na bazie Supabase / hosting Vercel = nielegalne powierzenie.
+**Co to:** Umowa powierzenia przetwarzania danych (Data Processing Agreement, art. 28 RODO). Bez DPA każda operacja na bazie Supabase / hosting Vercel / płatności Stripe / wysyłka maili Resend = nielegalne powierzenie.
 
-**Sposób:**
-- **Supabase**: Dashboard → Settings → Compliance → kliknij **„Sign DPA"** (standardowy template Supabase, online, 1 minuta)
-- **Vercel**: Dashboard → Team Settings → Security & Privacy → **„Data Processing Agreement"** → kliknij Accept
-- Zachowaj dla siebie zrzuty ekranu z datą podpisania / akceptacji (dowód w razie kontroli PUODO)
+**Status na 2026-05-13:**
+
+- **Stripe** ✅ — DPA z 18 listopada 2025 archived w `legal-templates/dpa-signed/stripe-dpa-2025-11-18.pdf`. Auto-binding przez Stripe Services Agreement, nic więcej do zrobienia.
+- **Supabase** ⏳ — Dashboard → Settings → Compliance → **„Sign DPA"** (standardowy template, online, 1 minuta). Po akceptacji screenshot do `legal-templates/dpa-signed/supabase-dpa-[data].png`.
+- **Vercel** 🟠 — **WYMAGA DECYZJI NICOLASA**: jesteśmy na planie Hobby, a Vercel DPA stosuje się tylko do Pro/Enterprise (sekcja 1 DPA). Pełna analiza i 4 opcje w **[`DECISION_VERCEL_DPA.md`](DECISION_VERCEL_DPA.md)**. Bez decyzji = luka RODO otwarta.
+- **Resend** ✅ — DPA z 31 grudnia 2025 (executed version pobrana z dashboardu Resend) archived w `legal-templates/dpa-signed/resend-dpa-2025-12-31.pdf`. Auto-binding przez Terms of Service, brak przycisku Sign w panelu. Bonus: Resend ma certyfikację EU-U.S. Data Privacy Framework.
+
+> ⚠️ Wcześniejsza instrukcja "Vercel: Dashboard → Team Settings → Security & Privacy → kliknij Accept" była **nieprawdziwa** — taki przycisk nie istnieje (potwierdzone manualnie 2026-05-13). To samo dotyczyło `CLAUDE_IN_CHROME_PROMPTS.md` § 2️⃣ i `FIRST_CLIENT_CHECKLIST.md` § 1 — oba zostały poprawione.
 
 ---
 

@@ -36,7 +36,11 @@ FAIL=0
 while IFS= read -r f; do
   [ -z "$f" ] && continue
   # Block .env files outright, regardless of content
+  # Exception: .env.example / .env.sample / .env.template are placeholder
+  # templates intended for committing — they document what keys the .env needs.
   case "$f" in
+    .env.example|.env.sample|.env.template)
+      ;;
     .env|.env.*|*.env|*.env.local|*.env.production|*.env.development)
       guardian_error "Refusing to commit env file: $f"
       guardian_error "  → add it to .gitignore, then 'git rm --cached $f'"

@@ -80,7 +80,7 @@ Zespół Zaproszenia Online · zaproszeniaonline.com
 ## 02 - Materials Request (48h paid, brak materiałów)
 
 **SUBJECT:** `{{ImiePary}}, brakuje nam Waszych materiałów`
-**PREHEADER:** `Imiona, data, miejsce + 2-3 zdjęcia pary. Bez tego nie ruszę z projektem.`
+**PREHEADER:** `Imiona, data, miejsce + do 7 zdjęć pary (1 kwadrat + 6 pionowych). Bez tego nie ruszę.`
 
 ### Plain text
 
@@ -94,7 +94,7 @@ POTRZEBUJĘ (na kontakt@zaproszeniaonline.com):
 1. Pełne imiona pary
 2. Data ślubu (i miejsce ceremonii + przyjęcia)
 3. Harmonogram dnia (najważniejsze godziny: ceremonia, obiad, oczepiny)
-4. 2-3 ulubione zdjęcia pary (im wyższa rozdzielczość, tym lepiej)
+4. Ulubione zdjęcia pary (do 7 — najlepiej 1 kwadratowe na centerpiece + do 6 pionowych do galerii bocznej; poziome przyjmiemy, ale zostaną mocno wykadrowane; im wyższa rozdzielczość, tym lepiej)
 5. Krótka historia (3-5 zdań - jak się poznaliście?)
 6. Preferowane kolory albo motyw (jeśli już macie)
 
@@ -125,7 +125,7 @@ Zespół Zaproszenia Online · zaproszeniaonline.com
     <li style="margin-bottom:10px;"><strong>Pełne imiona pary</strong></li>
     <li style="margin-bottom:10px;"><strong>Data ślubu + miejsce</strong> (ceremonia + przyjęcie)</li>
     <li style="margin-bottom:10px;"><strong>Harmonogram dnia</strong> (ceremonia, obiad, oczepiny)</li>
-    <li style="margin-bottom:10px;"><strong>2-3 ulubione zdjęcia pary</strong> (wysoka rozdzielczość)</li>
+    <li style="margin-bottom:10px;"><strong>Ulubione zdjęcia pary</strong> (do 7 — najlepiej 1 kwadratowe na centerpiece + do 6 pionowych do galerii bocznej; poziome wykadrujemy; wysoka rozdzielczość)</li>
     <li style="margin-bottom:10px;"><strong>Historia</strong> (3-5 zdań - jak się poznaliście?)</li>
     <li><strong>Preferowane kolory</strong> (jeśli już macie)</li>
   </ol>

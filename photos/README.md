@@ -1,0 +1,148 @@
+# Photo pipeline — lokalna obróbka zdjęć klientów
+
+Lokalny robot do skanowania i czyszczenia zdjęć zanim wylądują na stronie klienta.
+Wariant **(a) manual** z `PHOTO_PIPELINE_PLAN.md` — bez Gmaila API, bez fal.ai, bez Supabase.
+
+## Struktura
+
+```
+photos/
+├── inbox/              ← Ty wgrywasz tutaj (Save attachments z Gmaila)
+│   └── magda-tomek/   ← jeden folder per zamówienie (REF = własna nazwa folderu (np. `magda-tomek`) lub UUID z `leads.id`)
+│       ├── 01.jpg
+│       ├── 02.jpg
+│       └── ...
+├── processed/          ← Robot wypluwa tutaj (czyste, gotowe na stronę)
+│   └── magda-tomek/
+│       ├── 01.jpg      ← EXIF stripped, max 2000px, JPEG q85
+│       └── ...
+├── reports/            ← Robot zapisuje tutaj raport po każdym skanie
+│   └── magda-tomek.json
+└── drafts/             ← Treść proponowanych maili do klienta (gdy flagi licencyjne)
+    └── magda-tomek/
+        └── mail-03-greek-vacation.txt
+```
+
+`inbox/`, `processed/`, `reports/`, `drafts/` są w `.gitignore` —
+zdjęcia klientów ani treści mailowe **nigdy** nie idą do gita.
+W repo żyje tylko ten README + struktura folderów.
+
+## Workflow (4 etapy: scan → wyślij ręcznie → publish → handoff)
+
+### A. Scan + propozycje maila
+1. Klient wysyła zdjęcia na maila z tematem `ZDJĘCIA [magda-tomek]`
+2. Otwierasz Gmail → Save attachments → folder `photos/inbox/magda-tomek/`
+3. Odpalasz `npm run photos:scan -- magda-tomek`
+4. Wynik:
+   - Wszystkie pliki dostają status `pending_review` (nawet czyste — bo trzeba sprawdzić okiem znaki wodne, osoby, dokumenty)
+   - Flagi 🟠 typu `PRO_CAMERA_NO_ARTIST` / `COPYRIGHT_PRESENT` / `LARGE_FILE` → robot generuje treść proponowanego maila do `photos/drafts/[REF]/mail-[plik].txt` **i wypisuje ją w terminalu** (gotowe do `Ctrl+C`)
+   - Pozostałe flagi (`GPS_PRESENT`, `AI_SOFTWARE`) → tylko informacyjne, bez maila
+
+**Robot NIE wysyła nic sam.** Treść drafta służy tylko do skopiowania.
+
+### B. Wyślij draft ręcznie i czekaj na odpowiedź klienta (do 72h)
+Jeśli chcesz wysłać draft do klienta — kopiujesz treść z terminala (albo otwierasz `photos/drafts/[REF]/mail-*.txt`) i wysyłasz z własnej skrzynki. Klient odpisuje na Twój email → notujesz mentalnie decyzję dla każdego pliku — wykorzystasz w kroku C.
+
+### C. Publikacja (interactive review + upload do Supabase)
+`npm run photos:publish -- magda-tomek` — robot iteruje po wszystkich plikach:
+- Pokazuje status, flagi, info o mailu (jeśli wysłany)
+- Pyta `[a]pproved / [r]ejected / [w]ait`
+- `a` → opcjonalna notatka → status `approved`
+- `r` → wymagana notatka (powód) → status `rejected`
+- `w` → wait, przerywa publikację, stan zostaje (możesz wrócić)
+
+Po wszystkich rozstrzygniętych: finalne pytanie *„Upload N plików do Supabase? [y/N]"*. Po `y`:
+- Pliki przechodzą do `invitation-photos/processed/[REF]/` w Supabase Storage (bucket Nicolasa, już istnieje)
+- Każdy plik dostaje status `published` + `upload_state` z URL-em
+- Audit log: `photos/reports/[REF].json` lokalnie (SHA-256 hashes + decyzje per plik). Zapis do `leads.notes` pominięty bo kolumna nie istnieje w aktualnej schemie — patrz memory [[supabase-schema-reality-2026-05-18]]
+
+Re-run komendy jest bezpieczny (idempotent — pomija pliki już approved / rejected / published).
+
+### D. Handoff do Nicolasa
+Pliki w Supabase Storage (`invitation-photos/processed/[REF]/`) z public URL-ami w raporcie JSON. Nicolas konsumuje to w swoim workflow generowania stron klienta — patrz `scripts/new-client.py` + `_template_klient/` w głównym repo (na main).
+
+Format publicznego URL pojedynczego pliku:
+```
+https://kuyniyyieejvambyjnxy.supabase.co/storage/v1/object/public/invitation-photos/processed/[REF]/[plik].jpg
+```
+
+## Wymagane klucze w `.env`
+
+Robot potrzebuje `.env` z kluczami — patrz `.env.example` w katalogu projektu:
+
+| Klucz | Po co | Bez klucza |
+|---|---|---|
+| `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` | auto-fetch emaila klienta z `leads.id` (tylko jeśli REF to UUID — nie slug typu `magda-tomek`); upload do Storage `invitation-photos` (publish) | `photos:scan` zawsze wstawia placeholder `<EMAIL_KLIENTA>` w drafcie (wpisujesz email ręcznie kiedy wysyłasz), `photos:publish` przejdzie przez review ale pada na uploadzie |
+
+## Co robot sprawdza (EXIF flagi)
+
+| Flaga | Co to znaczy | Co zrobić |
+|---|---|---|
+| 🟠 `AI_SOFTWARE` | EXIF `Software` zawiera `Midjourney/DALL-E/Stable Diffusion/Firefly/Flux` itp. | AI zdjęcia fikcyjnych osób są legalne i to wybór klienta — flaga jest informacyjna. Warta uwagi tylko jeśli: (a) klient w oświadczeniu pisał że to jego prawdziwe zdjęcia (sprzeczność), albo (b) od **2026-08-02** AI Act art. 50(4) wymaga disclaimer dla AI zdjęć przedstawiających istniejące osoby (deepfake) |
+| 🟠 `GPS_PRESENT` | Zdjęcie zawiera współrzędne GPS | Dla bezpieczeństwa OK (robot stripuje), ale warto wiedzieć że klient nie wie co wysyła |
+| 🟠 `PRO_CAMERA_NO_ARTIST` | Body zawodowe (Canon R5/R6/Sony A1/A7R/Nikon Z9/Hasselblad/Leica) ALE pole `Artist` puste lub ≠ klient | Prawdopodobnie pracował fotograf zawodowy. Sprawdź licencję (kto ma copyright?) |
+| 🟠 `COPYRIGHT_PRESENT` | Pole `Copyright` w EXIF wypełnione | Często fotograf wpisuje siebie. Sprawdź czy pasuje do klienta |
+| 🟠 `LARGE_FILE` | Plik >8 MB lub rozdzielczość >24 MP | Prawdopodobnie z sesji komercyjnej. Sprawdź licencję |
+| 🟡 `LANDSCAPE_ORIENTATION` | Zdjęcie poziome (W/H > 1.1) | Ramki w `nicolas-test/index.html` to heart 1:1 (kwadrat → koło) i side 11:15 (pionowe). Poziome lepiej pasują na heart (środek), na side zostaną mocno wykadrowane (paski) — nie blocker, info dla wyboru slotu w `photos:apply` |
+
+Robot **strippuje wszystkie metadane** niezależnie od flag — output zawsze jest czysty.
+Flagi są tylko dla Ciebie żebyś wiedziała czy podpytać klienta.
+
+> ⚠️ **Ograniczenie:** robot wykrywa AI tylko jeśli silnik AI zostawił ślad w EXIF
+> (Adobe Firefly tak, Midjourney po uploadzie do hosta tak). Niektóre silniki
+> (Nano Banana, surowy DALL-E API) NIE zostawiają tagów — wtedy zdjęcie wygląda
+> dla robota jak czyste, mimo że jest AI. Pełne wykrywanie wymaga C2PA / Google
+> Vision SafeSearch — odłożone (vide `PHOTO_LIABILITY_SAFEGUARDS.md` warstwa 3).
+> Twoja manualna ocena „czy to wygląda jak prawdziwe zdjęcie pary" jest tu
+> bardziej niezawodna niż EXIF scan.
+
+## Co robot robi z plikami
+
+1. Skan EXIF (`exifr`)
+2. SHA-256 hash oryginału (audit trail z `PHOTO_LIABILITY_SAFEGUARDS.md` warstwa 3)
+3. Strip wszystkich metadanych + resize max 2000px (longest side) + JPEG quality 85 (`sharp`)
+4. SHA-256 hash output
+5. Save do `processed/[REF]/`
+6. Append raport JSON
+
+## Co robot NIE robi
+
+- ❌ Upload do Supabase Storage — to dorobimy gdy zbudujemy data-driven invitation template
+- ❌ Color grading AI pod paletę motywu — odłożone (vide PHOTO_PIPELINE_PLAN.md Faza 1)
+- ❌ Powiadomienia mailowe — niepotrzebne, odpalasz robot ręcznie
+- ❌ Auto-publikacja — Ty decydujesz co idzie do strony klienta
+
+## Mapowanie z SOP Nicolasa
+
+Robot uzupełnia (nie zastępuje) 5-krokowy SOP w `legal-templates/sop-przyjmowanie-zdjec.md`. SOP zostaje źródłem prawdy dla procesu — robot automatyzuje techniczne kroki.
+
+| Krok SOP | Manual (z SOP Nicolasa) | Robot (`npm run photos:scan`) |
+|---|---|---|
+| 1. Znak wodny | patrzysz okiem | ❌ poza scope — robisz manualnie |
+| 2. Metadane EXIF | SOP daje `mdls -name ...` (macOS only!) lub Cmd+I | ✅ **całkowicie zastępuje** — czyta Author/Copyright/Artist/Make/Model/Software/GPS, flaguje. Na Windows to **jedyny** wykonalny sposób — `mdls` nie istnieje |
+| 3. Wygląd profesjonalny | patrzysz okiem | ⚠️ wspomaga — flaga `PRO_CAMERA_NO_ARTIST` na bazie EXIF body name |
+| 4. Osoby na zdjęciu (poza parą) | patrzysz okiem | ❌ poza scope — robisz manualnie |
+| 5. Treści wrażliwe (dzieci, dokumenty) | patrzysz okiem | ❌ poza scope — robisz manualnie |
+| Strip metadanych przed publikacją | SOP tego nie wymaga | ✅ bonus — wszystkie metadane wycięte z plików w `processed/` |
+| Audit log dla due diligence | SOP: "1-2 linijki w Supabase notes" | ✅ pełny JSON w `photos/reports/[REF].json` z SHA-256 hashes |
+
+### Workflow zintegrowany (SOP + robot)
+
+1. Klient płaci 699 zł → dostaje mail żeby wysłać zdjęcia na `kontakt@zaproszeniaonline.com`
+2. Pobierasz załączniki z Gmaila → `photos/inbox/[REF]/`
+3. **`npm run photos:scan -- [REF]`** — robot robi krok 2 + 3 z SOP + strip metadanych
+4. **Patrzysz okiem** — robisz kroki 1, 4, 5 z SOP (znaki wodne, osoby, treści wrażliwe) na czystych plikach z `photos/processed/[REF]/`
+5. Jeśli flagi z robota wymagają wyjaśnienia z klientem — używaj szablonów maili z `email-templates/scenarios.md` (sc. 11)
+6. Audit log = `photos/reports/[REF].json` lokalnie. (Nicolas chciał notatki w `leads.notes` ale kolumna nie istnieje — czeka na decyzję czy dodać schema migration. Patrz memory [[supabase-schema-reality-2026-05-18]])
+7. Pliki z `processed/` idą do strony klienta (manualnie, jak teraz z `magda-tomek.html`)
+
+### Notatka do Supabase notes — szybki format
+
+Z JSON raportu możesz wyciągnąć linijkę typu:
+```
+2026-05-XX | 5 zdj | EXIF: czysty (4 pliki) + 1 flag GPS_PRESENT | brak znaków wodnych | klient potwierdził licencję mailem
+```
+
+## Upgrade ścieżka
+
+Jak liczba klientów przekroczy ~10/mc albo obróbka zacznie zżerać >3h/tydzień — czas na Fazę 1 z `PHOTO_PIPELINE_PLAN.md` (Apps Script + Gmail polling).
