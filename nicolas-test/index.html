@@ -87,10 +87,9 @@ const CONFIG = {
   ],
   // Brief: Nasza historia = no -> zero wpisow; ale renderujemy zdjecia w oznaczonych miejscach
   ourStory: [],
-  // 5 zdjec testowych Dominiki (commit d448dcf) wstawione w OZNACZONE MIEJSCA z demo:
-  //   ourStoryHeartPhoto -> centerpiece heart-shape (zamiast PhotoPlaceholder shape="heart")
-  //   ourStoryPhotos[0..2] -> lewa kolumna 3 placeholders
-  //   ourStoryPhotos[3..5] -> prawa kolumna (mamy 4, ostatni slot pusty / placeholder)
+  // ourStoryHeartPhoto -> centerpiece heart-shape (1 zdjecie)
+  // ourStoryPhotos -> side photos (0-6 sztuk), auto-split na 2 kolumny po ceil(N/2)
+  //   Pusta kolumna nie jest renderowana. Total max = 7 zdjec (1 heart + 6 side).
   ourStoryHeartPhoto: "photos/01-engagement-shoot.jpg",
   ourStoryPhotos: [
     "photos/02-restaurant-selfie.jpg",
@@ -249,7 +248,11 @@ function Timeline(){return (<section id="plan" style={{padding:"80px 24px",backg
 
 function OurStory(){
   const hasHeartPhoto = CONFIG.ourStoryHeartPhoto;
-  const hasSidePhotos = CONFIG.ourStoryPhotos && CONFIG.ourStoryPhotos.length > 0;
+  const sidePhotos = (CONFIG.ourStoryPhotos || []).filter(Boolean);
+  const hasSidePhotos = sidePhotos.length > 0;
+  const halfPoint = Math.ceil(sidePhotos.length / 2);
+  const leftPhotos = sidePhotos.slice(0, halfPoint);
+  const rightPhotos = sidePhotos.slice(halfPoint);
   return (<section id="historia" style={{padding:"80px 24px",background:`linear-gradient(180deg,${C.cream} 0%,${C.warm} 100%)`,textAlign:"center",scrollMarginTop:60,position:"relative",overflow:"hidden"}}>
     <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 60% 40% at 30% 20%,${C.gold}04 0%,transparent 60%)`,pointerEvents:"none"}}/>
     <div style={{position:"absolute",top:20,left:20,opacity:.05,pointerEvents:"none"}}><svg width="160" height="160" viewBox="0 0 160 160" fill="none"><path d="M10 10C30 30 50 60 80 80C50 100 30 130 10 150" stroke={C.gold} strokeWidth=".8"/><path d="M10 10C40 20 70 40 80 80C70 120 40 140 10 150" stroke={C.gold} strokeWidth=".5"/>{[30,60,90,120].map((y,i)=>(<circle key={i} cx={10+i*5} cy={y} r={2} fill="none" stroke={C.gold} strokeWidth=".3"/>))}</svg></div>
@@ -259,23 +262,27 @@ function OurStory(){
       : <PhotoPlaceholder shape="heart" w={280} label="miejsce na zdjęcie"/>
     }</div></Reveal>
     <div className="story-wrap" style={{display:"flex",gap:32,maxWidth:780,margin:"32px auto 0",justifyContent:"center",flexWrap:"wrap"}}>
+      {(leftPhotos.length > 0 || !hasSidePhotos) && (
       <div className="story-photos" style={{flex:"0 0 120px",display:"flex",flexDirection:"column",gap:12,alignItems:"center"}}>
-        {hasSidePhotos ? CONFIG.ourStoryPhotos.slice(0,3).map((url,i)=>(
+        {hasSidePhotos ? leftPhotos.map((url,i)=>(
           <div key={i} style={{width:110,height:150,borderRadius:6,overflow:"hidden",border:`1px solid ${C.gold}20`}}><img src={url} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
         )) : [0,1,2].map(i=>(
           <PhotoPlaceholder key={i} w={110} h={140} label="miejsce na zdjęcie"/>
         ))}
       </div>
+      )}
       <div className="story-text" style={{flex:"1 1 300px",maxWidth:420}}>
         {CONFIG.ourStory.map((s,i)=>(<Reveal key={i} delay={.1+i*.1}><div style={{display:"flex",gap:20,textAlign:"left",marginBottom:32,alignItems:"flex-start"}}><div style={{minWidth:56,textAlign:"center"}}><div className="story-dot" style={{width:12,height:12,borderRadius:"50%",border:`1.5px solid ${C.gold}`,margin:"4px auto 8px",background:`${C.gold}15`,boxShadow:`0 0 8px ${C.gold}20`}}/>{i<CONFIG.ourStory.length-1&&<div style={{width:1,height:40,background:`linear-gradient(to bottom,${C.gold}35,${C.gold}10)`,margin:"0 auto"}}/>}</div><div><p style={{fontFamily:F.body,fontSize:13,letterSpacing:4,textTransform:"uppercase",color:C.gold,marginBottom:4,fontWeight:600}}>{s.date}</p><p style={{fontFamily:F.display,fontSize:20,fontWeight:400,fontStyle:"italic",color:C.forest,marginBottom:6}}>{s.title}</p><p style={{fontFamily:F.body,fontSize:16,color:C.bark,lineHeight:1.8}}>{s.text}</p></div></div></Reveal>))}
       </div>
+      {(rightPhotos.length > 0 || !hasSidePhotos) && (
       <div className="story-photos" style={{flex:"0 0 120px",display:"flex",flexDirection:"column",gap:12,alignItems:"center",paddingTop:40}}>
-        {hasSidePhotos ? CONFIG.ourStoryPhotos.slice(3,6).map((url,i)=>(
+        {hasSidePhotos ? rightPhotos.map((url,i)=>(
           <div key={i} style={{width:110,height:150,borderRadius:6,overflow:"hidden",border:`1px solid ${C.gold}20`}}><img src={url} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
         )) : [0,1,2].map(i=>(
           <PhotoPlaceholder key={i} w={110} h={140} label="miejsce na zdjęcie"/>
         ))}
       </div>
+      )}
     </div>
   </section>);
 }

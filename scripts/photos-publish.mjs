@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 // Photo publication — interactive review + upload to Supabase Storage.
-// Reads photos/reports/[ORDER_ID].json, walks through each file asking
+// Reads photos/reports/[REF].json, walks through each file asking
 // [a]pproved / [r]ejected / [w]ait. After ALL files are resolved, asks
 // final confirmation and uploads approved files to Supabase Storage
-// bucket `lead-attachments/processed/[ORDER_ID]/`. Updates leads.notes
-// with publication summary.
+// bucket `invitation-photos/processed/[REF]/`.
+//
+// REF = własna nazwa folderu (np. "magda-tomek") LUB UUID z leads.id.
+// Audit log: lokalny JSON w photos/reports/[REF].json (zapis do leads.notes
+// pominięty — kolumna nie istnieje w aktualnej schemie, patrz memory
+// [[supabase-schema-reality-2026-05-18]]).
 //
 // Idempotent: re-run skips already-published files.
 //
@@ -22,7 +26,7 @@ const ROOT = resolve(fileURLToPath(import.meta.url), '..', '..');
 const REPORTS = join(ROOT, 'photos', 'reports');
 const PROCESSED = join(ROOT, 'photos', 'processed');
 
-const SUPABASE_BUCKET = 'lead-attachments';
+const SUPABASE_BUCKET = 'invitation-photos';
 const SUPABASE_PATH_PREFIX = 'processed';
 
 const STATUS_LABELS = {
@@ -100,47 +104,6 @@ async function uploadFileToStorage({ url, key, bucket, objectPath, body, content
   };
 }
 
-async function appendLeadNote(orderId, noteLine) {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) {
-    return { ok: false, reason: 'env_missing' };
-  }
-
-  try {
-    const getRes = await fetch(
-      `${url}/rest/v1/leads?order_id=eq.${encodeURIComponent(orderId)}&select=id,notes`,
-      { headers: { apikey: key, Authorization: `Bearer ${key}` } }
-    );
-    if (!getRes.ok) return { ok: false, reason: 'get_failed', status: getRes.status };
-    const rows = await getRes.json();
-    if (!Array.isArray(rows) || rows.length === 0) {
-      return { ok: false, reason: 'no_lead_match' };
-    }
-    const lead = rows[0];
-    const prefix = lead.notes ? `${lead.notes}\n` : '';
-    const newNotes = `${prefix}${noteLine}`;
-
-    const patchRes = await fetch(`${url}/rest/v1/leads?id=eq.${lead.id}`, {
-      method: 'PATCH',
-      headers: {
-        apikey: key,
-        Authorization: `Bearer ${key}`,
-        'Content-Type': 'application/json',
-        Prefer: 'return=minimal',
-      },
-      body: JSON.stringify({ notes: newNotes }),
-    });
-    if (!patchRes.ok) {
-      const errText = await patchRes.text();
-      return { ok: false, reason: 'patch_failed', status: patchRes.status, detail: errText };
-    }
-    return { ok: true, lead_id: lead.id };
-  } catch (err) {
-    return { ok: false, reason: 'exception', error: err.message };
-  }
-}
-
 async function reviewFile(rl, file, reportPath, report) {
   if (file.publication_status === 'published') {
     console.log(`\n📷 ${file.filename_in}  →  ✅ Już opublikowane (skip)`);
@@ -198,14 +161,23 @@ async function reviewFile(rl, file, reportPath, report) {
 }
 
 async function main() {
-  const orderId = process.argv[2];
+  const args = process.argv.slice(2).filter((a) => !a.startsWith('--'));
+  const flags = new Set(process.argv.slice(2).filter((a) => a.startsWith('--')));
+  const orderId = args[0];
+  const autoApprove = flags.has('--auto') || flags.has('--auto-approve');
+  const autoYes = flags.has('--yes') || flags.has('-y') || autoApprove;
+
   if (!orderId) {
-    console.error('Usage: npm run photos:publish -- ORDER_ID');
+    console.error('Usage: npm run photos:publish -- REF [--auto] [--yes]');
+    console.error('Example: npm run photos:publish -- magda-tomek');
+    console.error('         npm run photos:publish -- magda-tomek --auto   # accept all + upload bez pytań');
+    console.error('  (REF = własna nazwa folderu klienta lub UUID z leads.id)');
     process.exit(1);
   }
 
-  if (!/^[A-Z0-9-]{3,32}$/.test(orderId)) {
-    console.error(`✗ Invalid ORDER_ID: "${orderId}"`);
+  if (!/^[a-zA-Z0-9_-]{3,64}$/.test(orderId)) {
+    console.error(`✗ Invalid REF: "${orderId}"`);
+    console.error('  Expected: litery, cyfry, myślniki, podkreślenia (3-64 znaków)');
     process.exit(1);
   }
 
@@ -233,13 +205,25 @@ async function main() {
   const rl = createInterface({ input, output, terminal: process.stdin.isTTY });
 
   let waitedOut = false;
-  for (const file of report.files) {
-    const result = await reviewFile(rl, file, reportPath, report);
-    if (result === 'wait') {
-      console.log(`\n⏸  Przerwane (wait). Stan zapisany — wróć później przez:`);
-      console.log(`     npm run photos:publish -- ${orderId}`);
-      waitedOut = true;
-      break;
+  if (autoApprove) {
+    console.log(`   --auto: zatwierdzam wszystkie pending_review bez pytania`);
+    for (const file of report.files) {
+      if (file.publication_status === 'pending_review') {
+        file.publication_status = 'approved';
+        file.publication_notes = 'auto-approved (--auto flag)';
+        file.publication_decided_at = new Date().toISOString();
+      }
+    }
+    await saveReport(reportPath, report);
+  } else {
+    for (const file of report.files) {
+      const result = await reviewFile(rl, file, reportPath, report);
+      if (result === 'wait') {
+        console.log(`\n⏸  Przerwane (wait). Stan zapisany — wróć później przez:`);
+        console.log(`     npm run photos:publish -- ${orderId}`);
+        waitedOut = true;
+        break;
+      }
     }
   }
 
@@ -274,10 +258,16 @@ async function main() {
     process.exit(1);
   }
 
-  const confirm = (await rl.question(
-    `\nUpload ${toUpload.length} ${toUpload.length === 1 ? 'pliku' : 'plików'} do Supabase Storage ` +
-      `(${SUPABASE_BUCKET}/${SUPABASE_PATH_PREFIX}/${orderId}/)? [y/N]: `
-  )).trim().toLowerCase();
+  let confirm;
+  if (autoYes) {
+    console.log(`\n--yes: upload ${toUpload.length} plików do ${SUPABASE_BUCKET}/${SUPABASE_PATH_PREFIX}/${orderId}/`);
+    confirm = 'y';
+  } else {
+    confirm = (await rl.question(
+      `\nUpload ${toUpload.length} ${toUpload.length === 1 ? 'pliku' : 'plików'} do Supabase Storage ` +
+        `(${SUPABASE_BUCKET}/${SUPABASE_PATH_PREFIX}/${orderId}/)? [y/N]: `
+    )).trim().toLowerCase();
+  }
 
   if (confirm !== 'y' && confirm !== 'yes' && confirm !== 't' && confirm !== 'tak') {
     console.log(`\nAnulowane. Stan zapisany.\n`);
@@ -320,25 +310,14 @@ async function main() {
 
   console.log(`\n   Upload: ${uploadedCount} OK · ${uploadErrors.length} błędów`);
 
-  // Auto-notatka w leads.notes
   const totalPublished = report.files.filter((f) => f.publication_status === 'published').length;
   const totalRejected = report.files.filter((f) => f.publication_status === 'rejected').length;
-  const ts = new Date().toISOString().slice(0, 16).replace('T', ' ');
-  const noteLine =
-    `${ts} | photos:publish | ${uploadedCount} zdj opublikowane do ${SUPABASE_BUCKET}/${SUPABASE_PATH_PREFIX}/${orderId}/ ` +
-    `(razem ${totalPublished}/${report.files.length}, odrzucone: ${totalRejected})`;
 
-  console.log(`\n📝 Zapisuję notatkę do leads.notes...`);
-  const noteResult = await appendLeadNote(orderId, noteLine);
-  if (noteResult.ok) {
-    console.log(`   ✓ Dopisano do leads.id=${noteResult.lead_id}`);
-  } else {
-    console.log(`   ⚠ Nie udało się: ${noteResult.reason}${noteResult.detail ? ' — ' + noteResult.detail : ''}`);
-    console.log(`   Dopisz ręcznie w Supabase Studio (lead.order_id=${orderId}):`);
-    console.log(`   "${noteLine}"`);
-  }
-
-  console.log(`\n✅ Gotowe. Nicolas zobaczy pliki w Supabase Studio przy leadzie ${orderId}.\n`);
+  console.log(`\n✅ Gotowe.`);
+  console.log(`   Bucket: ${SUPABASE_BUCKET}/${SUPABASE_PATH_PREFIX}/${orderId}/`);
+  console.log(`   Status: ${totalPublished}/${report.files.length} opublikowanych, ${totalRejected} odrzuconych`);
+  console.log(`   Audit log: photos/reports/${orderId}.json (lokalnie, z SHA-256 + decyzjami per plik)`);
+  console.log(`   Nicolas widzi pliki w Supabase Studio → Storage → ${SUPABASE_BUCKET}\n`);
   await rl.close();
 }
 

@@ -138,6 +138,19 @@ function determineFlags(exif, fileSize, dims) {
     });
   }
 
+  // Format zdjęcia: ramki w nicolas-test/index.html to heart 1:1 (centerpiece koło)
+  // i side 11:15 (pionowe portrety). Poziome zdjęcia zostaną mocno wykadrowane.
+  if (dims.width && dims.height) {
+    const aspect = dims.width / dims.height;
+    if (aspect > 1.1) {
+      flags.push({
+        code: 'LANDSCAPE_ORIENTATION',
+        severity: 'yellow',
+        detail: `${dims.width}×${dims.height} (aspekt ${aspect.toFixed(2)}:1) — na heart spasuje (środek), na side mocno wykadruje`,
+      });
+    }
+  }
+
   return flags;
 }
 
@@ -168,9 +181,16 @@ async function fetchClientFromSupabase(orderId) {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return { source: 'env_missing', email: null, name: null };
 
+  // orderId może być UUID (z leads.id) LUB własną nazwą folderu (np. "magda-tomek").
+  // Tylko UUID ma sens jako lookup do tabeli leads — slug nie znajdzie się w bazie.
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!UUID_RE.test(orderId)) {
+    return { source: 'slug_not_uuid', email: null, name: null };
+  }
+
   try {
     const response = await fetch(
-      `${url}/rest/v1/leads?order_id=eq.${encodeURIComponent(orderId)}&select=email,name`,
+      `${url}/rest/v1/leads?id=eq.${encodeURIComponent(orderId)}&select=email,name`,
       { headers: { apikey: key, Authorization: `Bearer ${key}` } }
     );
     if (!response.ok) {
@@ -342,14 +362,15 @@ async function scanFile(inboxPath, processedPath) {
 async function main() {
   const orderId = process.argv[2];
   if (!orderId) {
-    console.error('Usage: npm run photos:scan -- ORDER_ID');
-    console.error('Example: npm run photos:scan -- KOW-MAZ-A1B2');
+    console.error('Usage: npm run photos:scan -- REF');
+    console.error('Example: npm run photos:scan -- magda-tomek');
+    console.error('  (REF = własna nazwa folderu klienta lub UUID z leads.id)');
     process.exit(1);
   }
 
-  if (!/^[A-Z0-9-]{3,32}$/.test(orderId)) {
-    console.error(`✗ Invalid ORDER_ID: "${orderId}"`);
-    console.error('  Expected: uppercase letters, digits, dashes (3-32 chars)');
+  if (!/^[a-zA-Z0-9_-]{3,64}$/.test(orderId)) {
+    console.error(`✗ Invalid REF: "${orderId}"`);
+    console.error('  Expected: litery, cyfry, myślniki, podkreślenia (3-64 znaków)');
     process.exit(1);
   }
 

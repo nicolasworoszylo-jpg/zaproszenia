@@ -8,18 +8,18 @@ Wariant **(a) manual** z `PHOTO_PIPELINE_PLAN.md` — bez Gmaila API, bez fal.ai
 ```
 photos/
 ├── inbox/              ← Ty wgrywasz tutaj (Save attachments z Gmaila)
-│   └── KOW-MAZ-A1B2/   ← jeden folder per zamówienie (ORDER_ID z `leads.order_id`)
+│   └── magda-tomek/   ← jeden folder per zamówienie (REF = własna nazwa folderu (np. `magda-tomek`) lub UUID z `leads.id`)
 │       ├── 01.jpg
 │       ├── 02.jpg
 │       └── ...
 ├── processed/          ← Robot wypluwa tutaj (czyste, gotowe na stronę)
-│   └── KOW-MAZ-A1B2/
+│   └── magda-tomek/
 │       ├── 01.jpg      ← EXIF stripped, max 2000px, JPEG q85
 │       └── ...
 ├── reports/            ← Robot zapisuje tutaj raport po każdym skanie
-│   └── KOW-MAZ-A1B2.json
+│   └── magda-tomek.json
 └── drafts/             ← Treść proponowanych maili do klienta (gdy flagi licencyjne)
-    └── KOW-MAZ-A1B2/
+    └── magda-tomek/
         └── mail-03-greek-vacation.txt
 ```
 
@@ -30,21 +30,21 @@ W repo żyje tylko ten README + struktura folderów.
 ## Workflow (3 etapy: scan → wyślij ręcznie → publish → handoff)
 
 ### A. Scan + propozycje maila
-1. Klient wysyła zdjęcia na maila z tematem `ZDJĘCIA [KOW-MAZ-A1B2]`
-2. Otwierasz Gmail → Save attachments → folder `photos/inbox/KOW-MAZ-A1B2/`
-3. Odpalasz `npm run photos:scan -- KOW-MAZ-A1B2`
+1. Klient wysyła zdjęcia na maila z tematem `ZDJĘCIA [magda-tomek]`
+2. Otwierasz Gmail → Save attachments → folder `photos/inbox/magda-tomek/`
+3. Odpalasz `npm run photos:scan -- magda-tomek`
 4. Wynik:
    - Wszystkie pliki dostają status `pending_review` (nawet czyste — bo trzeba sprawdzić okiem znaki wodne, osoby, dokumenty)
-   - Flagi 🟠 typu `PRO_CAMERA_NO_ARTIST` / `COPYRIGHT_PRESENT` / `LARGE_FILE` → robot generuje treść proponowanego maila do `photos/drafts/[ORDER_ID]/mail-[plik].txt` **i wypisuje ją w terminalu** (gotowe do `Ctrl+C`)
+   - Flagi 🟠 typu `PRO_CAMERA_NO_ARTIST` / `COPYRIGHT_PRESENT` / `LARGE_FILE` → robot generuje treść proponowanego maila do `photos/drafts/[REF]/mail-[plik].txt` **i wypisuje ją w terminalu** (gotowe do `Ctrl+C`)
    - Pozostałe flagi (`GPS_PRESENT`, `AI_SOFTWARE`) → tylko informacyjne, bez maila
 
 **Robot NIE wysyła nic sam.** Treść drafta służy tylko do skopiowania.
 
 ### B. Wyślij draft ręcznie i czekaj na odpowiedź klienta (do 72h)
-Jeśli chcesz wysłać draft do klienta — kopiujesz treść z terminala (albo otwierasz `photos/drafts/[ORDER_ID]/mail-*.txt`) i wysyłasz z własnej skrzynki. Klient odpisuje na Twój email → notujesz mentalnie decyzję dla każdego pliku — wykorzystasz w kroku C.
+Jeśli chcesz wysłać draft do klienta — kopiujesz treść z terminala (albo otwierasz `photos/drafts/[REF]/mail-*.txt`) i wysyłasz z własnej skrzynki. Klient odpisuje na Twój email → notujesz mentalnie decyzję dla każdego pliku — wykorzystasz w kroku C.
 
 ### C. Publikacja (interactive review + upload do Supabase)
-`npm run photos:publish -- KOW-MAZ-A1B2` — robot iteruje po wszystkich plikach:
+`npm run photos:publish -- magda-tomek` — robot iteruje po wszystkich plikach:
 - Pokazuje status, flagi, info o mailu (jeśli wysłany)
 - Pyta `[a]pproved / [r]ejected / [w]ait`
 - `a` → opcjonalna notatka → status `approved`
@@ -52,16 +52,16 @@ Jeśli chcesz wysłać draft do klienta — kopiujesz treść z terminala (albo 
 - `w` → wait, przerywa publikację, stan zostaje (możesz wrócić)
 
 Po wszystkich rozstrzygniętych: finalne pytanie *„Upload N plików do Supabase? [y/N]"*. Po `y`:
-- Pliki przechodzą do `lead-attachments/processed/[ORDER_ID]/` w Supabase Storage (bucket Nicolasa, już istnieje)
-- Auto-notatka do `leads.notes` z podsumowaniem („3/5 opublikowane, 2 odrzucone, audit OK")
+- Pliki przechodzą do `invitation-photos/processed/[REF]/` w Supabase Storage (bucket Nicolasa, już istnieje)
 - Każdy plik dostaje status `published` + `upload_state` z URL-em
+- Audit log: `photos/reports/[REF].json` lokalnie (SHA-256 hashes + decyzje per plik). Zapis do `leads.notes` pominięty bo kolumna nie istnieje w aktualnej schemie — patrz memory [[supabase-schema-reality-2026-05-18]]
 
 Re-run komendy jest bezpieczny (idempotent — pomija pliki już approved / rejected / published).
 
 ### D. Handoff do Nicolasa
-Nicolas loguje się do Supabase Studio, przy leadzie (`order_id=KOW-MAZ-A1B2`) widzi:
+Nicolas loguje się do Supabase Studio, przy leadzie (`order_id=magda-tomek`) widzi:
 - Notatkę w `notes` ze statusem zdjęć
-- Pliki w bucket `lead-attachments/processed/KOW-MAZ-A1B2/` (download przez Studio UI)
+- Pliki w bucket `invitation-photos/processed/magda-tomek/` (download przez Studio UI)
 
 Nicolas dalej buduje resztę strony klienta i wstawia zdjęcia.
 
@@ -71,7 +71,7 @@ Robot potrzebuje `.env` z kluczami — patrz `.env.example` w katalogu projektu:
 
 | Klucz | Po co | Bez klucza |
 |---|---|---|
-| `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` | auto-fetch emaila klienta po ORDER_ID (scan, żeby wypełnić nagłówek `DO:` w drafcie), upload do Storage + notatka w `leads.notes` (publish) | `photos:scan` wstawi placeholder `<EMAIL_KLIENTA>` w drafcie (wpisujesz email ręcznie kiedy będziesz wysyłać), `photos:publish` przejdzie przez review ale pada na uploadzie |
+| `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` | auto-fetch emaila klienta z `leads.id` (tylko jeśli REF to UUID — nie slug typu `magda-tomek`); upload do Storage `invitation-photos` (publish) | `photos:scan` zawsze wstawia placeholder `<EMAIL_KLIENTA>` w drafcie (wpisujesz email ręcznie kiedy wysyłasz), `photos:publish` przejdzie przez review ale pada na uploadzie |
 
 ## Co robot sprawdza (EXIF flagi)
 
@@ -82,6 +82,7 @@ Robot potrzebuje `.env` z kluczami — patrz `.env.example` w katalogu projektu:
 | 🟠 `PRO_CAMERA_NO_ARTIST` | Body zawodowe (Canon R5/R6/Sony A1/A7R/Nikon Z9/Hasselblad/Leica) ALE pole `Artist` puste lub ≠ klient | Prawdopodobnie pracował fotograf zawodowy. Sprawdź licencję (kto ma copyright?) |
 | 🟠 `COPYRIGHT_PRESENT` | Pole `Copyright` w EXIF wypełnione | Często fotograf wpisuje siebie. Sprawdź czy pasuje do klienta |
 | 🟠 `LARGE_FILE` | Plik >8 MB lub rozdzielczość >24 MP | Prawdopodobnie z sesji komercyjnej. Sprawdź licencję |
+| 🟡 `LANDSCAPE_ORIENTATION` | Zdjęcie poziome (W/H > 1.1) | Ramki w `nicolas-test/index.html` to heart 1:1 (kwadrat → koło) i side 11:15 (pionowe). Poziome lepiej pasują na heart (środek), na side zostaną mocno wykadrowane (paski) — nie blocker, info dla wyboru slotu w `photos:apply` |
 
 Robot **strippuje wszystkie metadane** niezależnie od flag — output zawsze jest czysty.
 Flagi są tylko dla Ciebie żebyś wiedziała czy podpytać klienta.
@@ -100,7 +101,7 @@ Flagi są tylko dla Ciebie żebyś wiedziała czy podpytać klienta.
 2. SHA-256 hash oryginału (audit trail z `PHOTO_LIABILITY_SAFEGUARDS.md` warstwa 3)
 3. Strip wszystkich metadanych + resize max 2000px (longest side) + JPEG quality 85 (`sharp`)
 4. SHA-256 hash output
-5. Save do `processed/[ORDER_ID]/`
+5. Save do `processed/[REF]/`
 6. Append raport JSON
 
 ## Co robot NIE robi
@@ -122,16 +123,16 @@ Robot uzupełnia (nie zastępuje) 5-krokowy SOP w `legal-templates/sop-przyjmowa
 | 4. Osoby na zdjęciu (poza parą) | patrzysz okiem | ❌ poza scope — robisz manualnie |
 | 5. Treści wrażliwe (dzieci, dokumenty) | patrzysz okiem | ❌ poza scope — robisz manualnie |
 | Strip metadanych przed publikacją | SOP tego nie wymaga | ✅ bonus — wszystkie metadane wycięte z plików w `processed/` |
-| Audit log dla due diligence | SOP: "1-2 linijki w Supabase notes" | ✅ pełny JSON w `photos/reports/[ORDER_ID].json` z SHA-256 hashes |
+| Audit log dla due diligence | SOP: "1-2 linijki w Supabase notes" | ✅ pełny JSON w `photos/reports/[REF].json` z SHA-256 hashes |
 
 ### Workflow zintegrowany (SOP + robot)
 
 1. Klient płaci 699 zł → dostaje mail żeby wysłać zdjęcia na `kontakt@zaproszeniaonline.com`
-2. Pobierasz załączniki z Gmaila → `photos/inbox/[ORDER_ID]/`
-3. **`npm run photos:scan -- [ORDER_ID]`** — robot robi krok 2 + 3 z SOP + strip metadanych
-4. **Patrzysz okiem** — robisz kroki 1, 4, 5 z SOP (znaki wodne, osoby, treści wrażliwe) na czystych plikach z `photos/processed/[ORDER_ID]/`
+2. Pobierasz załączniki z Gmaila → `photos/inbox/[REF]/`
+3. **`npm run photos:scan -- [REF]`** — robot robi krok 2 + 3 z SOP + strip metadanych
+4. **Patrzysz okiem** — robisz kroki 1, 4, 5 z SOP (znaki wodne, osoby, treści wrażliwe) na czystych plikach z `photos/processed/[REF]/`
 5. Jeśli flagi z robota wymagają wyjaśnienia z klientem — używaj szablonów maili z `email-templates/scenarios.md` (sc. 11)
-6. Notatka 1-2 linijki w Supabase notes leada (Nicolas chce takiego logu) — możesz copy-paste z JSON raportu
+6. Audit log = `photos/reports/[REF].json` lokalnie. (Nicolas chciał notatki w `leads.notes` ale kolumna nie istnieje — czeka na decyzję czy dodać schema migration. Patrz memory [[supabase-schema-reality-2026-05-18]])
 7. Pliki z `processed/` idą do strony klienta (manualnie, jak teraz z `magda-tomek.html`)
 
 ### Notatka do Supabase notes — szybki format
