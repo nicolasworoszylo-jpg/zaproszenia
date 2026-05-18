@@ -22,6 +22,8 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Added** (2026-05-18, sekcja 03 Zdjecia pary): wskazowka formatu kadru w `.lf-photos-mail-info` - zdjecie glowne (serce u gory) w kwadracie 1:1, zdjecia boczne w pionie 3:4/4:5. Reassurance ze inne proporcje tez OK (kadrowanie w obrobce). Decyzja Dominiki po zweryfikowaniu finalnych wygladow - klient od razu wysyla zdjecia w optymalnym formacie zamiast korekt w obrobce.
+
 - **Fixed CRITICAL** (2026-05-18, nicolas-test "ladowanie zaproszenia..." stuck):
   - **Root cause**: CSP `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.vercel-insights.com https://va.vercel-scripts.com` NIE pozwalal na `https://unpkg.com` -> 4 CDN scripts (react/react-dom/supabase/babel-standalone) zablokowane -> React nigdy nie mountowal -> kurtyna `#demo-loading` stuck. Strona dziala lokalnie (Python http.server bez CSP), padla na Vercel z CSP.
   - **Fix**: self-host vendor + pre-compile JSX (eliminacja Babel-standalone):
