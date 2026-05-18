@@ -38,6 +38,44 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 - **Added**: `scripts/photos-send.mjs` + `npm run photos:send -- ORDER_ID` — wysyłka draftów mailowych z `kontakt@zaproszeniaonline.com` przez **Resend** (ta sama infrastruktura co `notify-payment-success`). CLI prompt `[y]es / [n]o / [e]dit / [q]uit` per draft, BCC + Reply-To do `kontakt@` (kopia w skrzynce + odpowiedzi klientów wracają tam). Walidacja: blokuje send gdy `to` zawiera `<EMAIL_KLIENTA>` placeholder. Log każdego wysłanego maila do `photos/sent/[ORDER_ID]/mail-[plik].json` z Resend message ID. Wymaga `.env` z `RESEND_API_KEY` + `SUPABASE_URL`/`SERVICE_ROLE_KEY` (klucze nie commitowane, vide `.env.example`) _(2026-05-16)_
 - **Changed**: `scripts/photos-scan.mjs` rozszerzony o **automatyczną generację draftów mailowych** dla flag licencyjnych (`PRO_CAMERA_NO_ARTIST` / `COPYRIGHT_PRESENT` / `LARGE_FILE`). Drafty JSON w `photos/drafts/[ORDER_ID]/mail-[plik].json` z gotową treścią po polsku (formalne „Państwo", podpis zespołowy, 72h deadline w polskim formacie Europe/Warsaw, 2 rundy poprawek, § 8c Regulaminu). Adres klienta auto-fetch z Supabase `leads.email` po `order_id` jeśli klucze w `.env`, inaczej `<EMAIL_KLIENTA>` placeholder. Wiele flag dla jednego pliku → conditional fragment łączący obserwacje w jedno zdanie. Dodano `dotenv` i `resend` jako dependencies. `.gitignore` rozszerzony o `photos/drafts/`, `photos/sent/` (treści mailowe NIE wchodzą do gita) _(2026-05-16)_
 - **Added**: `scripts/photos-scan.mjs` + `npm run photos:scan -- ORDER_ID` — lokalny robot CLI (Node ESM, exifr + sharp) do skanu EXIF zdjęć od klientów. 5 flag: AI_SOFTWARE (orange), GPS_PRESENT, PRO_CAMERA_NO_ARTIST, COPYRIGHT_PRESENT, LARGE_FILE. Strip wszystkich metadanych + resize max 2000px JPEG q85 + SHA-256 hash audit + JSON raport. Automatyzuje krok 2 SOP Nicolasa (`legal-templates/sop-przyjmowanie-zdjec.md`) — na Windows komenda `mdls` z SOP nie istnieje, robot jest tu jedyną ścieżką. Pełni rolę warstwy 3 (technicznej) z `PHOTO_LIABILITY_SAFEGUARDS.md` przy wariancie (a) manual. `photos/inbox/`, `photos/processed/`, `photos/reports/` w `.gitignore` (zdjęcia klientów nigdy nie wchodzą do gita). Dokumentacja w `photos/README.md` + sekcja 0 w `PHOTO_PIPELINE_PLAN.md` z aktualnym stanem decyzji _(2026-05-16)_
+- **Fixed** (vercel rewrite): regex source `/(.*)` zamiast `:path+` dla obslugi root URL subdomeny.
+
+- **Fixed** (2026-05-18, subdomena rewrite): vercel.json `rewrites` z `source:/:path*` nie obslugiwal poprawnie root URL `/` (path* mialo problem z empty match - dawalo strone glowna zamiast `/nicolas-test/index.html`). Rozbito na 2 reguly: `source:/` dla root + `source:/:path+` dla reszty (min 1 segment).
+
+- **Fixed CRITICAL** (2026-05-18, nicolas-test stuck "ladowanie..." - DRUGI bug niezalezny od CSP):
+  - Root cause: URL `https://zaproszeniaonline.com/nicolas-test` (bez trailing slash) powodowal ze browser interpretowal base URL jako root domeny `https://zaproszeniaonline.com/`. Relatywne `src="vendor/react.min.js"` rozwijaly sie do `https://zaproszeniaonline.com/vendor/react.min.js` (GLOWNY /vendor/, nie `/nicolas-test/vendor/`). Pliki react/react-dom/supabase byly tam (200), ale `vendor/app.js` w glownym /vendor/ NIE istnieje (jest tylko demo-compiled.js i magda-compiled.js) -> 404 -> React nigdy nie mountuje -> kurtyna `#demo-loading` stuck.
+  - Why nie zauwazone wczesniej: curl `https://zaproszeniaonline.com/nicolas-test` zwracal poprawny HTML i WSZYSTKIE assety 200 (bo curl nie podaza za relative paths w response, sprawdzal absolute URLe). Symptom widoczny tylko w real browser ktory wykonuje JS i rozwija relative paths.
+  - Fix: absolute paths z slug prefix wszedzie w HTML (`<script src="/nicolas-test/vendor/app.js">`) + w CONFIG (`ourStoryHeartPhoto: "/nicolas-test/photos/..."`). Update `scripts/new-client.py` - auto prefix per slug dla wszystkich nowych klientow.
+  - Lesson learned dla template: wszystkie kolejne klienty MUSZA miec absolute paths z `/<slug>/` prefix (bug uniwersalny dla CleanURLs+folder strategy).
+
+- **Added** (2026-05-18, sekcja 03 Zdjecia pary): wskazowka formatu kadru w `.lf-photos-mail-info` - zdjecie glowne (serce u gory) w kwadracie 1:1, zdjecia boczne w pionie 3:4/4:5. Reassurance ze inne proporcje tez OK (kadrowanie w obrobce). Decyzja Dominiki po zweryfikowaniu finalnych wygladow - klient od razu wysyla zdjecia w optymalnym formacie zamiast korekt w obrobce.
+
+- **Fixed CRITICAL** (2026-05-18, nicolas-test "ladowanie zaproszenia..." stuck):
+  - **Root cause**: CSP `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.vercel-insights.com https://va.vercel-scripts.com` NIE pozwalal na `https://unpkg.com` -> 4 CDN scripts (react/react-dom/supabase/babel-standalone) zablokowane -> React nigdy nie mountowal -> kurtyna `#demo-loading` stuck. Strona dziala lokalnie (Python http.server bez CSP), padla na Vercel z CSP.
+  - **Fix**: self-host vendor + pre-compile JSX (eliminacja Babel-standalone):
+    - `nicolas-test/vendor/` + `_template_klient/vendor/`: lokalne kopie `react.min.js` (10 KB), `react-dom.min.js` (132 KB), `supabase.min.js` (111 KB).
+    - `nicolas-test/vendor/app.js` (61 KB): pre-compiled JSX przez `npx esbuild --minify --format=iife --target=es2020`. Wycieta inline `<script type="text/babel">` + Babel-standalone CDN.
+    - Drugi CSP block: `@import url('https://fonts.googleapis.com/...')` w inline `<style>` JSX byl rownież blokowany (`style-src` bez googleapis). Fix: self-host fontow w `nicolas-test/fonts/` (Playfair/Cormorant/DMMono `.woff2`) + `<link rel="stylesheet" href="fonts/fonts.css">` w head.
+  - **Wynik**: payload klienta `index.html` 71 KB -> **2.7 KB**, plus vendor cached przez Vercel CDN (immutable max-age=1y, shared cross-klient). Wyzsza wydajnosc + niezaleznosc od unpkg/Google Fonts uptime.
+  - **Aktualizacja `scripts/new-client.py`**: pipeline rozszerzony o esbuild step (auto-compile JSX per klient) + swap inline script tag na `vendor/app.js`. Wszystkie nowe klienty same self-host + same pre-compile.
+
+- **Added** (2026-05-17, OPTYMALIZACJA dla nowych klientow):
+  - `_template_klient/` - bazowy folder z czystym `index.html` (kopia nicolas-test) + `brief.example.json` + `README.md`.
+  - `scripts/new-client.py` - generator klienta (252 linie Python): czyta brief JSON, kopiuje template, sed-replace CONFIG/paleta/meta/INVITATION_SLUG, kopiuje zdjecia, updateuje vercel.json (host-based rewrite), commit+push.
+  - 4 palety lock przez brief: `forest`/`navy`/`bordo`/`terracotta`.
+  - Workflow nowego klienta: ~2 min od briefu do live URL (przed = ~30 min recznych edycji).
+  - `_template_klient/` w `.vercelignore` - nie serwowane publicznie.
+  - **DNS strategia (3 opcje)** udokumentowane w `_template_klient/README.md`:
+    1. **Wildcard** `*.zaproszeniaonline.com` (RAZ NA ZAWSZE) - OVH CNAME + Vercel CLI, dziala dla wszystkich przyszlych klientow.
+    2. **Per-klient** A record - kazdy klient wymaga edycji OVH.
+    3. **Path-based** `zaproszeniaonline.com/<slug>/` - dziala natychmiast bez DNS (fallback).
+
+- **Fixed** (2026-05-17 v2.2, nicolas-test - wyciecie Gallery + NAV cleanup):
+  - Wyciety `<Gallery/>` z `App` render (brief: galeria=no, puste `guestPhotosUrl`/`photographerGalleryUrl` dawaly UX bug - przyciski "Dodaj zdjecia"/"Zobacz galerie" linkowaly do "").
+  - `NAV` array: usuniete `{label:"Galeria",id:"galeria"}` (6 itemow zamiast 7).
+  - `og:description`: usuniete "galeria zdjec" (zgodnosc z brief).
+  - Funkcja `Gallery()` zostawiona w kodzie (martwy kod, nieuzywany w render) - nie usuwamy bo to kopia 1:1 demo.
+
 - **Fixed** (2026-05-16 v2.1, nicolas-test podgladowe poprawki post-deploy):
   - Heart photo (OurStory `ourStoryHeartPhoto`): demo's `padding-bottom:100%` aspect hack failowal gdy mobile CSS `.heart-ph{width:200px!important}` zmuszal 200x200 wrapper. Image `width:100%/height:100%` z `height:0` content area dawal computed `left:98px`. Fix: nowoczesny `aspect-ratio:1/1` + `inset:0` na img.
   - Supabase CDN: `unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js` 404 (path zmieniony) -> `dist/umd/supabase.js`.
