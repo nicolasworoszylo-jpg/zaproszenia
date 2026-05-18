@@ -230,7 +230,7 @@ def main():
     # 2. Zdjecia
     copy_photos(brief, target, args.photos)
 
-    # 3. Podmienia kod HTML
+    # 3. Podmienia kod HTML (inline JSX)
     html_path = target / "index.html"
     html = html_path.read_text(encoding="utf-8")
     html = replace_config(html, brief)
@@ -240,7 +240,32 @@ def main():
     html_path.write_text(html, encoding="utf-8")
     print(f"  + podmieniono CONFIG + paleta={brief['palette']} + meta + slug")
 
-    # 4. Vercel rewrite
+    # 4. Pre-compile JSX (esbuild) -> vendor/app.js + swap script tag
+    extract_pat = re.compile(r'(<script type="text/babel"[^>]*>)(.*?)(</script>)', re.S)
+    m = extract_pat.search(html)
+    if m:
+        jsx = m.group(2)
+        jsx_path = target / "_app.jsx"
+        jsx_path.write_text(jsx, encoding="utf-8")
+        app_js = target / "vendor" / "app.js"
+        r = subprocess.run(
+            ["npx", "--yes", "esbuild", str(jsx_path),
+             "--target=es2020", "--minify", "--format=iife",
+             f"--outfile={app_js}"],
+            capture_output=True, text=True,
+        )
+        if r.returncode != 0:
+            print(f"  ✗ esbuild error: {r.stderr}")
+            sys.exit(1)
+        jsx_path.unlink()
+        # Swap inline script -> compiled
+        html = extract_pat.sub('<script defer src="vendor/app.js"></script>', html)
+        html_path.write_text(html, encoding="utf-8")
+        print(f"  + esbuild JSX -> vendor/app.js ({app_js.stat().st_size:,} bytes)")
+    else:
+        print(f"  ⚠ Brak inline JSX w template - skip esbuild")
+
+    # 5. Vercel rewrite
     add_vercel_rewrite(slug)
 
     # 5. Git (opcjonalne)

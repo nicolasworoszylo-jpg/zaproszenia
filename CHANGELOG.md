@@ -22,6 +22,15 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Fixed CRITICAL** (2026-05-18, nicolas-test "ladowanie zaproszenia..." stuck):
+  - **Root cause**: CSP `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.vercel-insights.com https://va.vercel-scripts.com` NIE pozwalal na `https://unpkg.com` -> 4 CDN scripts (react/react-dom/supabase/babel-standalone) zablokowane -> React nigdy nie mountowal -> kurtyna `#demo-loading` stuck. Strona dziala lokalnie (Python http.server bez CSP), padla na Vercel z CSP.
+  - **Fix**: self-host vendor + pre-compile JSX (eliminacja Babel-standalone):
+    - `nicolas-test/vendor/` + `_template_klient/vendor/`: lokalne kopie `react.min.js` (10 KB), `react-dom.min.js` (132 KB), `supabase.min.js` (111 KB).
+    - `nicolas-test/vendor/app.js` (61 KB): pre-compiled JSX przez `npx esbuild --minify --format=iife --target=es2020`. Wycieta inline `<script type="text/babel">` + Babel-standalone CDN.
+    - Drugi CSP block: `@import url('https://fonts.googleapis.com/...')` w inline `<style>` JSX byl rownież blokowany (`style-src` bez googleapis). Fix: self-host fontow w `nicolas-test/fonts/` (Playfair/Cormorant/DMMono `.woff2`) + `<link rel="stylesheet" href="fonts/fonts.css">` w head.
+  - **Wynik**: payload klienta `index.html` 71 KB -> **2.7 KB**, plus vendor cached przez Vercel CDN (immutable max-age=1y, shared cross-klient). Wyzsza wydajnosc + niezaleznosc od unpkg/Google Fonts uptime.
+  - **Aktualizacja `scripts/new-client.py`**: pipeline rozszerzony o esbuild step (auto-compile JSX per klient) + swap inline script tag na `vendor/app.js`. Wszystkie nowe klienty same self-host + same pre-compile.
+
 - **Added** (2026-05-17, OPTYMALIZACJA dla nowych klientow):
   - `_template_klient/` - bazowy folder z czystym `index.html` (kopia nicolas-test) + `brief.example.json` + `README.md`.
   - `scripts/new-client.py` - generator klienta (252 linie Python): czyta brief JSON, kopiuje template, sed-replace CONFIG/paleta/meta/INVITATION_SLUG, kopiuje zdjecia, updateuje vercel.json (host-based rewrite), commit+push.
