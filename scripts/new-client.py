@@ -135,7 +135,10 @@ def replace_meta(html: str, brief: dict) -> str:
     theme = PALETTE_THEME.get(brief["palette"], "#35101D")
     subdomain = f"https://{slug}.zaproszeniaonline.com/"
     hero_photo = brief.get("photos", {}).get("heart", "")
-    og_image = subdomain.rstrip("/") + (hero_photo if hero_photo else "/photos/01.jpg")
+    if hero_photo.startswith("http"):
+        og_image = hero_photo  # absolutny URL (Supabase Storage)
+    else:
+        og_image = subdomain.rstrip("/") + (hero_photo if hero_photo else "/photos/01.jpg")
 
     html = re.sub(r"<title>.*?</title>", f"<title>{title}</title>", html)
     html = re.sub(
@@ -195,7 +198,18 @@ def add_vercel_rewrite(slug: str):
 
 
 def copy_photos(brief: dict, target_dir: Path, photos_src: Path | None):
-    """Kopiuje zdjecia z photos_src do target_dir/photos/."""
+    """Kopiuje zdjecia z photos_src do target_dir/photos/.
+
+    Jesli brief.json zawiera URL absolutne (https://... - np. z Supabase Storage)
+    zamiast relative paths (photos/01.jpg), pomijamy kopiowanie - strona uzywa
+    URL bezposrednio z CDN. Patrz [[photos-integration-decision-pending]] OPCJA B.
+    """
+    photos_obj = brief.get("photos", {})
+    all_urls = [photos_obj.get("heart", "")] + photos_obj.get("side", [])
+    if any(p.startswith("http") for p in all_urls if p):
+        print("  + zdjecia z URL (Supabase) - pomijam copy_photos")
+        return
+
     photos_target = target_dir / "photos"
     photos_target.mkdir(exist_ok=True)
     src = photos_src or Path("photos_input")  # default: ./photos_input/
