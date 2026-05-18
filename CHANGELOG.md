@@ -22,6 +22,8 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Fixed** (vercel rewrite): regex source `/(.*)` zamiast `:path+` dla obslugi root URL subdomeny.
+
 - **Fixed** (2026-05-18, subdomena rewrite): vercel.json `rewrites` z `source:/:path*` nie obslugiwal poprawnie root URL `/` (path* mialo problem z empty match - dawalo strone glowna zamiast `/nicolas-test/index.html`). Rozbito na 2 reguly: `source:/` dla root + `source:/:path+` dla reszty (min 1 segment).
 
 - **Fixed CRITICAL** (2026-05-18, nicolas-test stuck "ladowanie..." - DRUGI bug niezalezny od CSP):
