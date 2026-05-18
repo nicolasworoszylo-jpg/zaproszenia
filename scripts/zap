@@ -1,0 +1,199 @@
+#!/usr/bin/env bash
+# zap - Master CLI dla zaproszeniaonline.com (pipeline 100/tydz)
+# Centralna komenda dla wszystkich operacji workflow klienta.
+#
+# Usage:
+#   zap status                 - stan systemu (DNS, Vercel, GitHub, OVH API)
+#   zap test                   - end-to-end test (preflight nicolas-test + smoke + OVH)
+#   zap new <brief.json>       - nowy klient (full pipeline: preflight->push->OVH->smoke)
+#   zap deploy [slug]          - force redeploy (po manual edits)
+#   zap dns <slug> [A|CNAME]   - dodaj/sprawdz DNS record per slug (skip jezeli wildcard)
+#   zap brief <slug>           - SQL: pokaż brief klienta (id, status, photos)
+#   zap admin                  - otwórz admin dashboard
+#   zap logs [slug]            - tail logs Vercel + GitHub Action ostatniego runa
+#   zap doctor                 - sprawdz konfiguracje (secrets, mcp, deps)
+#   zap clean <slug>           - usuń klienta (soft - mark failed; hard - git revert)
+#   zap help                   - help
+
+set -uo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+
+GREEN='\033[0;32m'; RED='\033[0;31m'; YELLOW='\033[0;33m'; NC='\033[0m'
+ok()   { echo -e "${GREEN}✓${NC} $*"; }
+fail() { echo -e "${RED}✗${NC} $*"; }
+warn() { echo -e "${YELLOW}!${NC} $*"; }
+
+cmd="${1:-help}"
+shift || true
+
+case "$cmd" in
+
+status)
+  echo "=== zap status ==="
+  # DNS
+  DNS=$(dig +short CNAME 'random-test.zaproszeniaonline.com' @1.1.1.1 2>/dev/null)
+  [ "$DNS" = "cname.vercel-dns.com." ] && ok "Wildcard DNS aktywny ($DNS)" || fail "Wildcard DNS nie działa"
+  # Vercel - sprawdz czy aktualnie zalogowany
+  if vercel whoami >/dev/null 2>&1; then ok "Vercel CLI authenticated: $(vercel whoami 2>&1 | head -1)"; else fail "Vercel CLI - run 'vercel login'"; fi
+  # GitHub
+  if gh auth status >/dev/null 2>&1; then ok "GitHub CLI authenticated"; else warn "GitHub CLI not auth (opcjonalne)"; fi
+  # OVH API
+  AK=$(cat ~/.claude/secrets/ovh/app_key.txt 2>/dev/null || echo)
+  CK=$(cat ~/.claude/secrets/ovh/consumer_key.txt 2>/dev/null || echo)
+  if [ -n "$AK" ] && [ -n "$CK" ]; then
+    AS=$(cat ~/.claude/secrets/ovh/app_secret.txt)
+    TS=$(curl -s https://eu.api.ovh.com/1.0/auth/time 2>/dev/null)
+    URL="https://eu.api.ovh.com/1.0/auth/currentCredential"
+    SIG="\$1\$$(echo -n "${AS}+${CK}+GET+${URL}++${TS}" | shasum -a 1 | cut -d' ' -f1)"
+    STAT=$(curl -sS -X GET "$URL" -H "X-Ovh-Application: $AK" -H "X-Ovh-Consumer: $CK" -H "X-Ovh-Timestamp: $TS" -H "X-Ovh-Signature: $SIG" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('status','UNKNOWN'))" 2>/dev/null)
+    [ "$STAT" = "validated" ] && ok "OVH API validated" || fail "OVH API: $STAT"
+  else
+    fail "OVH secrets missing in ~/.claude/secrets/ovh/"
+  fi
+  # Supabase Edge Functions deployed?
+  echo ""
+  echo "Edge Functions status: sprawdz w https://supabase.com/dashboard/project/kuyniyyieejvambyjnxy/functions"
+  # Last deploy
+  echo ""
+  echo "Last 3 git commits:"
+  git log --oneline -3
+  ;;
+
+test)
+  echo "=== zap test (end-to-end) ==="
+  # 1. Preflight nicolas-test
+  bash scripts/preflight-client.sh nicolas-test
+  echo ""
+  # 2. Smoke test produkcja
+  bash scripts/smoke-test-client.sh nicolas-test
+  echo ""
+  # 3. OVH API test
+  echo "=== OVH API listing zone records ==="
+  AK=$(cat ~/.claude/secrets/ovh/app_key.txt)
+  AS=$(cat ~/.claude/secrets/ovh/app_secret.txt)
+  CK=$(cat ~/.claude/secrets/ovh/consumer_key.txt)
+  TS=$(curl -s https://eu.api.ovh.com/1.0/auth/time)
+  URL="https://eu.api.ovh.com/1.0/domain/zone/zaproszeniaonline.com/record"
+  SIG="\$1\$$(echo -n "${AS}+${CK}+GET+${URL}++${TS}" | shasum -a 1 | cut -d' ' -f1)"
+  COUNT=$(curl -sS -X GET "$URL" -H "X-Ovh-Application: $AK" -H "X-Ovh-Consumer: $CK" -H "X-Ovh-Timestamp: $TS" -H "X-Ovh-Signature: $SIG" | python3 -c "import json,sys; print(len(json.load(sys.stdin)))" 2>/dev/null)
+  [ "${COUNT:-0}" -gt 0 ] && ok "OVH API zone listing: $COUNT records" || fail "OVH API zone listing fail"
+  ;;
+
+new)
+  brief="${1:-}"
+  [ -z "$brief" ] && { echo "Usage: zap new <brief.json> [--photos <dir>]"; exit 1; }
+  shift
+  python3 scripts/new-client.py "$brief" "$@"
+  ;;
+
+deploy)
+  slug="${1:-}"
+  if [ -n "$slug" ] && [ ! -d "$slug" ]; then fail "Folder $slug not found"; exit 1; fi
+  echo "=== Force Vercel redeploy ==="
+  vercel redeploy https://zaproszeniaonline.com --target=production
+  ;;
+
+dns)
+  slug="${1:-}"; type="${2:-A}"
+  [ -z "$slug" ] && { echo "Usage: zap dns <slug> [A|CNAME]"; exit 1; }
+  bash scripts/ovh-dns-add.sh "$slug" "$type"
+  ;;
+
+brief)
+  slug="${1:-}"
+  [ -z "$slug" ] && { echo "Usage: zap brief <slug>"; exit 1; }
+  SUPA_URL="https://kuyniyyieejvambyjnxy.supabase.co"
+  echo "Otwórz w Supabase SQL Editor:"
+  echo "  SELECT * FROM public.briefs WHERE slug = '$slug';"
+  echo ""
+  echo "Lub URL: $SUPA_URL/dashboard/project/kuyniyyieejvambyjnxy/sql/new"
+  ;;
+
+admin)
+  open "https://zaproszeniaonline.com/admin/" || echo "Otwórz: https://zaproszeniaonline.com/admin/"
+  ;;
+
+logs)
+  slug="${1:-}"
+  echo "GitHub Actions: https://github.com/nicolasworoszylo-jpg/zaproszenia/actions"
+  echo "Vercel deploys: https://vercel.com/nicolasworoszylo-9547s-projects/zaproszenia-ddli/deployments"
+  if [ -n "$slug" ]; then
+    echo ""
+    echo "Last action run dla $slug:"
+    gh run list --workflow=auto-client.yml --limit 5 2>/dev/null | head -10 || echo "(gh CLI nie skonfigurowane)"
+  fi
+  ;;
+
+doctor)
+  echo "=== zap doctor (config check) ==="
+  # Deps
+  for tool in node npx python3 curl jq vercel; do
+    if command -v $tool >/dev/null; then ok "$tool: $(command -v $tool)"; else fail "$tool missing"; fi
+  done
+  # Secrets
+  for f in app_key.txt app_secret.txt consumer_key.txt; do
+    [ -f ~/.claude/secrets/ovh/$f ] && ok "OVH $f" || fail "Missing OVH $f"
+  done
+  # MCP servers
+  if jq -e '.mcpServers.supabase' ~/.claude.json >/dev/null 2>&1; then ok "Supabase MCP configured"; else warn "Supabase MCP missing"; fi
+  # Local LLM
+  if curl -s http://localhost:11434/api/tags 2>/dev/null | grep -q qwen2.5; then ok "Ollama qwen2.5 ready (dla brief generator z dyktatu)"; else warn "Ollama down"; fi
+  # Repo state
+  if git diff --quiet && git diff --staged --quiet; then ok "Repo clean"; else warn "Uncommitted changes"; fi
+  ;;
+
+clean)
+  slug="${1:-}"; mode="${2:-soft}"
+  [ -z "$slug" ] && { echo "Usage: zap clean <slug> [soft|hard]"; exit 1; }
+  if [ "$mode" = "hard" ]; then
+    warn "HARD delete: usuwam folder $slug + vercel.json rewrite + git revert"
+    rm -rf "$slug"
+    python3 -c "
+import json
+from pathlib import Path
+p = Path('vercel.json'); cfg = json.loads(p.read_text())
+cfg['rewrites'] = [r for r in cfg.get('rewrites', []) if '$slug.' not in str(r)]
+p.write_text(json.dumps(cfg, indent=4, ensure_ascii=False) + '\n')
+"
+    git add -A
+    git commit -m "feat($slug): hard delete - klient usuniety na zyczenie"
+    git push
+    ok "Hard delete done"
+  else
+    warn "SOFT delete (status=failed w Supabase)"
+    echo "RUN w Supabase SQL Editor:"
+    echo "  UPDATE briefs SET status='failed' WHERE slug='$slug';"
+  fi
+  ;;
+
+help|*)
+  cat <<EOF
+zap - Master CLI zaproszeniaonline.com
+
+OPERATIONS:
+  status                 stan systemu (DNS, Vercel, OVH API, secrets)
+  test                   end-to-end test (preflight + smoke + OVH)
+  new <brief.json>       nowy klient (full pipeline)
+  deploy [slug]          force Vercel redeploy
+  dns <slug> [A|CNAME]   dodaj DNS record
+  brief <slug>           SQL dla brief klienta
+  admin                  otworz admin dashboard
+  logs [slug]            URLs do GitHub Actions + Vercel
+  clean <slug> [soft|hard]   usun klienta
+  doctor                 diagnoza konfiguracji
+  help                   ta wiadomosc
+
+SHORTCUTS w zshrc (do dodania):
+  alias zap='~/Projekty/zaproszeniaonline.com/scripts/zap'
+
+WIDOK PRODUKCJI:
+  https://zaproszeniaonline.com/nicolas-test  (path-based, zawsze dziala)
+  https://nicolas-test.zaproszeniaonline.com  (subdomain - po DNS gotowy)
+
+DOCS:
+  ~/Projekty/zaproszeniaonline.com/docs/LUZAK_DEPLOY.md
+  ~/Projekty/zaproszeniaonline.com/docs/BUGS_PREVENTED.md
+EOF
+  ;;
+esac

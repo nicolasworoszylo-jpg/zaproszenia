@@ -22,6 +22,16 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Deployed LIVE** (2026-05-18, FULL LUZAK przez Supabase MCP):
+  - Migration `briefs` applied (table + RLS + view + cleanup function).
+  - Storage policies dla `invitation-photos` (service_role write, anon read).
+  - Edge Function `generate-from-form` v1 ACTIVE (orchestrator: token validation, photo upload, GH workflow_dispatch).
+  - Edge Function `notify-brief-ready` v1 ACTIVE (token gen + Resend email do klienta).
+  - `notify-payment-success` extended (dodany fetch do notify-brief-ready - do deploy v13).
+  - `scripts/zap` master CLI (status/test/new/deploy/dns/admin/logs/doctor/clean).
+  - Live E2E test PASSED: notify-brief-ready zwraca token, generate-from-form zwraca {slug,url} + status=generating w DB.
+  - System gotowy do testu ze Stripe wplata (czwartek 2026-05-22) po dodaniu 1 secret: GITHUB_TOKEN w Supabase + GH Secrets SUPABASE_SERVICE_KEY.
+
 - **Changed** (2026-05-18, LUZAK integration z OPCJA B Dominiki): merge dwoch pipeline (klient self-service B2C + Dominika manual). Konsolidacja bucketu Storage na `invitation-photos` (NIE `client-photos` - mialo byc Dominika setup).
   - `generate-from-form/index.ts`: bucket `client-photos` -> `invitation-photos`, path `<slug>/` -> `processed/<slug>/` (zgodnie z `photos-publish.mjs` Dominiki).
   - `klient-start/index.html`: client-side EXIF strip + resize do max 2000px przez Canvas re-encode (toDataURL JPEG q0.85). Privacy: usuwa GPS, datę, model aparatu. Bandwidth: zdjęcia ~70% mniejsze.

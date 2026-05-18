@@ -432,6 +432,29 @@ serve(async (req) => {
     errors.push(`customer: ${(err as Error).message}`);
   }
 
+  // LUZAK: wyślij token + link do brief wizarda
+  // (klient self-service: /klient-start/?token=<UUID> -> wypełnia form -> auto-deploy)
+  try {
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+    const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const resBrief = await fetch(`${SUPABASE_URL}/functions/v1/notify-brief-ready`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: lead.email,
+        payment_id: lead.payment_id || lead.id,
+        name: lead.name,
+      }),
+    });
+    if (!resBrief.ok) throw new Error(`brief-ready ${resBrief.status}: ${await resBrief.text()}`);
+    console.log(`[LUZAK] notify-brief-ready OK for ${lead.email}`);
+  } catch (err) {
+    errors.push(`brief-ready: ${(err as Error).message}`);
+  }
+
   return new Response(JSON.stringify({
     received: true,
     lead_id: lead.id,
