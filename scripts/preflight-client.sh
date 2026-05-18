@@ -59,8 +59,23 @@ check "Supabase global window.supabase" "grep -q 'globalThis' $ROOT/$CLIENT/vend
 # Vercel rewrite dla subdomeny w vercel.json
 check "Vercel rewrite dla $CLIENT.zaproszeniaonline.com" "grep -q '$CLIENT.zaproszeniaonline.com' $ROOT/vercel.json"
 
-# Photos folder
-check "Folder photos/ ma jpg" "ls $ROOT/$CLIENT/photos/*.jpg 2>/dev/null | head -1"
+# Photos: lokalne (OPCJA A) LUB Supabase CDN (OPCJA B)
+PHOTOS_LOCAL=0
+PHOTOS_CDN=0
+if [ -d "$ROOT/$CLIENT/photos" ] && ls "$ROOT/$CLIENT/photos/"*.jpg >/dev/null 2>&1; then
+  PHOTOS_LOCAL=1
+fi
+if grep -qE 'https://[a-z0-9]+\.supabase\.co/storage/v1/object/public/[^"'\'']+\.(jpg|jpeg|png|webp|avif)' "$HTML" "$APP" 2>/dev/null; then
+  PHOTOS_CDN=1
+fi
+if [ "$PHOTOS_LOCAL" -eq 1 ]; then
+  echo "  PASS: Folder photos/ ma jpg (OPCJA A - lokalne)"
+elif [ "$PHOTOS_CDN" -eq 1 ]; then
+  echo "  PASS: Photos via Supabase CDN (OPCJA B - URL absolutne)"
+else
+  echo "  FAIL: Brak zdjec - ani lokalne photos/ ani URL Supabase w HTML/app.js"
+  FAIL=$((FAIL+1))
+fi
 
 # JS syntax check (esbuild output)
 check "app.js valid JS" "node --check $APP 2>&1"

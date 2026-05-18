@@ -22,6 +22,8 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Fixed** (2026-05-18, preflight pod OPCJA B): `scripts/preflight-client.sh` check zdjec rozbity na 2 sciezki - OPCJA A (lokalny folder `[SLUG]/photos/` z .jpg) LUB OPCJA B (URL Supabase Storage w HTML/app.js, regex `https://*.supabase.co/storage/v1/object/public/*.{jpg,jpeg,png,webp,avif}`). Wczesniej preflight bezwarunkowo wymagal folderu photos/ co blokowalo deploy klientow uzywajacych pipeline UPLOAD Dominiki (scan -> publish -> Supabase CDN). Test E2E: brief z URL Supabase -> python3 scripts/new-client.py --no-commit -> "Photos via Supabase CDN (OPCJA B)" PASS + cale 19 sanity checks PASS. Backward compatible - klienci z lokalnymi photos/ nadal dzialaja (OPCJA A path). _(2026-05-18)_
+
 - **Added** (2026-05-18, LUZAK pipeline MVP): klient-start/index.html (lightweight 4-step wizard, vanilla JS, 13 fields + dropzone, auto-save localStorage, ~5 min wypełnienia). docs/LUZAK_PIPELINE.md - pelen plan automatyzacji 100/tydz (4 sesje pracy, koszt $69/mc Pro tier).
 
 - **Added** (2026-05-18, bug-prevention pipeline dla skalowania do 100 klientow/dzien):
