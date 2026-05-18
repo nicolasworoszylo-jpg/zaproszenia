@@ -27,7 +27,7 @@ photos/
 zdjęcia klientów ani treści mailowe **nigdy** nie idą do gita.
 W repo żyje tylko ten README + struktura folderów.
 
-## Workflow (5 etapów: scan → wyślij ręcznie → publish → apply → handoff)
+## Workflow (4 etapy: scan → wyślij ręcznie → publish → handoff)
 
 ### A. Scan + propozycje maila
 1. Klient wysyła zdjęcia na maila z tematem `ZDJĘCIA [magda-tomek]`
@@ -58,37 +58,13 @@ Po wszystkich rozstrzygniętych: finalne pytanie *„Upload N plików do Supabas
 
 Re-run komendy jest bezpieczny (idempotent — pomija pliki już approved / rejected / published).
 
-### D. Apply do strony klienta (`npm run photos:apply`)
+### D. Handoff do Nicolasa
+Pliki w Supabase Storage (`invitation-photos/processed/[REF]/`) z public URL-ami w raporcie JSON. Nicolas konsumuje to w swoim workflow generowania stron klienta — patrz `scripts/new-client.py` + `_template_klient/` w głównym repo (na main).
 
-`npm run photos:apply -- REF SLUG [--heart=N] [--force]` — generuje katalog `[SLUG]/index.html` na bazie templatu `nicolas-test/`, wstawia public URL-e zdjęć z raportu publikacji.
-
-**Przykład:**
+Format publicznego URL pojedynczego pliku:
 ```
-npm run photos:apply -- magda-tomek magda-tomek-a1b2
+https://kuyniyyieejvambyjnxy.supabase.co/storage/v1/object/public/invitation-photos/processed/[REF]/[plik].jpg
 ```
-
-Co robi (MVP):
-- Czyta `photos/reports/[REF].json`, bierze pliki ze statusem `published` i `upload_state.public_url`
-- Kopiuje `nicolas-test/index.html` → `[SLUG]/index.html`
-- Podmienia w skopiowanym pliku:
-  - `CONFIG.ourStoryHeartPhoto` → URL pierwszego published (lub `--heart=N`)
-  - `CONFIG.ourStoryPhotos[]` → URL-e pozostałych published (adaptywny layout 1+(N-1))
-  - `<meta og:image>` + `<meta twitter:image>` → URL heart photo
-  - `<link canonical>` + `<meta og:url>` → `https://[SLUG].zaproszeniaonline.com`
-  - `const INVITATION_SLUG` → `"[SLUG]"` (dla insertów do `song_requests` / RSVP)
-
-Co NIE robi (MVP):
-- Personal data klienta (`bride`, `groom`, `weddingDate`, `palette`, `transport`, `accounts`, `timeline`, `ourStory`, `quote`, `rsvpDeadline`, `gifts`, `bgMusicUrl`, `guestPhotosUrl`, `photographerGalleryUrl`) — Dominika edytuje ręcznie w wygenerowanym `[SLUG]/index.html` (CONFIG od linii ~74)
-- `vercel.json` rewrite — Nicolas dodaje ręcznie subdomenę w Vercel UI + A record `[SLUG]` → `76.76.21.21` w OVH
-
-### E. Handoff do Nicolasa
-Po `photos:apply` + edycji personal data:
-```
-git add [SLUG]/ && git commit -m "feat: strona klienta [SLUG]" && git push
-```
-Vercel auto-deploy. Po dodaniu DNS + Vercel domain klient widzi `https://[SLUG].zaproszeniaonline.com`.
-
-Nicolas widzi pliki w Supabase Studio → Storage → `invitation-photos/processed/[REF]/`.
 
 ## Wymagane klucze w `.env`
 
