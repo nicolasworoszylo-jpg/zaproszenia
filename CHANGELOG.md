@@ -22,6 +22,8 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Added** (2026-05-18, LUZAK pipeline MVP): klient-start/index.html (lightweight 4-step wizard, vanilla JS, 13 fields + dropzone, auto-save localStorage, ~5 min wypełnienia). docs/LUZAK_PIPELINE.md - pelen plan automatyzacji 100/tydz (4 sesje pracy, koszt $69/mc Pro tier).
+
 - **Added** (2026-05-18, bug-prevention pipeline dla skalowania do 100 klientow/dzien):
   - `scripts/preflight-client.sh` (19 sanity checks PRZED deploy klienta): self-host vendor + fonty, absolute paths z slug prefix, brak unpkg/googleapis CDN, JS syntax valid, Vercel rewrite obecny, HTML title personalizowany, meta robots noindex.
   - `scripts/smoke-test-client.sh` (test PO deploy): HTML 200, 6 assets 200, brak unpkg, subdomain SSL check.

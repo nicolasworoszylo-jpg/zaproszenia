@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Wypelnij swoje zaproszenie - zaproszeniaonline.com</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#35101D">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Cormorant Garamond',Georgia,serif;background:#FBF7F0;color:#2A2424;padding:20px;min-height:100vh}
+  .wrap{max-width:680px;margin:0 auto;padding:30px 20px}
+  h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,5vw,38px);font-weight:400;font-style:italic;color:#4A1C2B;margin-bottom:8px;text-align:center}
+  .sub{font-size:16px;color:#5A4F4D;text-align:center;margin-bottom:30px}
+  .progress{display:flex;gap:6px;margin-bottom:24px;justify-content:center}
+  .progress .dot{width:10px;height:10px;border-radius:50%;background:#EBE0D2;transition:all .3s}
+  .progress .dot.active{background:#C8A87C;width:30px;border-radius:6px}
+  .progress .dot.done{background:#4A1C2B}
+  .step{background:white;border:1px solid #EBE0D2;border-radius:8px;padding:30px 24px;box-shadow:0 4px 20px rgba(74,28,43,0.06)}
+  .step h2{font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:400;color:#4A1C2B;margin-bottom:6px;font-style:italic}
+  .step .hint{font-size:14px;color:#5A4F4D;margin-bottom:20px;font-style:italic}
+  label{display:block;margin-top:16px;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#C8A87C}
+  input[type=text],input[type=date],input[type=time],input[type=tel],textarea,select{
+    width:100%;padding:12px 14px;border:1px solid #EBE0D2;background:#FBF7F0;font-family:inherit;font-size:16px;color:#2A2424;
+    border-radius:4px;margin-top:6px;transition:border-color .3s;outline:none
+  }
+  input:focus,textarea:focus,select:focus{border-color:#C8A87C}
+  textarea{resize:vertical;min-height:80px}
+  .palette-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px}
+  .palette-btn{padding:12px 8px;border:2px solid transparent;border-radius:6px;cursor:pointer;text-align:center;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:500;transition:all .3s}
+  .palette-btn.forest{background:linear-gradient(135deg,#2C3E2D,#C9A96E);color:white}
+  .palette-btn.navy{background:linear-gradient(135deg,#1B2838,#D4A0A0);color:white}
+  .palette-btn.bordo{background:linear-gradient(135deg,#4A1C2B,#C8A87C);color:white}
+  .palette-btn.terracotta{background:linear-gradient(135deg,#6B2F22,#B85F2E);color:white}
+  .palette-btn.selected{border-color:#4A1C2B;transform:scale(1.05)}
+  .dropzone{margin-top:8px;border:2px dashed #C8A87C;border-radius:8px;padding:30px 20px;text-align:center;cursor:pointer;background:#FBF7F0;transition:all .3s}
+  .dropzone:hover,.dropzone.dragging{background:#F5EDE2;border-color:#4A1C2B}
+  .dropzone p{color:#5A4F4D;font-size:14px}
+  .dropzone .icon{font-size:36px;color:#C8A87C;margin-bottom:8px}
+  .photo-preview{margin-top:12px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .photo-preview .ph-slot{aspect-ratio:1/1;background:#F5EDE2;border:1px solid #EBE0D2;border-radius:4px;overflow:hidden;position:relative}
+  .photo-preview .ph-slot img{width:100%;height:100%;object-fit:cover}
+  .photo-preview .ph-slot.empty{display:flex;align-items:center;justify-content:center;color:#C8A87C;font-size:24px}
+  .actions{display:flex;justify-content:space-between;margin-top:30px;gap:10px}
+  .btn{padding:14px 28px;font-family:inherit;font-size:14px;letter-spacing:2px;text-transform:uppercase;font-weight:600;border:none;cursor:pointer;border-radius:4px;transition:all .3s}
+  .btn-primary{background:#4A1C2B;color:white;flex:1}
+  .btn-primary:hover{background:#35101D}
+  .btn-primary:disabled{background:#A09888;cursor:not-allowed}
+  .btn-secondary{background:transparent;color:#4A1C2B;border:1px solid #4A1C2B}
+  .success{padding:40px 20px;text-align:center}
+  .success h2{font-family:'Playfair Display',Georgia,serif;font-size:32px;color:#4A1C2B;font-style:italic;margin-bottom:12px}
+  .success .check{width:64px;height:64px;border-radius:50%;background:#C8A87C;color:white;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px}
+  .err{color:#a82c2c;font-size:13px;margin-top:6px}
+  @media(max-width:480px){
+    .palette-grid{grid-template-columns:repeat(2,1fr)}
+    .photo-preview{grid-template-columns:repeat(3,1fr)}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Twoje zaproszenie ślubne</h1>
+  <p class="sub">Wypełnij 4 kroki - zajmie ~5 minut. Twoja strona będzie gotowa w 90 sekund od submit.</p>
+
+  <div class="progress">
+    <div class="dot" id="d1"></div>
+    <div class="dot" id="d2"></div>
+    <div class="dot" id="d3"></div>
+    <div class="dot" id="d4"></div>
+  </div>
+
+  <div id="root"></div>
+</div>
+
+<script>
+// ════ Lightweight wizard - vanilla JS, zero dependencies, ~5 KB ════
+// Klient wypelnia 4 stepy. Submit -> POST do /api/generate-from-form
+// (Supabase Edge Function ktora generuje brief.json + triggeruje GH Action).
+//
+// Token z URL: /klient-start/index.html?token=<UUID> (z mail po Stripe)
+// Token weryfikowany przez Edge Function, jezeli paid=true.
+
+const TOKEN = new URLSearchParams(location.search).get('token') || 'TEST-TOKEN';
+let step = 1;
+const data = {
+  bride: '', groom: '', weddingDate: '', weddingTime: '',
+  ceremonyVenue: '', ceremonyAddress: '',
+  receptionVenue: '', receptionAddress: '',
+  palette: 'bordo', quote: '',
+  giftsText: '', accountHolder: '', accountIban: '',
+  photos: [],  // dataURLs lub uploaded URLs
+};
+
+// Auto-save localStorage (klient moze wrocic, dokonczyc)
+try {
+  const saved = localStorage.getItem(`brief-${TOKEN}`);
+  if (saved) Object.assign(data, JSON.parse(saved));
+} catch(e){}
+
+function save() {
+  try { localStorage.setItem(`brief-${TOKEN}`, JSON.stringify(data)); } catch(e){}
+}
+
+function renderProgress() {
+  for (let i=1; i<=4; i++) {
+    const d = document.getElementById('d'+i);
+    d.classList.remove('active', 'done');
+    if (i < step) d.classList.add('done');
+    else if (i === step) d.classList.add('active');
+  }
+}
+
+function input(name, label, placeholder, type='text') {
+  return `<label>${label}</label><input type="${type}" name="${name}" value="${(data[name]||'').replace(/"/g,'&quot;')}" placeholder="${placeholder}" oninput="data['${name}']=this.value;save()">`;
+}
+
+function textarea(name, label, placeholder) {
+  return `<label>${label}</label><textarea name="${name}" placeholder="${placeholder}" oninput="data['${name}']=this.value;save()">${data[name]||''}</textarea>`;
+}
+
+function step1() {
+  return `
+    <div class="step">
+      <h2>1. Para i data</h2>
+      <p class="hint">Podstawowe dane - kto bierze ślub i kiedy.</p>
+      ${input('bride', 'Imię Panny Młodej', 'np. Anna')}
+      ${input('groom', 'Imię Pana Młodego (opcjonalnie)', 'np. Michał')}
+      ${input('weddingDate', 'Data ślubu', '', 'date')}
+      ${input('weddingTime', 'Godzina ślubu', '', 'time')}
+      ${textarea('quote', 'Wasz cytat (opcjonalnie)', 'np. Każda wielka miłość...')}
+      <div class="actions">
+        <span></span>
+        <button class="btn btn-primary" onclick="next()">Dalej →</button>
+      </div>
+    </div>`;
+}
+
+function step2() {
+  return `
+    <div class="step">
+      <h2>2. Miejsce</h2>
+      <p class="hint">Gdzie ceremonia i przyjęcie?</p>
+      ${input('ceremonyVenue', 'Miejsce ceremonii', 'np. Kościół św. Anny')}
+      ${input('ceremonyAddress', 'Adres ceremonii', 'np. ul. Krakowskie Przedmieście 68')}
+      ${input('receptionVenue', 'Miejsce przyjęcia', 'np. Pałac w Korczewie')}
+      ${input('receptionAddress', 'Adres przyjęcia', 'np. Korczew 23')}
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="prev()">← Wstecz</button>
+        <button class="btn btn-primary" onclick="next()">Dalej →</button>
+      </div>
+    </div>`;
+}
+
+function step3() {
+  const slots = [0,1,2,3,4].map(i => {
+    const has = data.photos[i];
+    return has
+      ? `<div class="ph-slot"><img src="${has}" alt=""></div>`
+      : `<div class="ph-slot empty">+</div>`;
+  }).join('');
+  return `
+    <div class="step">
+      <h2>3. Zdjęcia (5 sztuk)</h2>
+      <p class="hint">1 hero (kwadrat 1:1) + 4 boczne (pion 3:4 lub 4:5). Maksymalnie 5 MB każde.</p>
+      <div class="dropzone" id="dz" onclick="document.getElementById('photoInput').click()">
+        <div class="icon">📷</div>
+        <p>Kliknij aby wybrać lub upuść zdjęcia tutaj</p>
+        <p style="margin-top:6px;font-size:12px;color:#A09888">JPG/PNG, max 5 MB każde</p>
+      </div>
+      <input type="file" id="photoInput" multiple accept="image/*" style="display:none" onchange="handleFiles(this.files)">
+      <div class="photo-preview">${slots}</div>
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="prev()">← Wstecz</button>
+        <button class="btn btn-primary" onclick="next()">Dalej →</button>
+      </div>
+    </div>`;
+}
+
+function step4() {
+  const palettes = ['forest','navy','bordo','terracotta'];
+  const labels = {forest:'Leśna zieleń', navy:'Granat + róż', bordo:'Bordo + kość', terracotta:'Terracotta'};
+  const grid = palettes.map(p =>
+    `<div class="palette-btn ${p} ${data.palette===p?'selected':''}" onclick="data.palette='${p}';save();render()">${labels[p]}</div>`
+  ).join('');
+  return `
+    <div class="step">
+      <h2>4. Paleta i prezenty</h2>
+      <p class="hint">Wybierz kolorystykę zaproszenia + dodaj numer konta na prezenty.</p>
+      <label>Paleta kolorów</label>
+      <div class="palette-grid">${grid}</div>
+      ${textarea('giftsText', 'Tekst o prezentach', 'np. Waszą obecność uważamy za największy prezent. Jeśli chcecie nas wesprzeć...')}
+      ${input('accountHolder', 'Imię i nazwisko (właściciel konta)', 'np. Anna Kowalska')}
+      ${input('accountIban', 'IBAN', 'np. PL 61 1090 1014 0000 0712 1981 2874')}
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="prev()">← Wstecz</button>
+        <button class="btn btn-primary" onclick="submit()" id="submitBtn">Wygeneruj zaproszenie 🚀</button>
+      </div>
+    </div>`;
+}
+
+function handleFiles(files) {
+  Array.from(files).slice(0, 5-data.photos.length).forEach(f => {
+    if (f.size > 5*1024*1024) { alert(`Zdjęcie ${f.name} > 5 MB - pomijam`); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      if (data.photos.length < 5) {
+        data.photos.push(e.target.result);
+        save();
+        render();
+      }
+    };
+    reader.readAsDataURL(f);
+  });
+}
+
+function validate() {
+  const required = {1:['bride','weddingDate','weddingTime'], 2:['ceremonyVenue','receptionVenue'], 3:[], 4:['palette','accountHolder','accountIban']};
+  const missing = (required[step]||[]).filter(f => !data[f] || !data[f].trim());
+  if (missing.length) {
+    alert('Wypełnij pola: ' + missing.join(', '));
+    return false;
+  }
+  if (step === 3 && data.photos.length < 1) {
+    if (!confirm('Brak zdjęć - kontynuować? (możesz wysłać je później mailem)')) return false;
+  }
+  return true;
+}
+
+function next() {
+  if (!validate()) return;
+  step = Math.min(4, step+1);
+  render();
+}
+
+function prev() {
+  step = Math.max(1, step-1);
+  render();
+}
+
+async function submit() {
+  if (!validate()) return;
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Generuję...';
+
+  try {
+    const res = await fetch('/api/generate-from-form', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ token: TOKEN, brief: data })
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const { slug, url } = await res.json();
+    document.getElementById('root').innerHTML = `
+      <div class="step success">
+        <div class="check">✓</div>
+        <h2>Gotowe!</h2>
+        <p style="font-size:16px;margin-bottom:20px">Twoje zaproszenie generuje się teraz. Za ~90 sekund będzie dostępne pod adresem:</p>
+        <p style="font-size:18px;color:#C8A87C;letter-spacing:1px;margin-bottom:20px"><a href="${url}" style="color:#4A1C2B">${url}</a></p>
+        <p style="font-size:14px;color:#5A4F4D">Dostaniesz też email z linkiem gdy będzie ready.</p>
+      </div>`;
+    document.querySelector('.progress').style.display = 'none';
+    try { localStorage.removeItem(`brief-${TOKEN}`); } catch(e){}
+  } catch(e) {
+    alert('Błąd: ' + e.message + '\\nSpróbuj ponownie lub skontaktuj się: kontakt@zaproszeniaonline.com');
+    btn.disabled = false;
+    btn.textContent = 'Wygeneruj zaproszenie 🚀';
+  }
+}
+
+function render() {
+  renderProgress();
+  document.getElementById('root').innerHTML = [step1, step2, step3, step4][step-1]();
+}
+
+render();
+</script>
+</body>
+</html>
