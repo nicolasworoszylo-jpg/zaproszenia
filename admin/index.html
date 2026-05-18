@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin LUZAK · zaproszeniaonline.com</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#FBF7F0;color:#2A2424;padding:20px}
+  .wrap{max-width:1100px;margin:0 auto}
+  h1{font-family:Georgia,serif;font-style:italic;color:#4A1C2B;margin-bottom:8px}
+  .sub{color:#5A4F4D;font-size:14px;margin-bottom:24px}
+  .auth{background:white;padding:20px;border-radius:6px;border:1px solid #EBE0D2;margin-bottom:20px}
+  .auth input{width:100%;padding:10px;border:1px solid #EBE0D2;border-radius:4px;font-size:14px;font-family:monospace}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+  .stat{background:white;padding:16px;border-radius:6px;border:1px solid #EBE0D2;text-align:center}
+  .stat .n{font-size:28px;color:#4A1C2B;font-weight:bold}
+  .stat .l{font-size:11px;color:#A09888;text-transform:uppercase;letter-spacing:1px}
+  table{width:100%;background:white;border-radius:6px;border:1px solid #EBE0D2;border-collapse:collapse;font-size:13px}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #EBE0D2}
+  th{background:#F5EDE2;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#5A4F4D}
+  tr:hover{background:#FBF7F0}
+  .badge{display:inline-block;padding:3px 8px;border-radius:3px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+  .badge.awaiting_brief{background:#F5E6A8;color:#7A6B30}
+  .badge.generating{background:#A8D5F5;color:#306B7A}
+  .badge.live{background:#B8E6B8;color:#3A7A3A}
+  .badge.failed{background:#F5A8A8;color:#7A3030}
+  .badge.expired{background:#D5D5D5;color:#5A5A5A}
+  a{color:#4A1C2B;text-decoration:none}
+  a:hover{text-decoration:underline}
+  .btn-del{background:#a82c2c;color:white;padding:4px 10px;border:none;border-radius:3px;cursor:pointer;font-size:11px}
+  .btn-del:hover{background:#7a1010}
+  .empty{text-align:center;padding:60px 20px;color:#A09888}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>LUZAK Admin Dashboard</h1>
+  <p class="sub">Lista wszystkich briefs klientów. Filtruj/sortuj po statusie. Twoja praca: review jeśli coś wygląda dziwnie.</p>
+
+  <div class="auth" id="auth">
+    <p style="font-size:13px;margin-bottom:8px;color:#5A4F4D">Wklej Supabase service_role key (nie commit!) - tylko Ty masz dostęp:</p>
+    <input type="password" id="sk" placeholder="eyJhbGciOi... (service_role JWT z Supabase Settings → API)">
+    <button onclick="login()" style="margin-top:8px;padding:8px 20px;background:#4A1C2B;color:white;border:none;border-radius:4px;cursor:pointer">Załaduj</button>
+  </div>
+
+  <div id="content" style="display:none">
+    <div class="stats" id="stats"></div>
+    <table id="tbl">
+      <thead><tr>
+        <th>Slug</th><th>Para</th><th>Email</th><th>Status</th><th>Data wesela</th><th>Paleta</th><th>Submitted</th><th>Akcje</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://kuyniyyieejvambyjnxy.supabase.co";
+let SK = sessionStorage.getItem('admin_sk');
+if (SK) { setTimeout(login, 100); }
+
+async function login() {
+  const sk = document.getElementById('sk').value || SK;
+  if (!sk) { alert('Brak service_role key'); return; }
+  SK = sk;
+  sessionStorage.setItem('admin_sk', sk);
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/briefs?select=*&order=created_at.desc&limit=100`, {
+      headers: { apikey: sk, Authorization: `Bearer ${sk}` }
+    });
+    if (!res.ok) throw new Error('Unauthorized - sprawdź klucz');
+    const briefs = await res.json();
+    document.getElementById('auth').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    render(briefs);
+  } catch(e) {
+    alert(e.message);
+    sessionStorage.removeItem('admin_sk');
+  }
+}
+
+function render(briefs) {
+  // Stats
+  const stats = { total: briefs.length, awaiting_brief: 0, generating: 0, live: 0, failed: 0 };
+  briefs.forEach(b => { stats[b.status] = (stats[b.status]||0)+1; });
+  document.getElementById('stats').innerHTML = ['total','awaiting_brief','generating','live','failed']
+    .map(k => `<div class="stat"><div class="n">${stats[k]||0}</div><div class="l">${k.replace('_',' ')}</div></div>`)
+    .join('');
+
+  // Table
+  if (!briefs.length) {
+    document.getElementById('rows').innerHTML = '<tr><td colspan="8" class="empty">Brak briefs (jeszcze)</td></tr>';
+    return;
+  }
+  document.getElementById('rows').innerHTML = briefs.map(b => {
+    const d = b.data || {};
+    const para = d.bride ? `${d.bride}${d.groom ? ' & '+d.groom : ''}` : '-';
+    const url = b.slug ? `https://${b.slug}.zaproszeniaonline.com/` : '';
+    const slugLink = b.slug ? `<a href="${url}" target="_blank">${b.slug}</a>` : '-';
+    const submitted = b.submitted_at ? new Date(b.submitted_at).toLocaleString('pl-PL') : '-';
+    return `<tr>
+      <td>${slugLink}</td>
+      <td>${para}</td>
+      <td><a href="mailto:${b.email}">${b.email}</a></td>
+      <td><span class="badge ${b.status}">${b.status}</span></td>
+      <td>${d.weddingDate ? new Date(d.weddingDate).toLocaleDateString('pl-PL') : '-'}</td>
+      <td>${d.palette || '-'}</td>
+      <td>${submitted}</td>
+      <td>${b.status === 'live' ? `<button class="btn-del" onclick="del('${b.token}','${b.slug}')">Usuń</button>` : ''}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function del(token, slug) {
+  if (!confirm(`Usuń klienta ${slug}? Operacja nieodwracalna.`)) return;
+  // Soft delete: change status to 'failed' + remove from prod via revert commit
+  // (Hard delete wymaga GH Action `delete-client.yml` - TO BUILD)
+  await fetch(`${SUPABASE_URL}/rest/v1/briefs?token=eq.${token}`, {
+    method: 'PATCH',
+    headers: { apikey: SK, Authorization: `Bearer ${SK}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify({ status: 'failed' })
+  });
+  alert('Klient oznaczony jako "failed". Aby usunąć z produkcji: git revert + push.');
+  login();
+}
+
+function logout() {
+  sessionStorage.removeItem('admin_sk');
+  location.reload();
+}
+</script>
+</body>
+</html>

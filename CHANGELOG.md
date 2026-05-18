@@ -22,6 +22,16 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Added** (2026-05-18, FULL LUZAK pipeline build): klient self-service end-to-end od Stripe payment do live URL bez Nicolas dotyku.
+  - Migration `supabase/migrations/20260518180000_briefs_self_service.sql` - tabela `briefs` z UUID token + RLS service-role-only + view `briefs_active`.
+  - Edge Function `generate-from-form` - validate token + slug generation + base64 photos upload do Supabase Storage + workflow_dispatch GitHub Action.
+  - Edge Function `notify-brief-ready` - email do klienta po Stripe payment z linkiem `/klient-start/?token=...`.
+  - GitHub Action `auto-client.yml` - pobiera brief z Supabase, runs new-client.py, auto-commit+push, update status w briefs table.
+  - Admin dashboard `/admin/index.html` - lista briefs + statusy + soft delete (key auth przez service_role JWT).
+  - Klient form `/klient-start/index.html` - endpoint podłączony do Supabase Edge Function.
+  - `docs/LUZAK_DEPLOY.md` - 7-step instrukcja deployu (Migration + Storage + GH Secrets + Edge Functions deploy + notify-payment-success modification + test).
+  - Test ze Stripe wpłatą planowany czwartek 2026-05-22.
+
 - **Fixed** (2026-05-18, preflight pod OPCJA B): `scripts/preflight-client.sh` check zdjec rozbity na 2 sciezki - OPCJA A (lokalny folder `[SLUG]/photos/` z .jpg) LUB OPCJA B (URL Supabase Storage w HTML/app.js, regex `https://*.supabase.co/storage/v1/object/public/*.{jpg,jpeg,png,webp,avif}`). Wczesniej preflight bezwarunkowo wymagal folderu photos/ co blokowalo deploy klientow uzywajacych pipeline UPLOAD Dominiki (scan -> publish -> Supabase CDN). Test E2E: brief z URL Supabase -> python3 scripts/new-client.py --no-commit -> "Photos via Supabase CDN (OPCJA B)" PASS + cale 19 sanity checks PASS. Backward compatible - klienci z lokalnymi photos/ nadal dzialaja (OPCJA A path). _(2026-05-18)_
 
 - **Added** (2026-05-18, LUZAK pipeline MVP): klient-start/index.html (lightweight 4-step wizard, vanilla JS, 13 fields + dropzone, auto-save localStorage, ~5 min wypełnienia). docs/LUZAK_PIPELINE.md - pelen plan automatyzacji 100/tydz (4 sesje pracy, koszt $69/mc Pro tier).

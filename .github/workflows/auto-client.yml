@@ -1,0 +1,120 @@
+name: Auto-client (LUZAK pipeline)
+
+# Wywolywane przez Edge Function generate-from-form gdy klient submituje wizard.
+# Inputs: slug + token. Workflow pobiera brief.json + photos z Supabase, runs
+# scripts/new-client.py, commituje + pusha (Vercel auto-deploy).
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: 'Slug klienta (np. anna-michal-2026-06)'
+        required: true
+        type: string
+      token:
+        description: 'Brief token UUID (dla weryfikacji + pobrania danych)'
+        required: true
+        type: string
+
+permissions:
+  contents: write  # do git push
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node (esbuild)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python (new-client.py)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install esbuild
+        run: npm install -g esbuild
+
+      - name: Download brief from Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          TOKEN: ${{ inputs.token }}
+        run: |
+          mkdir -p briefs photos_input
+          curl -fsSL "$SUPABASE_URL/rest/v1/briefs?token=eq.$TOKEN&select=data,photos,slug" \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            -o /tmp/brief_response.json
+          python3 -c "
+          import json
+          with open('/tmp/brief_response.json') as f:
+              rows = json.load(f)
+          if not rows: raise SystemExit('Brief not found')
+          brief = rows[0]['data']
+          slug = rows[0]['slug']
+          with open(f'briefs/{slug}.json', 'w', encoding='utf-8') as f:
+              json.dump(brief, f, ensure_ascii=False, indent=2)
+          # Download photos
+          import urllib.request
+          for i, url in enumerate(rows[0].get('photos') or []):
+              ext = url.split('.')[-1].split('?')[0]
+              urllib.request.urlretrieve(url, f'photos_input/{i+1:02d}.{ext}')
+          print(f'Downloaded brief: {slug}, photos: {len(rows[0].get(\"photos\") or [])}')
+          "
+
+      - name: Run new-client.py
+        run: |
+          SLUG="${{ inputs.slug }}"
+          python3 scripts/new-client.py "briefs/$SLUG.json" --photos photos_input/ --no-commit
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit + push
+        run: |
+          SLUG="${{ inputs.slug }}"
+          git add "$SLUG/" vercel.json
+          git commit -m "feat($SLUG): nowy klient (auto-LUZAK)
+
+          Co: klient self-service przez /klient-start/ - LUZAK pipeline
+          Czemu: auto-generated z form submit przez Edge Function
+          Test: preflight w new-client.py PASS (preconditions OK)" || echo "Nothing to commit"
+          git push origin main
+
+      - name: Update Supabase status -> live
+        if: success()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          TOKEN: ${{ inputs.token }}
+        run: |
+          curl -X PATCH "$SUPABASE_URL/rest/v1/briefs?token=eq.$TOKEN" \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d "{\"status\":\"live\",\"deployed_at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"github_run_id\":\"${{ github.run_id }}\"}"
+
+      - name: Update Supabase status -> failed
+        if: failure()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          TOKEN: ${{ inputs.token }}
+        run: |
+          curl -X PATCH "$SUPABASE_URL/rest/v1/briefs?token=eq.$TOKEN" \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d "{\"status\":\"failed\",\"github_run_id\":\"${{ github.run_id }}\"}"

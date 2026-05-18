@@ -245,9 +245,11 @@ async function submit() {
   btn.textContent = 'Generuję...';
 
   try {
-    const res = await fetch('/api/generate-from-form', {
+    const SUPABASE_URL = "https://kuyniyyieejvambyjnxy.supabase.co";
+    const SUPABASE_ANON = "sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL";
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/generate-from-form`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON}`},
       body: JSON.stringify({ token: TOKEN, brief: data })
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
