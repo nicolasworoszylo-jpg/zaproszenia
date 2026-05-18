@@ -280,15 +280,41 @@ def main():
     # 5. Vercel rewrite
     add_vercel_rewrite(slug)
 
-    # 5. Git (opcjonalne)
+    # 5. PREFLIGHT - sanity checks PRZED commit (catch 12+ known bugs)
+    print()
+    print("=== Pre-flight checks ===")
+    pre = subprocess.run(["bash", "scripts/preflight-client.sh", slug], cwd=ROOT)
+    if pre.returncode != 0:
+        print(f"  ABORT: preflight FAIL - fix issues + retry. Klient {slug} NIE wdrozony.")
+        sys.exit(1)
+
+    # 6. Git commit + push
     if not args.no_commit:
         subprocess.run(["git", "add", str(target), str(VERCEL_JSON)], cwd=ROOT, check=True)
+        bride_groom = brief['bride'] + (f" & {brief['groom']}" if brief.get("groom") else "")
+        body = f"\n\nCo: nowy klient {bride_groom} ({slug}.zaproszeniaonline.com)\nCzemu: order po platnosci Stripe\nTest: preflight passed + smoke test po deploy"
         subprocess.run(
-            ["git", "commit", "-m", f"feat({slug}): nowy klient {brief['bride']}" + (f" & {brief['groom']}" if brief.get("groom") else "")],
+            ["git", "commit", "-m", f"feat({slug}): nowy klient {bride_groom}{body}"],
             cwd=ROOT, check=True,
         )
         subprocess.run(["git", "push", "origin", "main"], cwd=ROOT, check=True)
         print(f"  + git push OK")
+
+        # 7. OVH DNS (jezeli wildcard nie istnieje - skrypt sam sprawdza idempotent)
+        print()
+        print("=== OVH DNS (auto) ===")
+        ovh = subprocess.run(["bash", "scripts/ovh-dns-add.sh", slug], cwd=ROOT)
+        if ovh.returncode != 0:
+            print(f"  WARN: OVH DNS issue - sprawdz recznie. Path-based URL dziala niezaleznie.")
+
+        # 8. Wait + smoke test po Vercel deploy
+        print()
+        print("=== Wait 35s na Vercel deploy ===")
+        import time
+        time.sleep(35)
+        print()
+        print("=== Smoke test ===")
+        subprocess.run(["bash", "scripts/smoke-test-client.sh", slug], cwd=ROOT)
 
     # 6. Instrukcje
     print()

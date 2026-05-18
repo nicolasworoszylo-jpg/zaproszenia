@@ -22,6 +22,15 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Added** (2026-05-18, bug-prevention pipeline dla skalowania do 100 klientow/dzien):
+  - `scripts/preflight-client.sh` (19 sanity checks PRZED deploy klienta): self-host vendor + fonty, absolute paths z slug prefix, brak unpkg/googleapis CDN, JS syntax valid, Vercel rewrite obecny, HTML title personalizowany, meta robots noindex.
+  - `scripts/smoke-test-client.sh` (test PO deploy): HTML 200, 6 assets 200, brak unpkg, subdomain SSL check.
+  - `scripts/ovh-dns-add.sh` (OVH API z trzema kluczami): idempotent dodanie A/CNAME, wildcard detection (skip per-slug jezeli wildcard `*` istnieje), zone refresh.
+  - `scripts/new-client.py`: integracja calego pipeline'u - preflight -> git commit/push -> OVH DNS -> 35s wait -> smoke test (jedna komenda).
+  - `docs/BUGS_PREVENTED.md` - katalog 9 bugow z sesji 2026-05-16/17/18 + ich architectural prevention.
+  - `docs/SCALING_100_PER_DAY.md` - bottleneck analiza (Vercel/GitHub/Supabase/OVH) + cost analysis (~$49/mc Pro tier).
+  - `docs/BRIEF_WIZARD_RFC.md` - design self-service wizarda (PARKED do ~10 klienta, decyzje 1-7 zatwierdzone).
+
 - **Fixed** (vercel rewrite): regex source `/(.*)` zamiast `:path+` dla obslugi root URL subdomeny.
 
 - **Fixed** (2026-05-18, subdomena rewrite): vercel.json `rewrites` z `source:/:path*` nie obslugiwal poprawnie root URL `/` (path* mialo problem z empty match - dawalo strone glowna zamiast `/nicolas-test/index.html`). Rozbito na 2 reguly: `source:/` dla root + `source:/:path+` dla reszty (min 1 segment).
