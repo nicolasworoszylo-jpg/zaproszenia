@@ -22,6 +22,12 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Fixed CRITICAL** (2026-05-18, nicolas-test stuck "ladowanie..." - DRUGI bug niezalezny od CSP):
+  - Root cause: URL `https://zaproszeniaonline.com/nicolas-test` (bez trailing slash) powodowal ze browser interpretowal base URL jako root domeny `https://zaproszeniaonline.com/`. Relatywne `src="vendor/react.min.js"` rozwijaly sie do `https://zaproszeniaonline.com/vendor/react.min.js` (GLOWNY /vendor/, nie `/nicolas-test/vendor/`). Pliki react/react-dom/supabase byly tam (200), ale `vendor/app.js` w glownym /vendor/ NIE istnieje (jest tylko demo-compiled.js i magda-compiled.js) -> 404 -> React nigdy nie mountuje -> kurtyna `#demo-loading` stuck.
+  - Why nie zauwazone wczesniej: curl `https://zaproszeniaonline.com/nicolas-test` zwracal poprawny HTML i WSZYSTKIE assety 200 (bo curl nie podaza za relative paths w response, sprawdzal absolute URLe). Symptom widoczny tylko w real browser ktory wykonuje JS i rozwija relative paths.
+  - Fix: absolute paths z slug prefix wszedzie w HTML (`<script src="/nicolas-test/vendor/app.js">`) + w CONFIG (`ourStoryHeartPhoto: "/nicolas-test/photos/..."`). Update `scripts/new-client.py` - auto prefix per slug dla wszystkich nowych klientow.
+  - Lesson learned dla template: wszystkie kolejne klienty MUSZA miec absolute paths z `/<slug>/` prefix (bug uniwersalny dla CleanURLs+folder strategy).
+
 - **Added** (2026-05-18, sekcja 03 Zdjecia pary): wskazowka formatu kadru w `.lf-photos-mail-info` - zdjecie glowne (serce u gory) w kwadracie 1:1, zdjecia boczne w pionie 3:4/4:5. Reassurance ze inne proporcje tez OK (kadrowanie w obrobce). Decyzja Dominiki po zweryfikowaniu finalnych wygladow - klient od razu wysyla zdjecia w optymalnym formacie zamiast korekt w obrobce.
 
 - **Fixed CRITICAL** (2026-05-18, nicolas-test "ladowanie zaproszenia..." stuck):

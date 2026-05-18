@@ -63,6 +63,14 @@ def slugify(name: str) -> str:
 
 def replace_config(html: str, brief: dict) -> str:
     """Podmienia caly blok CONFIG = {...} na nowy z brief.json."""
+    slug = brief["slug"]
+    # Helper - auto-prefix slug do paths z 'photos/' (anti-trailing-slash-bug)
+    def abs_photo(path):
+        if not path: return path
+        if path.startswith("/") or path.startswith("http"): return path
+        return f"/{slug}/{path}"
+    heart = abs_photo(brief.get("photos", {}).get("heart"))
+    side = [abs_photo(p) for p in brief.get("photos", {}).get("side", [])]
     # Buduj CONFIG JSON string z brief
     config = {
         "bride": brief["bride"],
@@ -74,8 +82,8 @@ def replace_config(html: str, brief: dict) -> str:
         "reception": brief["reception"],
         "timeline": brief["timeline"],
         "ourStory": brief.get("ourStory", []),
-        "ourStoryHeartPhoto": brief.get("photos", {}).get("heart"),
-        "ourStoryPhotos": brief.get("photos", {}).get("side", []),
+        "ourStoryHeartPhoto": heart,
+        "ourStoryPhotos": side,
         "dressCode": brief["dressCode"],
         "transport": brief.get("transport", {"departure": "-", "ret": "-"}),
         "hotels": brief.get("hotels", []),
@@ -258,10 +266,14 @@ def main():
             print(f"  ✗ esbuild error: {r.stderr}")
             sys.exit(1)
         jsx_path.unlink()
-        # Swap inline script -> compiled
-        html = extract_pat.sub('<script defer src="vendor/app.js"></script>', html)
+        # Swap inline script -> compiled (absolute path z slugiem - URL bez trailing slash safe)
+        html = extract_pat.sub(f'<script defer src="/{slug}/vendor/app.js"></script>', html)
+        # Konwertuj relatywne paths na absolute z slug prefix (anti-trailing-slash-bug)
+        html = html.replace('src="vendor/', f'src="/{slug}/vendor/')
+        html = html.replace('href="fonts/', f'href="/{slug}/fonts/')
+        html = html.replace('href="photos/', f'href="/{slug}/photos/')
         html_path.write_text(html, encoding="utf-8")
-        print(f"  + esbuild JSX -> vendor/app.js ({app_js.stat().st_size:,} bytes)")
+        print(f"  + esbuild JSX -> /{slug}/vendor/app.js ({app_js.stat().st_size:,} bytes) + absolute paths")
     else:
         print(f"  ⚠ Brak inline JSX w template - skip esbuild")
 
