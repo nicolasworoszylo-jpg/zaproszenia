@@ -21,6 +21,7 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 - Multi-PC system + 19 Conditional Reminders (LIVE)
 
 ## [Unreleased]
+- **Added** (RODO compliance per klient): cookies info banner w _template_klient/index.html (auto-dismissable + localStorage seen flag). Plus klient-start/index.html ma minimal disclaimer o localStorage auto-save z linkiem do /privacy. Wszyscy nowi klienci wygenerowani przez new-client.py dziedzicza cookies banner.
 - **Fixed** (auto-client.yml permissions): dodany pull-requests: write do permissions. Default GITHUB_TOKEN potrzebuje tego scope zeby gh pr create dzialalo (poprzedni fail: Resource not accessible by integration).
 - **Changed** (auto-client.yml PR-based merge): bot push do feature branch auto/<slug>-<ts> zamiast direct main. Plus gh pr create + gh pr merge --squash --admin. Branch protection respected.
 - **Fixed** (Guardian step-level skip): zamiana job-level if: na step-level if: github.actor != bot. Skipped jobs nie liczyly sie jako passing status check - teraz job aktywny, 1 explicit success step dla bota.

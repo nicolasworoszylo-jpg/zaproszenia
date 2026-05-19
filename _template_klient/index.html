@@ -41,6 +41,15 @@
 <body>
 <div id="demo-loading">ładowanie zaproszenia…</div>
 <div id="root"></div>
+
+<!-- Cookies info (RODO compliance - minimal per klient, dismissable) -->
+<div id="cookies-info" style="position:fixed;bottom:0;left:0;right:0;background:rgba(53,16,29,0.96);color:#FBF7F0;padding:12px 16px;font-family:Georgia,serif;font-size:13px;line-height:1.5;text-align:center;z-index:9000;display:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)">
+  <span>Ta strona uzywa Supabase do RSVP + propozycji piosenek. Dane przechowywane sa zgodnie z RODO. <a href="https://zaproszeniaonline.com/privacy" style="color:#C8A87C;text-decoration:underline" target="_blank" rel="noopener">Polityka prywatnosci</a>.</span>
+  <button onclick="document.getElementById('cookies-info').style.display='none';try{localStorage.setItem('cookies_seen_v1', Date.now())}catch(e){}" style="margin-left:12px;background:#C8A87C;color:#35101D;border:none;padding:6px 14px;border-radius:3px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600">OK, rozumiem</button>
+</div>
+<script>
+  try { if (!localStorage.getItem('cookies_seen_v1')) { document.getElementById('cookies-info').style.display='block'; } } catch(e) {}
+</script>
 <script type="text/babel" data-presets="react">
 const { useState, useEffect, useRef, useCallback } = React;
 
