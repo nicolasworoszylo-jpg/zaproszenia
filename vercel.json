@@ -12,6 +12,16 @@
                 }
             ],
             "destination": "/nicolas-test/$1"
+        },
+        {
+            "source": "/:path*",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "maria-final-2027-03.zaproszeniaonline.com"
+                }
+            ],
+            "destination": "/maria-final-2027-03/:path*"
         }
     ],
     "redirects": [

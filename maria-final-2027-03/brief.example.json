@@ -1,0 +1,52 @@
+{
+  "slug": "anna-michal",
+  "bride": "Anna",
+  "groom": "Michał",
+  "weddingDate": "2026-06-20T15:00:00",
+  "rsvpDeadline": "20 maja 2026",
+  "quote": "Każda wielka miłość zaczyna się od jednego spojrzenia",
+  "palette": "bordo",
+  "ceremony": {
+    "title": "Ceremonia ślubna",
+    "venue": "Kościół św. Anny",
+    "address": "ul. Krakowskie Przedmieście 68, Warszawa",
+    "time": "15:00",
+    "mapUrl": "https://www.google.com/maps/search/?api=1&query=Anna+Warszawa"
+  },
+  "reception": {
+    "title": "Przyjęcie weselne",
+    "venue": "Pałac w Korczewie",
+    "address": "Korczew 23, 08-108 Korczew",
+    "time": "17:00",
+    "mapUrl": "https://www.google.com/maps/search/?api=1&query=Palac+Korczew"
+  },
+  "timeline": [
+    {"time": "15:00", "event": "Ceremonia ślubna", "desc": "Kościół św. Anny", "icon": "church"},
+    {"time": "16:30", "event": "Sesja & koktajl", "desc": "Lampka szampana", "icon": "camera"},
+    {"time": "17:30", "event": "Obiad weselny", "desc": "Pałac w Korczewie", "icon": "dinner"},
+    {"time": "20:00", "event": "Tort & pierwszy taniec", "desc": "Najsłodszy moment", "icon": "cake"},
+    {"time": "21:00", "event": "Zabawa!", "desc": "Parkiet czeka", "icon": "party"}
+  ],
+  "ourStory": [],
+  "photos": {
+    "heart": "photos/01-engagement.jpg",
+    "side": [
+      "photos/02-side-1.jpg",
+      "photos/03-side-2.jpg",
+      "photos/04-side-3.jpg",
+      "photos/05-side-4.jpg"
+    ]
+  },
+  "dressCode": {
+    "main": "Elegancko - garnitury i sukienki koktajlowe.",
+    "note": "Prosimy o unikanie bieli.",
+    "colors": ["#8B6F47", "#C4A77D", "#6B7B5E", "#2C3E2D", "#D4A373"]
+  },
+  "gifts": "Waszą obecność uważamy za największy prezent.",
+  "accounts": [
+    {"holder": "Anna Kowalska", "iban": "PL 61 1090 1014 0000 0712 1981 2874"},
+    {"holder": "Michał Kowalski", "iban": "PL 42 1160 2202 0000 0003 5612 7890"}
+  ],
+  "guestsCount": 100,
+  "features": ["rsvp", "countdown", "timeline", "maps", "gifts", "music", "qr"]
+}
