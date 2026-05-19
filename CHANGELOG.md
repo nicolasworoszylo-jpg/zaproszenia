@@ -22,6 +22,8 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 
 ## [Unreleased]
 
+- **Fixed** (2026-05-19, Repo Guardian skip for LUZAK bot pipeline): dodany if: github.actor != 'github-actions[bot]' na jobie validate w repo-guardian.yml. Bot commits z auto-client.yml sa preflightowane przez scripts/new-client.py (19 checks PRZED push) - duplikacja validation niepotrzebna. Skipped status = success dla branch protection required status check.
+
 - **Deployed LIVE** (2026-05-18, FULL LUZAK przez Supabase MCP):
   - Migration `briefs` applied (table + RLS + view + cleanup function).
   - Storage policies dla `invitation-photos` (service_role write, anon read).

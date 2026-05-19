@@ -23,6 +23,10 @@ jobs:
     name: validate
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # Bot commits z auto-client.yml (LUZAK pipeline) sa wstepnie walidowane
+    # przez scripts/new-client.py (preflight 19 checks) - skip Guardian
+    # (Conventional Commits + CHANGELOG sprawdzane lokalnie).
+    if: github.actor != 'github-actions[bot]'
 
     steps:
       - name: Checkout (with history)
