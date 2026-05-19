@@ -17,7 +17,8 @@ on:
         type: string
 
 permissions:
-  contents: write  # do git push
+  contents: write       # git push
+  pull-requests: write  # gh pr create + merge
 
 jobs:
   generate:
