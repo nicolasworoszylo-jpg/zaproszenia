@@ -21,6 +21,7 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 - Multi-PC system + 19 Conditional Reminders (LIVE)
 
 ## [Unreleased]
+- **Changed** (auto-client.yml PR-based merge): bot push do feature branch auto/<slug>-<ts> zamiast direct main. Plus gh pr create + gh pr merge --squash --admin. Branch protection respected.
 - **Fixed** (Guardian step-level skip): zamiana job-level if: na step-level if: github.actor != bot. Skipped jobs nie liczyly sie jako passing status check - teraz job aktywny, 1 explicit success step dla bota.
 
 - **Fixed** (2026-05-19, Repo Guardian skip for LUZAK bot pipeline): dodany if: github.actor != 'github-actions[bot]' na jobie validate w repo-guardian.yml. Bot commits z auto-client.yml sa preflightowane przez scripts/new-client.py (19 checks PRZED push) - duplikacja validation niepotrzebna. Skipped status = success dla branch protection required status check.
