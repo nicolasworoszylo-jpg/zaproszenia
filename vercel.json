@@ -2,28 +2,7 @@
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "cleanUrls": true,
     "trailingSlash": false,
-    "rewrites": [
-        {
-            "source": "/(.*)",
-            "has": [
-                {
-                    "type": "host",
-                    "value": "nicolas-test.zaproszeniaonline.com"
-                }
-            ],
-            "destination": "/nicolas-test/$1"
-        },
-        {
-            "source": "/(.*)",
-            "has": [
-                {
-                    "type": "host",
-                    "value": "nicolas-i-dominika-2026-07.zaproszeniaonline.com"
-                }
-            ],
-            "destination": "/nicolas-i-dominika-2026-07/$1"
-        }
-    ],
+    "rewrites": [],
     "redirects": [
         {
             "source": "/onepager/galeria",
