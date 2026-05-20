@@ -339,8 +339,13 @@ def main():
     else:
         print(f"  ⚠ Brak inline JSX w template - skip esbuild")
 
-    # 5. Vercel rewrite
-    add_vercel_rewrite(slug)
+    # 5. Vercel rewrite — middleware.js (Edge Middleware) globalnie handluje
+    # subdomain -> path routing dla wszystkich <slug>.zaproszeniaonline.com.
+    # Per-slug rewrite w vercel.json nie jest potrzebny i wczesniej nie dzialal
+    # (host-based vercel.json rewrites nie aplikuja sie dla aliasow subdomenowych).
+    # add_vercel_rewrite zostaje jako idempotent helper (backward compat dla starych
+    # klientow w vercel.json), ale nowych klientow obsluguje middleware.
+    # add_vercel_rewrite(slug)  # zdeprecjonowane od 2026-05-20
 
     # 5. PREFLIGHT - sanity checks PRZED commit (catch 12+ known bugs)
     print()
