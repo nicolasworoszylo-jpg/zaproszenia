@@ -56,8 +56,11 @@ check "Supabase global window.supabase" "grep -q 'globalThis' $ROOT/$CLIENT/vend
 # Bug 6 (Gallery wyciety jezeli brief.features no gallery)
 # (skip - kontekstowy)
 
-# Vercel rewrite dla subdomeny w vercel.json
-check "Vercel rewrite dla $CLIENT.zaproszeniaonline.com" "grep -q '$CLIENT.zaproszeniaonline.com' $ROOT/vercel.json"
+# Subdomain routing - OPCJA A: middleware.js (Edge Middleware, dynamiczny per host)
+# LUB OPCJA B: per-slug rewrite w vercel.json (legacy, dla starych klientow).
+# Middleware.js obsluguje *.zaproszeniaonline.com globalnie - per-slug rewrite NIE potrzebny.
+check "Subdomain routing dla $CLIENT.zaproszeniaonline.com (middleware OR vercel.json)" \
+  "grep -q '@vercel/edge' $ROOT/middleware.js 2>/dev/null || grep -q '$CLIENT.zaproszeniaonline.com' $ROOT/vercel.json"
 
 # Photos: lokalne (OPCJA A) LUB Supabase CDN (OPCJA B)
 PHOTOS_LOCAL=0
