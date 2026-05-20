@@ -12,6 +12,16 @@
                 }
             ],
             "destination": "/nicolas-test/$1"
+        },
+        {
+            "source": "/:path*",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "nicolas-i-dominika-2026-07.zaproszeniaonline.com"
+                }
+            ],
+            "destination": "/nicolas-i-dominika-2026-07/:path*"
         }
     ],
     "redirects": [
