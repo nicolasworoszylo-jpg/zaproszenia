@@ -212,23 +212,37 @@ def replace_invitation_slug(html: str, slug: str) -> str:
 
 
 def add_vercel_rewrite(slug: str):
-    """Dodaje host-based rewrite do vercel.json (idempotent)."""
+    """Dodaje host-based rewrite do vercel.json (idempotent).
+
+    UWAGA: Vercel rewrite source musi byc regex `/(.*)` z `$1` capture, NIE named param
+    `/:path*`. Powod: `:path*` nie matchuje root request `/` (pusty path), wiec subdomena
+    root pokazywala landing zaproszeniaonline.com zamiast strony klienta. `(.*)` jest
+    deterministyczne i matchuje takze pusty path. Patrz: nicolas-test rewrite (dziala) vs
+    nicolas-i-dominika-2026-07 (przed fix - root nie dzialal).
+    """
     cfg = json.loads(VERCEL_JSON.read_text())
     host = f"{slug}.zaproszeniaonline.com"
     rewrites = cfg.setdefault("rewrites", [])
-    # Skip jesli juz istnieje
+    # Idempotency + auto-upgrade starego wzorca: znajdz po host, normalizuj na (.*) + $1.
     for r in rewrites:
         for h in r.get("has", []):
             if h.get("value") == host:
-                print(f"  rewrite dla {host} juz istnieje - skip")
+                # Auto-fix legacy `:path*` wzorca na bezpieczne `(.*)` + $1.
+                if r.get("source") != "/(.*)" or r.get("destination") != f"/{slug}/$1":
+                    r["source"] = "/(.*)"
+                    r["destination"] = f"/{slug}/$1"
+                    VERCEL_JSON.write_text(json.dumps(cfg, indent=4, ensure_ascii=False) + "\n")
+                    print(f"  ~ rewrite dla {host} zaktualizowany na /(.*) + $1")
+                else:
+                    print(f"  rewrite dla {host} juz istnieje - skip")
                 return
     rewrites.append({
-        "source": "/:path*",
+        "source": "/(.*)",
         "has": [{"type": "host", "value": host}],
-        "destination": f"/{slug}/:path*",
+        "destination": f"/{slug}/$1",
     })
     VERCEL_JSON.write_text(json.dumps(cfg, indent=4, ensure_ascii=False) + "\n")
-    print(f"  + rewrite host={host} -> /{slug}/:path*")
+    print(f"  + rewrite host={host} -> /{slug}/$1")
 
 
 def copy_photos(brief: dict, target_dir: Path, photos_src: Path | None):
