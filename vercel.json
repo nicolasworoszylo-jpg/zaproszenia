@@ -14,14 +14,14 @@
             "destination": "/nicolas-test/$1"
         },
         {
-            "source": "/:path*",
+            "source": "/(.*)",
             "has": [
                 {
                     "type": "host",
                     "value": "nicolas-i-dominika-2026-07.zaproszeniaonline.com"
                 }
             ],
-            "destination": "/nicolas-i-dominika-2026-07/:path*"
+            "destination": "/nicolas-i-dominika-2026-07/$1"
         }
     ],
     "redirects": [
