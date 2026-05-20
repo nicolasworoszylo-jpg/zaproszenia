@@ -55,6 +55,20 @@ PALETTE_THEME = {
     "terracotta": "#4A1E15",
 }
 
+# Polskie miesiące w dopełniaczu (np. "16 lipca 2026") - lokalniezalezne mapowanie.
+# Powod: strftime("%B") zwraca angielskie nazwy gdy locale=C (default GitHub runners + Vercel build).
+PL_MONTHS = {
+    1: "stycznia", 2: "lutego", 3: "marca", 4: "kwietnia",
+    5: "maja", 6: "czerwca", 7: "lipca", 8: "sierpnia",
+    9: "wrzesnia", 10: "pazdziernika", 11: "listopada", 12: "grudnia",
+}
+
+
+def polish_date(iso: str) -> str:
+    """ISO date -> '16 lipca 2026'. Akceptuje 'YYYY-MM-DD' i 'YYYY-MM-DDTHH:MM:SS'."""
+    d = datetime.fromisoformat(iso)
+    return f"{d.day} {PL_MONTHS[d.month]} {d.year}"
+
 
 def slugify(name: str) -> str:
     s = re.sub(r"[^a-z0-9-]+", "-", name.lower()).strip("-")
@@ -125,47 +139,67 @@ def replace_palette(html: str, palette: str) -> str:
 
 
 def replace_meta(html: str, brief: dict) -> str:
-    slug = brief["slug"]
-    title = brief["bride"]
-    if brief.get("groom"):
-        title += f" i {brief['groom']}"
-    date_pl = datetime.fromisoformat(brief["weddingDate"]).strftime("%d %B %Y")  # ENGLISH locale fallback
-    title += f" - {date_pl}"
+    """Podmienia caly meta-blok (title + 9 meta tagow) na dynamiczne wartosci z briefu.
 
-    theme = PALETTE_THEME.get(brief["palette"], "#35101D")
+    Naprawia 2 stare bugi:
+      - bug 1: '16 July 2026' (angielski miesiac z strftime+C locale) -> '16 lipca 2026'
+      - bug 2: meta description/og:description/twitter zostawaly default z templatu (czesto
+              ze starego klienta 'nicolas-test') zamiast aktualnego briefu - teraz wszystko
+              renderowane z parametrow.
+    """
+    slug = brief["slug"]
+    palette = brief["palette"]
+
+    # Pelne 'imie pary' - 'Anna' + ' i Michal' albo 'Nicolas i Dominika' (single-name pattern).
+    couple = brief["bride"]
+    if brief.get("groom"):
+        couple += f" i {brief['groom']}"
+
+    date_pl = polish_date(brief["weddingDate"])
+    title_full = f"{couple} - {date_pl}"
+
+    # Description: dluga (search engines) + krotka (social cards).
+    # ASCII-only zgodnie z konwencja templatu (zaproszenie 'slubne' bez polskich znakow w meta).
+    desc_long = f"Cyfrowe zaproszenie slubne {couple} - {date_pl}. Paleta {palette}, RSVP, plan dnia, mapy."
+    desc_short = f"Cyfrowe zaproszenie slubne {couple} - {date_pl}."
+    site_name = f"{couple} - zaproszenie slubne"
+
+    theme = PALETTE_THEME.get(palette, "#35101D")
     subdomain = f"https://{slug}.zaproszeniaonline.com/"
     hero_photo = brief.get("photos", {}).get("heart", "")
-    if hero_photo.startswith("http"):
-        og_image = hero_photo  # absolutny URL (Supabase Storage)
+    if hero_photo and hero_photo.startswith("http"):
+        og_image = hero_photo  # absolutny URL (Supabase Storage CDN)
     else:
         og_image = subdomain.rstrip("/") + (hero_photo if hero_photo else "/photos/01.jpg")
 
-    html = re.sub(r"<title>.*?</title>", f"<title>{title}</title>", html)
-    html = re.sub(
-        r'<meta name="theme-color" content="#[0-9A-Fa-f]+">',
-        f'<meta name="theme-color" content="{theme}">',
-        html,
-    )
-    html = re.sub(
-        r'<link rel="canonical" href="https://[^"]+">',
-        f'<link rel="canonical" href="{subdomain}">',
-        html,
-    )
-    html = re.sub(
-        r'<meta property="og:url" content="https://[^"]+">',
-        f'<meta property="og:url" content="{subdomain}">',
-        html,
-    )
-    html = re.sub(
-        r'<meta property="og:title" content="[^"]+">',
-        f'<meta property="og:title" content="{title}">',
-        html,
-    )
-    html = re.sub(
-        r'<meta property="og:image" content="[^"]+">',
-        f'<meta property="og:image" content="{og_image}">',
-        html,
-    )
+    # 10 podmian (idempotent przez konkretne regexy + jedna podmiana per tag).
+    substitutions = [
+        (r"<title>.*?</title>", f"<title>{title_full}</title>"),
+        (r'<meta name="description" content="[^"]+">',
+         f'<meta name="description" content="{desc_long}">'),
+        (r'<meta name="theme-color" content="#[0-9A-Fa-f]+">',
+         f'<meta name="theme-color" content="{theme}">'),
+        (r'<link rel="canonical" href="https://[^"]+">',
+         f'<link rel="canonical" href="{subdomain}">'),
+        (r'<meta property="og:site_name" content="[^"]+">',
+         f'<meta property="og:site_name" content="{site_name}">'),
+        (r'<meta property="og:url" content="https://[^"]+">',
+         f'<meta property="og:url" content="{subdomain}">'),
+        (r'<meta property="og:title" content="[^"]+">',
+         f'<meta property="og:title" content="{title_full}">'),
+        (r'<meta property="og:description" content="[^"]+">',
+         f'<meta property="og:description" content="{desc_short}">'),
+        (r'<meta property="og:image" content="[^"]+">',
+         f'<meta property="og:image" content="{og_image}">'),
+        (r'<meta name="twitter:title" content="[^"]+">',
+         f'<meta name="twitter:title" content="{title_full}">'),
+        (r'<meta name="twitter:description" content="[^"]+">',
+         f'<meta name="twitter:description" content="{desc_short}">'),
+        (r'<meta name="twitter:image" content="[^"]+">',
+         f'<meta name="twitter:image" content="{og_image}">'),
+    ]
+    for pattern, replacement in substitutions:
+        html = re.sub(pattern, replacement, html)
     return html
 
 

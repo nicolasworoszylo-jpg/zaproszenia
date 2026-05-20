@@ -109,6 +109,32 @@ jobs:
           echo "PR created: $PR_URL"
           gh pr merge "$PR_URL" --squash --delete-branch --admin
 
+      - name: Pin subdomain to Vercel project (przyspiesz SSL cold-start)
+        # Wildcard cert *.zaproszeniaonline.com NIE provisuje sie automatycznie per-subdomain.
+        # Explicit POST /v10/projects/{id}/domains tworzy cert per slug -> SSL ready w ~30s zamiast 5-10 min.
+        # Soft-fail: jezeli VERCEL_TOKEN nie ma w secrets - skip + warn (wildcard nadal dziala, tylko wolniej).
+        if: success() && env.VERCEL_TOKEN != ''
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID || 'prj_0uMw2SNx6v5F0OQbgrCp1gKgug5F' }}
+          SLUG: ${{ inputs.slug }}
+        run: |
+          DOMAIN="${SLUG}.zaproszeniaonline.com"
+          echo "Adding $DOMAIN to project $VERCEL_PROJECT_ID..."
+          HTTP_CODE=$(curl -sS -o /tmp/vercel-resp.json -w '%{http_code}' \
+            -X POST "https://api.vercel.com/v10/projects/${VERCEL_PROJECT_ID}/domains" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"name\":\"${DOMAIN}\"}" || echo "000")
+          case "$HTTP_CODE" in
+            200|201) echo "✓ Domain $DOMAIN added (SSL cert wystartuje natychmiast)" ;;
+            409)     echo "✓ Domain $DOMAIN juz przypiety (idempotent OK)" ;;
+            *)       echo "::warning::Vercel API HTTP $HTTP_CODE - wildcard cert handluje, ale cold-start ~5 min:"
+                     cat /tmp/vercel-resp.json
+                     # NIE failuj caly run - to optymalizacja, nie blocker
+                     ;;
+          esac
+
       - name: Update Supabase status -> live
         if: success()
         env:
