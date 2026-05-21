@@ -1,0 +1,88 @@
+{
+    "_meta": {
+        "anti_corruption_golden": true,
+        "do_not_remove": "Single source of truth dla danych biznesowych zaproszeniaonline.com. Egzekwowany przez scripts/lint-business-data.sh. Sync wymagany z: LEGAL_DATA.md (master prawny), index.html (Schema.org Product), privacy.html (admin data), terms.html, returns.html, Stripe Dashboard (Payment Link).",
+        "source_of_truth": "LEGAL_DATA.md - ten plik jest tylko machine-readable index",
+        "last_audit": "2026-05-21",
+        "audit_commit": "directive-2023-2673-art-11a-withdrawal-button"
+    },
+    "brand": {
+        "name": "zaproszeniaonline.com",
+        "domain": "zaproszeniaonline.com",
+        "operator_credit": "Vidok Studio",
+        "status_prawny": "dzia\u0142alno\u015b\u0107 nieewidencjonowana (art. 5 ust. 1 Prawo przedsi\u0119biorc\u00f3w, Dz.U. 2018 poz. 646)",
+        "podstawa_prawna": "ustawa z dnia 6 marca 2018 r. - Prawo przedsi\u0119biorc\u00f3w"
+    },
+    "owners": [
+        {
+            "name": "Nicolas Woroszy\u0142o",
+            "role": "Administrator + dev",
+            "email_personal": "nicolasworoszylo@gmail.com",
+            "phone": "+48 500 728 071"
+        },
+        {
+            "name": "Dominika Ku\u015b",
+            "role": "osoba upowa\u017cniona do przetwarzania (art. 29 RODO)",
+            "email_personal": "dominikakus333@gmail.com",
+            "note": "NIE wsp\u00f3\u0142administrator - dzia\u0142a w zakresie wskazanym przez Administratora"
+        }
+    ],
+    "contact": {
+        "public_email": "kontakt@zaproszeniaonline.com",
+        "ovh_forwarders": [
+            "kontakt@",
+            "rodo@",
+            "faktury@",
+            "zamowienia@"
+        ],
+        "forward_target": [
+            "nicolasworoszylo@gmail.com",
+            "dominikakus333@gmail.com"
+        ],
+        "note": "Wszystkie 4 publiczne adresy forwarderami \u2192 2 osoby. Tylko kontakt@ pokazywany w UI od 2026-05-16."
+    },
+    "pricing": {
+        "base_price_pln": 699,
+        "currency": "PLN",
+        "model": "jednorazowo - bez abonamentu",
+        "valid_until": "2026-12-31",
+        "return_policy": "MerchantReturnNotPermitted (bezzwrotna po rozpocz\u0119ciu \u015bwiadczenia, art. 38 ust. 1 pkt 1 + art. 38 pkt 3 UoPK)",
+        "withdrawal_window_hours": 24,
+        "withdrawal_directive": "art. 11a dyrektywy 2023/2673 (stosowanie od 19.06.2026)",
+        "withdrawal_endpoint": "https://zaproszeniaonline.com/odstapienie?token={leads.id}",
+        "monthly_limit_pln": 3499.5,
+        "monthly_limit_basis": "50% minimalnego wynagrodzenia 2026 (6999 PLN brutto)",
+        "max_sales_per_month": 5,
+        "escalation_at": 6
+    },
+    "tech_stack": {
+        "hosting": "Vercel",
+        "backend": "Supabase project=kuyniyyieejvambyjnxy",
+        "payment": "Stripe Payment Links",
+        "repo": "github.com/nicolasworoszylo-jpg/zaproszenia",
+        "branch_default": "main"
+    },
+    "legal_compliance": {
+        "rodo_audit_date": "2026-04-27 + 2026-05-13",
+        "rodo_audit_commit": "78f2f6c",
+        "compliance": [
+            "RODO",
+            "ePrivacy",
+            "EDPB 03/2022",
+            "PKE art. 173",
+            "UoPK art. 38"
+        ],
+        "dpa_required": [
+            "Supabase",
+            "Vercel",
+            "Stripe",
+            "Resend"
+        ],
+        "processors": [
+            "Resend (email transactional)",
+            "Vercel Analytics",
+            "Stripe",
+            "Supabase"
+        ]
+    }
+}

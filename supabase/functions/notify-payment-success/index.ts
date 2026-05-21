@@ -283,6 +283,26 @@ function customerPaidHTML(lead: Lead): string {
       </p>
     </div>
 
+    <!-- ANTI-CORRUPTION-GOLDEN: okno odstąpienia 24h (art. 11a CRD, dyrektywa 2023/2673).
+         DO NOT REMOVE: link do /odstapienie?token=... jest cyfrową funkcją odstąpienia
+         wymaganą od 19.06.2026. Musi być widoczny w mailu post-purchase. -->
+    <div style="margin:24px 0;padding:20px 22px;background:#FAFAF8;border:1px solid #EBEBEB;border-radius:12px;">
+      <p style="margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.74rem;letter-spacing:0.12em;text-transform:uppercase;color:#999999;font-weight:600;">
+        <span style="display:inline-block;width:5px;height:5px;background:#999999;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>Zmiana decyzji
+      </p>
+      <p style="margin:0 0 10px;font-size:0.95rem;line-height:1.6;color:#0A0A0A;">
+        Macie <strong>24 godziny</strong> od tej chwili na zmianę zdania - zanim usiądziemy do projektu. W tym oknie możecie odstąpić od umowy jednym kliknięciem:
+      </p>
+      <p style="margin:0 0 4px;text-align:left;">
+        <a href="https://zaproszeniaonline.com/odstapienie?token=${lead.id}" style="display:inline-block;padding:9px 18px;background:#FFFFFF;border:1px solid #2C3E2D;color:#2C3E2D;border-radius:100px;text-decoration:none;font-size:0.88rem;font-weight:500;letter-spacing:-0.005em;">
+          Status zamówienia / Odstąp od umowy →
+        </a>
+      </p>
+      <p style="margin:10px 0 0;font-size:0.82rem;line-height:1.55;color:#4A4A4A;">
+        Po 24 godzinach rozpoczynamy świadczenie i prawo odstąpienia wygasa (art. 38 ust. 1 pkt 1 ustawy o prawach konsumenta + art. 11a dyrektywy 2023/2673). Wtedy obowiązują nasze gwarancje rozszerzone z <a href="https://zaproszeniaonline.com/terms#paragraf-10a" style="color:#2C3E2D;text-decoration:underline;text-underline-offset:2px;">§ 10a Regulaminu</a>.
+      </p>
+    </div>
+
     ${pendingMail.length > 0 ? `
     <!-- DOSŁKA 48 H (dynamic) -->
     <div style="margin:24px 0;padding:22px 24px;background:rgba(184,95,46,0.06);border-radius:12px;border-left:3px solid #B85F2E;">

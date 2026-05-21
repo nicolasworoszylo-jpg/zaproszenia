@@ -1,0 +1,471 @@
+<!-- ANTI-CORRUPTION-GOLDEN: cyfrowa funkcja odstąpienia art. 11a CRD (dyrektywa 2023/2673).
+     DO NOT REMOVE: token URL flow, RPC get_withdrawal_status, POST /withdrawal-submit,
+                    2 stany UI (aktywny/wygasły), 24h thinking window.
+     Stosowanie obowiązkowe od 19.06.2026. Source of truth dossier:
+     /Users/centrum/Desktop/Claude/Prawo/dyrektywa-2023-2673/ -->
+<!DOCTYPE html><html lang="pl-PL"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <title>Status zamówienia · Odstąpienie | zaproszeniaonline.com</title>
+  <meta name="description" content="Cyfrowa funkcja odstąpienia od umowy zgodnie z art. 11a dyrektywy 2023/2673. Sprawdź status swojego zamówienia i odstąp od umowy w 24-godzinnym oknie przed rozpoczęciem realizacji.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://zaproszeniaonline.com/odstapienie">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin="">
+  <link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin="">
+  <link rel="stylesheet" href="/fonts/fonts.css">
+
+  <style>
+    :root {
+      color-scheme: light;
+      --bg:        #FFFFFF;
+      --ink:       #0A0A0A;
+      --ink-soft:  #4A4A4A;
+      --ink-mute:  #999999;
+      --line:      #EBEBEB;
+      --accent:    #2C3E2D;
+      --accent-h:  #1E2B1F;
+      --gold:      #C9A96E;
+      --error:     #B85F2E;
+      --ok-bg:     #FAFAF8;
+      --serif:     'Fraunces', Georgia, 'Times New Roman', serif;
+      --sans:      'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--ink);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+    /* Nav - identyczny jak terms.html */
+    .nav { position: sticky; top: 0; z-index: 100; background: linear-gradient(180deg, #2C3E2D 0%, #243325 100%); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid rgba(201,169,110,0.18); color: #FAF6EF; }
+    .nav-inner { max-width: 1280px; margin: 0 auto; padding: max(1rem, env(safe-area-inset-top, 0)) max(1.5rem, env(safe-area-inset-right, 0)) 1rem max(1.5rem, env(safe-area-inset-left, 0)); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: #FAF6EF; }
+    .brand-mark { width: 28px; height: 28px; }
+    .brand-name { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.05rem; letter-spacing: -0.015em; color: #FAF6EF; }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: rgba(250,246,239,0.78); text-decoration: none; transition: color 0.2s var(--ease); }
+    .nav-links a:hover { color: #C9A96E; }
+    @media (max-width: 720px) { .nav-links a { display: none; } .brand-name { font-size: 0.95rem; } }
+
+    /* Header */
+    .legal-header { padding: 5rem 1.5rem 2.5rem; text-align: center; max-width: 760px; margin: 0 auto; }
+    .legal-eyebrow { font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; font-weight: 500; }
+    .legal-title { font-family: var(--serif); font-weight: 400; font-style: italic; font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--ink); }
+    .legal-meta { margin-top: 0.85rem; font-size: 0.95rem; color: var(--ink-mute); }
+    .legal-back { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 2rem; padding: 8px 16px; border: 1px solid var(--line); border-radius: 100px; color: var(--ink-soft); font-size: 0.85rem; text-decoration: none; transition: all 0.3s var(--ease); }
+    .legal-back:hover { border-color: var(--accent); color: var(--accent); transform: translateX(-2px); }
+
+    main { max-width: 640px; margin: 0 auto; padding: 0 1.5rem 5rem; }
+
+    /* Status card */
+    .status-card { background: #FAFAF8; border: 1px solid var(--line); border-radius: 14px; padding: 2rem 1.75rem; margin-bottom: 2rem; }
+    .status-card[data-state="active"] { border-color: rgba(44,62,45,0.25); background: linear-gradient(170deg, #FFFFFF 0%, #FAFAF8 100%); }
+    .status-card[data-state="expired"] { border-color: rgba(201,169,110,0.35); background: linear-gradient(170deg, #FFFEFA 0%, #FAFAF8 100%); }
+    .status-row { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--line); font-size: 0.95rem; }
+    .status-row:last-child { border-bottom: none; }
+    .status-row dt { color: var(--ink-mute); font-weight: 400; }
+    .status-row dd { color: var(--ink); font-weight: 500; text-align: right; }
+    .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 100px; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.02em; }
+    .status-badge--active { background: rgba(44,62,45,0.1); color: var(--accent); }
+    .status-badge--expired { background: rgba(201,169,110,0.15); color: #8A7355; }
+    .status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* Countdown */
+    .countdown-box { background: rgba(44,62,45,0.06); border-left: 3px solid var(--accent); border-radius: 8px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+    .countdown-label { font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 4px; }
+    .countdown-value { font-family: var(--serif); font-style: italic; font-size: 1.4rem; color: var(--ink); letter-spacing: -0.01em; }
+    .countdown-help { font-size: 0.88rem; color: var(--ink-soft); margin-top: 6px; line-height: 1.55; }
+
+    /* Form */
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; font-size: 0.88rem; color: var(--ink); font-weight: 500; margin-bottom: 6px; }
+    .form-label .opt { color: var(--ink-mute); font-weight: 400; font-size: 0.82rem; margin-left: 6px; }
+    .form-input, .form-textarea { width: 100%; padding: 11px 14px; border: 1px solid var(--line); border-radius: 10px; font-family: var(--sans); font-size: 1rem; color: var(--ink); background: #FFFFFF; transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease); }
+    .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(44,62,45,0.08); }
+    .form-textarea { min-height: 90px; resize: vertical; line-height: 1.6; }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--ink-mute); }
+    .form-help { font-size: 0.85rem; color: var(--ink-mute); margin-top: 5px; line-height: 1.5; }
+
+    /* Actions */
+    .actions { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.75rem; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 100px; text-decoration: none; font-size: 0.95rem; font-weight: 500; font-family: var(--sans); cursor: pointer; transition: all 0.3s var(--ease); border: 1px solid transparent; }
+    .btn-primary { background: var(--ink); color: var(--bg); }
+    .btn-primary:hover:not(:disabled) { background: var(--accent); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(44,62,45,0.18); }
+    .btn-primary:disabled { background: var(--ink-mute); cursor: not-allowed; opacity: 0.6; }
+    .btn-secondary { background: #FFFFFF; color: var(--ink-soft); border-color: var(--line); }
+    .btn-secondary:hover { border-color: var(--ink-soft); color: var(--ink); }
+
+    /* Two-step confirm */
+    .confirm-shield { display: none; padding: 1.5rem; background: #FFFFFF; border: 2px solid var(--accent); border-radius: 12px; margin-top: 1.5rem; animation: shieldIn 0.3s var(--ease); }
+    .confirm-shield[data-open="true"] { display: block; }
+    @keyframes shieldIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .confirm-shield h3 { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.2rem; margin-bottom: 8px; color: var(--ink); }
+    .confirm-shield p { font-size: 0.93rem; color: var(--ink-soft); margin-bottom: 1rem; line-height: 1.6; }
+
+    /* Loader & error */
+    .loader { display: flex; justify-content: center; padding: 3rem 0; }
+    .loader-dot { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; margin: 0 4px; animation: bounce 1.4s infinite ease-in-out both; }
+    .loader-dot:nth-child(1) { animation-delay: -0.32s; }
+    .loader-dot:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+    .error-msg { padding: 14px 18px; background: rgba(184,95,46,0.08); border: 1px solid rgba(184,95,46,0.2); border-radius: 10px; color: var(--error); font-size: 0.92rem; margin-bottom: 1.25rem; line-height: 1.55; }
+
+    /* Expired state */
+    .expired-info { font-size: 0.98rem; color: var(--ink-soft); line-height: 1.65; margin-bottom: 1.5rem; }
+    .expired-info strong { color: var(--ink); }
+    .guarantees { background: rgba(201,169,110,0.06); border: 1px solid rgba(201,169,110,0.25); border-radius: 12px; padding: 1.25rem 1.5rem; margin-top: 1.5rem; }
+    .guarantees h3 { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.15rem; color: var(--ink); margin-bottom: 0.75rem; }
+    .guarantees ul { margin-left: 1.25rem; color: var(--ink-soft); font-size: 0.94rem; }
+    .guarantees li { margin-bottom: 0.4rem; line-height: 1.6; }
+
+    /* Legal footer */
+    .legal-note { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--ink-mute); line-height: 1.6; }
+    .legal-note a { color: var(--ink-soft); text-decoration: underline; text-underline-offset: 2px; }
+
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="/" class="brand" aria-label="zaproszeniaonline.com">
+        <svg class="brand-mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="32" cy="32" r="30" fill="none" stroke="#FAF6EF" stroke-width="1.5"/>
+          <text x="32" y="44" fill="#FAF6EF" font-family="Fraunces, Georgia, serif" font-style="italic" font-size="34" text-anchor="middle">Z</text>
+        </svg>
+        <span class="brand-name">zaproszeniaonline.com</span>
+      </a>
+      <nav class="nav-links" aria-label="Nawigacja">
+        <a href="/#cennik">Cennik</a>
+        <a href="/demo">Zobacz demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="legal-header">
+    <a href="/" class="legal-back">← Wróć na stronę główną</a>
+    <p class="legal-eyebrow">Status zamówienia</p>
+    <h1 class="legal-title">Twoje <em>zamówienie</em></h1>
+    <p class="legal-meta">Cyfrowa funkcja odstąpienia od umowy · art. 11a dyrektywy 2023/2673</p>
+  </div>
+
+  <main>
+    <!-- Stan: ładowanie (default) -->
+    <div id="state-loading" class="loader" aria-live="polite">
+      <span class="loader-dot"></span><span class="loader-dot"></span><span class="loader-dot"></span>
+    </div>
+
+    <!-- Stan: błąd (token nieprawidłowy / brak zamówienia) -->
+    <section id="state-error" hidden>
+      <div class="error-msg" id="error-text"></div>
+      <p style="font-size:0.95rem;color:var(--ink-soft);">Sprawdź link w emailu potwierdzającym zakup. Jeśli problem się powtarza, napisz na <a href="mailto:kontakt@zaproszeniaonline.com" style="color:var(--accent);">kontakt@zaproszeniaonline.com</a>.</p>
+    </section>
+
+    <!-- Stan: aktywny - okno odstąpienia otwarte -->
+    <section id="state-active" hidden>
+      <div class="countdown-box">
+        <p class="countdown-label">Okno odstąpienia otwarte</p>
+        <p class="countdown-value" id="countdown-value">do <span id="countdown-deadline">-</span></p>
+        <p class="countdown-help">Po tym czasie rozpoczynamy świadczenie i prawo odstąpienia wygasa (art. 38 ust. 1 pkt 1 ustawy o prawach konsumenta).</p>
+      </div>
+
+      <div class="status-card" data-state="active">
+        <dl>
+          <div class="status-row">
+            <dt>Identyfikator zamówienia</dt>
+            <dd id="lead-id-display">-</dd>
+          </div>
+          <div class="status-row">
+            <dt>Kwota</dt>
+            <dd id="amount-display">-</dd>
+          </div>
+          <div class="status-row">
+            <dt>Status płatności</dt>
+            <dd><span class="status-badge status-badge--active">Opłacone · oczekuje rozpoczęcia</span></dd>
+          </div>
+        </dl>
+      </div>
+
+      <h2 style="font-family:var(--serif);font-style:italic;font-weight:400;font-size:1.5rem;margin-bottom:1rem;letter-spacing:-0.02em;">Odstąp od umowy</h2>
+      <p style="color:var(--ink-soft);font-size:0.96rem;margin-bottom:1.5rem;">Po wysłaniu tego formularza otrzymasz potwierdzenie na email i zwrot pełnej wpłaty w terminie do 14 dni (art. 32 ust. 1 UPK).</p>
+
+      <form id="withdrawal-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="wf-name">Imię i nazwisko *</label>
+          <input class="form-input" type="text" id="wf-name" name="consumer_name" required maxlength="200" autocomplete="name" placeholder="Jan Kowalski">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="wf-email">Adres e-mail *</label>
+          <input class="form-input" type="email" id="wf-email" name="consumer_email" required maxlength="200" autocomplete="email" placeholder="jan@example.com">
+          <p class="form-help">Na ten adres wyślemy potwierdzenie odstąpienia.</p>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="wf-reason">Powód odstąpienia <span class="opt">(opcjonalnie)</span></label>
+          <textarea class="form-textarea" id="wf-reason" name="reason" maxlength="2000" placeholder="Jeśli chcesz, napisz dlaczego - pomoże nam to ulepszać produkt. Pole nieobowiązkowe."></textarea>
+        </div>
+
+        <div id="form-error" class="error-msg" hidden></div>
+
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="btn-open-confirm">
+            Odstąp od umowy →
+          </button>
+          <a href="/" class="btn btn-secondary">Anuluj i wróć</a>
+        </div>
+
+        <!-- Two-step confirm (anti-accidental click, NIE confirm-shaming) -->
+        <div class="confirm-shield" id="confirm-shield" data-open="false">
+          <h3>Potwierdź odstąpienie</h3>
+          <p>Po kliknięciu poniżej oświadczenie zostanie złożone i otrzymasz pełen zwrot wpłaty w terminie do 14 dni. Tej akcji nie da się cofnąć - jeśli zmienisz zdanie, będziesz musiał zamówić ponownie.</p>
+          <div class="actions">
+            <button type="submit" class="btn btn-primary" id="btn-confirm-submit">
+              Potwierdź odstąpienie
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-close-confirm">Wróć do formularza</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Stan: wygasły - świadczenie rozpoczęte -->
+    <section id="state-expired" hidden>
+      <div class="status-card" data-state="expired">
+        <dl>
+          <div class="status-row">
+            <dt>Identyfikator zamówienia</dt>
+            <dd id="exp-lead-id">-</dd>
+          </div>
+          <div class="status-row">
+            <dt>Kwota</dt>
+            <dd id="exp-amount">-</dd>
+          </div>
+          <div class="status-row">
+            <dt>Status</dt>
+            <dd><span class="status-badge status-badge--expired">Świadczenie w toku</span></dd>
+          </div>
+        </dl>
+      </div>
+
+      <p class="expired-info">
+        <strong>Twoje prawo odstąpienia od umowy wygasło <span id="exp-deadline-display">-</span></strong> - zgodnie z art. 38 ust. 1 pkt 1 ustawy o prawach konsumenta oraz art. 11a dyrektywy 2023/2673, świadczenie zostało rozpoczęte za Twoją wyraźną zgodą udzieloną przy zamówieniu.
+      </p>
+
+      <p class="expired-info">
+        To jednak nie oznacza, że jesteś bez wsparcia. Twoja wpłata uprawnia Cię do naszych <strong>gwarancji rozszerzonych</strong>:
+      </p>
+
+      <div class="guarantees">
+        <h3>Gwarancje zamiast zwrotu</h3>
+        <ul>
+          <li><strong>2 rundy poprawek</strong> w cenie - dopracowujemy zaproszenie do efektu, którego oczekujecie</li>
+          <li><strong>12 miesięcy hostingu</strong> Waszego zaproszenia, gratis i bez dodatkowych warunków</li>
+          <li><strong>Przesunięcie terminu</strong> realizacji bez dopłat - jeśli wesele się przesunie, my się dostosujemy</li>
+          <li><strong>Voucher 100% wartości</strong> w sytuacjach losowych (odwołanie wesela, żałoba, choroba) - po indywidualnym zgłoszeniu</li>
+        </ul>
+      </div>
+
+      <div class="actions" style="margin-top:2rem;">
+        <a href="mailto:kontakt@zaproszeniaonline.com?subject=Wsparcie%20-%20zam%C3%B3wienie&body=Witam,%0A%0AID%20zam%C3%B3wienia:%20" class="btn btn-primary">Napisz do nas</a>
+        <a href="/terms#paragraf-10a" class="btn btn-secondary">Zobacz § 10a Regulaminu</a>
+      </div>
+    </section>
+
+    <!-- Stan: już odstąpiono -->
+    <section id="state-done" hidden>
+      <div class="status-card" data-state="expired">
+        <dl>
+          <div class="status-row">
+            <dt>Identyfikator zamówienia</dt>
+            <dd id="done-lead-id">-</dd>
+          </div>
+          <div class="status-row">
+            <dt>Status</dt>
+            <dd><span class="status-badge status-badge--expired">Odstąpienie zarejestrowane</span></dd>
+          </div>
+        </dl>
+      </div>
+      <p class="expired-info">
+        Otrzymaliśmy Twoje oświadczenie o odstąpieniu od umowy. Potwierdzenie wraz ze szczegółami zwrotu zostało wysłane na podany e-mail. Zwrot środków nastąpi w terminie do 14 dni (art. 32 UPK).
+      </p>
+      <p style="font-size:0.95rem;color:var(--ink-soft);">Pytania? Napisz na <a href="mailto:kontakt@zaproszeniaonline.com" style="color:var(--accent);">kontakt@zaproszeniaonline.com</a>.</p>
+    </section>
+
+    <div class="legal-note">
+      <strong>Podstawa prawna.</strong> Niniejsza strona realizuje obowiązek wynikający z art. 11a dyrektywy Parlamentu Europejskiego i Rady (UE) 2023/2673 z dnia 22 listopada 2023 r. (stosowanie od 19 czerwca 2026 r.) oraz art. 27a polskiej ustawy z dnia 30 maja 2014 r. o prawach konsumenta (po implementacji projektu UC82). Funkcja jest dostępna w okresie odstąpienia, a złożenie oświadczenia generuje automatyczne potwierdzenie na trwałym nośniku. Pełne warunki: <a href="/terms#paragraf-10">§ 10 Regulaminu</a> · <a href="/returns">Polityka zwrotów</a>.
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script>
+    (function() {
+      'use strict';
+
+      const SUPABASE_URL  = "https://kuyniyyieejvambyjnxy.supabase.co";
+      const SUPABASE_ANON = "sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL";
+      const WITHDRAWAL_ENDPOINT = SUPABASE_URL + "/functions/v1/withdrawal-submit";
+
+      const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+      // Pobierz token z URL
+      const params = new URLSearchParams(window.location.search);
+      const token = (params.get('token') || '').trim();
+
+      const $ = (id) => document.getElementById(id);
+      const show = (id) => { $(id).hidden = false; };
+      const hide = (id) => { $(id).hidden = true; };
+
+      const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+      function showError(msg) {
+        $('state-loading').style.display = 'none';
+        $('error-text').textContent = msg;
+        show('state-error');
+      }
+
+      function fmtPLN(grosze) {
+        if (!grosze) return '-';
+        return (grosze / 100).toLocaleString('pl-PL', { style: 'currency', currency: 'PLN', minimumFractionDigits: 2 });
+      }
+      function fmtDateTime(iso) {
+        if (!iso) return '-';
+        const d = new Date(iso);
+        return d.toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      }
+      function fmtDate(iso) {
+        if (!iso) return '-';
+        const d = new Date(iso);
+        return d.toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      }
+
+      async function loadStatus() {
+        if (!token || !UUID_RE.test(token)) {
+          showError('Link nie zawiera prawidłowego identyfikatora zamówienia. Sprawdź adres URL w emailu potwierdzającym zakup.');
+          return;
+        }
+
+        try {
+          const { data, error } = await sb.rpc('get_withdrawal_status', { p_token: token });
+          if (error) throw new Error(error.message);
+          if (!data || data.length === 0) {
+            showError('Nie znaleziono zamówienia o tym identyfikatorze. Sprawdź link w emailu.');
+            return;
+          }
+
+          const status = data[0];
+          $('state-loading').style.display = 'none';
+
+          if (status.already_withdrawn) {
+            $('done-lead-id').textContent = status.lead_id.slice(0, 8) + '…';
+            show('state-done');
+            return;
+          }
+
+          if (status.can_withdraw) {
+            $('lead-id-display').textContent = status.lead_id.slice(0, 8) + '…';
+            $('amount-display').textContent = fmtPLN(status.amount_pln);
+            $('countdown-deadline').textContent = fmtDateTime(status.realization_started_at);
+            $('wf-name').value = status.consumer_name || '';
+            $('wf-email').value = status.consumer_email || '';
+            show('state-active');
+          } else {
+            $('exp-lead-id').textContent = status.lead_id.slice(0, 8) + '…';
+            $('exp-amount').textContent = fmtPLN(status.amount_pln);
+            $('exp-deadline-display').textContent = status.realization_started_at ? fmtDate(status.realization_started_at) : 'wcześniej';
+            show('state-expired');
+          }
+        } catch (err) {
+          console.error('Status fetch failed:', err);
+          showError('Nie udało się pobrać statusu zamówienia. Spróbuj odświeżyć stronę lub napisz na kontakt@zaproszeniaonline.com.');
+        }
+      }
+
+      // Two-step confirm flow
+      $('btn-open-confirm').addEventListener('click', () => {
+        const name = $('wf-name').value.trim();
+        const email = $('wf-email').value.trim();
+        const errBox = $('form-error');
+        errBox.hidden = true;
+
+        if (name.length < 2 || name.length > 200) {
+          errBox.textContent = 'Podaj imię i nazwisko (2-200 znaków).';
+          errBox.hidden = false;
+          $('wf-name').focus();
+          return;
+        }
+        if (!email.includes('@') || email.length > 200) {
+          errBox.textContent = 'Podaj prawidłowy adres e-mail.';
+          errBox.hidden = false;
+          $('wf-email').focus();
+          return;
+        }
+
+        const shield = $('confirm-shield');
+        shield.setAttribute('data-open', 'true');
+        $('btn-open-confirm').style.display = 'none';
+        shield.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      $('btn-close-confirm').addEventListener('click', () => {
+        $('confirm-shield').setAttribute('data-open', 'false');
+        $('btn-open-confirm').style.display = '';
+      });
+
+      $('withdrawal-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = $('btn-confirm-submit');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Wysyłam...';
+
+        const errBox = $('form-error');
+        errBox.hidden = true;
+
+        try {
+          const res = await fetch(WITHDRAWAL_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              token: token,
+              consumer_name: $('wf-name').value.trim(),
+              consumer_email: $('wf-email').value.trim(),
+              reason: $('wf-reason').value.trim() || null,
+            }),
+          });
+          const result = await res.json();
+
+          if (!res.ok || !result.success) {
+            throw new Error(result.error || 'Nieznany błąd serwera.');
+          }
+
+          // Sukces - redirect do potwierdzenia
+          const qs = new URLSearchParams({
+            id: result.withdrawal_id,
+            refund_by: result.refund_expected_by || '',
+          });
+          window.location.href = '/odstapienie-potwierdzenie.html?' + qs.toString();
+        } catch (err) {
+          console.error('Withdrawal submit failed:', err);
+          errBox.textContent = (err && err.message) || 'Nie udało się złożyć oświadczenia. Spróbuj ponownie za chwilę.';
+          errBox.hidden = false;
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Potwierdź odstąpienie';
+        }
+      });
+
+      // Start
+      loadStatus();
+    })();
+  </script>
+</body></html>
