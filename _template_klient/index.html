@@ -274,32 +274,32 @@ function Timeline(){return (<section id="plan" style={{padding:"80px 24px",backg
 function OurStory(){
   const hasHeartPhoto = CONFIG.ourStoryHeartPhoto;
   const hasSidePhotos = CONFIG.ourStoryPhotos && CONFIG.ourStoryPhotos.length > 0;
+  const hasStoryText = CONFIG.ourStory && CONFIG.ourStory.length > 0;
+  // Anti-UX-fail: jezeli brak ZDJEC w sekcji 'historia' I tekst pusty -> sekcja sie ukrywa.
+  // Jezeli sa zdjecia LUB tekst -> pokazuje co ma (tekst-only = sekcja narratywna bez zdjec).
+  // Jezeli klient ma tekst ale brak zdjec -> pokazujemy TYLKO tekst, BEZ szarych placeholderow
+  // "miejsce na zdjecie" ktore wygladaja zle. Klient potem dosle zdjecia mailem - regen podstawi.
+  if (!hasStoryText && !hasHeartPhoto && !hasSidePhotos) return null;
+  const showPhotos = hasHeartPhoto || hasSidePhotos;
   return (<section id="historia" style={{padding:"80px 24px",background:`linear-gradient(180deg,${C.cream} 0%,${C.warm} 100%)`,textAlign:"center",scrollMarginTop:60,position:"relative",overflow:"hidden"}}>
     <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 60% 40% at 30% 20%,${C.gold}04 0%,transparent 60%)`,pointerEvents:"none"}}/>
     <div style={{position:"absolute",top:20,left:20,opacity:.05,pointerEvents:"none"}}><svg width="160" height="160" viewBox="0 0 160 160" fill="none"><path d="M10 10C30 30 50 60 80 80C50 100 30 130 10 150" stroke={C.gold} strokeWidth=".8"/><path d="M10 10C40 20 70 40 80 80C70 120 40 140 10 150" stroke={C.gold} strokeWidth=".5"/>{[30,60,90,120].map((y,i)=>(<circle key={i} cx={10+i*5} cy={y} r={2} fill="none" stroke={C.gold} strokeWidth=".3"/>))}</svg></div>
     <div style={{position:"relative"}}><Reveal><Label>O nas</Label></Reveal><Reveal delay={.08}><Title>Nasza historia</Title></Reveal><Reveal delay={.12}><Branch w={120}/></Reveal></div>
-    <Reveal delay={.15}><div className="heart-ph" style={{margin:"24px auto 8px"}}>{hasHeartPhoto
-      ? <div style={{width:"100%",maxWidth:280,aspectRatio:"1/1",margin:"0 auto",borderRadius:"50%",overflow:"hidden",border:`2px solid ${C.gold}30`,position:"relative"}}><img src={CONFIG.ourStoryHeartPhoto} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/></div>
-      : <PhotoPlaceholder shape="heart" w={280} label="miejsce na zdjęcie"/>
-    }</div></Reveal>
+    {hasHeartPhoto&&<Reveal delay={.15}><div className="heart-ph" style={{margin:"24px auto 8px"}}><div style={{width:"100%",maxWidth:280,aspectRatio:"1/1",margin:"0 auto",borderRadius:"50%",overflow:"hidden",border:`2px solid ${C.gold}30`,position:"relative"}}><img src={CONFIG.ourStoryHeartPhoto} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/></div></div></Reveal>}
     <div className="story-wrap" style={{display:"flex",gap:32,maxWidth:780,margin:"32px auto 0",justifyContent:"center",flexWrap:"wrap"}}>
-      <div className="story-photos" style={{flex:"0 0 120px",display:"flex",flexDirection:"column",gap:12,alignItems:"center"}}>
-        {hasSidePhotos ? CONFIG.ourStoryPhotos.slice(0,3).map((url,i)=>(
+      {hasSidePhotos&&<div className="story-photos" style={{flex:"0 0 120px",display:"flex",flexDirection:"column",gap:12,alignItems:"center"}}>
+        {CONFIG.ourStoryPhotos.slice(0,3).map((url,i)=>(
           <div key={i} style={{width:110,height:150,borderRadius:6,overflow:"hidden",border:`1px solid ${C.gold}20`}}><img src={url} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
-        )) : [0,1,2].map(i=>(
-          <PhotoPlaceholder key={i} w={110} h={140} label="miejsce na zdjęcie"/>
         ))}
-      </div>
-      <div className="story-text" style={{flex:"1 1 300px",maxWidth:420}}>
+      </div>}
+      <div className="story-text" style={{flex:"1 1 300px",maxWidth:showPhotos?420:560}}>
         {CONFIG.ourStory.map((s,i)=>(<Reveal key={i} delay={.1+i*.1}><div style={{display:"flex",gap:20,textAlign:"left",marginBottom:32,alignItems:"flex-start"}}><div style={{minWidth:56,textAlign:"center"}}><div className="story-dot" style={{width:12,height:12,borderRadius:"50%",border:`1.5px solid ${C.gold}`,margin:"4px auto 8px",background:`${C.gold}15`,boxShadow:`0 0 8px ${C.gold}20`}}/>{i<CONFIG.ourStory.length-1&&<div style={{width:1,height:40,background:`linear-gradient(to bottom,${C.gold}35,${C.gold}10)`,margin:"0 auto"}}/>}</div><div><p style={{fontFamily:F.body,fontSize:13,letterSpacing:4,textTransform:"uppercase",color:C.gold,marginBottom:4,fontWeight:600}}>{s.date}</p><p style={{fontFamily:F.display,fontSize:20,fontWeight:400,fontStyle:"italic",color:C.forest,marginBottom:6}}>{s.title}</p><p style={{fontFamily:F.body,fontSize:16,color:C.bark,lineHeight:1.8}}>{s.text}</p></div></div></Reveal>))}
       </div>
-      <div className="story-photos" style={{flex:"0 0 120px",display:"flex",flexDirection:"column",gap:12,alignItems:"center",paddingTop:40}}>
-        {hasSidePhotos ? CONFIG.ourStoryPhotos.slice(3,6).map((url,i)=>(
+      {hasSidePhotos&&CONFIG.ourStoryPhotos.length>3&&<div className="story-photos" style={{flex:"0 0 120px",display:"flex",flexDirection:"column",gap:12,alignItems:"center",paddingTop:40}}>
+        {CONFIG.ourStoryPhotos.slice(3,6).map((url,i)=>(
           <div key={i} style={{width:110,height:150,borderRadius:6,overflow:"hidden",border:`1px solid ${C.gold}20`}}><img src={url} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
-        )) : [0,1,2].map(i=>(
-          <PhotoPlaceholder key={i} w={110} h={140} label="miejsce na zdjęcie"/>
         ))}
-      </div>
+      </div>}
     </div>
   </section>);
 }
@@ -426,6 +426,35 @@ function Gifts(){const[open,setOpen]=useState(false);const[closing,setClosing]=u
   </section>);
 }
 
+/* QR code do druku - tylko gdy klient zaznaczyl feature 'qr'. SVG inline wbudowany
+   w bundle przez new-client.py (placeholder __QR_SVG_PLACEHOLDER__ zamieniany na inline SVG
+   z biblioteki Python qrcode). Wskazuje na sekcje #potwierdzenie strony klienta. */
+const QR_SVG_INLINE = "__QR_SVG_PLACEHOLDER__";
+function QRPrint(){
+  // Backward compat: stary brief bez 'features' = NIE pokazujemy QR (opt-in only).
+  const hasQR = CONFIG.features && CONFIG.features.includes && CONFIG.features.includes("qr");
+  if(!hasQR || !QR_SVG_INLINE || QR_SVG_INLINE.startsWith("__QR_")) return null;
+  const subdomain = `https://${CONFIG.invitationSlug||""}.zaproszeniaonline.com/#potwierdzenie`;
+  return (<section id="qr" style={{padding:"64px 24px 80px",background:C.cream,textAlign:"center",scrollMarginTop:60,position:"relative"}}>
+    <div style={{position:"absolute",inset:0,background:`radial-gradient(50% 40% at 50% 30%,${C.gold}05 0%,transparent 70%)`,pointerEvents:"none"}}/>
+    <Reveal><Label>Do druku</Label></Reveal>
+    <Reveal delay={.08}><Title>Kod QR z zaproszeniem</Title></Reveal>
+    <Reveal delay={.12}><Branch w={100}/></Reveal>
+    <Reveal delay={.15}><p style={{fontFamily:F.body,fontSize:"clamp(14px,3.4vw,15.5px)",color:`${C.bark}DD`,maxWidth:520,margin:"20px auto 32px",lineHeight:1.65}}>
+      Wydrukuj ten kod na zaproszeniu papierowym. Goście zeskanują telefonem i odpowiedzą na zaproszenie online.
+    </p></Reveal>
+    <Reveal delay={.2}>
+      <div style={{display:"inline-block",padding:24,background:"#FFFFFF",border:`1px solid ${C.gold}30`,borderRadius:14,boxShadow:`0 8px 30px ${C.gold}10`}}>
+        <div style={{width:200,height:200}} dangerouslySetInnerHTML={{__html: QR_SVG_INLINE}}/>
+        <p style={{fontFamily:F.body,fontSize:11,letterSpacing:3,textTransform:"uppercase",color:`${C.bark}99`,marginTop:14,fontWeight:500}}>SKANUJ TELEFONEM</p>
+      </div>
+    </Reveal>
+    <Reveal delay={.28}><p style={{fontFamily:F.body,fontSize:12,color:`${C.bark}90`,marginTop:24,letterSpacing:.3}}>
+      Link bezpośredni: <a href={subdomain} style={{color:C.gold,textDecoration:"none",borderBottom:`1px solid ${C.gold}40`}}>{subdomain.replace("https://","")}</a>
+    </p></Reveal>
+  </section>);
+}
+
 function Footer(){const ds=CONFIG.weddingDate.toLocaleDateString("pl-PL",{weekday:"long",day:"numeric",month:"long",year:"numeric"});const dsC=ds.charAt(0).toUpperCase()+ds.slice(1);
   return (<footer style={{padding:"56px 24px 36px",background:`linear-gradient(170deg,${C.deep},${C.forest})`,textAlign:"center",position:"relative"}}><Grain o={.02}/><Reveal><Branch w={100} o={.25}/><h3 style={{fontFamily:F.display,fontSize:"clamp(30px,7vw,42px)",fontWeight:400,fontStyle:"italic",color:C.warm,margin:"14px 0 4px"}}>{CONFIG.groom && CONFIG.groom.length > 0 ? `${CONFIG.bride} & ${CONFIG.groom}` : CONFIG.bride}</h3><p style={{fontFamily:F.body,fontSize:16,color:C.gold,letterSpacing:4,fontWeight:300}}>{dsC}</p><GoldDiv w={70} m={24} animated/><div style={{margin:"0 auto 20px"}}><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z" fill={`${C.gold}30`} stroke={C.gold} strokeWidth=".6"/></svg></div><div style={{marginTop:24,padding:"16px 0",borderTop:`1px solid ${C.gold}12`}}><p style={{fontFamily:F.body,fontSize:13,color:`${C.warm}90`,letterSpacing:2,marginBottom:8,textTransform:"uppercase"}}>Zaproszenie przygotowane przez</p><a href={CONFIG.venueUrl} style={{fontFamily:F.display,fontSize:20,fontStyle:"italic",color:C.gold,textDecoration:"none",borderBottom:`1px solid ${C.gold}40`,paddingBottom:2,transition:`opacity .3s, transform .3s ${SPRING}`}} onMouseEnter={e=>{e.target.style.opacity="0.7"}} onMouseLeave={e=>{e.target.style.opacity="1"}}>{CONFIG.venueBrand}</a>{/* USUNIETE: linki Strona glowna/Privacy/Cookies/Regulamin (niezaleznosc od strony glownej, brief 2026-05-16) */}</div></Reveal></footer>);
 }
@@ -504,7 +533,7 @@ function App(){
   {/* ═══ UDOSKONALENIE #6: prefers-reduced-motion + #7: focus-visible + #12: shimmer aktywny + nowe animacje ═══ */}
   <style>{`*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}::selection{background:${C.gold}30;color:${C.forest}}input::placeholder,textarea::placeholder{color:${C.stone};font-style:italic;font-weight:300}@keyframes pageIn{from{opacity:0}to{opacity:1}}@keyframes float{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(8px);opacity:.9}}@keyframes scaleIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}@keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}@keyframes spinDiamond{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}@keyframes modalIn{from{opacity:0;transform:scale(0.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}@keyframes scrollDot{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(6px)}}@keyframes celebFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(0)}}@keyframes heroShimmer{0%{background-position:-200% center}100%{background-position:200% center}}@keyframes tlPulse{0%,100%{box-shadow:0 0 20px ${C.deep}}50%{box-shadow:0 0 20px ${C.deep}, 0 0 8px ${C.gold}20}}.ceremony-card:hover{transform:translateY(-4px)!important;box-shadow:0 12px 40px ${C.gold}10!important}.detail-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px ${C.gold}08}.glow-border:hover::after{opacity:1}.shimmer-text{color:${C.warm};-webkit-text-fill-color:${C.warm}}.amp-rotate{transition:transform 2s cubic-bezier(.16,1,.3,1)}.amp-rotate:hover{transform:rotate(15deg) scale(1.1)}.tl-icon{animation:tlPulse 3s ease-in-out infinite}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:${C.warm}}::-webkit-scrollbar-thumb{background:${C.gold}50;border-radius:3px}img{max-width:100%;height:auto}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid ${C.gold};outline-offset:2px}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}.shimmer-text{animation:none!important;-webkit-text-fill-color:${C.warm}!important}}@media(max-width:768px){.story-photos{display:none!important}.story-wrap{gap:0!important;max-width:100%!important}.story-text{max-width:100%!important;flex:1 1 100%!important}}@media(max-width:480px){section{padding-left:16px!important;padding-right:16px!important}.detail-grid{grid-template-columns:1fr!important;max-width:400px!important}.ceremony-wrap{gap:16px!important}.nav-inner{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap!important;justify-content:flex-start!important;gap:14px!important;padding:11px 16px!important}.nav-inner::-webkit-scrollbar{display:none}.heart-ph{width:200px!important;height:200px!important}p{font-size:16.5px!important;line-height:1.65!important}h2,h3{line-height:1.2!important}}@media(max-width:360px){section{padding-left:12px!important;padding-right:12px!important}.hero-names{font-size:clamp(38px,12vw,60px)!important}}`}</style>
   {/* USUNIETE: ReturnToHome + PaletteSwitcher (niezaleznosc od strony glownej, paleta lock=bordo) + Gallery (brief: galeria=no, pelne URLs do Drive nie sa wypelnione) */}
-  <Nav/><AudioPlayer/><Hero/><Countdown/><Filigree/><Ceremony/><Timeline/><OurStory/><Filigree/><Details/><RSVPSection/><Filigree/><Gifts/><Footer/>
+  <Nav/><AudioPlayer/><Hero/><Countdown/><Filigree/><Ceremony/><Timeline/><OurStory/><Filigree/><Details/><RSVPSection/><Filigree/><Gifts/><QRPrint/><Footer/>
 </div>)}
 
 
