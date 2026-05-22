@@ -23,6 +23,13 @@ npm-debug.log*
 .idea/
 .vscode/
 
+# Python / Supabase CLI temp (lokalne cache, nie do repo)
+__pycache__/
+*.pyc
+scripts/__pycache__/
+supabase/.temp/
+.playwright-mcp/
+
 # Build artifacts
 dist/
 build/
