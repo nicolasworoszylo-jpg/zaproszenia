@@ -113,6 +113,8 @@ def replace_config(html: str, brief: dict) -> str:
         "calendarTitle": f"Slub - {brief['bride']}" + (f" & {brief['groom']}" if brief.get("groom") else ""),
         "calendarLocation": brief["reception"]["venue"],
         "guestsCount": brief.get("guestsCount", 0),
+        "features": brief.get("features", ["rsvp","countdown","timeline","maps","gifts","music"]),
+        "invitationSlug": slug,
     }
     # JSON dump z escapingiem unicode false (zachowuje polskie znaki)
     config_str = json.dumps(config, ensure_ascii=False, indent=2)
