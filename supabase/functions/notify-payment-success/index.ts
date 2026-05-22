@@ -269,6 +269,13 @@ function customerPaidHTML(lead: Lead): string {
   <!-- BODY: confirmation + next step + materials reminder -->
   <div class="body" style="padding:36px 36px 32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.98rem;line-height:1.65;color:#0A0A0A;">
 
+    <!-- RACE-CONDITION NOTKA: jeśli klient dostał także mail #1 (z linkiem do Stripe) po fakcie, daje jednoznaczność -->
+    <div style="margin:0 0 22px;padding:14px 18px;background:rgba(44,62,45,0.06);border:1px solid rgba(44,62,45,0.15);border-radius:8px;">
+      <p style="margin:0;font-size:0.95rem;line-height:1.55;color:#2C3E2D;">
+        <strong>To jest właściwy mail.</strong> Wasza płatność <strong>${amount} zł zarejestrowana</strong>. Jeżeli dostaliście wcześniej (lub dostaniecie zaraz) mail z linkiem do płatności, możecie go zignorować - już go nie potrzebujecie.
+      </p>
+    </div>
+
     <p style="margin:0 0 18px;font-size:1rem;">
       Mamy wszystko czego potrzeba żeby zacząć projekt Waszej strony ślubnej.
     </p>
@@ -444,7 +451,7 @@ serve(async (req) => {
   try {
     await sendEmail(
       lead.email,
-      `Płatność potwierdzona - startujemy z projektem`,
+      `Płatność potwierdzona - tworzymy Wasze zaproszenie (link w 48h)`,
       customerPaidHTML(lead),
       customerPaidText(lead),
     );
@@ -452,8 +459,11 @@ serve(async (req) => {
     errors.push(`customer: ${(err as Error).message}`);
   }
 
-  // LUZAK: wyślij token + link do brief wizarda
-  // (klient self-service: /klient-start/?token=<UUID> -> wypełnia form -> auto-deploy)
+  // DISABLED 2026-05-22 (Nicolas decyzja): LUZAK self-service to FEATURE PRZYSZŁOŚCI.
+  // Klient NIE wypełnia wizardu - Nicolas+Dominika realizują ręcznie z briefu w mailu
+  // operatora. Mail #2 (customerPaidHTML wyżej) wystarcza: "Płatność potwierdzona,
+  // tworzymy w 48h". Gdy LUZAK ready - uncomment poniższy blok.
+  /*
   try {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -474,6 +484,7 @@ serve(async (req) => {
   } catch (err) {
     errors.push(`brief-ready: ${(err as Error).message}`);
   }
+  */
 
   return new Response(JSON.stringify({
     received: true,
