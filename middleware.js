@@ -35,7 +35,18 @@ export default function middleware(request) {
   // Url bar uzytkownika POZOSTAJE subdomena (rewrite jest transparentny, nie redirect).
   const url = new URL(request.url);
   const originalPath = url.pathname;
-  url.pathname = `/${subdomain}${originalPath === '/' ? '/' : originalPath}`;
+  const prefix = `/${subdomain}`;
+
+  // ANTI-DOUBLE-PREFIX: jezeli HTML referencuje assety przez absolutne paths
+  // (np. <script src="/<slug>/vendor/app.js">) - browser zarequestuje
+  // <slug>.zaproszeniaonline.com/<slug>/vendor/app.js. Bez tego guarda middleware
+  // dodalby drugi prefix -> /<slug>/<slug>/vendor/app.js -> 404.
+  // Path juz prefiksowany przez slug -> pass-through, niech Vercel serwuje statyk.
+  if (originalPath === prefix || originalPath.startsWith(prefix + '/')) {
+    return next();
+  }
+
+  url.pathname = `${prefix}${originalPath === '/' ? '/' : originalPath}`;
 
   return rewrite(url);
 }
