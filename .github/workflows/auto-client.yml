@@ -135,6 +135,26 @@ jobs:
                      ;;
           esac
 
+      - name: Smoke test (browser - 10 warstw)
+        # Playwright headless test - sprawdza realnie w przeglądarce ze strona klienta
+        # renderuje sie poprawnie (splash znika, sekcje obecne, ikony timeline maja SVG,
+        # hotels render OK, audio nie ma MEDIA_ELEMENT_ERROR, 0 console errors).
+        # Czeka 45s na Vercel propagacje cache + auto-pin domain.
+        if: success()
+        run: |
+          echo "Czekam 45s na Vercel cache propagacje..."
+          sleep 45
+          SLUG="${{ inputs.slug }}"
+          npm install --no-save playwright >/dev/null 2>&1
+          npx playwright install chromium >/dev/null 2>&1
+          # Soft-fail: smoke test wraca exit 1 jezeli buggy ale NIE blokuje status='live'
+          # (Vercel deploy juz sie udal, klient ma stronę - bug raportowany ale nie cofamy)
+          if node scripts/smoke-browser-test.mjs "$SLUG"; then
+            echo "::notice::Smoke test PASS dla $SLUG"
+          else
+            echo "::warning::Smoke test FAIL dla $SLUG - klient ma stronę ale moze byc UX bug. Sprawdz logi powyzej."
+          fi
+
       - name: Update Supabase status -> live
         if: success()
         env:
