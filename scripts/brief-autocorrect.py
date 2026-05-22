@@ -274,7 +274,22 @@ PAIRS = [
     (r"\bktorych\b", "których"),
     (r"\bktorymi\b", "którymi"),
 
-    # === Prezenty / IBAN context ===
+    # === Prezenty / IBAN context (typowe frazy klientów) ===
+    (r"\bJesli\b", "Jeśli"),
+    (r"\bjesli\b", "jeśli"),
+    (r"\bjesliby\b", "jeśliby"),
+    (r"\bsprawic\b", "sprawić"),
+    (r"\bSprawic\b", "Sprawić"),
+    (r"\bsprawia\b", "sprawia"),  # OK no diac
+    (r"\bradosc\b", "radość"),
+    (r"\bRadosc\b", "Radość"),
+    (r"\bradosci\b", "radości"),
+    (r"\bRadosci\b", "Radości"),
+    (r"\bradoscia\b", "radością"),
+    (r"\bdodatkowa\b", "dodatkową"),  # tylko w accusative kontekście - ambiguous, ale +99% przypadków
+    (r"\bDodatkowa\b", "Dodatkową"),
+    (r"\bnasza wypraw(\w*)", r"naszą wypraw\1"),  # "nasza wyprawę" → "naszą wyprawę"
+    (r"\bNasza wypraw(\w*)", r"Naszą wypraw\1"),
     (r"\buwazamy\b", "uważamy"),
     (r"\bUwazamy\b", "Uważamy"),
     (r"\buwaza(\w*)", r"uważa\1"),
