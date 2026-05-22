@@ -1,5 +1,10 @@
 # Dane prawne - zaproszeniaonline.com
 
+<!-- ANTI-CORRUPTION-GOLDEN: Single source of truth dla danych biznesowych (NIP/REGON/IBAN/adres/kontakt).
+     DO NOT REMOVE statusu "DZIAŁALNOŚĆ NIEEWIDENCJONOWANA" + podstawy prawnej (art. 5 ust. 1 Prawo przedsiębiorców 2018 poz. 646).
+     LEGAL gate: ten plik egzekwowany lint scriptem (scripts/lint-business-data.sh - TODO faza 3.4).
+     Każda zmiana wymaga sync z privacy.html (admin data), terms.html, returns.html. -->
+
 > ⚠️ TO JEDYNE MIEJSCE GDZIE TRZYMAMY DANE BIZNESOWE. Po edycji `git commit && push`.
 
 ## Status: DZIAŁALNOŚĆ NIEEWIDENCJONOWANA

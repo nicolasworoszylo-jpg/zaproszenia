@@ -1,5 +1,9 @@
 # Lista zadań prawnych - RODO compliance dla zaproszeniaonline.com
 
+<!-- ANTI-CORRUPTION-GOLDEN: Status RODO compliance audit (Skill prawnik 2026-04-27 + 2026-05-13).
+     DO NOT REMOVE: 🔴 BLOKERY section, RODO audit results, EDPB 03/2022 compliance status.
+     LEGAL gate: każda zmiana wymaga sync z privacy.html sekcja 2.8/9 oraz commit 78f2f6c (RODO compliance). -->
+
 > Audit prawny wykonany 27 kwietnia 2026 przez Skill „prawnik" w Claude.
 > Część zadań mogą wykonać tylko Ty (Nicolas) - AI nie ma dostępu do Twoich rejestrów, paneli, podpisów. Poniżej lista uporządkowana wg krytyczności.
 >
