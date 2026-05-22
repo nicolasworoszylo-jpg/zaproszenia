@@ -271,6 +271,21 @@ function customerEmailHTML(lead: Lead): string {
       Dziękujemy! Po zaksięgowaniu wpłaty 699 zł dostaniecie osobny e-mail z potwierdzeniem (rachunek + link do projektu). Pod spodem zebraliśmy całą logistykę realizacji - tak żeby nic nie zaskoczyło.
     </p>
 
+    <!-- CTA PŁATNOŚĆ - dla klientów co nie ukończyli checkout (back z Stripe, rabat, etc) -->
+    <div style="margin:24px 0;padding:24px;background:linear-gradient(135deg,#FAF6EF 0%,#F5EFE5 100%);border:1px solid #C9A96E;border-radius:14px;text-align:center;">
+      <p style="margin:0 0 6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.74rem;letter-spacing:0.12em;text-transform:uppercase;color:#2C3E2D;font-weight:600;">
+        <span style="display:inline-block;width:5px;height:5px;background:#C9A96E;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>Krok 1 - płatność
+      </p>
+      <p style="margin:8px 0 14px;font-size:1rem;line-height:1.5;color:#0A0A0A;">
+        Aby uruchomić realizację, opłaćcie zamówienie: <strong>699 zł jednorazowo</strong>.
+      </p>
+      <a href="https://buy.stripe.com/28E00i2UgfYsayo8XQgMw01" style="display:inline-block;padding:14px 32px;background:#2C3E2D;color:#FAF6EF;border-radius:100px;font-size:0.98rem;font-weight:500;letter-spacing:-0.005em;text-decoration:none;">Zapłać 699 zł →</a>
+      <p style="margin:14px 0 0;font-size:0.83rem;line-height:1.5;color:#4A4A4A;">
+        BLIK · karta · Google/Apple Pay · obsługa Stripe.<br/>
+        <em>Jeśli już zapłaciliście - zignorujcie ten przycisk. Mail z potwierdzeniem dotrze za chwilę.</em>
+      </p>
+    </div>
+
     <!-- KROK 1: na co czekamy ze strony klienta -->
     <div style="margin:24px 0;padding:22px 24px;background:rgba(184,95,46,0.06);border-radius:12px;border-left:3px solid #B85F2E;">
       <p style="margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.74rem;letter-spacing:0.12em;text-transform:uppercase;color:#B85F2E;font-weight:600;">
@@ -362,6 +377,13 @@ function customerEmailText(lead: Lead): string {
   return `Cześć ${firstName} - mamy Wasz brief.
 
 Dziękujemy! Po zaksięgowaniu wpłaty 699 zł dostaniecie osobny e-mail z potwierdzeniem (rachunek + link do projektu).
+
+KROK 1 - PŁATNOŚĆ:
+Aby uruchomić realizację, opłaćcie zamówienie: 699 zł jednorazowo.
+→ https://buy.stripe.com/28E00i2UgfYsayo8XQgMw01
+(BLIK · karta · Google/Apple Pay · obsługa Stripe)
+
+Jeśli już zapłaciliście - zignorujcie ten link. Mail z potwierdzeniem dotrze za chwilę.
 
 ${pendingBlock}
 CO DALEJ (JEDEN TIMELINE):
