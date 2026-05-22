@@ -93,6 +93,35 @@ check "HTML title nie jest 'Anna i Michal'" "! grep -q '<title>Anna i Michał' $
 # meta robots noindex (private demo)
 check "HTML <meta robots noindex>" "grep -q 'robots.*noindex' $HTML"
 
+# Timeline icons - kazda ikona w brief.timeline musi byc w TLIcons (inaczej puste kolko).
+# Lista ikon wspieranych w template (synchronizuj jezeli dodajesz nowe w _template_klient/index.html#TLIcons):
+SUPPORTED_ICONS="church camera dinner cake party cocktail dance ring heart music toast car star diamond"
+BRIEF_JSON="$ROOT/briefs/$CLIENT.json"
+if [ -f "$BRIEF_JSON" ]; then
+  UNKNOWN_ICONS=$(python3 -c "
+import json, sys
+brief = json.load(open('$BRIEF_JSON'))
+supported = set('$SUPPORTED_ICONS'.split())
+unknown = []
+for item in brief.get('timeline', []):
+    icon = item.get('icon', '')
+    if icon and icon not in supported:
+        unknown.append(f\"{item.get('time','?')}={icon}\")
+print(' '.join(unknown))
+")
+  if [ -n "$UNKNOWN_ICONS" ]; then
+    echo "  FAIL: Timeline icons spoza listy: $UNKNOWN_ICONS"
+    echo "        Wspierane: $SUPPORTED_ICONS"
+    echo "        Albo dodaj ikone do _template_klient/index.html#TLIcons + tu w SUPPORTED_ICONS"
+    echo "        Albo zmien icon w brief.json na wspierana (np. 'dance'->'party', 'cocktail'->'toast')"
+    FAIL=$((FAIL+1))
+  else
+    echo "  PASS: Timeline icons - wszystkie wspierane (lub timeline pusty)"
+  fi
+else
+  echo "  WARN: brak brief.json - skip timeline icons check (regen z lokalu)"
+fi
+
 echo ""
 if [ $FAIL -gt 0 ]; then
   echo "PREFLIGHT FAIL: $FAIL problems - NIE deploy"

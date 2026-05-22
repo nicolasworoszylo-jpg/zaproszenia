@@ -21,6 +21,7 @@ Nicolas potwierdził: "wszystko działa wszystko zrobione". Pełna sesja ~30 com
 - Multi-PC system + 19 Conditional Reminders (LIVE)
 
 ## [Unreleased]
+- **Fixed** (2026-05-22, timeline icons - puste kółka dla cocktail/dance + 14 ikon + preflight guard): template `TLIcons` miał tylko 5 ikon (church/camera/dinner/cake/party). Maja+Kuba miał `cocktail` i `dance` w briefie → puste złote kółko. Fix: 14 ikon (+cocktail, dance, ring, heart, music, toast, car, star, diamond) + helper `tlIcon(key)` z fallback (diament-gwiazda) zamiast pustego kółka. Plus preflight guard: `scripts/preflight-client.sh` waliduje `brief.timeline[].icon ∈ SUPPORTED_ICONS` → FAIL przed deploy gdy nieznana ikona. Bug nigdy nie powtórzy się.
 - **Changed** (2026-05-22 wieczór, ULTRAMODE - 6 zmian po realnym teście Nicolasa):
   - **WYŁĄCZONO LUZAK self-service** (decyzja Nicolasa): LUZAK to FEATURE PRZYSZŁOŚCI. Klient ma czuć wysiłek od Nicolas+Dominika realizujących ręcznie z briefu w mailu operatora. `notify-payment-success` v17 deployed - USUNIĘTY 3-ci krok `fetch notify-brief-ready`. Klient nie dostaje już maila "Wypełnij swoje zaproszenie ślubne (3 minuty)". Funkcja `notify-brief-ready` zostaje deployed (1-linijkowy uncomment aktywuje LUZAK w przyszłości).
   - **Mail #1 (notify-new-lead) v15 z LINKIEM Stripe**: po lead submit klient dostaje CTA "Zapłać 699 zł" z linkiem `buy.stripe.com/28E00i2Ug...` + notka "Jeśli już zapłaciliście, zignorujcie - mail z potwierdzeniem dotrze za chwilę". Wcześniej był tylko opis "po wpłacie..." bez linku - klient musiał szukać sam.
