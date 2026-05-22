@@ -135,8 +135,8 @@
     ],
     "guestPhotosUrl": "",
     "photographerGalleryUrl": "",
-    "bgMusicUrl": "https://pixabay.com/music/wedding-romantic-piano-instrumental",
-    "bgMusicTitle": "Romantic Piano Instrumental",
+    "bgMusicUrl": "",
+    "bgMusicTitle": "",
     "guestsCount": 80,
     "features": [
         "rsvp",

@@ -122,6 +122,35 @@ else
   echo "  WARN: brak brief.json - skip timeline icons check (regen z lokalu)"
 fi
 
+
+# Audio URL validator - bgMusicUrl MUSI byc bezposrednim linkiem do pliku audio
+# (.mp3/.ogg/.wav/.m4a), NIE linkiem do strony (Pixabay/Spotify/YouTube). Bez tego
+# <audio src=link-do-strony> daje "MEDIA_ELEMENT_ERROR: Format error" i muzyka NIE gra.
+if [ -f "$BRIEF_JSON" ]; then
+  AUDIO_CHECK=$(python3 -c "
+import json
+brief = json.load(open('$BRIEF_JSON'))
+url = brief.get('bgMusicUrl', '') or ''
+if not url:
+    print('SKIP')
+elif url.lower().endswith(('.mp3','.ogg','.wav','.m4a','.aac','.flac')):
+    print('OK')
+else:
+    print(f'BAD:{url[:80]}')
+")
+  case "$AUDIO_CHECK" in
+    SKIP) echo "  PASS: bgMusicUrl pusty (skip - opcjonalne)" ;;
+    OK)   echo "  PASS: bgMusicUrl wskazuje na plik audio (mp3/ogg/wav/m4a)" ;;
+    BAD:*)
+      echo "  FAIL: bgMusicUrl NIE jest bezposrednim plikiem audio: ${AUDIO_CHECK#BAD:}"
+      echo "        Klient wpisal link do strony - browser zwroci 'Format error' i muzyka NIE zagra."
+      echo "        Wymagaj od klienta: link konczacy sie .mp3/.ogg/.wav/.m4a (np. Pixabay download URL,"
+      echo "        nie strona Pixabay). Albo wlasny upload do Supabase Storage."
+      FAIL=$((FAIL+1))
+      ;;
+  esac
+fi
+
 echo ""
 if [ $FAIL -gt 0 ]; then
   echo "PREFLIGHT FAIL: $FAIL problems - NIE deploy"
