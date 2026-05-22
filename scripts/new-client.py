@@ -274,12 +274,64 @@ def copy_photos(brief: dict, target_dir: Path, photos_src: Path | None):
     print(f"  + skopiowano {n} zdjec z {src}")
 
 
+def generate_qr_svg(url: str) -> str:
+    """Generuje SVG QR code dla URL. Inline ready (no external deps).
+
+    Wymaga: pip install qrcode. Zwraca inline SVG string gotowy do JS template literal.
+    Wszystkie double-quotes zamienione na single-quotes (zeby nie kolidowac z otaczajacym " ").
+    """
+    try:
+        import qrcode
+        import qrcode.image.svg
+        img = qrcode.make(url, image_factory=qrcode.image.svg.SvgPathImage, box_size=10, border=2)
+        from io import BytesIO
+        buf = BytesIO()
+        img.save(buf)
+        svg = buf.getvalue().decode("utf-8")
+        # Usun WSZELKIE XML declarations (kazda wersja Python qrcode generuje rozne formaty)
+        svg = re.sub(r'<\?xml[^>]+\?>\s*', '', svg)
+        # Wstaw style sizing 100%
+        svg = svg.replace('<svg ', '<svg style="width:100%;height:100%" ', 1)
+        # KRYTYCZNE: zamien WSZYSTKIE double-quotes na single-quotes w SVG zeby
+        # nie kolidowal z otaczajacym JS string " ". Atrybuty XML akceptuja oba.
+        svg = svg.replace('"', "'")
+        # Usun newlines (jeden long string)
+        svg = svg.replace("\n", "").replace("\r", "")
+        return svg
+    except ImportError:
+        print("  ⚠ Brak biblioteki qrcode - pip install qrcode. QR feature pominięte.")
+        return ""
+
+
+def auto_correct_brief(brief_path: Path) -> bool:
+    """Wywoluje brief-autocorrect.py PRZED generacja klienta. Zwraca True gdy zmieniono."""
+    autocorrect = ROOT / "scripts" / "brief-autocorrect.py"
+    if not autocorrect.exists():
+        print(f"  ⚠ Brak {autocorrect.name} - skip autokorekty")
+        return False
+    r = subprocess.run(
+        ["python3", str(autocorrect), str(brief_path), "--no-llm"],
+        capture_output=True, text=True,
+    )
+    if r.returncode == 0 and "zaktualizowany" in r.stdout:
+        print(f"  ✓ Autokorekta polskich znaków: {r.stdout.strip()}")
+        return True
+    elif "brak zmian" in r.stdout:
+        print(f"  ✓ Brief już ma polskie znaki - OK")
+    return False
+
+
 def main():
     ap = argparse.ArgumentParser(description="Generator klienta zaproszeniaonline.com")
     ap.add_argument("brief", type=Path, help="brief.json klienta")
     ap.add_argument("--photos", type=Path, help="folder ze zdjeciami (default: photos_input/)")
     ap.add_argument("--no-commit", action="store_true", help="Tylko pliki, bez git commit/push")
+    ap.add_argument("--skip-autocorrect", action="store_true", help="Pomin autokorekte polskich znakow")
     args = ap.parse_args()
+
+    # 0. Autokorekta polskich znaków (przed wczytaniem briefu - in-place edit)
+    if not args.skip_autocorrect:
+        auto_correct_brief(args.brief)
 
     brief = json.loads(args.brief.read_text(encoding="utf-8"))
     slug = brief["slug"] = slugify(brief["slug"])
@@ -307,6 +359,24 @@ def main():
     html = replace_palette(html, brief["palette"])
     html = replace_meta(html, brief)
     html = replace_invitation_slug(html, slug)
+
+    # 3b. QR code SSR - tylko gdy klient zaznaczyl feature 'qr' w briefie
+    features = brief.get("features", []) or []
+    if "qr" in features:
+        qr_url = f"https://{slug}.zaproszeniaonline.com/#potwierdzenie"
+        qr_svg = generate_qr_svg(qr_url)
+        if qr_svg:
+            # generate_qr_svg juz zamienil double-quotes na single - bezpieczne w " "
+            # Plus brak newlines/CR. Backslash unlikely w XML SVG ale paranoicznie escape.
+            qr_svg_escaped = qr_svg.replace("\\", "\\\\")
+            html = html.replace("__QR_SVG_PLACEHOLDER__", qr_svg_escaped)
+            print(f"  + QR code SVG wbudowany ({len(qr_svg)} bytes) -> /qr {qr_url}")
+    else:
+        # Brief NIE ma feature 'qr' -> wyczysc placeholder zeby komponent zwracal null.
+        # (Backward compat: klient bez "qr" w features = sekcja QR ukryta.)
+        # Placeholder zostaje jako "__QR_..." - komponent QRPrint to sprawdza i zwraca null.
+        print(f"  + QR feature NIE zaznaczone w brief.features ({features}) - sekcja QR ukryta")
+
     html_path.write_text(html, encoding="utf-8")
     print(f"  + podmieniono CONFIG + paleta={brief['palette']} + meta + slug")
 
