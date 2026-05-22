@@ -1,0 +1,154 @@
+{
+    "slug": "maja-kuba-2026-10",
+    "bride": "Maja",
+    "groom": "Kuba",
+    "weddingDate": "2026-10-17T16:00:00",
+    "rsvpDeadline": "17 wrzesnia 2026",
+    "quote": "Tam gdzie ty, tam i ja",
+    "palette": "forest",
+    "ceremony": {
+        "title": "Ceremonia slubna",
+        "venue": "Kosciol sw. Marcina",
+        "address": "ul. Mariacka 8, 80-833 Gdansk",
+        "time": "16:00",
+        "mapUrl": "https://www.google.com/maps/search/?api=1&query=Kosciol+sw.+Marcina+Mariacka+8+Gdansk"
+    },
+    "reception": {
+        "title": "Przyjecie weselne",
+        "venue": "Hotel Almond Spa",
+        "address": "ul. Torunska 12, 80-822 Gdansk",
+        "time": "18:00",
+        "mapUrl": "https://www.google.com/maps/search/?api=1&query=Hotel+Almond+Spa+Torunska+12+Gdansk"
+    },
+    "timeline": [
+        {
+            "time": "16:00",
+            "event": "Ceremonia slubna",
+            "desc": "Kosciol sw. Marcina",
+            "icon": "church"
+        },
+        {
+            "time": "17:00",
+            "event": "Sesja zdjeciowa",
+            "desc": "Czas dla pary i fotografa",
+            "icon": "camera"
+        },
+        {
+            "time": "18:00",
+            "event": "Powitanie gosci",
+            "desc": "Hotel Almond Spa",
+            "icon": "cocktail"
+        },
+        {
+            "time": "18:30",
+            "event": "Obiad weselny",
+            "desc": "Wspolne biesiadowanie",
+            "icon": "dinner"
+        },
+        {
+            "time": "20:00",
+            "event": "Pierwszy taniec",
+            "desc": "Najs\u0142odszy moment",
+            "icon": "dance"
+        },
+        {
+            "time": "22:00",
+            "event": "Oczepiny",
+            "desc": "Tradycyjna zabawa",
+            "icon": "party"
+        }
+    ],
+    "ourStory": [
+        {
+            "title": "Pierwsze spotkanie",
+            "date": "Wrzesien 2020",
+            "text": "Poznalismy sie na imprezie u wspolnych znajomych w Gdansku. Maja od razu rzucila sie Kubie w oczy."
+        },
+        {
+            "title": "Kluczowy moment",
+            "date": "Lato 2022",
+            "text": "Pierwsze wspolne mieszkanie w Sopocie. Kot Filemon dolaczyl do rodziny."
+        },
+        {
+            "title": "Zareczyny",
+            "date": "Grudzien 2025",
+            "text": "Zachod slonca na molo w Sopocie. Kuba ukleknal, Maja powiedziala TAK!"
+        }
+    ],
+    "photos": {
+        "heart": "",
+        "side": []
+    },
+    "dressCode": {
+        "main": "Elegant casual - elegancko ale luzno.",
+        "note": "Prosimy o unikanie bieli.",
+        "colors": [
+            "#2C3E2D",
+            "#6B7B5E",
+            "#8B6F47",
+            "#C4A77D",
+            "#D4A373"
+        ]
+    },
+    "transport": {
+        "departure": "Autokar z centrum Gdanska (przystanek Glowne Miasto) - odjazd 15:15",
+        "ret": "Powrot z hotelu o 02:00. Zapisy: tel +48 600 123 456"
+    },
+    "hotels": [
+        {
+            "name": "Hotel Almond Spa",
+            "address": "ul. Torunska 12, Gdansk",
+            "phone": "+48 58 307 12 00",
+            "note": "Haslo rezerwacji: 'wesele MK' (rabat 10%)"
+        },
+        {
+            "name": "Hotel Hilton Gdansk",
+            "address": "ul. Targ Rybny 1, Gdansk",
+            "phone": "+48 58 778 71 00",
+            "note": "Najblizszy do centrum"
+        }
+    ],
+    "faq": [
+        {
+            "q": "Czy mozna z dziecmi?",
+            "a": "Tak, zapraszamy cale rodziny."
+        },
+        {
+            "q": "Dress code?",
+            "a": "Elegant casual, prosimy unikac bieli."
+        },
+        {
+            "q": "Parking?",
+            "a": "Bezplatny parking przy hotelu."
+        },
+        {
+            "q": "Do kiedy potwierdzic?",
+            "a": "Do 17 wrzesnia 2026."
+        }
+    ],
+    "gifts": "Wasza obecnosc uwazamy za najwiekszy prezent. Jesli chcecie sprawic nam dodatkowa radosc, ucieszy nas wplata na nasza wyprawe poslubna.",
+    "accounts": [
+        {
+            "holder": "Maja Kowalska",
+            "iban": "PL61 1090 1014 0000 0712 1981 2874"
+        }
+    ],
+    "guestPhotosUrl": "",
+    "photographerGalleryUrl": "",
+    "bgMusicUrl": "https://pixabay.com/music/wedding-romantic-piano-instrumental",
+    "bgMusicTitle": "Romantic Piano Instrumental",
+    "guestsCount": 80,
+    "features": [
+        "rsvp",
+        "countdown",
+        "timeline",
+        "maps",
+        "gifts",
+        "hotels",
+        "transport",
+        "music",
+        "songs",
+        "faq",
+        "qr"
+    ]
+}
