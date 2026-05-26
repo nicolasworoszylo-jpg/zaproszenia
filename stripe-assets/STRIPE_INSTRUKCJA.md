@@ -148,7 +148,7 @@ W Stripe Dashboard → Payment Links → edytuj ten link:
 | Collect billing address | ❌ (nie potrzebujemy do działalności nieewidencjonowanej) |
 | Allow promotion codes | ✅ (przyda się przy kampaniach) |
 | After payment redirect | `https://zaproszeniaonline.com/dziekujemy?session_id={CHECKOUT_SESSION_ID}` |
-| Custom message after success | "Dziękujemy! W ciągu kilku minut otrzymasz e-mail potwierdzający, a w 24h link do podglądu Waszej strony." |
+| Custom message after success | "Dziękujemy! W ciągu kilku minut otrzymasz e-mail potwierdzający. Link do podglądu Waszej strony wysyłamy po 24h oknie odstąpienia i max 48h realizacji od kompletu danych." |
 
 → **Save**
 

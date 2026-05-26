@@ -31,7 +31,7 @@ Nazwa krótka:                Zaproszenie online
 SKU:                         ZO-DIGITAL-699-PL
 Cena:                        699 PLN (jednorazowo)
 Statement descriptor:        ZAPROSZENIA (22 char max)
-Realizacja:                  24 h
+Realizacja:                  48 h od kompletu danych
 Tax behavior:                Non-taxable (działalność nieewidencjonowana)
 
 URL-e:
@@ -50,11 +50,16 @@ Returns:                     https://zaproszeniaonline.com/returns
 E-MAILE:
 ─────────────────────────────
 Jedyny publiczny adres (od 2026-05-16):
-  kontakt@zaproszeniaonline.com   (forward → 2 osoby)
+  kontakt@zaproszeniaonline.com   (forward → 2 osoby: Nicolas + Dominika)
   obsługuje wszystko: kontakt klientów, zamówienia, faktury, RODO, prawne, N&T
 
 Legacy inbound (aktywne, nie pokazywane w UI):
-  rodo@, faktury@, zamowienia@    (forwardery dla DMARC raportów i starych maili)
+  rodo@, faktury@, zamowienia@    (forwardery → 2 osoby, starych maili)
+
+DMARC reports (od 2026-05-26, separacja od reszty):
+  dmarc@zaproszeniaonline.com → dominikakus333+dmarc-zaproszenia@gmail.com
+  plus-alias = automatyczny label w Gmail (filter "to:+dmarc-zaproszenia" → Skip Inbox)
+  Nicolas (nicolasworoszylo@) NIE dostaje już DMARC reports.
 
 STRIPE:
 ─────────────────────────────
@@ -88,8 +93,9 @@ DNS:                         OVH DNS Zone Editor
 Email forwarding:            OVH Email (free, 1000 aliases limit, 8/1000 used)
 MX records:                  mx1/2/3.mail.ovh.net (priority 1/5/100)
 SPF:                         v=spf1 include:mx.ovh.com -all (hardfail)
-DKIM:                        TODO - Resend doda po verify domain
-DMARC:                       TODO - dodać _dmarc TXT z p=none
+DKIM:                        Resend (selector: resend) + Amazon SES (send.zaproszeniaonline.com) - DZIAŁA
+DMARC:                       v=DMARC1; p=none; rua=mailto:dmarc@zaproszeniaonline.com; adkim=r; aspf=r
+                             (zmienione 2026-05-26: usunięto ruf=/fo=, dedykowany alias dmarc@)
 
 BUSINESS:
 ─────────────────────────────

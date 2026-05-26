@@ -73,7 +73,7 @@ USER (klient)
       │    a) Operator OPŁACONE alert (z amount + Stripe link)
       │    b) Customer payment confirmation
       ↓
-   KONIEC pipeline (klient czeka 24h na link do podglądu strony)
+   KONIEC pipeline (po 24h oknie odstąpienia ruszamy z produkcją; link do podglądu do 48h od kompletu danych)
 ```
 
 ---

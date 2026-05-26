@@ -1,69 +1,84 @@
 {
-  "schemaVersion": "1.0",
-  "name": "Zaproszenia Online",
-  "description": "Premium cyfrowe zaproszenia ślubne online - pełna strona z RSVP, plan dnia, mapy, galeria. Realizacja 24h. Cena 699 zł jednorazowo.",
-  "url": "https://zaproszeniaonline.com",
-  "version": "1.0.0",
-  "contact": {
-    "email": "kontakt@zaproszeniaonline.com",
-    "language": "pl"
-  },
-  "provider": {
-    "name": "Nicolas Woroszyło + Dominika Kuś",
-    "country": "PL",
-    "areaServed": "Polska"
-  },
-  "capabilities": {
-    "streaming": false,
-    "pushNotifications": false,
-    "stateTransitionHistory": false
-  },
-  "skills": [
-    {
-      "id": "search_content",
-      "name": "Search site content",
-      "description": "Full-text search across all pages on this website",
-      "inputModes": ["text"],
-      "outputModes": ["text", "data"]
+    "schemaVersion": "1.0",
+    "name": "Zaproszenia Online",
+    "description": "Premium cyfrowe zaproszenia \u015blubne online - pe\u0142na strona z RSVP, plan dnia, mapy, galeria. Realizacja 48h od kompletu danych. Cena 699 z\u0142 jednorazowo.",
+    "url": "https://zaproszeniaonline.com",
+    "version": "1.0.0",
+    "contact": {
+        "email": "kontakt@zaproszeniaonline.com",
+        "language": "pl"
     },
-    {
-      "id": "get_page",
-      "name": "Get page content",
-      "description": "Retrieve clean Markdown content of any page by URL",
-      "inputModes": ["text"],
-      "outputModes": ["text", "data"]
+    "provider": {
+        "name": "Nicolas Woroszy\u0142o + Dominika Ku\u015b",
+        "country": "PL",
+        "areaServed": "Polska"
     },
-    {
-      "id": "list_pages",
-      "name": "List all pages",
-      "description": "Get a structured list of all pages on this website",
-      "inputModes": ["text"],
-      "outputModes": ["text", "data"]
-    }
-  ],
-  "endpoints": {
-    "a2a": "https://zaproszeniaonline.com/.well-known/agent-card.json",
-    "llmsTxt": "https://zaproszeniaonline.com/llms.txt",
-    "llmsFullTxt": "https://zaproszeniaonline.com/llms-full.txt",
-    "sitemap": "https://zaproszeniaonline.com/sitemap.xml",
-    "robots": "https://zaproszeniaonline.com/robots.txt"
-  },
-  "product": {
-    "name": "Cyfrowe zaproszenie ślubne",
-    "price": "699 PLN",
-    "currency": "PLN",
-    "deliveryTime": "24 godziny",
-    "hostingMonths": 12,
-    "features": [
-      "RSVP formularz",
-      "plan dnia",
-      "mapy Google",
-      "galeria zdjęć",
-      "Nasza historia",
-      "palety kolorów",
-      "muzyka w tle",
-      "faktura VAT"
-    ]
-  },
-  "lastUpdated": "2026-05-10"
+    "capabilities": {
+        "streaming": false,
+        "pushNotifications": false,
+        "stateTransitionHistory": false
+    },
+    "skills": [
+        {
+            "id": "search_content",
+            "name": "Search site content",
+            "description": "Full-text search across all pages on this website",
+            "inputModes": [
+                "text"
+            ],
+            "outputModes": [
+                "text",
+                "data"
+            ]
+        },
+        {
+            "id": "get_page",
+            "name": "Get page content",
+            "description": "Retrieve clean Markdown content of any page by URL",
+            "inputModes": [
+                "text"
+            ],
+            "outputModes": [
+                "text",
+                "data"
+            ]
+        },
+        {
+            "id": "list_pages",
+            "name": "List all pages",
+            "description": "Get a structured list of all pages on this website",
+            "inputModes": [
+                "text"
+            ],
+            "outputModes": [
+                "text",
+                "data"
+            ]
+        }
+    ],
+    "endpoints": {
+        "a2a": "https://zaproszeniaonline.com/.well-known/agent-card.json",
+        "llmsTxt": "https://zaproszeniaonline.com/llms.txt",
+        "llmsFullTxt": "https://zaproszeniaonline.com/llms-full.txt",
+        "sitemap": "https://zaproszeniaonline.com/sitemap.xml",
+        "robots": "https://zaproszeniaonline.com/robots.txt"
+    },
+    "product": {
+        "name": "Cyfrowe zaproszenie \u015blubne",
+        "price": "699 PLN",
+        "currency": "PLN",
+        "deliveryTime": "48 godzin od kompletu danych",
+        "hostingMonths": 12,
+        "features": [
+            "RSVP formularz",
+            "plan dnia",
+            "mapy Google",
+            "galeria zdj\u0119\u0107",
+            "Nasza historia",
+            "palety kolor\u00f3w",
+            "muzyka w tle",
+            "faktura VAT"
+        ]
+    },
+    "lastUpdated": "2026-05-25"
 }

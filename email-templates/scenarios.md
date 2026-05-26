@@ -13,10 +13,10 @@ Każdy scenariusz: kiedy wysłać → temat → preheader → wersja tekstowa �
 
 ---
 
-## 01 - Preview Ready (24h po opłaceniu, link do podglądu)
+## 01 - Preview Ready (po 24h oknie odstąpienia + max 48h realizacji od kompletu danych, link do podglądu)
 
 **SUBJECT:** `Wasza strona ślubna - link do podglądu`
-**PREHEADER:** `Pierwsza wersja gotowa, {{ImiePary}}. Sprawdźcie i odpiszcie z uwagami - 3 rundy poprawek w cenie.`
+**PREHEADER:** `Pierwsza wersja gotowa, {{ImiePary}}. Sprawdźcie i odpiszcie z uwagami - 2 rundy poprawek w cenie.`
 
 ### Plain text
 
@@ -31,7 +31,7 @@ LINK DO PODGLĄDU:
 CO TERAZ:
 1. Otwórzcie link na telefonie i na laptopie (chcemy żeby działało wszędzie).
 2. Sprawdźcie: imiona, datę, miejsce, harmonogram, kolory, fotki.
-3. Wszystkie uwagi - odpiszcie na tego maila (lista pkt-pkt jest najszybsza). W cenie macie 3 rundy poprawek.
+3. Wszystkie uwagi - odpiszcie na tego maila (lista pkt-pkt jest najszybsza). W cenie macie 2 rundy poprawek.
 
 W razie pytań - po prostu odpowiedz na tego maila. Czytam wszystko osobiście.
 
@@ -63,7 +63,7 @@ Zespół Zaproszenia Online · zaproszeniaonline.com
   </table>
   <div style="margin:24px 0;padding:20px 22px;background:rgba(201,169,110,0.08);border-left:3px solid #C9A96E;border-radius:8px;">
     <p style="margin:0 0 8px;font-size:0.74rem;letter-spacing:0.12em;text-transform:uppercase;color:#999;font-weight:600;">
-      <span style="display:inline-block;width:5px;height:5px;background:#C9A96E;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>3 rundy poprawek w cenie
+      <span style="display:inline-block;width:5px;height:5px;background:#C9A96E;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>2 rundy poprawek w cenie
     </p>
     <p style="margin:0;font-size:0.96rem;line-height:1.6;color:#0A0A0A;">Wszystkie uwagi - odpiszcie listą pkt-pkt na tego maila (najszybciej). Większość zmian wprowadzam w 24h od listy uwag.</p>
   </div>
@@ -683,7 +683,7 @@ Wystarczy jedno z poniższych:
 - fragment umowy/regulaminu sesji z odpowiednią klauzulą (skan/zdjęcie),
 - mail od fotografa potwierdzający zgodę.
 
-Bez tego potwierdzenia - zgodnie z § 8c ust. 5 Regulaminu - nie możemy umieścić tych zdjęć w zaproszeniu. Reszta projektu idzie normalnie (3 rundy poprawek bez zmian), zdjęcie można dorzucić w trakcie poprawek po przesłaniu potwierdzenia.
+Bez tego potwierdzenia - zgodnie z § 8c ust. 5 Regulaminu - nie możemy umieścić tych zdjęć w zaproszeniu. Reszta projektu idzie normalnie (2 rundy poprawek bez zmian), zdjęcie można dorzucić w trakcie poprawek po przesłaniu potwierdzenia.
 
 Dzięki za zrozumienie - to dla bezpieczeństwa Waszego (i naszego), żeby fotograf nigdy nie miał podstaw do roszczeń.
 
@@ -718,7 +718,7 @@ Zaproszenia Online · kontakt@zaproszeniaonline.com
     </ul>
   </div>
 
-  <p style="margin:0 0 14px;font-size:0.92rem;color:#4A4A4A;">Bez potwierdzenia - zgodnie z § 8c ust. 5 - nie możemy umieścić tych konkretnych zdjęć. Reszta projektu idzie normalnie (3 rundy poprawek bez zmian), zdjęcia można dorzucić podczas poprawek po przesłaniu potwierdzenia.</p>
+  <p style="margin:0 0 14px;font-size:0.92rem;color:#4A4A4A;">Bez potwierdzenia - zgodnie z § 8c ust. 5 - nie możemy umieścić tych konkretnych zdjęć. Reszta projektu idzie normalnie (2 rundy poprawek bez zmian), zdjęcia można dorzucić podczas poprawek po przesłaniu potwierdzenia.</p>
   <p style="margin:0;">Dzięki za zrozumienie - to dla bezpieczeństwa Waszego (i naszego), żeby fotograf nigdy nie miał podstaw do roszczeń.</p>
   <p style="margin:18px 0 0;">{{ImiePodpis}}<br/><span style="color:#999999;font-size:0.86rem;">Zaproszenia Online · kontakt@zaproszeniaonline.com</span></p>
 </div>

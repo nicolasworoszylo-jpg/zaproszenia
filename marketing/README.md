@@ -23,10 +23,10 @@
 
 ## 🎯 Strategiczne ramy (TL;DR)
 
-**Pozycja produktu:** Premium mid-market w PL wedding niche.
-- Cena: 699 zł flat one-time (= bottom-end tier-3 indywidualny, mediana tier-3 PL = 800-900 zł)
-- Czas realizacji: 24h (unikatowe w segmencie 699-1199 zł)
-- USP combo: indywidualny + 24h + 4 palety + RSVP+plan+mapy all-in
+**Pozycja produktu:** Premium z indywidualnym projektem w PL wedding niche.
+- Cena: 699 zł flat one-time (mediana premium PL = 850 zł, studio 1500-3000 zł, agencja 3500-5000 zł)
+- Czas realizacji: 48h od kompletu danych (najszybsza profesjonalna w segmencie premium - vs studio 4-8 tyg, agencja 6-12 tyg)
+- USP combo: indywidualny projekt + 48h + 4 palety + RSVP+plan+mapy all-in
 - Cel: scale beyond limitu działalności nieewidencjonowanej (JDG to natural next step)
 
 **North Star:** Maksymalizacja sprzedaży miesięcznie (brak strategic cap).

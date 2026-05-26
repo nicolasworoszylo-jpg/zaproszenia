@@ -1,7 +1,7 @@
 {
   "name": "zaproszeniaonline.com - Cyfrowe zaproszenia ślubne",
   "short_name": "Zaproszenia",
-  "description": "Cyfrowe zaproszenia ślubne online jako pełnowartościowa strona internetowa z RSVP, planem dnia i mapami. Cena 699 zł, gotowe w 24h.",
+  "description": "Cyfrowe zaproszenia ślubne online jako pełnowartościowa strona internetowa z RSVP, planem dnia i mapami. Cena 699 zł, gotowe w 48h.",
   "start_url": "/?utm_source=pwa",
   "scope": "/",
   "id": "/",

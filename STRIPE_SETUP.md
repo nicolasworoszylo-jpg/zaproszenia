@@ -42,7 +42,7 @@ W panelu Stripe (po lewej menu):
 
 1. **Products** → **+ Add product**
 2. Nazwa: `Cyfrowe zaproszenie ślubne - pakiet kompletny`
-3. Opis: `Strona ślubna pod własnym URL z RSVP, planem dnia, mapami, galerią. Realizacja w 24h.`
+3. Opis: `Strona ślubna pod własnym URL z RSVP, planem dnia, mapami, galerią. Realizacja w 48h od kompletu danych.`
 4. Image: wgraj `og-image.png` z repo (`/tmp/zaproszenia/og-image.png`) lub własne zdjęcie
 5. Pricing model: **One-time**
 6. Cena: **699.00 PLN**

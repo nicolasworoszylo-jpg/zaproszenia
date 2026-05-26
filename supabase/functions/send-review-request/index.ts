@@ -114,7 +114,7 @@ function emailShell(opts: { preheader: string; title: string; bodyHtml: string }
       </td></tr>
       <tr><td style="padding:18px 24px 0;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.72rem;color:#999999;line-height:1.6;">
         <span style="font-family:Georgia,'Times New Roman',serif;font-style:italic;color:#2C3E2D;font-size:0.95rem;letter-spacing:-0.01em;">zaproszeniaonline.com</span><br/>
-        Cyfrowe zaproszenia ślubne premium · 699 zł, gotowe w 24 h<br/>
+        Cyfrowe zaproszenia ślubne premium · 699 zł, gotowe w 48 h<br/>
         <span style="color:#BBBBBB;">Dostałeś tego maila bo zakupiłeś naszą usługę. Klik w link otwiera formularz opinii (bez logowania).</span>
       </td></tr>
     </table>

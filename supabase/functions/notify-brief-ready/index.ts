@@ -45,7 +45,7 @@ function buildEmail(name: string, token: string) {
         <strong>Co Cię czeka:</strong>
         <ul style="margin:8px 0 0 18px;padding:0">
           <li>4 proste kroki: para → miejsce → zdjęcia → paleta</li>
-          <li>Wgrasz 5 zdjęć (drag&amp;drop)</li>
+          <li>Wgrasz do 7 ujęć (drag&amp;drop)</li>
           <li>Twoje zaproszenie będzie LIVE w 90 sekund od submit</li>
         </ul>
       </div>

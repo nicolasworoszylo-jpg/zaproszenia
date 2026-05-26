@@ -2,13 +2,13 @@
 
 ## Wersja krótka (200 znaków, na receipt + checkout)
 
-Cyfrowe zaproszenie ślubne - strona internetowa z potwierdzaniem obecności online, planem dnia, mapami, galerią i Waszą historią. Gotowe w 24 godziny. Hosting i URL w cenie.
+Cyfrowe zaproszenie ślubne - strona internetowa z potwierdzaniem obecności online, planem dnia, mapami, galerią i Waszą historią. Gotowe w 48 godzin od kompletu danych. Hosting i URL w cenie.
 
 ## Wersja długa (do Product Description w dashboard)
 
 **Pełnowartościowa strona internetowa zamiast papierowego zaproszenia.**
 
-Kompletny pakiet z 24-godzinną realizacją:
+Kompletny pakiet z 48-godzinną realizacją od kompletu danych:
 
 ✓ Strona pod indywidualnym URL (np. zaproszeniaonline.com/anna-michal)
 ✓ Potwierdzanie obecności online - każde potwierdzenie ląduje na Twoim e-mailu
@@ -21,8 +21,8 @@ Kompletny pakiet z 24-godzinną realizacją:
 ✓ Kod QR do druku - wklej w albumie ślubnym lub na pamiątkach
 
 **Współpraca:**
-- Realizacja w 24 godziny od briefu
-- Trzy rundy poprawek w cenie
+- Realizacja w 48 godzin od kompletu danych
+- Dwie rundy poprawek w cenie
 - Hosting i domena w cenie przez 12 miesięcy
 - Wsparcie do dnia ślubu
 - Kopia HTML do archiwizacji
@@ -48,7 +48,7 @@ Alternatywne (gdyby pierwsze nie przeszło Stripe validation):
 ```
 category: wedding-invitation
 sku: ZO-DIGITAL-699-PL
-delivery: 24h
+delivery: 48h
 country: PL
 language: pl
 ```

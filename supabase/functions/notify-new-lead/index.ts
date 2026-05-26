@@ -424,6 +424,82 @@ serve(async (req) => {
     return new Response(JSON.stringify({ skipped: true, reason: "no email" }), { status: 200 });
   }
 
+  // ─── ANTI-SPAM BACKEND GUARD (chroni przed botami omijającymi frontend honeypot) ───
+  // Filtruje oczywisty spam: testowe emaile, brak imienia, fake patterns, znana lista spam-emaili.
+  // Lead nadal trafia do bazy (audit trail) ale NIE wysyłamy maili - cicha kasacja.
+  const emailLower = (lead.email || '').toLowerCase().trim();
+  const nameTrim = (lead.name || '').toLowerCase().trim();
+  const messageRaw = (lead.message || '').toLowerCase();
+
+  const SPAM_EMAIL_PATTERNS = [
+    /^test@/i,
+    /^test\d*@/i,
+    /^testing@/i,
+    /^demo@/i,
+    /^example@/i,
+    /^admin@/i,
+    /^noreply@/i,
+    /^no-reply@/i,
+    /^fake@/i,
+    /^asdf+@/i,
+    /^qwerty@/i,
+    /@test\./i,
+    /@example\.(com|org|net|pl)$/i,
+    /@mailinator\./i,
+    /@guerrillamail\./i,
+    /@10minutemail\./i,
+    /@tempmail\./i,
+    /@throwaway\./i,
+    /@yopmail\./i,
+    /@trashmail\./i,
+    /@maildrop\./i,
+    /@dispostable\./i,
+    /\.ru$/i,           // .ru = wysoki spam ratio dla PL B2C
+    /\.cn$/i,           // .cn = jw
+    /\.xyz$/i,          // .xyz = często fake
+  ];
+  const SPAM_NAME_PATTERNS = [
+    /^test/i,
+    /^demo/i,
+    /^asdf/i,
+    /^qwerty/i,
+    /^xxx/i,
+    /^[a-z]{1,2}$/i,    // pojedyncze litery
+    /^.{0,2}$/,         // <3 znaki
+    /^\d+$/,            // same cyfry
+  ];
+  const SPAM_MESSAGE_PATTERNS = [
+    /\b(viagra|cialis|casino|crypto|bitcoin|loan|forex|investment opportunity)\b/i,
+    /https?:\/\/[^\s]+.*https?:\/\/[^\s]+/i,  // 2+ linki w wiadomości
+    /seo (services|expert|optimization)/i,
+    /backlinks?/i,
+    /guest post/i,
+  ];
+
+  let spamReason: string | null = null;
+  for (const pat of SPAM_EMAIL_PATTERNS) {
+    if (pat.test(emailLower)) { spamReason = `email pattern ${pat.source}`; break; }
+  }
+  if (!spamReason) {
+    for (const pat of SPAM_NAME_PATTERNS) {
+      if (pat.test(nameTrim)) { spamReason = `name pattern ${pat.source}`; break; }
+    }
+  }
+  if (!spamReason) {
+    for (const pat of SPAM_MESSAGE_PATTERNS) {
+      if (pat.test(messageRaw)) { spamReason = `message pattern ${pat.source}`; break; }
+    }
+  }
+  // Wymagamy minimum konkretu - lead bez event_date I bez sensownej message to prawdopodobnie bot
+  if (!spamReason && !lead.event_date && (!lead.message || lead.message.length < 20)) {
+    spamReason = "no event_date and message too short (likely bot)";
+  }
+
+  if (spamReason) {
+    console.warn(`[anti-spam] BLOCKED lead ${lead.id} (${emailLower}) - reason: ${spamReason}`);
+    return new Response(JSON.stringify({ skipped: true, reason: `spam: ${spamReason}` }), { status: 200 });
+  }
+
   const errors: string[] = [];
 
   // 1. Operator alert

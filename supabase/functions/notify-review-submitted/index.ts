@@ -123,7 +123,7 @@ function emailShell(opts: { preheader: string; title: string; bodyHtml: string; 
       </td></tr>
       <tr><td style="padding:18px 24px 0;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.72rem;color:#999999;line-height:1.6;">
         <span style="font-family:Georgia,'Times New Roman',serif;font-style:italic;color:#2C3E2D;font-size:0.95rem;letter-spacing:-0.01em;">zaproszeniaonline.com</span><br/>
-        ${opts.footerNote || "Cyfrowe zaproszenia ślubne premium · 699 zł, gotowe w 24 h"}<br/>
+        ${opts.footerNote || "Cyfrowe zaproszenia ślubne premium · 699 zł, gotowe w 48 h"}<br/>
       </td></tr>
     </table>
   </td></tr>
@@ -253,7 +253,7 @@ function customerThanksHTML(review: Review, lead: Lead): string {
   const middleSection = isLow ? `
     <div style="margin:24px 0;padding:22px 24px;background:rgba(44,62,45,0.04);border-radius:12px;border-left:3px solid #2C3E2D;">
       <p style="margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;font-size:0.74rem;letter-spacing:0.12em;text-transform:uppercase;color:#2C3E2D;font-weight:600;">
-        <span style="display:inline-block;width:5px;height:5px;background:#C9A96E;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>Odezwę się w 24 godziny
+        <span style="display:inline-block;width:5px;height:5px;background:#C9A96E;border-radius:50%;margin-right:8px;vertical-align:2px;"></span>Odezwę się w ciągu 24 godzin
       </p>
       <p style="margin:0;font-size:1rem;line-height:1.6;color:#0A0A0A;">
         Wasza ocena to znak, że coś poszło inaczej niż chcieliśmy. Odpiszę osobiście w ciągu 24 godzin - chcę zrozumieć co i czy mogę to naprawić. Jeśli wolicie rozmowę telefoniczną, dajcie znać kiedy i pod jakim numerem.
@@ -348,7 +348,7 @@ function customerThanksText(review: Review, lead: Lead): string {
 
 Dzięki, że napisaliście. Wiem, że zostawienie szczerej krytyki kosztuje więcej niż 5 gwiazdek - i właśnie dlatego jest cenniejsze.
 
-ODEZWĘ SIĘ W 24 GODZINY:
+ODEZWĘ SIĘ W CIĄGU 24 GODZIN:
 Wasza ocena to znak, że coś poszło inaczej niż chcieliśmy. Odpiszę osobiście w ciągu 24 godzin - chcę zrozumieć co i czy mogę to naprawić. Jeśli wolicie rozmowę telefoniczną, dajcie znać kiedy i pod jakim numerem.
 
 W razie czego - po prostu odpiszcie na tego maila.

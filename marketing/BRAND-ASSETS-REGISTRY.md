@@ -43,7 +43,7 @@
 | URL strony | "zaproszeniaonline.com" | brand.json live_url |
 | Cena | "699 zł" | brand.json products[0].price_pln |
 | Format ceny | "stała cena" | feedback_zaproszenia_voice_polish_forms |
-| Czas realizacji | "24 godziny" | reference_zaproszenia_canonical_facts (NIE 48h) |
+| Czas realizacji | "48 godzin od kompletu danych" | reference_zaproszenia_canonical_facts (NIE 24h) |
 | Funkcje | "Strona ślubna · RSVP · Plan dnia · Mapy" | products[0].includes (skrót) |
 | Wizualne: QR | linkujący do `/demo` (PRAWDZIWY scannable) | demo_urls |
 | Wizualne: eukaliptus | brand-aesthetic | brand.json visual.imagery_mood |
@@ -74,7 +74,7 @@
 | URL strony | "zaproszeniaonline.com" | brand.json live_url |
 | Cena | "699 zł" | brand.json products[0].price_pln |
 | Format ceny | "stała cena" | feedback voice rules |
-| Czas realizacji | "24 godziny" | canonical facts |
+| Czas realizacji | "48 godzin od kompletu danych" | canonical facts |
 | Funkcje | "Strona ślubna · RSVP · Plan dnia · Mapy" | products[0].includes |
 | Wizualne: ten sam co FB | same composition | - |
 
@@ -104,7 +104,7 @@
 | URL strony | "zaproszeniaonline.com" | brand.json live_url |
 | Cena | "699 zł" | products[0].price_pln |
 | Format ceny | "stała cena" | voice rules |
-| Czas realizacji | "24 godziny" | canonical facts |
+| Czas realizacji | "48 godzin od kompletu danych" | canonical facts |
 | Funkcje | "Strona ślubna · RSVP · Plan dnia · Mapy" | products[0].includes |
 | **QR target** | `https://zaproszeniaonline.com/demo` | brand.json demo_urls[0] |
 | Wizualne: koperta+karta+QR | brand-aesthetic | visual |
@@ -152,7 +152,7 @@
 | URL | "zaproszeniaonline.com" | live_url |
 | Email | "kontakt@zaproszeniaonline.com" | reference_zaproszenia_emails |
 | QR target | `https://zaproszeniaonline.com/demo` | demo_urls[0] |
-| Footer left | "699 zł · realizacja 24h" | price + time |
+| Footer left | "699 zł · realizacja 48h" | price + time |
 | Footer right | "RSVP · plan dnia · mapy" | features |
 
 **Regeneracja wymaga**: `node render-card.js`
@@ -171,7 +171,7 @@
 ### 6b. Apple Wallet pass.json (scaffold)
 **Plik**: `pkpass-bundle/pass.json`
 **ZAWARTE INFO**:
-- primaryFields: "699 zł · 24h"
+- primaryFields: "699 zł · 48h"
 - secondaryFields: "zaproszeniaonline.com"
 - auxiliaryFields: "kontakt@zaproszeniaonline.com"
 - backFields: pełny opis co zawiera oferta (15 funkcji)
@@ -188,7 +188,7 @@
 **ZAWARTE INFORMACJE**:
 - Page name z keyword
 - Username @zaproszeniaonline
-- Tagline "Cyfrowe zaproszenia ślubne online. 699 zł, 24 godziny"
+- Tagline "Cyfrowe zaproszenia ślubne online. 699 zł, 48 godzin"
 - Short bio z behavioralnym hookiem
 - About: pełna lista funkcji + "Co zawiera" + cena + Q&A AEO format
 - CTA: "Wyślij wiadomość" / "Dowiedz się więcej"

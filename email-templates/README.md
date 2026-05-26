@@ -14,7 +14,7 @@ Wszystkie zachowują brand: forest `#2C3E2D` + cream `#FAF6EF` + gold `#C9A96E` 
 
 | # | Plik | Kiedy wysłać | Trigger |
 |---|------|--------------|---------|
-| 01 | `01-preview-ready` | 24h po opłaceniu (link do podglądu strony) | Manual po przygotowaniu projektu |
+| 01 | `01-preview-ready` | Po 24h oknie odstąpienia + max 48h realizacji od kompletu danych (link do podglądu strony) | Manual po przygotowaniu projektu |
 | 02 | `02-materials-request` | Klient zapłacił, nie wysłał materiałów (zdjęcia/historia) | 48h po paid bez maila zwrotnego |
 | 03 | `03-revisions-followup` | Po wysłaniu poprawek - "czy wszystko OK?" | 24h po wysłaniu wersji 2/3 |
 | 04 | `04-final-delivery` | Strona finalna gotowa, link produkcyjny | Po zaakceptowaniu finalnej wersji |

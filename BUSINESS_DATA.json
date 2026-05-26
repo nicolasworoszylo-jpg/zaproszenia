@@ -33,13 +33,27 @@
             "kontakt@",
             "rodo@",
             "faktury@",
-            "zamowienia@"
+            "zamowienia@",
+            "dmarc@"
         ],
         "forward_target": [
             "nicolasworoszylo@gmail.com",
             "dominikakus333@gmail.com"
         ],
-        "note": "Wszystkie 4 publiczne adresy forwarderami \u2192 2 osoby. Tylko kontakt@ pokazywany w UI od 2026-05-16."
+        "dmarc_forward_target": "dominikakus333+dmarc-zaproszenia@gmail.com",
+        "note": "5 publicznych adresow forwarderami. kontakt@/rodo@/faktury@/zamowienia@ -> 2 osoby (Nicolas+Dominika). dmarc@ -> tylko Dominika z plus-alias (auto-label Gmail). Tylko kontakt@ pokazywany w UI od 2026-05-16. dmarc@ dodany 2026-05-26 do separacji DMARC reports od reszty maili."
+    },
+    "email_auth": {
+        "spf": "v=spf1 include:mx.ovh.com -all",
+        "dmarc_record": "v=DMARC1; p=none; rua=mailto:dmarc@zaproszeniaonline.com; adkim=r; aspf=r",
+        "dmarc_history": [
+            "2026-05-26: zmienione na dedykowany dmarc@ + usuniety ruf= (forensic) + usuniety fo=1. Cel: separacja DMARC reports od skrzynki + redukcja wolumenu ~30-50% przez usuniecie forensic.",
+            "PRZED 2026-05-26: 'v=DMARC1; p=none; rua=mailto:rodo@zaproszeniaonline.com; ruf=mailto:rodo@zaproszeniaonline.com; adkim=r; aspf=r; fo=1' - oba reports na rodo@ ktore mialo dwoch odbiorcow -> spam w skrzynce Nicolas+Dominika."
+        ],
+        "dkim_selectors": [
+            "resend",
+            "send (Resend Amazon SES)"
+        ]
     },
     "pricing": {
         "base_price_pln": 699,
