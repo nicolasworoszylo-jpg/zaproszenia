@@ -4050,7 +4050,7 @@ ${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
     .legal-modal-body li { margin-bottom: 0.4rem; }
     .legal-modal-body a { color: #2C3E2D; text-decoration: underline; }
     .legal-modal-body .legal-callout { background: #F8F8F6; border-left: 3px solid #2C3E2D; padding: 1rem 1.25rem; margin: 1.25rem 0; font-style: italic; }
-    .legal-modal-loading { text-align: center; padding: 3rem 0; color: #999; font-style: italic; }
+    .legal-modal-loading { text-align: center; padding: 3rem 0; color: #595959; font-style: italic; } /* a11y fix: #999 had contrast 2.85:1 FAIL WCAG AA, now 7:1 PASS AAA */
     .legal-modal-footer {
       display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
       padding: 1rem 1.5rem; border-top: 1px solid #EBEBEB; background: #FAFAFA;
@@ -4101,7 +4101,7 @@ ${payload.message ? '\nDodatkowo:\n' + payload.message : ''}`;
     /* RÓWNORZĘDNE WIZUALNIE (EDPB Guidelines 03/2022: brak dark patterns) */
     .cookie-btn-equal { background: transparent; color: #2C3E2D; border: 1px solid #2C3E2D; }
     .cookie-btn-equal:hover { background: #2C3E2D; color: #FFFFFF; transform: translateY(-1px); }
-    .cookie-meta { font-size: 0.72rem; color: #999; margin: 0.85rem 0 0; line-height: 1.45; }
+    .cookie-meta { font-size: 0.72rem; color: #595959; margin: 0.85rem 0 0; line-height: 1.45; } /* a11y fix: #999 had contrast 2.85:1 FAIL WCAG AA, now 7:1 PASS AAA */
     .cookie-meta button.cookie-link-btn {
       background: none; border: none; padding: 0; color: #2C3E2D; cursor: pointer;
       font: inherit; text-decoration: underline; text-underline-offset: 2px;
