@@ -2929,12 +2929,12 @@
                       <button type="button" class="lf-feat-mode-btn" data-mode="email">Wybiorę mailowo</button>
                     </div>
                     <input type="url" name="music_url" class="lf-feat-input" placeholder="Link do utworu z biblioteki royalty-free (Pixabay, YouTube Audio Library, Free Music Archive) lub własny plik na wolnej licencji">
-                    <p class="lf-feat-note" style="font-size:13px;color:#7a6f5f;margin:8px 0 0;line-height:1.5">
-                      <strong>Ważne:</strong> nie wykorzystujemy utworów komercyjnych z serwisów streamingowych (Spotify, Apple Music, YouTube Music) ani utworów objętych ochroną ZAIKS bez dokumentu licencji - zob. <a href="/terms#paragraf-8b" target="_blank" rel="noopener" style="color:#8a7355;text-decoration:underline">§ 8b Regulaminu</a>. Polecamy <strong>bibliotekę royalty-free</strong> - utwory weselne instrumentalne, jakość studio, bez ryzyka prawnego.
+                    <p class="lf-feat-note" style="font-size:13px;color:#5a4d3d;margin:8px 0 0;line-height:1.5">
+                      <strong>Ważne:</strong> nie wykorzystujemy utworów komercyjnych z serwisów streamingowych (Spotify, Apple Music, YouTube Music) ani utworów objętych ochroną ZAIKS bez dokumentu licencji - zob. <a href="/terms#paragraf-8b" target="_blank" rel="noopener" style="color:#5a4d3d;text-decoration:underline">§ 8b Regulaminu</a>. Polecamy <strong>bibliotekę royalty-free</strong> - utwory weselne instrumentalne, jakość studio, bez ryzyka prawnego.
                     </p>
                     <label class="lf-feat-row" style="margin-top:12px;align-items:flex-start;gap:8px">
                       <input type="checkbox" name="music_rights_accept" value="1" aria-label="Akceptacja klauzuli praw autorskich do muzyki" style="margin-top:3px">
-                      <span style="font-size:13px;color:#5a4d3d;line-height:1.5">Jeżeli dostarczam <strong>własny utwór</strong>: oświadczam, że posiadam do niego prawa lub jest dostępny na wolnej licencji (Pixabay, CC, YouTube Audio Library). Akceptuję <a href="/terms#paragraf-8b" target="_blank" rel="noopener" style="color:#8a7355;text-decoration:underline">§ 8b Regulaminu</a> (prawa autorskie do muzyki, indemnifikacja).</span>
+                      <span style="font-size:13px;color:#5a4d3d;line-height:1.5">Jeżeli dostarczam <strong>własny utwór</strong>: oświadczam, że posiadam do niego prawa lub jest dostępny na wolnej licencji (Pixabay, CC, YouTube Audio Library). Akceptuję <a href="/terms#paragraf-8b" target="_blank" rel="noopener" style="color:#5a4d3d;text-decoration:underline">§ 8b Regulaminu</a> (prawa autorskie do muzyki, indemnifikacja).</span>
                     </label>
                   </div>
                 </div>
@@ -3566,7 +3566,7 @@
           .map(f => `<div class="lead-form-file-list-item">${f.name} <span style="color:var(--ink-mute)">(${(f.size/1024).toFixed(0)} KB)</span></div>`)
           .join('');
         if (all.length > MAX_FILES) {
-          filesListEl.innerHTML += `<div class="lead-form-file-list-item" style="color:#B85F2E">⚠ Wybrano więcej niż ${MAX_FILES} plików - wzięliśmy pierwsze ${selectedFiles.length}.</div>`;
+          filesListEl.innerHTML += `<div class="lead-form-file-list-item" style="color:#9C4A1F">⚠ Wybrano więcej niż ${MAX_FILES} plików - wzięliśmy pierwsze ${selectedFiles.length}.</div>`;
         }
       });
     }
