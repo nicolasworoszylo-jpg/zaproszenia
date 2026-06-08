@@ -1,0 +1,75 @@
+name: Supabase Keepalive
+
+# Zapobiega pauzowaniu Supabase Free Tier przez brak aktywności.
+# Supabase Free pauzuje projekty po 7 dniach bez requestów.
+# Dla zaproszeniaonline.com pauza = śmierć backend (formularz, Stripe webhook, maile).
+#
+# Strategy:
+#   - Cron codziennie o 12:00 UTC (14:00 Warsaw CEST)
+#   - 2 pingi: REST API health + Edge Function reachability
+#   - Resetuje "inactivity timer" → 7 dni odliczania zaczyna się od nowa
+#
+# Manual trigger: workflow_dispatch (test ad-hoc)
+
+on:
+  schedule:
+    - cron: '0 12 * * *'   # codziennie 12:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-keepalive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    name: Ping Supabase
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Ping 1 - PostgREST health (REST API → query DB)
+        run: |
+          # Public endpoint - nie wymaga secrets, bo discount_codes ma RLS public-read
+          # Każdy GET aktywuje PostgREST + Postgres = liczy się jako aktywność.
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            "https://kuyniyyieejvambyjnxy.supabase.co/rest/v1/" \
+            -H "apikey: sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL" \
+            -H "Authorization: Bearer sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL")
+          BODY=$(echo "$RESPONSE" | head -n -1)
+          CODE=$(echo "$RESPONSE" | tail -n 1)
+          echo "PostgREST HTTP $CODE"
+          echo "Body (first 200 chars): ${BODY:0:200}"
+          if [ "$CODE" != "200" ] && [ "$CODE" != "404" ]; then
+            echo "::warning::PostgREST returned $CODE (oczekiwane 200 lub 404 root)"
+          fi
+
+      - name: Ping 2 - Edge Function reachability (stripe-webhook)
+        run: |
+          # POST do stripe-webhook bez signature = 400 ale URL trafiony = function uruchomiona.
+          # To liczy się jako aktywność dla Edge Functions service.
+          CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"keepalive":true}' \
+            "https://kuyniyyieejvambyjnxy.supabase.co/functions/v1/stripe-webhook")
+          echo "Edge Function HTTP $CODE"
+          if [ "$CODE" = "400" ] || [ "$CODE" = "401" ]; then
+            echo "✓ Edge Function reachable (expected 400/401 for missing signature)"
+          else
+            echo "::warning::Unexpected status from Edge Function: $CODE"
+          fi
+
+      - name: Summary
+        run: |
+          echo "✓ Supabase keepalive completed at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "Next run: jutro 12:00 UTC"
+          echo ""
+          echo "Why this matters:"
+          echo "- Supabase Free Tier pauses projects after 7d inactivity"
+          echo "- For zaproszeniaonline backend (form, Stripe webhook, emails) pause = death"
+          echo "- This workflow runs daily → timer never reaches 7d"
+          echo ""
+          echo "Long-term: upgrade to Pro tier (\$25/mc) for no auto-pause"
