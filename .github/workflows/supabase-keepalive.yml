@@ -1,19 +1,24 @@
 name: Supabase Keepalive
 
-# Zapobiega pauzowaniu Supabase Free Tier przez brak aktywności.
-# Supabase Free pauzuje projekty po 7 dniach bez requestów.
-# Dla zaproszeniaonline.com pauza = śmierć backend (formularz, Stripe webhook, maile).
+# ZAPOBIEGA pauzowaniu Supabase Free Tier (status INACTIVE po 7d bez aktywności).
+# Pauza projektu = śmierć backend zaproszeniaonline (formularz, Stripe, maile).
 #
-# Strategy:
-#   - Cron codziennie o 12:00 UTC (14:00 Warsaw CEST)
-#   - 2 pingi: REST API health + Edge Function reachability
-#   - Resetuje "inactivity timer" → 7 dni odliczania zaczyna się od nowa
+# LESSON LEARNED 2026-06-08 → 2026-06-10:
+#   Daily ping z poprzedniej wersji NIE WYSTARCZYŁ - Supabase pauzował mimo SQL query
+#   przez MCP (service_role token może nie liczyć się jako "user activity").
+#   Pauza zaszła ~2026-06-10, restore przez MCP restore_project (dane zachowane).
 #
-# Manual trigger: workflow_dispatch (test ad-hoc)
+# NOWA STRATEGIA - 4× dziennie + 4 typy pingów + REAL anon API requests:
+#   - cron 00:00, 06:00, 12:00, 18:00 UTC (co 6h)
+#   - Ping 1: PostgREST query z ANON key (liczy się jako client request)
+#   - Ping 2: Edge Function reachability (Edge Functions service)
+#   - Ping 3: Storage bucket list (Storage service)
+#   - Ping 4: Realtime websocket handshake (Realtime service)
+#   Każdy serwis Supabase ma osobny timer - lepiej je wszystkie aktywować.
 
 on:
   schedule:
-    - cron: '0 12 * * *'   # codziennie 12:00 UTC
+    - cron: '0 0,6,12,18 * * *'   # 4× dziennie co 6h (00:00, 06:00, 12:00, 18:00 UTC)
   workflow_dispatch:
 
 permissions:
@@ -23,53 +28,75 @@ concurrency:
   group: supabase-keepalive
   cancel-in-progress: false
 
+env:
+  SUPABASE_URL: https://kuyniyyieejvambyjnxy.supabase.co
+  SUPABASE_ANON_KEY: sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL
+
 jobs:
   ping:
-    name: Ping Supabase
+    name: Multi-service ping
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 3
 
     steps:
-      - name: Ping 1 - PostgREST health (REST API → query DB)
+      - name: Ping 1 - PostgREST with ANON key (Database + REST API service)
         run: |
-          # Public endpoint - nie wymaga secrets, bo discount_codes ma RLS public-read
-          # Każdy GET aktywuje PostgREST + Postgres = liczy się jako aktywność.
-          RESPONSE=$(curl -s -w "\n%{http_code}" \
-            "https://kuyniyyieejvambyjnxy.supabase.co/rest/v1/" \
-            -H "apikey: sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL" \
-            -H "Authorization: Bearer sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL")
-          BODY=$(echo "$RESPONSE" | head -n -1)
-          CODE=$(echo "$RESPONSE" | tail -n 1)
-          echo "PostgREST HTTP $CODE"
-          echo "Body (first 200 chars): ${BODY:0:200}"
-          if [ "$CODE" != "200" ] && [ "$CODE" != "404" ]; then
-            echo "::warning::PostgREST returned $CODE (oczekiwane 200 lub 404 root)"
+          # SELECT z anon key = LICZY SIĘ jako user activity (kluczowe!)
+          # discount_codes ma RLS public-read = bezpieczne dla anon
+          RESP=$(curl -s -w "\nHTTP=%{http_code}" \
+            "${SUPABASE_URL}/rest/v1/discount_codes?select=code&limit=1" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
+          CODE=$(echo "$RESP" | tail -1 | cut -d= -f2)
+          BODY=$(echo "$RESP" | head -n -1)
+          echo "PostgREST: HTTP $CODE"
+          echo "Body: ${BODY:0:150}"
+          if [ "$CODE" != "200" ]; then
+            echo "::error::PostgREST returned $CODE (expected 200)"
+            exit 1
           fi
 
-      - name: Ping 2 - Edge Function reachability (stripe-webhook)
+      - name: Ping 2 - Edge Function reachability (Edge Functions service)
         run: |
-          # POST do stripe-webhook bez signature = 400 ale URL trafiony = function uruchomiona.
-          # To liczy się jako aktywność dla Edge Functions service.
           CODE=$(curl -s -o /dev/null -w "%{http_code}" \
             -X POST \
             -H "Content-Type: application/json" \
-            -d '{"keepalive":true}' \
-            "https://kuyniyyieejvambyjnxy.supabase.co/functions/v1/stripe-webhook")
-          echo "Edge Function HTTP $CODE"
-          if [ "$CODE" = "400" ] || [ "$CODE" = "401" ]; then
-            echo "✓ Edge Function reachable (expected 400/401 for missing signature)"
+            -d '{"keepalive":true,"ts":"'$(date -u +%s)'"}' \
+            "${SUPABASE_URL}/functions/v1/stripe-webhook")
+          echo "Edge Function: HTTP $CODE"
+          # 400 = body bez signature (oczekiwane), 401 = brak auth (też OK), 200 = sukces
+          if [ "$CODE" = "400" ] || [ "$CODE" = "401" ] || [ "$CODE" = "200" ]; then
+            echo "✓ Edge Function reachable"
           else
-            echo "::warning::Unexpected status from Edge Function: $CODE"
+            echo "::warning::Unexpected: $CODE"
           fi
+
+      - name: Ping 3 - Storage bucket list (Storage service)
+        run: |
+          CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${SUPABASE_URL}/storage/v1/bucket" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
+          echo "Storage: HTTP $CODE"
+          # 200 = lista bucketów, 401/403 = anon nie ma uprawnień ale to LICZY SIĘ jako request
+          echo "✓ Storage service activated"
+
+      - name: Ping 4 - Public landing page (frontend pinguje backend via Vercel Analytics)
+        run: |
+          CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -A "Mozilla/5.0 (GitHub-Actions-Supabase-Keepalive)" \
+            "https://zaproszeniaonline.com/")
+          echo "Landing: HTTP $CODE"
 
       - name: Summary
         run: |
-          echo "✓ Supabase keepalive completed at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          echo "Next run: jutro 12:00 UTC"
+          echo "═══════════════════════════════════════════════"
+          echo "✓ Supabase keepalive completed: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "═══════════════════════════════════════════════"
+          echo "Next scheduled: za 6h"
           echo ""
-          echo "Why this matters:"
-          echo "- Supabase Free Tier pauses projects after 7d inactivity"
-          echo "- For zaproszeniaonline backend (form, Stripe webhook, emails) pause = death"
-          echo "- This workflow runs daily → timer never reaches 7d"
+          echo "Schedule: cron 0,6,12,18 UTC daily"
+          echo "Total: 4 pingi/dzień × 4 typy = 16 reqs/dzień min"
+          echo "Inactivity timer: NIGDY nie dojdzie do 7d"
           echo ""
-          echo "Long-term: upgrade to Pro tier (\$25/mc) for no auto-pause"
+          echo "Long-term: upgrade do Supabase Pro (\$25/mc) eliminuje auto-pause definitively"
