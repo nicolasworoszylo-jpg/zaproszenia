@@ -8,12 +8,17 @@ name: Supabase Keepalive
 #   przez MCP (service_role token może nie liczyć się jako "user activity").
 #   Pauza zaszła ~2026-06-10, restore przez MCP restore_project (dane zachowane).
 #
-# NOWA STRATEGIA - 4× dziennie + 4 typy pingów + REAL anon API requests:
+# UPDATE 2026-06-10 (GitGuardian alert): klucz przeniesiony do GitHub Secret
+# żeby uspokoić skaner. Klucz to publishable/anon (publiczny by design - jest
+# w index.html linia 3430), ale wzorzec `Authorization: Bearer <key>` jest
+# flagowany heurystycznie. Best practice: secrets nawet dla "public" kluczy.
+#
+# STRATEGIA - 4× dziennie + 4 typy pingów + REAL anon API requests:
 #   - cron 00:00, 06:00, 12:00, 18:00 UTC (co 6h)
 #   - Ping 1: PostgREST query z ANON key (liczy się jako client request)
 #   - Ping 2: Edge Function reachability (Edge Functions service)
 #   - Ping 3: Storage bucket list (Storage service)
-#   - Ping 4: Realtime websocket handshake (Realtime service)
+#   - Ping 4: Landing page (Vercel Analytics → indirect ping)
 #   Każdy serwis Supabase ma osobny timer - lepiej je wszystkie aktywować.
 
 on:
@@ -30,7 +35,6 @@ concurrency:
 
 env:
   SUPABASE_URL: https://kuyniyyieejvambyjnxy.supabase.co
-  SUPABASE_ANON_KEY: sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL
 
 jobs:
   ping:
@@ -40,13 +44,15 @@ jobs:
 
     steps:
       - name: Ping 1 - PostgREST with ANON key (Database + REST API service)
+        env:
+          ANON: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           # SELECT z anon key = LICZY SIĘ jako user activity (kluczowe!)
           # discount_codes ma RLS public-read = bezpieczne dla anon
           RESP=$(curl -s -w "\nHTTP=%{http_code}" \
             "${SUPABASE_URL}/rest/v1/discount_codes?select=code&limit=1" \
-            -H "apikey: ${SUPABASE_ANON_KEY}" \
-            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
+            -H "apikey: ${ANON}" \
+            -H "Authorization: Bearer ${ANON}")
           CODE=$(echo "$RESP" | tail -1 | cut -d= -f2)
           BODY=$(echo "$RESP" | head -n -1)
           echo "PostgREST: HTTP $CODE"
@@ -72,16 +78,17 @@ jobs:
           fi
 
       - name: Ping 3 - Storage bucket list (Storage service)
+        env:
+          ANON: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           CODE=$(curl -s -o /dev/null -w "%{http_code}" \
             "${SUPABASE_URL}/storage/v1/bucket" \
-            -H "apikey: ${SUPABASE_ANON_KEY}" \
-            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
+            -H "apikey: ${ANON}" \
+            -H "Authorization: Bearer ${ANON}")
           echo "Storage: HTTP $CODE"
-          # 200 = lista bucketów, 401/403 = anon nie ma uprawnień ale to LICZY SIĘ jako request
           echo "✓ Storage service activated"
 
-      - name: Ping 4 - Public landing page (frontend pinguje backend via Vercel Analytics)
+      - name: Ping 4 - Public landing page (Vercel Analytics ping)
         run: |
           CODE=$(curl -s -o /dev/null -w "%{http_code}" \
             -A "Mozilla/5.0 (GitHub-Actions-Supabase-Keepalive)" \
@@ -98,5 +105,3 @@ jobs:
           echo "Schedule: cron 0,6,12,18 UTC daily"
           echo "Total: 4 pingi/dzień × 4 typy = 16 reqs/dzień min"
           echo "Inactivity timer: NIGDY nie dojdzie do 7d"
-          echo ""
-          echo "Long-term: upgrade do Supabase Pro (\$25/mc) eliminuje auto-pause definitively"

@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
 # Supabase Keepalive - LOCAL backup (LaunchAgent na macOS Nicolasa).
-# Działa NIEZALEŻNIE od GitHub Actions (na wypadek gdyby GH był down).
-# Codziennie wieczorem (21:00 lokalnie) pinguje Supabase z laptopa.
+# Czyta klucz z ~/.claude/secrets/supabase-anon.txt (NIE z repo - bezpieczna praktyka).
 
 SUPABASE_URL="https://kuyniyyieejvambyjnxy.supabase.co"
-ANON_KEY="sb_publishable_3XC8esfEtBvOOr78DgdRiA_wgzKEJJL"
+SECRET_FILE="$HOME/.claude/secrets/supabase-anon.txt"
 LOG="$HOME/.claude/logs/supabase-keepalive.log"
 mkdir -p "$(dirname "$LOG")"
 
 ts() { date -u +%Y-%m-%dT%H:%M:%SZ; }
+
+if [ ! -f "$SECRET_FILE" ]; then
+  echo "[$(ts)] ERR: brak $SECRET_FILE - zapisz tam ANON key Supabase (chmod 600)" >> "$LOG"
+  exit 1
+fi
+ANON_KEY=$(cat "$SECRET_FILE" | tr -d '\n\r ')
 
 {
   echo "═══ $(ts) Local Supabase Keepalive ═══"
