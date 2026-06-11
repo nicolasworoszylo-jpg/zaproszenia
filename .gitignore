@@ -40,3 +40,6 @@ photos/inbox/
 photos/processed/
 photos/reports/
 photos/drafts/
+
+# Font subsetting backup - oryginalne pliki przed subset PL+ASCII (2026-05-23)
+fonts/.original/
